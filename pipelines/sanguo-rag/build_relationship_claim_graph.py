@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from primary_canon_inputs import latest_primary_canon_run_root
+import relationship_claim_pair_cues as pair_cues
 import relationship_type_refinement as relationship_types
 from relationship_type_refinement import refine_relationship_type, relationship_type_family
 from repo_layout import pipeline_config_path, resolve_repo_root
@@ -339,121 +340,9 @@ def compact_aliases(general_id: str, alias_index: dict[str, list[str]]) -> list[
     return [item for item in aliases if len(item) >= 2]
 
 
-PAIR_CUE_MAX_SPAN = 44
-PAIR_CUE_SENTENCE_MAX_SPAN = 140
-PAIR_CUE_AFTER_ALIAS_LIMIT = 10
-PAIR_CUE_SNIPPET_PAD = 16
-PAIR_CUE_CLAUSE_BOUNDARIES = frozenset("\u3002\uff0c\uff1b\uff1a\uff01\uff1f.,;:!?()[]{}\u300c\u300d\u300e\u300f\u300a\u300b")
-PAIR_CUE_SENTENCE_BOUNDARIES = frozenset("\u3002\uff01\uff1f.!?")
-PAIR_CUE_LIST_CONNECTORS = frozenset("\u3001\u8207\u53ca\u548c\u540c\u5171\u4e26\u5055\u76f8")
-PAIR_CUE_LOOSE_LIST_CONNECTORS = frozenset("\u3001\uff0c,\u8207\u53ca\u548c\u540c\u5171\u4e26\u5055\u76f8")
-PAIR_CUE_AFTER_PAIR_TYPES = {
-    "alliance_oath",
-    "betrayal_surrender",
-    "enemy_rival",
-    "spouse",
-    "sworn_sibling",
-}
-PAIR_CUE_SWORN_SIBLING_SENTENCE_TERMS = {
-    "\u7d50\u70ba\u5144\u5f1f",
-    "\u7570\u59d3",
-    "\u711a\u9999\u518d\u62dc",
-    "\u8aaa\u8a93",
-    "\u540c\u5fc3\u5354\u529b",
-}
-PAIR_CUE_SIBLING_POSSESSIVE_MARKERS = {
-    "\u4e4b\u5144",
-    "\u4e4b\u5f1f",
-    "\u4e4b\u59ca",
-    "\u4e4b\u59b9",
-    "\u65cf\u5144",
-    "\u65cf\u5f1f",
-    "\u5f9e\u5144",
-    "\u5f9e\u5f1f",
-}
-PAIR_CUE_SIBLING_TITLE_TERMS = {
-    "\u5144\u5f1f",
-    "\u59ca\u59b9",
-    "\u59d0\u59b9",
-    "\u6606\u5f1f",
-}
-PAIR_CUE_SIBLING_RANK_TERMS = {
-    "\u70ba\u5144",
-    "\u70ba\u5f1f",
-    "\u70ba\u59ca",
-    "\u70ba\u59b9",
-    "\u6b21\u4e4b",
-}
-PAIR_CUE_ENEMY_DIRECT_OBJECT_TERMS = (
-    "\u593e\u653b",
-    "\u653b\u6253",
-    "\u653b\u64ca",
-    "\u8ffd\u6bba",
-    "\u65ac\u6bba",
-    "\u8a85\u6bba",
-    "\u8fce\u6230",
-    "\u4f86\u6230",
-    "\u6406\u6230",
-    "\u653b",
-    "\u6bba",
-    "\u65ac",
-    "\u8a85",
-)
-PAIR_CUE_ENEMY_RECIPROCAL_TAIL_TERMS = (
-    "\u4ea4\u92d2",
-    "\u5edd\u6bba",
-    "\u6df7\u6230",
-    "\u6406\u6230",
-    "\u8fce\u6230",
-    "\u4f86\u6230",
-    "\u96d9\u6230",
-    "\u5927\u6230",
-    "\u6230\u4e0d\u6578\u5408",
-    "\u6230\u5230\u6578\u5408",
-    "\u76f8\u6230",
-)
-PAIR_CUE_ENEMY_ENCOUNTER_TERMS = (
-    "\u6b63\u9022",
-    "\u5ffd\u9047",
-    "\u76f8\u9047",
-    "\u76f8\u8fce",
-    "\u8fce\u898b",
-    "\u9022\u8457",
-)
-PAIR_CUE_ENEMY_PASSIVE_TAIL_TERMS = (
-    "\u6240\u6bba",
-    "\u6240\u65ac",
-    "\u6240\u8a85",
-    "\u88ab\u6bba",
-    "\u88ab\u65ac",
-    "\u88ab\u8a85",
-)
-PAIR_CUE_ENEMY_COMMAND_GUARDS = {
-    "\u4ee4",
-    "\u4f7f",
-    "\u9063",
-    "\u547d",
-    "\u8aed\u4ee4",
-    "\u62dc",
-    "\u8868",
-}
-PAIR_CUE_ENEMY_DIRECT_OBJECT_LIMIT = 26
-PAIR_CUE_ENEMY_TAIL_LIMIT = 28
-PAIR_CUE_WEAK_TERMS = {
-    "alliance_oath": {"\u5171", "\u6703", "\u7d04", "\u76df"},
-    "betrayal_surrender": {"\u964d", "\u53db", "\u68c4", "\u8ce3", "\u80cc", "\u53cd", "\u57f7", "\u7e1b"},
-    "enemy_rival": {"\u4ec7", "\u6575", "\u6028", "\u653b", "\u8a0e", "\u4f10", "\u64ca", "\u62d2", "\u6557", "\u7834", "\u6230", "\u8ffd", "\u570d", "\u6a84", "\u5f81", "\u8a85"},
-    "mentor_student": {"\u5e2b", "\u554f", "\u5b78", "\u6559", "\u6388", "\u8a13", "\u8aa8"},
-    "parent_child": {"\u7236", "\u6bcd", "\u5b50", "\u5973", "\u55e3"},
-    "patron_client": {"\u4efb", "\u7528", "\u8868", "\u62dc"},
-    "ruler_subject": {"\u4e3b", "\u81e3", "\u4e8b", "\u5f9e", "\u96a8", "\u70ba", "\u5c07"},
-    "sibling": {"\u5144", "\u5f1f", "\u59ca", "\u59b9"},
-    "spouse": {"\u592b", "\u59bb", "\u5a66", "\u5a5a", "\u7d0d", "\u914d"},
-}
-
-
 def pair_relation_terms_for_type(rel_type: str) -> list[str]:
     relationship_types.ensure_relationship_type_refinement_rules_loaded()
+    pair_cues.ensure_relationship_claim_pair_cue_rules_loaded()
     terms_by_type = {
         "alliance_oath": relationship_types.ALLIANCE_TERMS,
         "betrayal_surrender": relationship_types.BETRAYAL_TERMS,
@@ -466,13 +355,13 @@ def pair_relation_terms_for_type(rel_type: str) -> list[str]:
         "spouse": relationship_types.SPOUSE_TERMS,
         "sworn_sibling": relationship_types.SWORN_SIBLING_TERMS,
     }
-    weak_terms = PAIR_CUE_WEAK_TERMS.get(rel_type, set())
+    weak_terms = pair_cues.PAIR_CUE_WEAK_TERMS.get(rel_type, set())
     terms: list[str] = []
     for term in terms_by_type.get(rel_type, []):
         compacted = compact_text(term)
         if not compacted or compacted in weak_terms:
             continue
-        if len(compacted) == 1 and rel_type != "patron_client":
+        if len(compacted) == 1 and rel_type not in pair_cues.PAIR_CUE_SINGLE_CHAR_ALLOW_RELATION_TYPES:
             continue
         terms.append(compacted)
     return sorted(set(terms), key=lambda item: (-len(item), item))
@@ -504,44 +393,44 @@ def term_span(text: str, terms: list[str], *, offset: int = 0) -> tuple[str, int
 
 
 def has_clause_boundary(text: str) -> bool:
-    return any(char in PAIR_CUE_CLAUSE_BOUNDARIES for char in text)
+    return any(char in pair_cues.PAIR_CUE_CLAUSE_BOUNDARIES for char in text)
 
 
 def interstitial_is_name_list(text: str) -> bool:
-    return all(char in PAIR_CUE_LIST_CONNECTORS for char in text)
+    return all(char in pair_cues.PAIR_CUE_LIST_CONNECTORS for char in text)
 
 
 def interstitial_is_loose_name_list(text: str) -> bool:
-    return all(char in PAIR_CUE_LOOSE_LIST_CONNECTORS for char in text)
+    return all(char in pair_cues.PAIR_CUE_LOOSE_LIST_CONNECTORS for char in text)
 
 
 def bounded_tail_before_boundary(text: str, start: int, limit: int) -> str:
     tail = text[start : min(len(text), start + limit)]
-    boundary_positions = [tail.find(char) for char in PAIR_CUE_CLAUSE_BOUNDARIES if char in tail]
+    boundary_positions = [tail.find(char) for char in pair_cues.PAIR_CUE_CLAUSE_BOUNDARIES if char in tail]
     if not boundary_positions:
         return tail
     return tail[: min(pos for pos in boundary_positions if pos >= 0)]
 
 
 def tail_after_last_boundary(text: str) -> tuple[str, int]:
-    boundary_positions = [text.rfind(char) for char in PAIR_CUE_CLAUSE_BOUNDARIES]
+    boundary_positions = [text.rfind(char) for char in pair_cues.PAIR_CUE_CLAUSE_BOUNDARIES]
     last_boundary = max(boundary_positions)
     start = 0 if last_boundary < 0 else last_boundary + 1
     return text[start:], start
 
 
 def sentence_span_for_pair(text: str, start: int, end: int) -> tuple[int, int]:
-    left_candidates = [text.rfind(char, 0, start) for char in PAIR_CUE_SENTENCE_BOUNDARIES]
+    left_candidates = [text.rfind(char, 0, start) for char in pair_cues.PAIR_CUE_SENTENCE_BOUNDARIES]
     left = max(left_candidates)
     sentence_start = 0 if left < 0 else left + 1
-    right_candidates = [text.find(char, end) for char in PAIR_CUE_SENTENCE_BOUNDARIES]
+    right_candidates = [text.find(char, end) for char in pair_cues.PAIR_CUE_SENTENCE_BOUNDARIES]
     right = min((pos for pos in right_candidates if pos >= 0), default=len(text))
     return sentence_start, right
 
 
 def pair_cue_snippet(text: str, start: int, end: int) -> str:
-    left = max(0, start - PAIR_CUE_SNIPPET_PAD)
-    right = min(len(text), end + PAIR_CUE_SNIPPET_PAD)
+    left = max(0, start - pair_cues.PAIR_CUE_SNIPPET_PAD)
+    right = min(len(text), end + pair_cues.PAIR_CUE_SNIPPET_PAD)
     return text[left:right]
 
 
@@ -595,9 +484,9 @@ def sworn_sibling_sentence_cue(
     pair_start = min(left_span[0], right_span[0])
     pair_end = max(left_span[1], right_span[1])
     sentence_start, sentence_end = sentence_span_for_pair(text, pair_start, pair_end)
-    if sentence_end - sentence_start > PAIR_CUE_SENTENCE_MAX_SPAN:
+    if sentence_end - sentence_start > pair_cues.PAIR_CUE_SENTENCE_MAX_SPAN:
         return None
-    terms = pair_relation_terms_for_type("sworn_sibling") + sorted(PAIR_CUE_SWORN_SIBLING_SENTENCE_TERMS)
+    terms = pair_relation_terms_for_type("sworn_sibling") + sorted(pair_cues.PAIR_CUE_SWORN_SIBLING_SENTENCE_TERMS)
     cue = term_span(text[sentence_start:sentence_end], terms, offset=sentence_start)
     if cue is None:
         return None
@@ -631,17 +520,17 @@ def enemy_ordered_direct_object_cue(
     if actor_span[0] >= target_span[0]:
         return None
     sentence_start, sentence_end = sentence_span_for_pair(text, actor_span[0], target_span[1])
-    if sentence_end - sentence_start > PAIR_CUE_SENTENCE_MAX_SPAN:
+    if sentence_end - sentence_start > pair_cues.PAIR_CUE_SENTENCE_MAX_SPAN:
         return None
     between = text[actor_span[1] : target_span[0]]
-    if any(char in PAIR_CUE_SENTENCE_BOUNDARIES for char in between):
+    if any(char in pair_cues.PAIR_CUE_SENTENCE_BOUNDARIES for char in between):
         return None
     tail, tail_offset = tail_after_last_boundary(between)
-    if not tail or len(tail) > PAIR_CUE_ENEMY_DIRECT_OBJECT_LIMIT:
+    if not tail or len(tail) > pair_cues.PAIR_CUE_ENEMY_DIRECT_OBJECT_LIMIT:
         return None
-    if any(marker in tail for marker in PAIR_CUE_ENEMY_COMMAND_GUARDS):
+    if any(marker in tail for marker in pair_cues.PAIR_CUE_ENEMY_COMMAND_GUARDS):
         return None
-    cue = ending_term_span(tail, PAIR_CUE_ENEMY_DIRECT_OBJECT_TERMS, offset=actor_span[1] + tail_offset)
+    cue = ending_term_span(tail, pair_cues.PAIR_CUE_ENEMY_DIRECT_OBJECT_TERMS, offset=actor_span[1] + tail_offset)
     if cue is None:
         return None
     return pair_relation_cue_payload(
@@ -674,16 +563,16 @@ def enemy_ordered_reciprocal_battle_cue(
     if actor_span[0] >= target_span[0]:
         return None
     sentence_start, sentence_end = sentence_span_for_pair(text, actor_span[0], target_span[1])
-    if sentence_end - sentence_start > PAIR_CUE_SENTENCE_MAX_SPAN:
+    if sentence_end - sentence_start > pair_cues.PAIR_CUE_SENTENCE_MAX_SPAN:
         return None
     between = text[actor_span[1] : target_span[0]]
-    if any(char in PAIR_CUE_SENTENCE_BOUNDARIES for char in between):
+    if any(char in pair_cues.PAIR_CUE_SENTENCE_BOUNDARIES for char in between):
         return None
     between_tail, _ = tail_after_last_boundary(between)
     if "\u8207" not in between_tail and "\u548c" not in between_tail and "\u540c" not in between_tail:
         return None
-    sentence_tail = text[target_span[1] : min(sentence_end, target_span[1] + PAIR_CUE_ENEMY_TAIL_LIMIT)]
-    cue = term_span(sentence_tail, list(PAIR_CUE_ENEMY_RECIPROCAL_TAIL_TERMS), offset=target_span[1])
+    sentence_tail = text[target_span[1] : min(sentence_end, target_span[1] + pair_cues.PAIR_CUE_ENEMY_TAIL_LIMIT)]
+    cue = term_span(sentence_tail, list(pair_cues.PAIR_CUE_ENEMY_RECIPROCAL_TAIL_TERMS), offset=target_span[1])
     if cue is None:
         return None
     return pair_relation_cue_payload(
@@ -716,17 +605,17 @@ def enemy_ordered_encounter_battle_cue(
     if actor_span[0] >= target_span[0]:
         return None
     sentence_start, sentence_end = sentence_span_for_pair(text, actor_span[0], target_span[1])
-    if sentence_end - sentence_start > PAIR_CUE_SENTENCE_MAX_SPAN:
+    if sentence_end - sentence_start > pair_cues.PAIR_CUE_SENTENCE_MAX_SPAN:
         return None
     between = text[actor_span[1] : target_span[0]]
-    if any(char in PAIR_CUE_SENTENCE_BOUNDARIES for char in between):
+    if any(char in pair_cues.PAIR_CUE_SENTENCE_BOUNDARIES for char in between):
         return None
     between_tail, tail_offset = tail_after_last_boundary(between)
-    encounter = ending_term_span(between_tail, PAIR_CUE_ENEMY_ENCOUNTER_TERMS, offset=actor_span[1] + tail_offset)
+    encounter = ending_term_span(between_tail, pair_cues.PAIR_CUE_ENEMY_ENCOUNTER_TERMS, offset=actor_span[1] + tail_offset)
     if encounter is None:
         return None
-    sentence_tail = text[target_span[1] : min(sentence_end, target_span[1] + PAIR_CUE_ENEMY_TAIL_LIMIT)]
-    cue = term_span(sentence_tail, list(PAIR_CUE_ENEMY_RECIPROCAL_TAIL_TERMS), offset=target_span[1])
+    sentence_tail = text[target_span[1] : min(sentence_end, target_span[1] + pair_cues.PAIR_CUE_ENEMY_TAIL_LIMIT)]
+    cue = term_span(sentence_tail, list(pair_cues.PAIR_CUE_ENEMY_RECIPROCAL_TAIL_TERMS), offset=target_span[1])
     if cue is None:
         return None
     return pair_relation_cue_payload(
@@ -759,16 +648,16 @@ def enemy_ordered_passive_kill_cue(
     if target_span[0] >= actor_span[0]:
         return None
     sentence_start, sentence_end = sentence_span_for_pair(text, target_span[0], actor_span[1])
-    if sentence_end - sentence_start > PAIR_CUE_SENTENCE_MAX_SPAN:
+    if sentence_end - sentence_start > pair_cues.PAIR_CUE_SENTENCE_MAX_SPAN:
         return None
     between = text[target_span[1] : actor_span[0]]
-    if any(char in PAIR_CUE_SENTENCE_BOUNDARIES for char in between):
+    if any(char in pair_cues.PAIR_CUE_SENTENCE_BOUNDARIES for char in between):
         return None
     between_tail, tail_offset = tail_after_last_boundary(between)
     if not between_tail.endswith("\u70ba") and not between_tail.endswith("\u88ab"):
         return None
     sentence_tail = text[actor_span[1] : min(sentence_end, actor_span[1] + 8)]
-    cue = term_span(sentence_tail, list(PAIR_CUE_ENEMY_PASSIVE_TAIL_TERMS), offset=actor_span[1])
+    cue = term_span(sentence_tail, list(pair_cues.PAIR_CUE_ENEMY_PASSIVE_TAIL_TERMS), offset=actor_span[1])
     if cue is None:
         return None
     return pair_relation_cue_payload(
@@ -834,14 +723,14 @@ def sibling_possessive_cue(
 ) -> dict[str, Any] | None:
     pair_start = min(left_span[0], right_span[0])
     pair_end = max(left_span[1], right_span[1])
-    if pair_end - pair_start > PAIR_CUE_MAX_SPAN:
+    if pair_end - pair_start > pair_cues.PAIR_CUE_MAX_SPAN:
         return None
     ordered = [(left, left_span, right, right_span), (right, right_span, left, left_span)]
     for _first_alias, first_span, _second_alias, second_span in ordered:
         if first_span[0] > second_span[0]:
             continue
         bridge = text[first_span[1] : second_span[0]]
-        if bridge not in PAIR_CUE_SIBLING_POSSESSIVE_MARKERS:
+        if bridge not in pair_cues.PAIR_CUE_SIBLING_POSSESSIVE_MARKERS:
             continue
         cue = (bridge, first_span[1], second_span[0])
         return pair_relation_cue_payload(
@@ -870,7 +759,7 @@ def sibling_group_title_cue(
 ) -> dict[str, Any] | None:
     pair_start = min(left_span[0], right_span[0])
     pair_end = max(left_span[1], right_span[1])
-    if pair_end - pair_start > PAIR_CUE_MAX_SPAN:
+    if pair_end - pair_start > pair_cues.PAIR_CUE_MAX_SPAN:
         return None
     if left_span[0] <= right_span[0]:
         interstitial = text[left_span[1] : right_span[0]]
@@ -879,10 +768,10 @@ def sibling_group_title_cue(
     if not interstitial_is_loose_name_list(interstitial):
         return None
     sentence_start, sentence_end = sentence_span_for_pair(text, pair_start, pair_end)
-    if sentence_end - sentence_start > PAIR_CUE_SENTENCE_MAX_SPAN:
+    if sentence_end - sentence_start > pair_cues.PAIR_CUE_SENTENCE_MAX_SPAN:
         return None
     sentence = text[sentence_start:sentence_end]
-    cue = term_span(sentence, sorted(PAIR_CUE_SIBLING_TITLE_TERMS), offset=sentence_start)
+    cue = term_span(sentence, sorted(pair_cues.PAIR_CUE_SIBLING_TITLE_TERMS), offset=sentence_start)
     if cue is None:
         return None
     if not (cue[2] <= pair_start and pair_start - cue[2] <= 16):
@@ -913,13 +802,13 @@ def sibling_rank_sentence_cue(
     pair_start = min(left_span[0], right_span[0])
     pair_end = max(left_span[1], right_span[1])
     sentence_start, sentence_end = sentence_span_for_pair(text, pair_start, pair_end)
-    if sentence_end - sentence_start > PAIR_CUE_SENTENCE_MAX_SPAN:
+    if sentence_end - sentence_start > pair_cues.PAIR_CUE_SENTENCE_MAX_SPAN:
         return None
     sentence = text[sentence_start:sentence_end]
     has_rank_pair = "\u70ba\u5144" in sentence and "\u70ba\u5f1f" in sentence
     if not has_rank_pair:
         return None
-    cue = term_span(sentence, sorted(PAIR_CUE_SIBLING_RANK_TERMS), offset=sentence_start)
+    cue = term_span(sentence, sorted(pair_cues.PAIR_CUE_SIBLING_RANK_TERMS), offset=sentence_start)
     if cue is None:
         return None
     return pair_relation_cue_payload(
@@ -1006,6 +895,7 @@ def edge_pair_relation_cue_evidence(
     alias_index: dict[str, list[str]],
     rel_type: str,
 ) -> dict[str, Any] | None:
+    pair_cues.ensure_relationship_claim_pair_cue_rules_loaded()
     from_id = str(edge.get("fromId") or "").strip()
     to_id = str(edge.get("toId") or "").strip()
     text = compact_text(edge_text(edge))
@@ -1042,7 +932,7 @@ def edge_pair_relation_cue_evidence(
                     )
                     if relation_cue is not None:
                         return relation_cue
-                    if pair_end - pair_start > PAIR_CUE_MAX_SPAN:
+                    if pair_end - pair_start > pair_cues.PAIR_CUE_MAX_SPAN:
                         continue
                     between = text[pair_start:pair_end]
                     if has_clause_boundary(between):
@@ -1061,7 +951,7 @@ def edge_pair_relation_cue_evidence(
                             source_claim_type=edge.get("sourceClaimType"),
                             source_claim_scopes=edge.get("sourceClaimScopes"),
                         )
-                    if rel_type not in PAIR_CUE_AFTER_PAIR_TYPES:
+                    if rel_type not in pair_cues.PAIR_CUE_AFTER_PAIR_TYPES:
                         continue
                     if left_pos <= right_pos:
                         interstitial = text[left_span[1] : right_pos]
@@ -1070,7 +960,7 @@ def edge_pair_relation_cue_evidence(
                     if not interstitial_is_name_list(interstitial):
                         continue
                     cue = term_span(
-                        bounded_tail_before_boundary(text, pair_end, PAIR_CUE_AFTER_ALIAS_LIMIT),
+                        bounded_tail_before_boundary(text, pair_end, pair_cues.PAIR_CUE_AFTER_ALIAS_LIMIT),
                         type_terms,
                         offset=pair_end,
                     )
@@ -1107,6 +997,7 @@ def edge_has_legacy_pair_relation_cue(
     alias_index: dict[str, list[str]],
     rel_type: str,
 ) -> bool:
+    pair_cues.ensure_relationship_claim_pair_cue_rules_loaded()
 
     from_id = str(edge.get("fromId") or "").strip()
     to_id = str(edge.get("toId") or "").strip()
@@ -1118,25 +1009,18 @@ def edge_has_legacy_pair_relation_cue(
     if not from_aliases or not to_aliases:
         return False
 
-    type_cues = {
-        "enemy_rival": r"(攻|討|伐|擊|拒|敗|破|戰|大戰|交戰|殺敗|追|圍|敵|檄|征|誅)",
-        "alliance_oath": r"(盟|同盟|結盟|相約|連和|結好|合兵|同攻|會)",
-        "betrayal_surrender": r"(叛|背|反|降|歸降|執|縛|誘殺|背盟)",
-        "mentor_student": r"(師|師事|教|授|問|學|從學|受業|訓|誨)",
-        "parent_child": r"(父|母|子|嗣|嗣子|養子|繼嗣|其父|其子|叔父|伯父)",
-        "patron_client": r"(薦|舉|辟|召|任|用|拔|表|拜|任命|提拔|厚遇)",
-        "ruler_subject": r"(主|臣|事|從|隨|使|令|遣|拜|表|為|屬|部下|將|太守|刺史|主簿|從事|牧|守|歸|仕|召)",
-        "sibling": r"(兄|弟|姊|妹|兄弟|昆弟|從兄|從弟)",
-        "spouse": r"(夫人|妻|妻子|婦|嫁|娶|婚|成婚|納|配|以女妻|女妻之|尚主)",
-        "sworn_sibling": r"(結義|義兄|義弟|桃園|義結|兄弟相稱)",
-    }
-    cue = re.compile(type_cues.get(rel_type, r"(與|及|同|共|和|並|俱)"))
-    connectors = ('與', '及', '同', '共', '和', '並', '俱', '從', '隨', '使', '令', '遣', '拜', '表', '為', '事')
+    cue = re.compile(
+        pair_cues.PAIR_CUE_LEGACY_TYPE_PATTERNS.get(
+            rel_type,
+            pair_cues.PAIR_CUE_LEGACY_TYPE_PATTERNS.get("default", ""),
+        )
+    )
+    connectors = pair_cues.PAIR_CUE_LEGACY_CONNECTORS
 
     def positions(token: str) -> list[int]:
         result: list[int] = []
         start = 0
-        while len(result) < 4:
+        while len(result) < pair_cues.PAIR_CUE_LEGACY_TOKEN_POSITION_LIMIT:
             pos = text.find(token, start)
             if pos < 0:
                 break
@@ -1156,14 +1040,17 @@ def edge_has_legacy_pair_relation_cue(
                 for right_pos in right_positions:
                     pair_start = min(left_pos, right_pos)
                     pair_end = max(left_pos + len(left), right_pos + len(right))
-                    if pair_end - pair_start > 32:
+                    if pair_end - pair_start > pair_cues.PAIR_CUE_LEGACY_MAX_SPAN:
                         continue
-                    window = text[max(0, pair_start - 6) : min(len(text), pair_end + 10)]
+                    window = text[
+                        max(0, pair_start - pair_cues.PAIR_CUE_LEGACY_WINDOW_BEFORE) :
+                        min(len(text), pair_end + pair_cues.PAIR_CUE_LEGACY_WINDOW_AFTER)
+                    ]
                     between = text[pair_start:pair_end]
                     has_connector = any(connector in between for connector in connectors)
                     cue_in_window = bool(cue.search(window))
                     cue_in_between = bool(cue.search(between))
-                    if rel_type in {"mentor_student", "patron_client", "ruler_subject"}:
+                    if rel_type in pair_cues.PAIR_CUE_LEGACY_STRICT_CONNECTOR_TYPES:
                         if has_connector and cue_in_between:
                             return True
                         continue
@@ -1171,7 +1058,7 @@ def edge_has_legacy_pair_relation_cue(
                         return True
                     if rel_type == "enemy_rival" and cue_in_between:
                         return True
-                    if rel_type in {"parent_child", "spouse", "sibling", "sworn_sibling"} and cue_in_between:
+                    if rel_type in pair_cues.PAIR_CUE_LEGACY_KINSHIP_BETWEEN_ONLY_TYPES and cue_in_between:
                         return True
     return False
 
@@ -1181,7 +1068,8 @@ def override_broad_type_from_pair_cue(
     alias_index: dict[str, list[str]],
     refined_type: str,
 ) -> tuple[str, list[str]]:
-    if refined_type not in {"mentor_student", "patron_client", "relationship_external", "ruler_subject"}:
+    pair_cues.ensure_relationship_claim_pair_cue_rules_loaded()
+    if refined_type not in pair_cues.PAIR_CUE_OVERRIDE_BROAD_TYPES:
         return refined_type, []
     if edge_has_pair_relation_cue(edge, alias_index, "enemy_rival"):
         return "enemy_rival", ["pair_relation_war_cue_override"]
@@ -1341,7 +1229,7 @@ def normalize_edge_to_claim(
         pair_relation = pair_relation_cue is not None
         if not pair_relation:
             pair_relation = edge_has_pair_relation_cue(normalized, alias_index, refined_type)
-        if refined_type in {"mentor_student", "patron_client", "ruler_subject"}:
+        if refined_type in pair_cues.PAIR_CUE_ENEMY_CONTEXT_GUARD_TYPES:
             enemy_context_guard = edge_has_legacy_pair_relation_cue(normalized, alias_index, "enemy_rival")
             enemy_context_guard = enemy_context_guard and edge_pair_relation_cue_evidence(
                 normalized,
@@ -1842,6 +1730,8 @@ def render_markdown(summary: dict[str, Any], conflicts: list[dict[str, Any]]) ->
 
 def main() -> int:
     args = parse_args()
+    relationship_types.apply_relationship_type_refinement_rules(args.governance_root)
+    pair_cues.apply_relationship_claim_pair_cue_rules(args.governance_root)
     apply_relationship_runtime_canon_policy(args.governance_root, args.relationship_policy)
     output_root = resolve_path(args.output_root)
     if output_root.exists() and any(output_root.iterdir()) and not args.overwrite:

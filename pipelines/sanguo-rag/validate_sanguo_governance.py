@@ -63,6 +63,7 @@ from sanguo_governance_loader import (
     load_progress_runner_governance,
     load_postgres_state_migration_plan_policy,
     load_postgres_state_store_evaluation_policy,
+    load_relationship_claim_pair_cue_rules,
     load_relationship_evidence_extraction_rules,
     load_relationship_runtime_canon_policy,
     load_relationship_type_refinement_rules,
@@ -232,6 +233,7 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
     vector_production_rollout_policy = load_vector_production_rollout_plan_policy(root)
     governance_maintenance_mode_policy = load_governance_maintenance_mode_policy(root)
     relationship_type_refinement_rules = load_relationship_type_refinement_rules(root)
+    relationship_claim_pair_cue_rules = load_relationship_claim_pair_cue_rules(root)
     relationship_evidence_extraction_rules = load_relationship_evidence_extraction_rules(root)
     schema = read_governance_json(root / "schemas/schema-stable-bootstrap-payload.json")
 
@@ -1211,6 +1213,20 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
                 if not str(key).strip() or not str(item).strip():
                     raise SanguoGovernanceError(f"{source_name} {constant_name} mapping has blank key/value")
             return len(value)
+        if kind == "mappingTerms":
+            if not isinstance(value, dict) or not value:
+                raise SanguoGovernanceError(f"{source_name} {constant_name} mappingTerms value cannot be empty")
+            count = 0
+            for key, item in value.items():
+                if not str(key).strip() or not isinstance(item, list) or not item:
+                    raise SanguoGovernanceError(f"{source_name} {constant_name} mappingTerms has invalid entry")
+                normalized_terms = [str(term).strip() for term in item]
+                if any(not term for term in normalized_terms):
+                    raise SanguoGovernanceError(f"{source_name} {constant_name} mappingTerms has blank cue")
+                if len(set(normalized_terms)) != len(normalized_terms):
+                    raise SanguoGovernanceError(f"{source_name} {constant_name} mappingTerms has duplicate cue")
+                count += len(normalized_terms)
+            return count
         if kind == "aliasAllowlist":
             if not isinstance(value, dict) or not value:
                 raise SanguoGovernanceError(f"{source_name} {constant_name} aliasAllowlist value cannot be empty")
@@ -1234,6 +1250,12 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
             if len(set(normalized_terms)) != len(normalized_terms):
                 raise SanguoGovernanceError(f"{source_name} {constant_name} has duplicate cue")
             return len(normalized_terms)
+        if kind == "integer":
+            if isinstance(value, bool) or not isinstance(value, int):
+                raise SanguoGovernanceError(f"{source_name} {constant_name} integer value must be int")
+            if value < 0:
+                raise SanguoGovernanceError(f"{source_name} {constant_name} integer value cannot be negative")
+            return 1
         raise SanguoGovernanceError(f"{source_name} {constant_name} unsupported kind: {kind}")
 
     relationship_type_by_name: dict[str, dict[str, Any]] = {}
@@ -1251,6 +1273,71 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
     missing_relationship_type = sorted(relationship_type_required - relationship_type_by_name.keys())
     if missing_relationship_type:
         raise SanguoGovernanceError(f"rule-relationship-type-refinement missing rules: {', '.join(missing_relationship_type)}")
+
+    relationship_claim_pair_cue_required = {
+        "PAIR_CUE_MAX_SPAN",
+        "PAIR_CUE_SENTENCE_MAX_SPAN",
+        "PAIR_CUE_AFTER_ALIAS_LIMIT",
+        "PAIR_CUE_SNIPPET_PAD",
+        "PAIR_CUE_CLAUSE_BOUNDARIES",
+        "PAIR_CUE_SENTENCE_BOUNDARIES",
+        "PAIR_CUE_LIST_CONNECTORS",
+        "PAIR_CUE_LOOSE_LIST_CONNECTORS",
+        "PAIR_CUE_AFTER_PAIR_TYPES",
+        "PAIR_CUE_SWORN_SIBLING_SENTENCE_TERMS",
+        "PAIR_CUE_SIBLING_POSSESSIVE_MARKERS",
+        "PAIR_CUE_SIBLING_TITLE_TERMS",
+        "PAIR_CUE_SIBLING_RANK_TERMS",
+        "PAIR_CUE_ENEMY_DIRECT_OBJECT_TERMS",
+        "PAIR_CUE_ENEMY_RECIPROCAL_TAIL_TERMS",
+        "PAIR_CUE_ENEMY_ENCOUNTER_TERMS",
+        "PAIR_CUE_ENEMY_PASSIVE_TAIL_TERMS",
+        "PAIR_CUE_ENEMY_COMMAND_GUARDS",
+        "PAIR_CUE_ENEMY_DIRECT_OBJECT_LIMIT",
+        "PAIR_CUE_ENEMY_TAIL_LIMIT",
+        "PAIR_CUE_WEAK_TERMS",
+        "PAIR_CUE_SINGLE_CHAR_ALLOW_RELATION_TYPES",
+        "PAIR_CUE_ENEMY_CONTEXT_GUARD_TYPES",
+        "PAIR_CUE_LEGACY_TYPE_PATTERNS",
+        "PAIR_CUE_LEGACY_CONNECTORS",
+        "PAIR_CUE_LEGACY_TOKEN_POSITION_LIMIT",
+        "PAIR_CUE_LEGACY_MAX_SPAN",
+        "PAIR_CUE_LEGACY_WINDOW_BEFORE",
+        "PAIR_CUE_LEGACY_WINDOW_AFTER",
+        "PAIR_CUE_LEGACY_STRICT_CONNECTOR_TYPES",
+        "PAIR_CUE_LEGACY_KINSHIP_BETWEEN_ONLY_TYPES",
+        "PAIR_CUE_OVERRIDE_BROAD_TYPES",
+    }
+    relationship_claim_pair_cue_by_name: dict[str, dict[str, Any]] = {}
+    relationship_claim_pair_cue_value_count = 0
+    for row in relationship_claim_pair_cue_rules:
+        constant_name = str(row.get("constantName") or "")
+        if constant_name in relationship_claim_pair_cue_by_name:
+            raise SanguoGovernanceError(f"rule-relationship-claim-pair-cues duplicate constantName: {constant_name}")
+        relationship_claim_pair_cue_by_name[constant_name] = row
+        relationship_claim_pair_cue_value_count += validate_governance_value_row(
+            row,
+            expected_consumer="relationship_claim_pair_cues.py",
+            source_name="rule-relationship-claim-pair-cues",
+        )
+    missing_relationship_claim_pair_cues = sorted(
+        relationship_claim_pair_cue_required - relationship_claim_pair_cue_by_name.keys()
+    )
+    if missing_relationship_claim_pair_cues:
+        raise SanguoGovernanceError(
+            "rule-relationship-claim-pair-cues missing rules: "
+            + ", ".join(missing_relationship_claim_pair_cues)
+        )
+    legacy_patterns = relationship_claim_pair_cue_by_name["PAIR_CUE_LEGACY_TYPE_PATTERNS"].get("value")
+    if not isinstance(legacy_patterns, dict):
+        raise SanguoGovernanceError("rule-relationship-claim-pair-cues PAIR_CUE_LEGACY_TYPE_PATTERNS must be mapping")
+    for rel_type, pattern in legacy_patterns.items():
+        try:
+            re.compile(str(pattern))
+        except re.error as exc:
+            raise SanguoGovernanceError(
+                f"rule-relationship-claim-pair-cues invalid regex for {rel_type}: {exc}"
+            ) from exc
 
     relationship_evidence_by_name: dict[str, dict[str, Any]] = {}
     relationship_evidence_extraction_cue_count = 0
@@ -1909,6 +1996,8 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
         "deepseekReasoningSamplingParamCount": len(deepseek_reasoning),
         "relationshipTypeRefinementRuleCount": len(relationship_type_refinement_rules),
         "relationshipTypeRefinementTermCount": relationship_type_refinement_term_count,
+        "relationshipClaimPairCueRuleCount": len(relationship_claim_pair_cue_rules),
+        "relationshipClaimPairCueValueCount": relationship_claim_pair_cue_value_count,
         "relationshipEvidenceExtractionRuleCount": len(relationship_evidence_extraction_rules),
         "relationshipEvidenceExtractionCueCount": relationship_evidence_extraction_cue_count,
         "aliasMentionCueRuleCount": len(alias_mention_cues),

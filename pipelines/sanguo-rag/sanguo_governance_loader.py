@@ -684,6 +684,20 @@ def load_relationship_type_refinement_rules(
     return read_governance_jsonl(path, required_fields=("id", "consumer", "constantName", "kind", "value"))
 
 
+def load_relationship_claim_pair_cue_rules(
+    root: str | Path | None = None,
+    *,
+    relationship_claim_pair_cue_rules: str | Path | None = None,
+) -> list[dict[str, Any]]:
+    base = resolve_governance_root(root)
+    path = (
+        Path(relationship_claim_pair_cue_rules).resolve()
+        if relationship_claim_pair_cue_rules
+        else _path(base, "rules", "rule-relationship-claim-pair-cues.jsonl")
+    )
+    return read_governance_jsonl(path, required_fields=("id", "consumer", "constantName", "kind", "value"))
+
+
 def load_relationship_evidence_extraction_rules(
     root: str | Path | None = None,
     *,
@@ -1120,6 +1134,7 @@ def expected_governance_files() -> list[dict[str, str]]:
         {"section": "rules", "file": "rule-event-question-angle-cues.jsonl", "consumer": "build_event_question_seed_bank.py"},
         {"section": "rules", "file": "rule-external-source-benchmark-cues.jsonl", "consumer": "benchmark_external_source.py"},
         {"section": "rules", "file": "rule-event-review-context-cues.jsonl", "consumer": "enrich_event_review_context.py"},
+        {"section": "rules", "file": "rule-relationship-claim-pair-cues.jsonl", "consumer": "build_relationship_claim_graph.py"},
         {"section": "rules", "file": "rule-npc-dialogue-runtime-cues.jsonl", "consumer": "npc_dialogue_service.py"},
         {"section": "rules", "file": "rule-dialogue-mention-resolution-cues.jsonl", "consumer": "resolve_dialogue_mentions.py"},
         {"section": "rules", "file": "rule-resolution-loop-recommendation-cues.jsonl", "consumer": "run_sanguo_resolution_loop.py"},
