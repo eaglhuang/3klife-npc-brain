@@ -218,6 +218,7 @@ def repair_queue(rows: list[dict[str, Any]], queue_limit: int) -> list[dict[str,
                 "sourceLine": row.get("_sourceLine"),
                 "promotionTrace": row.get("promotionTrace"),
                 "pairRelationCue": row.get("pairRelationCue"),
+                "enemyContextGuard": row.get("enemyContextGuard"),
                 "repairAction": "repair_pair_relation_cue",
                 "reviewStatus": "deterministic-repair-candidate",
             }
@@ -238,6 +239,7 @@ def markdown(summary: dict[str, Any]) -> str:
         f"- A-canon + A-baseline claim pass ratio: `{metrics['aCanonPlusBaselineClaimPassRatio']}%`",
         f"- Raw extractor attempt pass ratio: `{metrics['aCanonRawAttemptPassRatio']}%`",
         f"- Subject-bound pair cues: `{metrics['subjectBoundPairCueCount']}`",
+        f"- Enemy-context guard rows: `{metrics['enemyContextGuardCount']}`",
         "",
         "## Grade Counts",
         "",
@@ -262,6 +264,9 @@ def markdown(summary: dict[str, Any]) -> str:
         lines.append(f"- `{key}`: `{value}`")
     lines.extend(["", "## Subject-Bound Cue Bindings", ""])
     for key, value in summary["pairRelationCueBindingCounts"].items():
+        lines.append(f"- `{key}`: `{value}`")
+    lines.extend(["", "## Enemy-Context Guard Types", ""])
+    for key, value in summary["enemyContextGuardByType"].items():
         lines.append(f"- `{key}`: `{value}`")
     lines.extend(["", "## Unsafe History Source Families", ""])
     for key, value in summary["unsafeHistorySourceFamilies"].items():
@@ -293,6 +298,7 @@ def main() -> None:
     near_a_rows = [row for row in claims if is_near_a(row)]
     pair_cue_repairable_rows = [row for row in near_a_rows if is_pair_cue_repairable(row)]
     subject_bound_cue_rows = [row for row in claims if isinstance(row.get("pairRelationCue"), dict)]
+    enemy_context_guard_rows = [row for row in claims if bool(row.get("enemyContextGuard"))]
     blocker_counts = Counter("|".join(blocker_reasons(row)) for row in near_a_rows)
     unsafe_history_rows = [
         row
@@ -333,6 +339,7 @@ def main() -> None:
             "aCanonPlusBaselineClaimPassRatio": pct(a_canon_count + a_baseline_count, len(claims)),
             "aCanonRawAttemptPassRatio": pct(a_canon_count, attempt_count),
             "subjectBoundPairCueCount": len(subject_bound_cue_rows),
+            "enemyContextGuardCount": len(enemy_context_guard_rows),
         },
         "gradeCounts": counter_dict(grade_counts),
         "rejectionReasonCounts": counter_dict(reject_counts),
@@ -349,6 +356,7 @@ def main() -> None:
         "pairCueRepairableByType": top_group(pair_cue_repairable_rows, ("claimGrade", "type"), 30),
         "pairCueRepairableBySourceFamily": top_group(pair_cue_repairable_rows, ("sourceFamily", "type"), 30),
         "pairRelationCueBindingCounts": cue_binding_counts(claims),
+        "enemyContextGuardByType": top_group(enemy_context_guard_rows, ("claimGrade", "type"), 30),
         "unsafeHistorySourceFamilies": top_group(unsafe_history_rows, ("sourceFamily", "type"), 30),
         "conflicts": conflict_summary(claim_summary),
         "recommendations": [
