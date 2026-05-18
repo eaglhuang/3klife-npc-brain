@@ -158,6 +158,23 @@ def top_group(rows: list[dict[str, Any]], keys: tuple[str, ...], limit: int = 20
     return counter_dict(counter, limit)
 
 
+def cue_binding_counts(rows: list[dict[str, Any]]) -> dict[str, int]:
+    counter: Counter[str] = Counter()
+    for row in rows:
+        cue = row.get("pairRelationCue")
+        if not isinstance(cue, dict):
+            continue
+        key = "|".join(
+            [
+                str(row.get("claimGrade") or ""),
+                str(row.get("type") or ""),
+                str(cue.get("binding") or ""),
+            ]
+        )
+        counter[key] += 1
+    return counter_dict(counter, 30)
+
+
 def conflict_summary(summary: dict[str, Any]) -> dict[str, Any]:
     conflicts = summary.get("conflicts") if isinstance(summary.get("conflicts"), list) else []
     reason_counts = Counter(str(row.get("reason") or "") for row in conflicts if isinstance(row, dict))
@@ -192,12 +209,15 @@ def repair_queue(rows: list[dict[str, Any]], queue_limit: int) -> list[dict[str,
                 "fromId": row.get("fromId"),
                 "toId": row.get("toId"),
                 "type": row.get("type"),
+                "quote": row.get("quote"),
                 "sourceFamily": row.get("sourceFamily"),
                 "sourceLayer": row.get("sourceLayer"),
                 "locator": row.get("locator"),
                 "textHash": row.get("textHash"),
                 "sourceFile": row.get("sourceFile"),
                 "sourceLine": row.get("_sourceLine"),
+                "promotionTrace": row.get("promotionTrace"),
+                "pairRelationCue": row.get("pairRelationCue"),
                 "repairAction": "repair_pair_relation_cue",
                 "reviewStatus": "deterministic-repair-candidate",
             }
@@ -217,6 +237,7 @@ def markdown(summary: dict[str, Any]) -> str:
         f"- A-canon claim pass ratio: `{metrics['aCanonClaimPassRatio']}%`",
         f"- A-canon + A-baseline claim pass ratio: `{metrics['aCanonPlusBaselineClaimPassRatio']}%`",
         f"- Raw extractor attempt pass ratio: `{metrics['aCanonRawAttemptPassRatio']}%`",
+        f"- Subject-bound pair cues: `{metrics['subjectBoundPairCueCount']}`",
         "",
         "## Grade Counts",
         "",
@@ -238,6 +259,9 @@ def markdown(summary: dict[str, Any]) -> str:
         lines.append(f"- `{key}`: `{value}`")
     lines.extend(["", "## Pair-Cue Repairable Types", ""])
     for key, value in summary["pairCueRepairableByType"].items():
+        lines.append(f"- `{key}`: `{value}`")
+    lines.extend(["", "## Subject-Bound Cue Bindings", ""])
+    for key, value in summary["pairRelationCueBindingCounts"].items():
         lines.append(f"- `{key}`: `{value}`")
     lines.extend(["", "## Unsafe History Source Families", ""])
     for key, value in summary["unsafeHistorySourceFamilies"].items():
@@ -268,6 +292,7 @@ def main() -> None:
     reject_counts = Counter(str(row.get("reason") or "unknown") for row in rejected)
     near_a_rows = [row for row in claims if is_near_a(row)]
     pair_cue_repairable_rows = [row for row in near_a_rows if is_pair_cue_repairable(row)]
+    subject_bound_cue_rows = [row for row in claims if isinstance(row.get("pairRelationCue"), dict)]
     blocker_counts = Counter("|".join(blocker_reasons(row)) for row in near_a_rows)
     unsafe_history_rows = [
         row
@@ -307,6 +332,7 @@ def main() -> None:
             "aCanonClaimPassRatio": pct(a_canon_count, len(claims)),
             "aCanonPlusBaselineClaimPassRatio": pct(a_canon_count + a_baseline_count, len(claims)),
             "aCanonRawAttemptPassRatio": pct(a_canon_count, attempt_count),
+            "subjectBoundPairCueCount": len(subject_bound_cue_rows),
         },
         "gradeCounts": counter_dict(grade_counts),
         "rejectionReasonCounts": counter_dict(reject_counts),
@@ -322,6 +348,7 @@ def main() -> None:
         "nearABySourceFamilyType": top_group(near_a_rows, ("sourceFamily", "type"), 30),
         "pairCueRepairableByType": top_group(pair_cue_repairable_rows, ("claimGrade", "type"), 30),
         "pairCueRepairableBySourceFamily": top_group(pair_cue_repairable_rows, ("sourceFamily", "type"), 30),
+        "pairRelationCueBindingCounts": cue_binding_counts(claims),
         "unsafeHistorySourceFamilies": top_group(unsafe_history_rows, ("sourceFamily", "type"), 30),
         "conflicts": conflict_summary(claim_summary),
         "recommendations": [
