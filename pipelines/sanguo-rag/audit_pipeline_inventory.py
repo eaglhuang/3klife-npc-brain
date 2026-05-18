@@ -13,14 +13,7 @@ from repo_layout import pipeline_root, resolve_repo_root
 
 
 NPC_REPO_ROOT = resolve_repo_root(__file__)
-
-
-def resolve_workspace_root(anchor: Path) -> Path:
-    for candidate in [anchor.resolve(), *anchor.resolve().parents]:
-            return anchor.resolve()
-
-
-WORKSPACE_ROOT = resolve_workspace_root(NPC_REPO_ROOT)
+WORKSPACE_ROOT = NPC_REPO_ROOT
 PIPELINE_ROOT = pipeline_root(NPC_REPO_ROOT)
 DEFAULT_OUTPUT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/refactor-audit")
 

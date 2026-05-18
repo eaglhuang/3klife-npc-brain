@@ -9,6 +9,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from primary_canon_inputs import (
+    choose_primary_or_fallback,
+    latest_primary_canon_artifact_paths,
+    primary_canon_metadata,
+)
 from sanguo_governance_loader import load_core_person_completion_policy
 
 
@@ -54,17 +59,62 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--core-general-id", action="append", default=[], help="Explicit core generalId. Defaults to data-driven top N.")
     parser.add_argument("--observed-mentions", default=str(DEFAULT_OBSERVED_MENTIONS_PATH))
     parser.add_argument("--stable-knowledge", default=str(DEFAULT_STABLE_KNOWLEDGE_PATH))
-    parser.add_argument("--event-question-seeds", default=str(DEFAULT_EVENT_QUESTION_SEEDS_PATH))
-    parser.add_argument("--source-event-packets", default=str(DEFAULT_SOURCE_EVENT_PACKETS_PATH))
-    parser.add_argument("--relationship-evidence", default=str(DEFAULT_RELATIONSHIP_EVIDENCE_PATH))
+    parser.add_argument(
+        "--event-question-seeds",
+        default=None,
+        help="Event question seeds JSONL. Defaults to the latest primary-canon run when available, otherwise legacy seeds.",
+    )
+    parser.add_argument(
+        "--source-event-packets",
+        default=None,
+        help="Source event packets JSONL. Defaults to the latest primary-canon run when available, otherwise legacy packets.",
+    )
+    parser.add_argument(
+        "--relationship-evidence",
+        default=None,
+        help="Relationship evidence JSONL. Defaults to the latest primary-canon run when available, otherwise legacy evidence.",
+    )
     parser.add_argument("--ready-events", default=str(DEFAULT_READY_EVENTS_PATH))
     parser.add_argument("--rounds-root", default=str(DEFAULT_ROUNDS_ROOT))
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
     parser.add_argument("--boost-per-person", type=int, default=12)
     parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--core-person-completion-policy", default=None, help="Override core person completion scoring policy JSON.")
+    parser.add_argument(
+        "--no-primary-canon-defaults",
+        action="store_true",
+        help="Disable auto-selection of latest primary-canon relationship evidence, seeds, and packets.",
+    )
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
+
+
+def resolve_input_paths(args: argparse.Namespace) -> dict[str, Any]:
+    run_root, primary_paths = (None, {})
+    if not args.no_primary_canon_defaults:
+        run_root, primary_paths = latest_primary_canon_artifact_paths()
+
+    event_question_seeds = (
+        Path(args.event_question_seeds)
+        if args.event_question_seeds
+        else choose_primary_or_fallback("eventQuestionSeeds", DEFAULT_EVENT_QUESTION_SEEDS_PATH, primary_paths)
+    )
+    source_event_packets = (
+        Path(args.source_event_packets)
+        if args.source_event_packets
+        else choose_primary_or_fallback("sourceEventPackets", DEFAULT_SOURCE_EVENT_PACKETS_PATH, primary_paths)
+    )
+    relationship_evidence = (
+        Path(args.relationship_evidence)
+        if args.relationship_evidence
+        else choose_primary_or_fallback("relationshipEvidence", DEFAULT_RELATIONSHIP_EVIDENCE_PATH, primary_paths)
+    )
+    return {
+        "eventQuestionSeeds": event_question_seeds,
+        "sourceEventPackets": source_event_packets,
+        "relationshipEvidence": relationship_evidence,
+        "primaryCanonDefaults": primary_canon_metadata(run_root, primary_paths),
+    }
 
 
 def utc_now() -> str:
@@ -140,13 +190,13 @@ def summarize_preview_rounds(rounds_root: Path) -> dict[str, dict[str, Any]]:
     }
 
 
-def collect_metrics(args: argparse.Namespace) -> dict[str, Any]:
+def collect_metrics(args: argparse.Namespace, input_paths: dict[str, Any]) -> dict[str, Any]:
     stable = read_json(Path(args.stable_knowledge))
     names, identities, profiles = stable_indexes(stable)
     observed_rows = load_observed_rows(Path(args.observed_mentions))
-    seeds = read_jsonl(Path(args.event_question_seeds))
-    packets = read_jsonl(Path(args.source_event_packets))
-    relationships = read_jsonl(Path(args.relationship_evidence))
+    seeds = read_jsonl(Path(input_paths["eventQuestionSeeds"]))
+    packets = read_jsonl(Path(input_paths["sourceEventPackets"]))
+    relationships = read_jsonl(Path(input_paths["relationshipEvidence"]))
     ready_events = read_jsonl(Path(args.ready_events))
     preview = summarize_preview_rounds(Path(args.rounds_root))
 
@@ -462,7 +512,8 @@ def main() -> None:
     if not args.overwrite and any(path.exists() for path in [json_path, md_path, boost_queue_path]):
         raise FileExistsError("Core person completion outputs already exist. Re-run with --overwrite.")
 
-    metrics = collect_metrics(args)
+    input_paths = resolve_input_paths(args)
+    metrics = collect_metrics(args, input_paths)
     core_people = select_core_people(args, metrics)
     person_reports = build_person_reports(core_people, metrics)
     boost_queue = build_boost_queue(person_reports, metrics, args.boost_per_person)
@@ -476,11 +527,12 @@ def main() -> None:
         "inputs": {
             "observedMentionsPath": args.observed_mentions,
             "stableKnowledgePath": args.stable_knowledge,
-            "eventQuestionSeedsPath": args.event_question_seeds,
-            "sourceEventPacketsPath": args.source_event_packets,
-            "relationshipEvidencePath": args.relationship_evidence,
+            "eventQuestionSeedsPath": str(input_paths["eventQuestionSeeds"]),
+            "sourceEventPacketsPath": str(input_paths["sourceEventPackets"]),
+            "relationshipEvidencePath": str(input_paths["relationshipEvidence"]),
             "readyEventsPath": args.ready_events,
             "roundsRoot": args.rounds_root,
+            "primaryCanonDefaults": input_paths["primaryCanonDefaults"],
         },
         "componentWeights": COMPONENT_WEIGHTS,
         "averageCompletionPercent": round(average_completion, 2),

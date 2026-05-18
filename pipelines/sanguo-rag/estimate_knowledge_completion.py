@@ -8,6 +8,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from primary_canon_inputs import (
+    choose_primary_or_fallback,
+    latest_primary_canon_artifact_paths,
+    primary_canon_metadata,
+)
 from sanguo_governance_loader import load_knowledge_completion_policy
 
 
@@ -65,9 +70,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--ready-events", default=str(DEFAULT_READY_EVENTS_PATH))
     parser.add_argument("--generic-candidates", default=str(DEFAULT_GENERIC_CANDIDATES_PATH))
     parser.add_argument("--female-candidates", default=str(DEFAULT_FEMALE_CANDIDATES_PATH))
-    parser.add_argument("--relationship-evidence", default=str(DEFAULT_RELATIONSHIP_EVIDENCE_PATH))
-    parser.add_argument("--event-question-seeds", default=str(DEFAULT_EVENT_QUESTION_SEEDS_PATH))
-    parser.add_argument("--source-event-packets", default=str(DEFAULT_SOURCE_EVENT_PACKETS_PATH))
+    parser.add_argument(
+        "--relationship-evidence",
+        default=None,
+        help="Relationship evidence JSONL. Defaults to the latest primary-canon run when available, otherwise legacy evidence.",
+    )
+    parser.add_argument(
+        "--event-question-seeds",
+        default=None,
+        help="Event question seeds JSONL. Defaults to the latest primary-canon run when available, otherwise legacy seeds.",
+    )
+    parser.add_argument(
+        "--source-event-packets",
+        default=None,
+        help="Source event packets JSONL. Defaults to the latest primary-canon run when available, otherwise legacy packets.",
+    )
     parser.add_argument("--rounds-root", default=str(DEFAULT_ROUNDS_ROOT))
     parser.add_argument("--round-json", action="append", default=[], help="Batch JSON to include. Defaults to latest generic + latest female round.")
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
@@ -76,8 +93,41 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target-female-profiles", type=int, default=None, help="High-priority female target. Defaults to current female profile count.")
     parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--knowledge-completion-policy", default=None, help="Override knowledge completion scoring policy JSON.")
+    parser.add_argument(
+        "--no-primary-canon-defaults",
+        action="store_true",
+        help="Disable auto-selection of latest primary-canon relationship evidence, seeds, and packets.",
+    )
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
+
+
+def resolve_input_paths(args: argparse.Namespace) -> dict[str, Any]:
+    run_root, primary_paths = (None, {})
+    if not args.no_primary_canon_defaults:
+        run_root, primary_paths = latest_primary_canon_artifact_paths()
+
+    relationship_evidence = (
+        Path(args.relationship_evidence)
+        if args.relationship_evidence
+        else choose_primary_or_fallback("relationshipEvidence", DEFAULT_RELATIONSHIP_EVIDENCE_PATH, primary_paths)
+    )
+    event_question_seeds = (
+        Path(args.event_question_seeds)
+        if args.event_question_seeds
+        else choose_primary_or_fallback("eventQuestionSeeds", DEFAULT_EVENT_QUESTION_SEEDS_PATH, primary_paths)
+    )
+    source_event_packets = (
+        Path(args.source_event_packets)
+        if args.source_event_packets
+        else choose_primary_or_fallback("sourceEventPackets", DEFAULT_SOURCE_EVENT_PACKETS_PATH, primary_paths)
+    )
+    return {
+        "relationshipEvidence": relationship_evidence,
+        "eventQuestionSeeds": event_question_seeds,
+        "sourceEventPackets": source_event_packets,
+        "primaryCanonDefaults": primary_canon_metadata(run_root, primary_paths),
+    }
 
 
 def utc_now() -> str:
@@ -349,7 +399,7 @@ def source_event_packet_units(records: list[dict[str, Any]]) -> float:
     return units
 
 
-def score_components(args: argparse.Namespace, round_paths: list[Path]) -> dict[str, Any]:
+def score_components(args: argparse.Namespace, round_paths: list[Path], input_paths: dict[str, Any]) -> dict[str, Any]:
     stable = read_json(Path(args.stable_knowledge))
     stable_summary = stable.get("summary") or {}
     observed = read_json(Path(args.observed_summary))
@@ -357,9 +407,9 @@ def score_components(args: argparse.Namespace, round_paths: list[Path]) -> dict[
     ready_events = read_jsonl(Path(args.ready_events))
     generic_candidates = read_jsonl(Path(args.generic_candidates))
     female_candidates = read_jsonl(Path(args.female_candidates))
-    relationship_evidence = read_jsonl(Path(args.relationship_evidence))
-    event_question_seeds = read_jsonl(Path(args.event_question_seeds))
-    source_event_packets = read_jsonl(Path(args.source_event_packets))
+    relationship_evidence = read_jsonl(Path(input_paths["relationshipEvidence"]))
+    event_question_seeds = read_jsonl(Path(input_paths["eventQuestionSeeds"]))
+    source_event_packets = read_jsonl(Path(input_paths["sourceEventPackets"]))
     round_summary = summarize_rounds(round_paths)
 
     people_count = int(stable_summary.get("identitySeedCount") or len(stable.get("identitySeeds") or []) or 0)
@@ -598,7 +648,8 @@ def main() -> None:
     )
     round_id = args.round_id or default_round_id()
     round_paths = [Path(path) for path in args.round_json] if args.round_json else latest_rounds(Path(args.rounds_root))
-    completion = score_components(args, round_paths)
+    input_paths = resolve_input_paths(args)
+    completion = score_components(args, round_paths, input_paths)
     report = {
         "version": "1.0.0",
         "roundId": round_id,
@@ -612,10 +663,11 @@ def main() -> None:
             "readyEventsPath": args.ready_events,
             "genericCandidatesPath": args.generic_candidates,
             "femaleCandidatesPath": args.female_candidates,
-            "relationshipEvidencePath": args.relationship_evidence,
-            "eventQuestionSeedsPath": args.event_question_seeds,
-            "sourceEventPacketsPath": args.source_event_packets,
+            "relationshipEvidencePath": str(input_paths["relationshipEvidence"]),
+            "eventQuestionSeedsPath": str(input_paths["eventQuestionSeeds"]),
+            "sourceEventPacketsPath": str(input_paths["sourceEventPackets"]),
             "roundJsonPaths": [str(path) for path in round_paths],
+            "primaryCanonDefaults": input_paths["primaryCanonDefaults"],
         },
         "completion": completion,
     }

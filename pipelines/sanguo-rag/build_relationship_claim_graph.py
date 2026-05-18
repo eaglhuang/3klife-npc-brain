@@ -10,19 +10,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from primary_canon_inputs import latest_primary_canon_run_root
 from relationship_type_refinement import refine_relationship_type, relationship_type_family
-from repo_layout import pipeline_config_path
+from repo_layout import pipeline_config_path, resolve_repo_root
 from sanguo_governance_loader import default_governance_root, load_relationship_runtime_canon_policy
 
 
-def resolve_workspace_root(anchor_file: str | Path) -> Path:
-    anchor = Path(anchor_file).resolve()
-    start = anchor if anchor.is_dir() else anchor.parent
-    for candidate in [start, *start.parents]:
-            raise FileNotFoundError("Could not resolve workspace root")
-
-
-REPO_ROOT = resolve_workspace_root(__file__)
+REPO_ROOT = resolve_repo_root(__file__)
 DEFAULT_GENERALS_PATH = Path("assets/resources/data/generals.json")
 DEFAULT_ALIAS_MAP_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/formal-mention-map.json")
 DEFAULT_STABLE_BOOTSTRAP_PATH = Path(
@@ -35,10 +29,12 @@ DEFAULT_RELATIONSHIP_EDGE_PATTERNS = [
     "artifacts/data-pipeline/sanguo-rag/extracted/relationship-evidence/source-grounded-relationship-edges.jsonl",
     "artifacts/data-pipeline/sanguo-rag/extracted/core-person-progress/*staged-relationship-evidence.jsonl",
     "artifacts/data-pipeline/sanguo-rag/extracted/external-relationship-overlay/source-grounded-relationship-edges.external.jsonl",
+    "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone/*/relationship-overlay/source-grounded-relationship-edges.external.jsonl",
     "local/codex-smoke/knowledge-growth/external-relationship-overlay/source-grounded-relationship-edges.external.jsonl",
 ]
 DEFAULT_EXTERNAL_EVIDENCE_CARD_PATTERNS = [
     "artifacts/data-pipeline/sanguo-rag/extracted/external-evidence/**/external-evidence-cards.jsonl",
+    "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone/*/cards/**/candidate-evidence-cards.jsonl",
     "local/codex-smoke/knowledge-growth/**/external-evidence/external-evidence-cards.jsonl",
 ]
 
@@ -106,6 +102,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-config", default=str(DEFAULT_SOURCE_CONFIG_PATH))
     parser.add_argument("--relationship-edge", action="append", default=[])
     parser.add_argument("--relationship-edge-pattern", action="append", default=[])
+    parser.add_argument("--relationship-claim", action="append", default=[])
+    parser.add_argument("--relationship-claim-pattern", action="append", default=[])
+    parser.add_argument("--no-default-primary-canon-claims", action="store_true")
     parser.add_argument("--external-evidence-card", action="append", default=[])
     parser.add_argument("--external-evidence-card-pattern", action="append", default=[])
     parser.add_argument("--no-default-external-evidence-cards", action="store_true")
@@ -725,6 +724,41 @@ def default_relationship_edge_paths(extra_patterns: list[str], extra_paths: list
     return deduped
 
 
+def default_relationship_claim_paths(
+    extra_patterns: list[str],
+    extra_paths: list[str],
+    *,
+    include_defaults: bool,
+) -> list[Path]:
+    paths: list[Path] = []
+    patterns = list(extra_patterns)
+    if include_defaults:
+        latest_run_root = latest_primary_canon_run_root()
+        if latest_run_root is not None:
+            latest_claims = latest_run_root / "relationship-claim-graph-after" / RELATIONSHIP_OUTPUT_FILES["all"]
+            if latest_claims.is_file():
+                paths.append(latest_claims)
+    for pattern in patterns:
+        absolute_pattern = str(resolve_path(pattern))
+        for match in glob.glob(absolute_pattern):
+            path = Path(match)
+            if path.is_file():
+                paths.append(path)
+    for path_text in extra_paths:
+        path = resolve_path(path_text)
+        if path.is_file():
+            paths.append(path)
+    deduped: list[Path] = []
+    seen: set[str] = set()
+    for path in sorted(paths, key=lambda item: str(item).lower()):
+        key = str(path.resolve()).lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(path)
+    return deduped
+
+
 def default_external_evidence_card_paths(
     extra_patterns: list[str],
     extra_paths: list[str],
@@ -979,6 +1013,11 @@ def render_markdown(summary: dict[str, Any], conflicts: list[dict[str, Any]]) ->
     lines.extend(["", "## Inputs", ""])
     for path in summary["inputs"]["relationshipEdgePaths"]:
         lines.append(f"- `{path}`")
+    if summary["inputs"].get("relationshipClaimPaths"):
+        lines.extend(["", "## Supplemental Relationship Claims", ""])
+        lines.append(f"- File Count: `{summary['metrics']['supplementalClaimFileCount']}`")
+        for path in summary["inputs"]["relationshipClaimPaths"][:40]:
+            lines.append(f"- `{path}`")
     if summary["inputs"].get("externalEvidenceCardPaths"):
         lines.extend(["", "## External Evidence Cards", ""])
         lines.append(f"- File Count: `{summary['metrics']['externalEvidenceCardFileCount']}`")
@@ -1022,6 +1061,11 @@ def main() -> int:
     alias_index = build_alias_index(resolve_path(args.generals), resolve_path(args.alias_map))
     source_policy_index = load_source_policy_index(resolve_path(args.source_config))
     relationship_paths = default_relationship_edge_paths(args.relationship_edge_pattern, args.relationship_edge)
+    relationship_claim_paths = default_relationship_claim_paths(
+        args.relationship_claim_pattern,
+        args.relationship_claim,
+        include_defaults=not args.no_default_primary_canon_claims,
+    )
     external_card_paths = default_external_evidence_card_paths(
         args.external_evidence_card_pattern,
         args.external_evidence_card,
@@ -1050,6 +1094,8 @@ def main() -> int:
             claims.append(claim)
         if reject:
             rejected.append(reject)
+    for path in relationship_claim_paths:
+        claims.extend(read_jsonl(path))
 
     claims = dedupe_claims(claims)
     claims, cross_source_promotions = promote_cross_source_history_claims(claims)
@@ -1075,6 +1121,7 @@ def main() -> int:
             "stableBootstrapPath": repo_relative(stable_path),
             "sourceConfigPath": repo_relative(resolve_path(args.source_config)),
             "relationshipEdgePaths": [repo_relative(path) for path in relationship_paths],
+            "relationshipClaimPaths": [repo_relative(path) for path in relationship_claim_paths],
             "externalEvidenceCardPaths": [repo_relative(path) for path in external_card_paths],
         },
         "outputs": {
@@ -1090,6 +1137,7 @@ def main() -> int:
         },
         "metrics": {
             "rawEdgeCount": len(raw_edges),
+            "supplementalClaimFileCount": len(relationship_claim_paths),
             "externalEvidenceCardFileCount": len(external_card_paths),
             "externalEvidenceCardKeyCount": len(external_card_index),
             "claimCount": len(claims),

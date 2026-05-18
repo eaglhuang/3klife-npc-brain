@@ -10,16 +10,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from repo_layout import resolve_repo_root
 from sanguo_governance_loader import default_governance_root, load_relationship_runtime_canon_policy
 
-def resolve_workspace_root(anchor_file: str | Path) -> Path:
-    anchor = Path(anchor_file).resolve()
-    start = anchor if anchor.is_dir() else anchor.parent
-    for candidate in [start, *start.parents]:
-            raise FileNotFoundError("Could not resolve workspace root")
 
-
-REPO_ROOT = resolve_workspace_root(__file__)
+REPO_ROOT = resolve_repo_root(__file__)
 PIPELINE_ROOT = Path(__file__).resolve().parent
 DEFAULT_RUNTIME_PROFILE_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles")
 DEFAULT_LOCK_PATH = Path("artifacts/data-pipeline/sanguo-rag/.locks/relationship-claim-graph-refresh.lock")
