@@ -1,6 +1,11 @@
 <!-- doc_id: doc_server_service_0005 -->
 # LangGraph Studio 與部署
 
+> 文件使用原則：
+> - 本文假設你正在使用 standalone `3klife-npc-brain` repo。
+> - `<repo-root>` 代表你自己 clone 下來的專案根目錄。
+> - 若本文包含啟動或驗證指令，預設以 Docker 為正式開發環境來源；本機 Python / venv 僅用於 IDE debug、LangGraph dev 或臨時工具。
+
 > 本文中的 `<repo-root>` 代表你自己 clone 下來的專案根目錄。
 
 這份文件描述 standalone `3klife-npc-brain` 的 LangGraph 使用方式。路徑一律以 repo root `<repo-root>` 為基準。

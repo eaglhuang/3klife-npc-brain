@@ -1,6 +1,11 @@
 <!-- doc_id: doc_server_other_0008 -->
 # NPC 最終行為決策流程圖
 
+> 文件使用原則：
+> - 本文假設你正在使用 standalone `3klife-npc-brain` repo。
+> - `<repo-root>` 代表你自己 clone 下來的專案根目錄。
+> - 若本文包含啟動或驗證指令，預設以 Docker 為正式開發環境來源；本機 Python / venv 僅用於 IDE debug、LangGraph dev 或臨時工具。
+
 **doc_id**: doc_server_service_0009  
 **分類**: 遊戲 Runtime 決策層  
 **對應文件**: [README](../README.md) | [向量檢索與資料入庫](./向量檢索與資料入庫.md) | [對話服務與模型回退](./對話服務與模型回退.md)

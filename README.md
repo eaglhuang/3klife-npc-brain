@@ -1,9 +1,16 @@
 <!-- doc_id: doc_server_service_0001 -->
 # NPC Brain Service
 
+> 文件使用原則：
+> - 本文假設你正在使用 standalone `3klife-npc-brain` repo。
+> - `<repo-root>` 代表你自己 clone 下來的專案根目錄。
+> - 若本文包含啟動或驗證指令，預設以 Docker 為正式開發環境來源；本機 Python / venv 僅用於 IDE debug、LangGraph dev 或臨時工具。
+
 > 本文中的 `<repo-root>` 代表你自己 clone 下來的專案根目錄。
 
-`3klife-npc-brain` 是獨立的 NPC brain 服務 repo。它不再放在 `3KLife` monorepo 下面；Cocos / 3KLife 只需要透過 HTTP 呼叫這個服務。
+3klife-npc-brain 是獨立的 NPC brain 服務 repo。它不再放在 3KLife monorepo 下面；Cocos / 3KLife 只需要透過 HTTP 呼叫這個服務。
+
+如果你是第一次進這個 repo，建議先看 [最短啟動路徑](./文件/最短啟動路徑.md)。
 
 ## 這個 repo 負責什麼
 

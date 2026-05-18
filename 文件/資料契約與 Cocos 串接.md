@@ -1,6 +1,11 @@
 <!-- doc_id: doc_server_service_0007 -->
 # 資料契約與 Cocos 串接
 
+> 文件使用原則：
+> - 本文假設你正在使用 standalone `3klife-npc-brain` repo。
+> - `<repo-root>` 代表你自己 clone 下來的專案根目錄。
+> - 若本文包含啟動或驗證指令，預設以 Docker 為正式開發環境來源；本機 Python / venv 僅用於 IDE debug、LangGraph dev 或臨時工具。
+
 > 說明 npc-brain runtime 對外 DTO、來源 artifact、以及 Cocos 端應如何串接 keyword options 與 dialogue 測試流程。
 
 ## 前端接入時最重要的原則
