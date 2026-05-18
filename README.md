@@ -93,7 +93,7 @@ docker exec 3klife-npc-brain-dev python -B pipelines/sanguo-rag/run_sanguo_gover
 ## 文件入口
 
 - [開發啟動與煙霧測試](./文件/開發啟動與煙霧測試.md)
-- [LangGraph Studio 與部署](./文件/LangGraph%20Studio%20與部署.md)
+- [LangGraph Studio 與部署](./文件/LangGraph Studio 與部署.md)
 - [向量檢索與資料入庫](./文件/向量檢索與資料入庫.md)
-- [資料契約與 Cocos 串接](./文件/資料契約與%20Cocos%20串接.md)
+- [資料契約與 Cocos 串接](./文件/資料契約與 Cocos 串接.md)
 - [三國人物資料推進流程](./文件/三國人物資料推進流程.md)
