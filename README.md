@@ -1,7 +1,7 @@
 <!-- doc_id: doc_server_service_0001 -->
 # NPC Brain Service
 
-`server/npc-brain/` 是 3KLife 三國大腦中台的 **runtime service 層**。  
+`3klife-npc-brain` 是 3KLife 三國大腦中台的 **runtime service 層**。
 Pipeline 負責產生 canonical events / keyword fixtures / persona cards；npc-brain 則負責把這些產物轉成 Cocos、LangGraph 與後續行為決策可直接消費的服務介面。
 
 一句話定位：
@@ -61,7 +61,7 @@ flowchart TD
 ### 啟動 FastAPI
 
 ```bash
-cd server/npc-brain
+cd C:\Users\User\3klife-npc-brain
 python -m pip install -r requirements.txt
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8765 --reload
 ```
@@ -69,7 +69,7 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8765 --reload
 ### 啟動 LangGraph dev server
 
 ```bash
-cd server/npc-brain
+cd C:\Users\User\3klife-npc-brain
 python -m pip install -U "langgraph-cli[inmem]"
 langgraph dev --no-browser
 ```
@@ -165,5 +165,17 @@ flowchart LR
 
 ## 目前拆分狀態
 
-這份 `README.md` 已改成 npc-brain 的**摘要入口版**。  
-原本的大段操作手冊、向量教學、Studio 細節與資料契約，已移到 `server/npc-brain/文件/` 下的主題文件中維護。
+這份 `README.md` 已改成 npc-brain 的**摘要入口版**。
+原本的大段操作手冊、向量教學、Studio 細節與資料契約，已移到 `./文件/` 下的主題文件中維護。
+
+
+```bash
+curl http://127.0.0.1:8765/healthz
+```
+
+### Docker Compose dev
+
+```bash
+cd C:\Users\User\3klife-npc-brain
+docker compose -f docker-compose.dev.yml up -d --build
+```
