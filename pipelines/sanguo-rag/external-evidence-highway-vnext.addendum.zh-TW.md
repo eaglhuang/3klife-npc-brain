@@ -38,21 +38,21 @@
 ## 本次流程修正
 
 ### 1. benchmark 改成單來源隔離
-- 修正 [benchmark_external_source.py](/C:/Users/User/3klife-npc-brain/pipelines/sanguo-rag/benchmark_external_source.py:942)
+- 修正 [benchmark_external_source.py](./benchmark_external_source.py#L942)
 - 問題：舊版 Stage 3 會把其他 approved/manual source 的 strict cards 一起吃進去，導致 benchmark ROI 被灌水
 - 修正方式：
-  - [harvest_external_evidence_seeds.py](/C:/Users/User/3klife-npc-brain/pipelines/sanguo-rag/harvest_external_evidence_seeds.py:205) 新增 `--no-default-external-evidence-cards`
+  - [harvest_external_evidence_seeds.py](./harvest_external_evidence_seeds.py#L205) 新增 `--no-default-external-evidence-cards`
   - benchmark 內部固定傳入這個參數，只計算該來源自己的 seeds
 
 ### 2. community-worldbuilding-site 新增正文硬門檻
-- 修正 [benchmark_external_source.py](/C:/Users/User/3klife-npc-brain/pipelines/sanguo-rag/benchmark_external_source.py:1063)
+- 修正 [benchmark_external_source.py](./benchmark_external_source.py#L1063)
 - 新規則：
   - `pageTextSeedCount == 0` 不可通過 Stage 3
   - `claimBearingPassageCount == 0` 不可通過 Stage 3
 - 目的：避免只靠 title/snippet 假過關，必須真的從正文抽出 seed
 
 ### 3. generic extractor 補六個角度主力抽取
-- 修正 [extract_generic_passage_evidence_seeds.py](/C:/Users/User/3klife-npc-brain/pipelines/sanguo-rag/extract_generic_passage_evidence_seeds.py:759)
+- 修正 [extract_generic_passage_evidence_seeds.py](./extract_generic_passage_evidence_seeds.py#L759)
 - 已納入主力抽取：
   - `habit`
   - `activity`
@@ -63,8 +63,8 @@
 
 ### 4. 英文頁補繁中審核提示
 - 修正：
-  - [extract_harvested_page_evidence_seeds.py](/C:/Users/User/3klife-npc-brain/pipelines/sanguo-rag/extract_harvested_page_evidence_seeds.py:566)
-  - [extract_generic_passage_evidence_seeds.py](/C:/Users/User/3klife-npc-brain/pipelines/sanguo-rag/extract_generic_passage_evidence_seeds.py:836)
+  - [extract_harvested_page_evidence_seeds.py](./extract_harvested_page_evidence_seeds.py#L566)
+  - [extract_generic_passage_evidence_seeds.py](./extract_generic_passage_evidence_seeds.py#L836)
 - 新欄位：
   - `translatedTraditionalText`
   - `translationProfile`
@@ -86,7 +86,7 @@
 - `bodyEndMarkers`
 
 Schema 已同步更新：
-- [source-policy.schema.json](/C:/Users/User/3klife-npc-brain/pipelines/sanguo-rag/config/source-policy.schema.json:210)
+- [source-policy.schema.json](./config/source-policy.schema.json#L210)
 
 ## 建議解讀
 

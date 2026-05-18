@@ -1,7 +1,9 @@
 <!-- doc_id: doc_server_service_0005 -->
 # LangGraph Studio 與部署
 
-這份文件描述 standalone `3klife-npc-brain` 的 LangGraph 使用方式。路徑一律以 repo root `C:/Users/User/3klife-npc-brain` 為基準。
+> 本文中的 `<repo-root>` 代表你自己 clone 下來的專案根目錄。
+
+這份文件描述 standalone `3klife-npc-brain` 的 LangGraph 使用方式。路徑一律以 repo root `<repo-root>` 為基準。
 
 ## 相關檔案
 
@@ -15,7 +17,7 @@
 ## 安裝 LangGraph CLI
 
 ```powershell
-cd C:/Users/User/3klife-npc-brain
+cd <repo-root>
 python -m pip install -r requirements.txt
 python -m pip install -U "langgraph-cli[inmem]"
 ```
@@ -35,7 +37,7 @@ NPC_BRAIN_DEPLOY_IDENTITY=npc-brain-external-tester
 ## 啟動 dev server
 
 ```powershell
-cd C:/Users/User/3klife-npc-brain
+cd <repo-root>
 langgraph dev --no-browser
 ```
 
@@ -63,14 +65,14 @@ langgraph dev --no-browser
 ## 外部測試腳本
 
 ```bash
-cd /mnt/c/Users/User/3klife-npc-brain
+cd <repo-root>
 bash ./run-temporary-external-test.sh
 ```
 
 ## Deployment
 
 ```bash
-cd /mnt/c/Users/User/3klife-npc-brain
+cd <repo-root>
 langgraph deploy --name "$LANGSMITH_DEPLOYMENT_NAME"
 ```
 
