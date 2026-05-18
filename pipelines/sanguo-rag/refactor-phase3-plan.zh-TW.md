@@ -27,7 +27,7 @@
 ## Implementation Plan
 
 1. 新增 relationship runtime canon policy：
-   - `server/npc-brain/data/sanguo/policies/policy-relationship-runtime-canon.json`
+   - `data/sanguo/policies/policy-relationship-runtime-canon.json`
 
 2. 擴充 governance loader / validator：
    - loader 提供 `load_relationship_runtime_canon_policy`。

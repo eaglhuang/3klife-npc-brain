@@ -730,7 +730,7 @@ priorityScore =
 ## 產物與目錄規約
 
 ```text
-server/npc-brain/pipelines/sanguo-rag/
+pipelines/sanguo-rag/
   full-roster-confidence-rag-highway.zh-TW.md
   diagram-assets/
     full-roster-confidence-etl-flow.jpg

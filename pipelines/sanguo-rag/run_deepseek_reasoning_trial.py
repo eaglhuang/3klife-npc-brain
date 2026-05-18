@@ -102,7 +102,7 @@ def apply_deepseek_reasoning_trial_arg_defaults(args: argparse.Namespace) -> Non
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run DeepSeek R1 as a non-canonical ETL reasoning sidecar for events and keyword options.")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--deepseek-reasoning-policy", default=None, help="Override policy-deepseek-reasoning-trial.json path")
     parser.add_argument("--events", default=None, help="Canonical events.jsonl path. Defaults to governance policy.")
     parser.add_argument("--generic-candidates", default=None, help="Review-only generic battle candidates JSONL path. Defaults to governance policy.")

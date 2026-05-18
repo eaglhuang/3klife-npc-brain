@@ -59,7 +59,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stable-knowledge", default=str(DEFAULT_STABLE_KNOWLEDGE_PATH))
     parser.add_argument("--relationship-evidence", default=str(DEFAULT_RELATIONSHIP_EVIDENCE_PATH))
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--event-question-seed-policy", default=None, help="Override policy-event-question-seed-bank.json path")
     parser.add_argument("--event-question-angle-cue-rules", default=None, help="Override rule-event-question-angle-cues.jsonl path")
     parser.add_argument("--max-evidence-refs-per-slot", type=int, default=8)

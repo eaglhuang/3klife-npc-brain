@@ -27,7 +27,7 @@
 ### 1) 高速模式（推薦）
 
 ```bash
-python server/npc-brain/pipelines/sanguo-rag/run_resolution_loop.py \
+python pipelines/sanguo-rag/run_resolution_loop.py \
   --collect-sink postgres \
   --top-source postgres \
   --pg-dsn "postgresql://sanguo_user:sanguo_pass@localhost:5432/sanguo_rag" \
@@ -37,7 +37,7 @@ python server/npc-brain/pipelines/sanguo-rag/run_resolution_loop.py \
 ### 2) 保守相容模式（舊流程）
 
 ```bash
-python server/npc-brain/pipelines/sanguo-rag/run_resolution_loop.py \
+python pipelines/sanguo-rag/run_resolution_loop.py \
   --collect-sink json \
   --top-source summary \
   --top 30
@@ -85,7 +85,7 @@ python server/npc-brain/pipelines/sanguo-rag/run_resolution_loop.py \
   alias map（目前主要由 alias pipeline/importer 維護）
 
 Schema 在：  
-`server/npc-brain/pipelines/sanguo-rag/sql/postgres_schema.sql`
+`pipelines/sanguo-rag/sql/postgres_schema.sql`
 
 ---
 

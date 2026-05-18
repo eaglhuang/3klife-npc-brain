@@ -32,7 +32,7 @@ def utc_now() -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run Sanguo governance regression harness sensors.")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--regression-harness-policy", default=None, help="Override policy-governance-regression-harness.json path")
     parser.add_argument("--validation-policy", default=None, help="Override policy-governance-validation-stabilization.json path")
     parser.add_argument("--release-readiness-policy", default=None, help="Override policy-governance-release-readiness.json path")

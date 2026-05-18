@@ -3,6 +3,12 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import sys
+
+PIPELINE_HELPER_ROOT = Path(__file__).resolve().parents[1] / "pipelines" / "sanguo-rag"
+if str(PIPELINE_HELPER_ROOT) not in sys.path:
+    sys.path.insert(0, str(PIPELINE_HELPER_ROOT))
+from repo_layout import resolve_repo_root
 from urllib import error, request
 
 from .llm_dialogue_renderer import load_local_env
@@ -39,7 +45,7 @@ def _ping_qdrant(base_url: str) -> dict:
 
 
 def main() -> None:
-    repo_root = Path(__file__).resolve().parents[3]
+    repo_root = resolve_repo_root(__file__)
     load_local_env(repo_root)
     config = load_vector_runtime_config()
     payload = {

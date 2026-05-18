@@ -5,10 +5,10 @@
 這份盤點針對「外部網站採證高速公路」的主要前段管線，找出可以配置化的寫死邏輯，避免各 script 規則漂移。
 
 ## 範圍
-- `server/npc-brain/pipelines/sanguo-rag/run_3kweb_check.py`
+- `pipelines/sanguo-rag/run_3kweb_check.py`
 - `tools_node/agent-clis/3klife-source-health.js`
 - `tools_node/agent-clis/3klife-web-page-harvester.js`
-- `server/npc-brain/pipelines/sanguo-rag/benchmark_external_source.py`
+- `pipelines/sanguo-rag/benchmark_external_source.py`
 
 ## 本輪已處理（完成）
 | 類別 | 原本狀態 | 處理方式 | 目前狀態 |

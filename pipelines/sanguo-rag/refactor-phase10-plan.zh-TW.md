@@ -3,7 +3,7 @@
 
 ## Summary
 
-Phase 9 已完成 runtime general profile export governance 外部化。第十階段接續處理 runtime consumption 端，也就是 `npc_dialogue_service.py` 中仍硬寫的 deterministic service policy、LLM model preset catalog 與 runtime ambiguity cue。本階段不改 API response schema、不改 prompt/rendering 策略、不改 runtime profile artifacts，只把穩定治理資料集中到 `server/npc-brain/data/sanguo`。
+Phase 9 已完成 runtime general profile export governance 外部化。第十階段接續處理 runtime consumption 端，也就是 `npc_dialogue_service.py` 中仍硬寫的 deterministic service policy、LLM model preset catalog 與 runtime ambiguity cue。本階段不改 API response schema、不改 prompt/rendering 策略、不改 runtime profile artifacts，只把穩定治理資料集中到 `data/sanguo`。
 
 ## Key Changes
 

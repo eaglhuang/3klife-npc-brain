@@ -35,7 +35,17 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
-"$HOME/.venv/3klife-etl/bin/langgraph" dev --no-browser --port "${PORT}" >"${LOG_PATH}" 2>&1 &
+LANGGRAPH_BIN="${LANGGRAPH_BIN:-${ROOT_DIR}/.venv/bin/langgraph}"
+if [[ ! -x "${LANGGRAPH_BIN}" ]]; then
+  if command -v langgraph >/dev/null 2>&1; then
+    LANGGRAPH_BIN="$(command -v langgraph)"
+  else
+    echo "Unable to find langgraph. Set LANGGRAPH_BIN, install it in ${ROOT_DIR}/.venv, or add langgraph to PATH." >&2
+    exit 1
+  fi
+fi
+
+"${LANGGRAPH_BIN}" dev --no-browser --port "${PORT}" >"${LOG_PATH}" 2>&1 &
 LANGGRAPH_PID=$!
 
 echo "Waiting for local LangGraph dev on http://127.0.0.1:${PORT} ..."

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${ROOT_DIR}/../.." && pwd)"
+REPO_ROOT="${ROOT_DIR}"
 BASE_URL="${LANGGRAPH_BASE_URL:-http://127.0.0.1:2025}"
 GRAPH_ID="${GRAPH_ID:-sanguo_etl_graph}"
 OUT_DIR="${ROOT_DIR}/local"
@@ -18,7 +18,8 @@ resolve_python_bin() {
   fi
   candidates+=(
     "${REPO_ROOT}/.venv/bin/python"
-    "${HOME}/.venv/3klife-etl/bin/python"
+    "python3"
+    "python"
   )
 
   local candidate
@@ -29,7 +30,7 @@ resolve_python_bin() {
     fi
   done
 
-  echo "Unable to find a Python venv. Set PYTHON_BIN or SANGUO_RAG_PYTHON, or create ${REPO_ROOT}/.venv/bin/python or ${HOME}/.venv/3klife-etl/bin/python." >&2
+  echo "Unable to find a Python venv. Set PYTHON_BIN or SANGUO_RAG_PYTHON, or create ${REPO_ROOT}/.venv/bin/python." >&2
   return 1
 }
 

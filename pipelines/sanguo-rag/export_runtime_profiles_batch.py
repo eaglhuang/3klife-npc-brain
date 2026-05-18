@@ -7,13 +7,15 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+from repo_layout import resolve_repo_root
 from typing import Any
 
 from sanguo_governance_loader import SanguoGovernanceError, default_governance_root, load_runtime_batch_keyword_readiness_policy
 
 
-REPO_ROOT = Path(__file__).resolve().parents[4]
-PIPELINE_ROOT = Path("server/npc-brain/pipelines/sanguo-rag")
+REPO_ROOT = resolve_repo_root(__file__)
+PIPELINE_ROOT = Path("pipelines/sanguo-rag")
 
 DEFAULT_GENERAL_ID_FILE = Path(
     "artifacts/data-pipeline/sanguo-rag/extracted/core-person-progress/top50-runtime-fill-r1.general-ids.txt"

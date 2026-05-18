@@ -10,9 +10,10 @@ from typing import Any, Literal, TypedDict
 from langgraph.graph import END, START, StateGraph
 
 from .graph import POPULAR_TEST_GENERALS, PopularGeneralIdValue
+from .repo_paths import PIPELINE_ROOT, resolve_repo_root
 
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = resolve_repo_root(Path(__file__))
 DEFAULT_COMPLETION_SUMMARY_PATH = Path(
     "artifacts/data-pipeline/sanguo-rag/extracted/knowledge-growth-progress/repair-review-r2-wide-merged.json"
 )
@@ -25,7 +26,6 @@ DEFAULT_ETL_PILOT_REPORT_PATH = Path(
 DEFAULT_REVIEW_QUEUE_PATH = Path(
     "artifacts/data-pipeline/sanguo-rag/extracted/etl-quality-pilot/review-queue.todo.json"
 )
-PIPELINE_ROOT = Path("server/npc-brain/pipelines/sanguo-rag")
 REPAIR_CAMPAIGN_OUTPUT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/etl-quality-pilot")
 PIPELINE_PYTHON = shlex.quote(
     os.environ.get("SANGUO_RAG_PYTHON") or os.environ.get("PYTHON_BIN") or sys.executable
@@ -242,7 +242,7 @@ def build_next_etl_plan(state: SanguoETLState) -> dict[str, Any]:
     if target_general_ids:
         pilot_command_parts = [
             PIPELINE_PYTHON,
-            "server/npc-brain/pipelines/sanguo-rag/run_etl_quality_pilot.py",
+            "pipelines/sanguo-rag/run_etl_quality_pilot.py",
         ]
         for general_id in target_general_ids[:5]:
             pilot_command_parts.extend(["--general-id", general_id])
@@ -261,7 +261,7 @@ def build_next_etl_plan(state: SanguoETLState) -> dict[str, Any]:
         reasoning_report_path = REPAIR_CAMPAIGN_OUTPUT_ROOT / f"deepseek-{general_id}" / "deepseek-reasoning-report.json"
         command_parts = [
             PIPELINE_PYTHON,
-            "server/npc-brain/pipelines/sanguo-rag/generate_event_review_choices.py",
+            "pipelines/sanguo-rag/generate_event_review_choices.py",
             "--general-id",
             general_id,
             "--output-root",
@@ -286,7 +286,7 @@ def build_next_etl_plan(state: SanguoETLState) -> dict[str, Any]:
                     label=f"enrich-review-context-{general_id}",
                     command=(
                         f"{PIPELINE_PYTHON} "
-                        "server/npc-brain/pipelines/sanguo-rag/enrich_event_review_context.py "
+                        "pipelines/sanguo-rag/enrich_event_review_context.py "
                         f"--answers {_repo_relative(answers_path)} --model deepseek-r1:7b "
                         "--window-before 2 --window-after 2 --fill-answers --overwrite"
                     ),
@@ -298,7 +298,7 @@ def build_next_etl_plan(state: SanguoETLState) -> dict[str, Any]:
     if target_general_ids:
         repair_command_parts = [
             PIPELINE_PYTHON,
-            "server/npc-brain/pipelines/sanguo-rag/run_repair_review_campaign.py",
+            "pipelines/sanguo-rag/run_repair_review_campaign.py",
             "--round-id",
             "repair-review-r3-auto",
         ]
@@ -335,7 +335,7 @@ def build_next_etl_plan(state: SanguoETLState) -> dict[str, Any]:
                 label=f"refresh-api-readiness-{readiness_general_id}",
                 command=(
                     f"{PIPELINE_PYTHON} "
-                    "server/npc-brain/pipelines/sanguo-rag/build_api_readiness_index.py "
+                    "pipelines/sanguo-rag/build_api_readiness_index.py "
                     f"--general-id {readiness_general_id} --overwrite"
                 ),
                 why="當事件 / keyword 有更新後，最後重建 runtime fixtures，讓 NPC graph 與 Cocos smoke test 直接吃到新資料。",

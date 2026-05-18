@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_POLICY_PATH = Path("server/npc-brain/data/sanguo/policies/policy-primary-canon-relationship-backbone.json")
+DEFAULT_POLICY_PATH = Path("data/sanguo/policies/policy-primary-canon-relationship-backbone.json")
 DEFAULT_CLAIMS_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/relationship-claim-graph/relationship-claims.jsonl")
 DEFAULT_OUTPUT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone")
 

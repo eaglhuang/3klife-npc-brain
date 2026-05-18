@@ -74,7 +74,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target-event-slots", type=int, default=None, help="Full target event/question slots. Defaults to people * angle families.")
     parser.add_argument("--target-relationship-edges", type=int, default=None, help="Full target source-grounded relationship edges. Defaults to people * 3.")
     parser.add_argument("--target-female-profiles", type=int, default=None, help="High-priority female target. Defaults to current female profile count.")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--knowledge-completion-policy", default=None, help="Override knowledge completion scoring policy JSON.")
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()

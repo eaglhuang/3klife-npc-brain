@@ -3,26 +3,26 @@
 
 ## Summary
 
-這份 runbook 是 Sanguo-RAG governance 的人工操作手冊。大白話說：前面 Phase 1-44 已經把很多「藏在 Python 裡的規則、門檻、標籤、cue table」搬到 `server/npc-brain/data/sanguo/`，這份文件告訴下一位 Agent 或維護者要怎麼重跑檢查、怎麼看錯誤、以及哪個 governance 檔會影響哪條管線。
+這份 runbook 是 Sanguo-RAG governance 的人工操作手冊。大白話說：前面 Phase 1-44 已經把很多「藏在 Python 裡的規則、門檻、標籤、cue table」搬到 `data/sanguo/`，這份文件告訴下一位 Agent 或維護者要怎麼重跑檢查、怎麼看錯誤、以及哪個 governance 檔會影響哪條管線。
 
 ## Commands
 
 最常用入口：
 
 ```powershell
-python server/npc-brain/pipelines/sanguo-rag/run_sanguo_governance_ci.py --run-profile strict-local
+python pipelines/sanguo-rag/run_sanguo_governance_ci.py --run-profile strict-local
 ```
 
 只跑 governance data 驗證：
 
 ```powershell
-python server/npc-brain/pipelines/sanguo-rag/validate_sanguo_governance.py --dry-run-report
+python pipelines/sanguo-rag/validate_sanguo_governance.py --dry-run-report
 ```
 
 直接跑 regression harness：
 
 ```powershell
-python server/npc-brain/pipelines/sanguo-rag/run_sanguo_governance_regression_harness.py --run-profile strict-local --no-write
+python pipelines/sanguo-rag/run_sanguo_governance_regression_harness.py --run-profile strict-local --no-write
 ```
 
 如果要更新 golden snapshot，先用 `--skip-snapshot-check` 產生 payload，再只把 `summary / sensors / phaseMatrix / reportBundle` 寫回 snapshot。不要把 `generatedAt` 或本機絕對路徑寫進 snapshot。

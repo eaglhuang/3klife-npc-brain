@@ -61,7 +61,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--rounds-root", default=str(DEFAULT_ROUNDS_ROOT))
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
     parser.add_argument("--boost-per-person", type=int, default=12)
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--core-person-completion-policy", default=None, help="Override core person completion scoring policy JSON.")
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()

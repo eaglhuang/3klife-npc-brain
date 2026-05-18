@@ -10,9 +10,10 @@ from typing import Any, TypedDict
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
+from .repo_paths import PIPELINE_ROOT, resolve_repo_root
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-PIPELINE_ROOT = Path("server/npc-brain/pipelines/sanguo-rag")
+
+REPO_ROOT = resolve_repo_root(Path(__file__))
 DEFAULT_STUDIO_OUTPUT_ROOT = Path("local/studio-progress-advancement")
 
 

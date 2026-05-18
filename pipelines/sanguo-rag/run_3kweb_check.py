@@ -577,7 +577,7 @@ def render_markdown(summary: dict[str, Any]) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Deterministic external source health check for Sanguo ETL/RAG.")
     parser.add_argument("--run-id", default=None, help="Run id. Defaults to 3kweb-check-<UTC>.")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--three-kweb-check-policy", default=None, help="Override policy-3kweb-check-runner.json path")
     parser.add_argument("--three-kweb-check-cue-rules", default=None, help="Override rule-3kweb-check-cues.jsonl path")
     parser.add_argument("--output-root", default=None, help="Output root path. Defaults to governance policy.")

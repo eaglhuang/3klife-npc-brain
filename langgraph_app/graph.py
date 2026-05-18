@@ -6,9 +6,10 @@ from typing import Any, Literal, TypedDict
 from langgraph.graph import END, START, StateGraph
 
 from app.npc_dialogue_service import DialogueRequest, NpcDialogueService
+from .repo_paths import resolve_repo_root
 
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = resolve_repo_root(Path(__file__))
 SERVICE = NpcDialogueService(repo_root=REPO_ROOT)
 
 LocaleValue = Literal["zh-TW", "en", "ja"]

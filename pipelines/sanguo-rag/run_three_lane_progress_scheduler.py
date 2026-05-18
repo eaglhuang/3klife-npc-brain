@@ -138,7 +138,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--run-id", default=None, help="Scheduler run id. Defaults to three-lane-<UTC>.")
     parser.add_argument("--output-root", default=None, help="Output root shared by all lane runs. Defaults to governance policy.")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--three-lane-scheduler-policy", default=None, help="Override policy-three-lane-progress-scheduler.json path")
     parser.add_argument("--baseline-manifest", default=None, help="Initial baseline manifest path.")
     parser.add_argument("--pending-review-limit", type=int, default=None, help="Human gate threshold for pending review. Defaults to governance policy.")

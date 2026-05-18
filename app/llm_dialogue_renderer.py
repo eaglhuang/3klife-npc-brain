@@ -1220,7 +1220,7 @@ class DialogueProviderRouter:
 
 
 def load_local_env(repo_root) -> None:
-    for path in [repo_root / "server/npc-brain/.env", repo_root / ".env"]:
+    for path in [repo_root / ".env"]:
         if not path.exists():
             continue
         for raw_line in path.read_text(encoding="utf-8").splitlines():

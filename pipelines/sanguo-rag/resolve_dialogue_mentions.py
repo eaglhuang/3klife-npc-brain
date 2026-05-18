@@ -133,7 +133,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--observed-mentions", default=str(DEFAULT_OBSERVED_MENTIONS_PATH), help="observed-mentions.json path")
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT), help="Output directory")
     parser.add_argument("--chapter", type=int, default=None, help="Pilot chapter number. Defaults to governance policy.")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--dialogue-mention-policy", default=None, help="Override policy-dialogue-mention-resolution.json path")
     parser.add_argument("--dialogue-mention-cue-rules", default=None, help="Override rule-dialogue-mention-resolution-cues.jsonl path")
     parser.add_argument("--overwrite", action="store_true", help="Allow overwriting outputs")

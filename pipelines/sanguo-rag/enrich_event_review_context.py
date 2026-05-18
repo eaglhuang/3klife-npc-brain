@@ -152,7 +152,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repeat-penalty", type=float, default=None, help=f"Override reviewer preset repeat penalty. Legacy default was {DEFAULT_REASONING_REPEAT_PENALTY}.")
     parser.add_argument("--batch", action="store_true", help="Send all questions in one request. Default is one request per question for better quality.")
     parser.add_argument("--prompt-only", action="store_true", help="Only write expanded context bundle; do not call DeepSeek")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--event-review-context-policy", default=None, help="Override policy-event-review-context.json path")
     parser.add_argument("--event-review-context-cue-rules", default=None, help="Override rule-event-review-context-cues.jsonl path")
     parser.add_argument("--fill-answers", action="store_true", help="Fill answer and edits in enriched todo when proposal passes gates")

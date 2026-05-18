@@ -37,7 +37,7 @@ local/codex-smoke/knowledge-growth/<run-id>/
 建議預設命令：
 
 ```bash
-python server/npc-brain/pipelines/sanguo-rag/run_full_roster_convergence_loop.py \
+python pipelines/sanguo-rag/run_full_roster_convergence_loop.py \
   --run-id full-roster-r1 \
   --top 500 \
   --batch-size 100 \

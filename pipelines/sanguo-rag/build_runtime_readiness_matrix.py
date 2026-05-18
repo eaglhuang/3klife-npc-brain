@@ -7,9 +7,11 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from repo_layout import resolve_npc_brain_root, resolve_repo_root
 
-NPC_BRAIN_ROOT = Path(__file__).resolve().parents[2]
-REPO_ROOT = NPC_BRAIN_ROOT.parents[1]
+
+REPO_ROOT = resolve_repo_root(__file__)
+NPC_BRAIN_ROOT = resolve_npc_brain_root(REPO_ROOT)
 if str(NPC_BRAIN_ROOT) not in sys.path:
     sys.path.insert(0, str(NPC_BRAIN_ROOT))
 
@@ -88,7 +90,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--general-id", action="append", default=[])
     parser.add_argument("--general-id-file", default=None)
     parser.add_argument("--limit-keywords", type=int, default=None)
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--runtime-readiness-policy", default=None, help="Override policy-runtime-readiness-matrix.json path")
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()

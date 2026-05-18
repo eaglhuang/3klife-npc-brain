@@ -2,7 +2,7 @@
 # npc-brain 獨立 Repo 拆分實作清單（含工時）
 
 ## 目標
-- 把 `server/npc-brain/` 拆成可獨立運作的 repo（Demo/正式都可）。
+- 把 `standalone repo root/` 拆成可獨立運作的 repo（Demo/正式都可）。
 - 保持 `3KLife` 仍可像現在一樣透過 `/v1/npc/*` API 使用。
 - ETL / RAG / 向量檢索 / PostgreSQL 流程都可在獨立 repo 內完成。
 
@@ -34,14 +34,14 @@
 - [x] 其餘 `pipelines/sanguo-rag/*.py` 同步套用 helper（第二批）
 
 檔案級改造清單（M1）：
-- `server/npc-brain/pipelines/sanguo-rag/repo_layout.py`（新增）
-- `server/npc-brain/pipelines/sanguo-rag/run_full_roster_convergence_loop.py`
-- `server/npc-brain/pipelines/sanguo-rag/build_full_roster_scoreboard.py`
-- `server/npc-brain/pipelines/sanguo-rag/benchmark_external_source.py`
-- `server/npc-brain/pipelines/sanguo-rag/universal_source_crawler.py`
-- `server/npc-brain/pipelines/sanguo-rag/run_3kweb_check.py`
-- `server/npc-brain/app/npc_dialogue_service.py`
-- `server/npc-brain/app/interaction_memory.py`
+- `pipelines/sanguo-rag/repo_layout.py`（新增）
+- `pipelines/sanguo-rag/run_full_roster_convergence_loop.py`
+- `pipelines/sanguo-rag/build_full_roster_scoreboard.py`
+- `pipelines/sanguo-rag/benchmark_external_source.py`
+- `pipelines/sanguo-rag/universal_source_crawler.py`
+- `pipelines/sanguo-rag/run_3kweb_check.py`
+- `app/npc_dialogue_service.py`
+- `app/interaction_memory.py`
 
 工時估算：
 - 已完成第一批：6-10 小時
@@ -80,8 +80,8 @@
   - `NPC_REPO_ROOT` 強制指定 repo root
   - `NPC_BRAIN_ROOT` 強制指定 npc-brain root
   - monorepo / standalone 自動偵測
-- 已讓關鍵總控腳本不再依賴硬寫死 `server/npc-brain/...` 路徑。
-- 已讓 `pipelines/sanguo-rag/*.py` 的 `server/npc-brain/...` 與 `parents[4]` 路徑寫死清理完成（僅保留 `repo_layout.py` 內偵測邏輯）。
+- 已讓關鍵總控腳本不再依賴硬寫死 `standalone repo root/...` 路徑。
+- 已讓 `pipelines/sanguo-rag/*.py` 的 `standalone repo root/...` 與 `parents[4]` 路徑寫死清理完成（僅保留 `repo_layout.py` 內偵測邏輯）。
 - 已讓 runtime service 可用 env 指定 artifact/event/persona/runtime-profile 來源路徑。
 - 已讓 memory 預設落點可同時支援 monorepo 與 standalone。
 

@@ -12,7 +12,7 @@
 ## 2) 已實作範圍
 
 ### 新增總控
-- `server/npc-brain/pipelines/sanguo-rag/run_full_roster_convergence_loop.py`
+- `pipelines/sanguo-rag/run_full_roster_convergence_loop.py`
 
 已串接流程：
 1. external source benchmark（只吃 `approved/manual_quote`）
@@ -27,7 +27,7 @@
 10. human threshold batch / rumination downgrade ledger / baseline manifest
 
 ### 新增 scorecard builder
-- `server/npc-brain/pipelines/sanguo-rag/build_full_roster_scoreboard.py`
+- `pipelines/sanguo-rag/build_full_roster_scoreboard.py`
 
 主要輸出：
 - `full-roster-scoreboard.json`
@@ -51,24 +51,24 @@
 
 ### 總控
 ```bash
-python server/npc-brain/pipelines/sanguo-rag/run_full_roster_convergence_loop.py \
+python pipelines/sanguo-rag/run_full_roster_convergence_loop.py \
   --run-id full-roster-convergence-v1 \
   --output-root local/codex-smoke/knowledge-growth \
   --top 500 \
   --max-rounds 3 \
   --human-pending-threshold 20 \
   --profile all \
-  --lane-policy-config server/npc-brain/pipelines/sanguo-rag/config/full-roster-lane-policy.json \
-  --source-config server/npc-brain/pipelines/sanguo-rag/config/external-evidence-sources.json \
+  --lane-policy-config pipelines/sanguo-rag/config/full-roster-lane-policy.json \
+  --source-config pipelines/sanguo-rag/config/external-evidence-sources.json \
   --overwrite
 ```
 
 ### Scorecard
 ```bash
-python server/npc-brain/pipelines/sanguo-rag/build_full_roster_scoreboard.py \
+python pipelines/sanguo-rag/build_full_roster_scoreboard.py \
   --output-root local/codex-smoke/knowledge-growth/full-roster-scoreboard-smoke \
   --profile female-priority \
-  --lane-policy-config server/npc-brain/pipelines/sanguo-rag/config/full-roster-lane-policy.json \
+  --lane-policy-config pipelines/sanguo-rag/config/full-roster-lane-policy.json \
   --overwrite
 ```
 
@@ -130,13 +130,13 @@ python server/npc-brain/pipelines/sanguo-rag/build_full_roster_scoreboard.py \
 ### A. 語法驗證
 ```bash
 python -m py_compile \
-  server/npc-brain/pipelines/sanguo-rag/build_full_roster_scoreboard.py \
-  server/npc-brain/pipelines/sanguo-rag/run_full_roster_convergence_loop.py
+  pipelines/sanguo-rag/build_full_roster_scoreboard.py \
+  pipelines/sanguo-rag/run_full_roster_convergence_loop.py
 ```
 
 ### B. 總控 dry-run
 ```bash
-python server/npc-brain/pipelines/sanguo-rag/run_full_roster_convergence_loop.py \
+python pipelines/sanguo-rag/run_full_roster_convergence_loop.py \
   --run-id full-roster-convergence-v1-dryrun \
   --output-root local/codex-smoke/knowledge-growth \
   --top 500 \
@@ -149,7 +149,7 @@ python server/npc-brain/pipelines/sanguo-rag/run_full_roster_convergence_loop.py
 
 ### C. Scorecard smoke
 ```bash
-python server/npc-brain/pipelines/sanguo-rag/build_full_roster_scoreboard.py \
+python pipelines/sanguo-rag/build_full_roster_scoreboard.py \
   --output-root local/codex-smoke/knowledge-growth/full-roster-scoreboard-smoke \
   --profile female-priority \
   --overwrite

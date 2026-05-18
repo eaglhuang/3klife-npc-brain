@@ -104,7 +104,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-generals", type=int, default=None, help="Maximum generals to process. Defaults to governance policy.")
     parser.add_argument("--cohort-offset", type=int, default=None, help="Skip this many ranked generic-candidate generals before selecting the cohort. Defaults to governance policy.")
     parser.add_argument("--general-id", action="append", default=[], help="Explicit general id to include; can be provided multiple times")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--knowledge-growth-round-policy", default=None, help="Override policy-knowledge-growth-round-runner.json path")
     parser.add_argument("--top-per-general", type=int, default=None, help="Maximum questions per general. Defaults to governance policy.")
     parser.add_argument("--reviewer-preset", default=None, help="Reviewer preset: agent, fast, balanced, quality/deepseek, or hints-only. Defaults to governance policy.")

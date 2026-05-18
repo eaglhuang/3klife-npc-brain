@@ -3,7 +3,7 @@
 
 ## Summary
 
-第四階段延續第三階段的 P1 governance 外部化，但重點從 `Policy_*` 轉向 `Rule_*`。本階段目標是把 EvidenceSeed extractor 裡的大型 keyword cue 與後續可治理規則搬出 Python，讓 Python 保留演算法、I/O 與流程控制，規則資料則由 `server/npc-brain/data/sanguo/rules/` 管理。
+第四階段延續第三階段的 P1 governance 外部化，但重點從 `Policy_*` 轉向 `Rule_*`。本階段目標是把 EvidenceSeed extractor 裡的大型 keyword cue 與後續可治理規則搬出 Python，讓 Python 保留演算法、I/O 與流程控制，規則資料則由 `data/sanguo/rules/` 管理。
 
 此階段仍不改 pipeline 結果、不導入 PostgreSQL、不改 canonical write 行為。所有搬移都以目前 Python 常數為唯一來源，先原樣搬出，不順手修正資料內容。
 
@@ -11,7 +11,7 @@
 
 已新增：
 
-- `server/npc-brain/data/sanguo/rules/rule-evidence-seed-keyword-cues.jsonl`
+- `data/sanguo/rules/rule-evidence-seed-keyword-cues.jsonl`
 
 已接上：
 

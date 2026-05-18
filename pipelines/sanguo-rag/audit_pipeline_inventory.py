@@ -17,9 +17,7 @@ NPC_REPO_ROOT = resolve_repo_root(__file__)
 
 def resolve_workspace_root(anchor: Path) -> Path:
     for candidate in [anchor.resolve(), *anchor.resolve().parents]:
-        if (candidate / "AGENTS.md").exists() and (candidate / "server/npc-brain").exists():
-            return candidate
-    return anchor.resolve()
+            return anchor.resolve()
 
 
 WORKSPACE_ROOT = resolve_workspace_root(NPC_REPO_ROOT)
@@ -332,7 +330,7 @@ def inspect_script(path: Path, roster_terms: set[str]) -> dict[str, Any]:
         "lineCount": features["lineCount"],
         "role": role,
         "suggestedGroup": group,
-        "suggestedPath": f"server/npc-brain/pipelines/sanguo-rag/{group}/{path.name}",
+        "suggestedPath": f"pipelines/sanguo-rag/{group}/{path.name}",
         "hardcodeLevel": hardcode_level,
         "dataFormatRisk": data_format_risk,
         "priority": priority,

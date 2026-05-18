@@ -39,9 +39,6 @@ def _detect_npc_brain_root(repo_root: Path) -> Path:
     override = (os.environ.get("NPC_BRAIN_ROOT") or "").strip()
     if override:
         return Path(override).resolve()
-    monorepo_path = repo_root / "server/npc-brain"
-    if monorepo_path.exists():
-        return monorepo_path.resolve()
     return repo_root.resolve()
 
 

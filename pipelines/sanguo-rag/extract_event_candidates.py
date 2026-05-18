@@ -226,7 +226,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dialogue-resolution", default=str(DEFAULT_DIALOGUE_RESOLUTION_PATH), help="dialogue-resolution.json path")
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT), help="Output directory for event candidates")
     parser.add_argument("--stable-knowledge", default=str(DEFAULT_STABLE_KNOWLEDGE_PATH), help="stable-knowledge-bootstrap.json path for female priority profiles")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--event-candidate-policy", default=None, help="Override policy-event-candidate-extraction.json path")
     parser.add_argument("--event-candidate-cue-rules", default=None, help="Override rule-event-candidate-cues.jsonl path")
     parser.add_argument("--pilot-general", default=None, help="Primary generalId for the pilot event. Defaults to governance policy.")

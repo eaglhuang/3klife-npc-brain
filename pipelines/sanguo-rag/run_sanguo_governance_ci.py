@@ -16,7 +16,7 @@ HARNESS_PATH = PIPELINE_ROOT / "run_sanguo_governance_regression_harness.py"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the Sanguo governance strict-local CI entrypoint.")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--governance-ci-policy", default=None, help="Override policy-governance-ci-entrypoint.json path")
     parser.add_argument("--run-profile", default=None, help="Governance harness run profile. Defaults to policy defaultRunProfile.")
     parser.add_argument("--allow-write", action="store_true", help="Allow harness report writes. Default is no-write.")

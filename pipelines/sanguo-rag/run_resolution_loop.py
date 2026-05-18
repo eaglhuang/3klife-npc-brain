@@ -122,9 +122,10 @@ def resolve_pipeline_python() -> str:
     candidates.extend(
         [
             sys.executable,
-            str(Path.home() / ".venv/3klife-etl/bin/python"),
             str((NPC_BRAIN_ROOT / ".venv/bin/python").resolve()),
             ".venv/bin/python",
+            "python3",
+            "python",
         ]
     )
 
@@ -136,8 +137,8 @@ def resolve_pipeline_python() -> str:
             return python_path
 
     raise RuntimeError(
-        "No Python interpreter with pydantic found. Activate the ETL venv or set SANGUO_RAG_PYTHON. "
-        "Expected example: ~/.venv/3klife-etl/bin/python"
+        "No Python interpreter with pydantic found. Activate the standalone npc-brain venv or set SANGUO_RAG_PYTHON. "
+        "Expected example: .venv/bin/python"
     )
 
 
@@ -150,7 +151,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manual-roster", default=str(DEFAULT_MANUAL_ROSTER_PATH), help="Manual roster seed JSON used when auto-applying answers")
     parser.add_argument("--alias-overrides", default=str(DEFAULT_ALIAS_OVERRIDE_PATH), help="Curated alias override JSON used as secondary recommendation evidence")
     parser.add_argument("--choices-root", default=str(DEFAULT_CHOICES_ROOT), help="Output directory for generated MCQ files")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--resolution-loop-policy", default=None, help="Override policy-resolution-loop-runner.json path")
     parser.add_argument("--resolution-loop-cue-rules", default=None, help="Override rule-resolution-loop-recommendation-cues.jsonl path")
     parser.add_argument("--top", type=int, default=None, help="Number of unresolved labels to turn into MCQs. Defaults to governance policy.")

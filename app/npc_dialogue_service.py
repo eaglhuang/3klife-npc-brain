@@ -64,9 +64,6 @@ DEFAULT_EVENT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/events")
 DEFAULT_PERSONA_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/persona-cards")
 DEFAULT_RUNTIME_PROFILE_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles")
 DEFAULT_CHAPTER_ROOT = Path("artifacts/data-pipeline/sanguoyanyi-mao-hant-2026-04-28/body/chapters")
-DEFAULT_RELATIONSHIP_RUNTIME_CANON_POLICY_MONOREPO_PATH = Path(
-    "server/npc-brain/data/sanguo/policies/policy-relationship-runtime-canon.json"
-)
 DEFAULT_RELATIONSHIP_RUNTIME_CANON_POLICY_LOCAL_PATH = Path("data/sanguo/policies/policy-relationship-runtime-canon.json")
 DEFAULT_STABLE_RELATIONSHIP_SOURCE_LAYERS = {
     "stable-bootstrap-seed",
@@ -183,10 +180,7 @@ SUPPORTED_LLM_MODEL_PRESETS = set(LLM_MODEL_PRESETS.keys())
 
 
 def _governance_candidates(repo_root: Path, relative_path: str) -> list[Path]:
-    return [
-        repo_root / "server/npc-brain/data/sanguo" / relative_path,
-        repo_root / "data/sanguo" / relative_path,
-    ]
+    return [repo_root / "data/sanguo" / relative_path]
 
 
 def _resolve_optional_governance_path(repo_root: Path, env_name: str, relative_path: str) -> Path | None:
@@ -612,10 +606,7 @@ class NpcDialogueService:
         self._scene_chorus_cache_lock = Lock()
 
     def _load_relationship_runtime_canon_policy(self) -> dict[str, Any]:
-        candidates = [
-            self.repo_root / DEFAULT_RELATIONSHIP_RUNTIME_CANON_POLICY_MONOREPO_PATH,
-            self.repo_root / DEFAULT_RELATIONSHIP_RUNTIME_CANON_POLICY_LOCAL_PATH,
-        ]
+        candidates = [self.repo_root / DEFAULT_RELATIONSHIP_RUNTIME_CANON_POLICY_LOCAL_PATH]
         path = next((candidate for candidate in candidates if candidate.exists()), candidates[0])
         payload = json.loads(path.read_text(encoding="utf-8-sig"))
         if not isinstance(payload, dict):
@@ -4578,11 +4569,7 @@ def find_repo_root(start: Path) -> Path:
         return Path(override).resolve()
 
     current = start.resolve()
-    monorepo_candidates = [candidate for candidate in [current, *current.parents] if (candidate / "AGENTS.md").exists() and (candidate / "server/npc-brain").exists()]
-    if monorepo_candidates:
-        return monorepo_candidates[0]
-
     for candidate in [current, *current.parents]:
         if (candidate / "app").exists() and (candidate / "pipelines/sanguo-rag").exists():
             return candidate
-    raise FileNotFoundError("Could not locate repo root from current working directory.")
+    raise FileNotFoundError("Could not locate standalone npc-brain repo root from current working directory.")

@@ -8,6 +8,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from repo_layout import resolve_repo_root
 from sanguo_governance_loader import (
     SanguoGovernanceError,
     load_alias_mention_intake_cue_rules,
@@ -87,7 +88,7 @@ from sanguo_governance_loader import (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Validate Sanguo governance Rule/Policy/Schema/Catalog data.")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--dry-run-report", action="store_true", help="Print file-to-consumer mapping without writing files.")
     return parser.parse_args()
 
@@ -1652,7 +1653,7 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
         raise SanguoGovernanceError("policy-residual-hardcode-freeze-audit auditItems cannot be empty")
     residual_ids: set[str] = set()
     residual_postponed_count = 0
-    repo_root = Path(__file__).resolve().parents[4]
+    repo_root = resolve_repo_root(__file__)
     for row in residual_items:
         if not isinstance(row, dict):
             raise SanguoGovernanceError("policy-residual-hardcode-freeze-audit auditItems must be objects")

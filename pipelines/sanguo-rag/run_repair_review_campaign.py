@@ -128,7 +128,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--progress-root", default=None, help="Knowledge progress output root. Defaults to governance policy.")
     parser.add_argument("--staged-output-root", default=None, help="Staged ready-events / relationship-evidence output root. Defaults to governance policy.")
     parser.add_argument("--general-id", action="append", default=[], help="Explicit general id to include; can be repeated")
-    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to server/npc-brain/data/sanguo.")
+    parser.add_argument("--governance-root", default=None, help="Sanguo governance root. Defaults to data/sanguo.")
     parser.add_argument("--repair-review-campaign-policy", default=None, help="Override policy-repair-review-campaign.json path")
     parser.add_argument("--top-generals", type=int, default=None, help="Top repair backlog generals to include when --general-id is omitted. Defaults to governance policy.")
     parser.add_argument("--top-per-general", type=int, default=None, help="Maximum questions per general. Defaults to governance policy.")

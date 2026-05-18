@@ -11,6 +11,7 @@ from typing import Any, TypedDict
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
+from .repo_paths import PIPELINE_ROOT, resolve_repo_root
 from .etl_graph import (
     SanguoETLState,
     assess_completion_bottlenecks,
@@ -22,8 +23,7 @@ from .etl_graph import (
 )
 
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-PIPELINE_ROOT = Path("server/npc-brain/pipelines/sanguo-rag")
+REPO_ROOT = resolve_repo_root(Path(__file__))
 DEFAULT_STUDIO_REPAIR_ROOT = Path("local/studio-etl-repair")
 DEFAULT_REASONING_MODEL = "deepseek-r1:7b"
 DEFAULT_WINDOW_BEFORE = 2

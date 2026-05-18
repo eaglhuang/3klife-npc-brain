@@ -16,9 +16,7 @@ def resolve_workspace_root(anchor_file: str | Path) -> Path:
     anchor = Path(anchor_file).resolve()
     start = anchor if anchor.is_dir() else anchor.parent
     for candidate in [start, *start.parents]:
-        if (candidate / "AGENTS.md").exists() and (candidate / "server/npc-brain").exists():
-            return candidate
-    raise FileNotFoundError("Could not resolve workspace root")
+            raise FileNotFoundError("Could not resolve workspace root")
 
 
 REPO_ROOT = resolve_workspace_root(__file__)

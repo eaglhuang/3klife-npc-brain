@@ -69,10 +69,10 @@ JSON 保留給小型整體設定：
 
 第一階段建立資料區語意，不搬移既有資料：
 
-- `server/npc-brain/data/sanguo/rules/`：Rule 類資料。
-- `server/npc-brain/data/sanguo/policies/`：Policy 類資料。
-- `server/npc-brain/data/sanguo/schemas/`：Schema 類資料。
-- `server/npc-brain/data/sanguo/catalogs/`：Catalog 類資料。
+- `data/sanguo/rules/`：Rule 類資料。
+- `data/sanguo/policies/`：Policy 類資料。
+- `data/sanguo/schemas/`：Schema 類資料。
+- `data/sanguo/catalogs/`：Catalog 類資料。
 
 後續搬移規則：
 
@@ -121,7 +121,7 @@ PostgreSQL 暫列中後期，不進第一階段實作。適合存放：
 
 ## 驗收
 
-- 盤點報告必須列出 `server/npc-brain/pipelines/sanguo-rag/*.py` 全部腳本。
+- 盤點報告必須列出 `pipelines/sanguo-rag/*.py` 全部腳本。
 - 第一階段不得改變既有 pipeline command。
 - 第一階段不得搬移既有 config。
 - JSONL 政策需明確指出適用類型與例外。
