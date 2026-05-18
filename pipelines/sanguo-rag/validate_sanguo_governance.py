@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from repo_layout import resolve_repo_root
+from scan_python_hardcode_semantics import scan_python_hardcode_semantics
 from sanguo_governance_loader import (
     SanguoGovernanceError,
     load_alias_mention_intake_cue_rules,
@@ -63,6 +64,7 @@ from sanguo_governance_loader import (
     load_progress_runner_governance,
     load_postgres_state_migration_plan_policy,
     load_postgres_state_store_evaluation_policy,
+    load_python_hardcode_semantic_guard_policy,
     load_relationship_claim_pair_cue_rules,
     load_relationship_evidence_extraction_rules,
     load_relationship_runtime_canon_policy,
@@ -226,6 +228,7 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
     governance_snapshot_policy = load_governance_harness_snapshot_policy(root)
     governance_ci_policy = load_governance_ci_entrypoint_policy(root)
     governance_runbook_policy = load_governance_runbook_policy(root)
+    python_hardcode_guard_policy = load_python_hardcode_semantic_guard_policy(root)
     residual_hardcode_policy = load_residual_hardcode_freeze_audit_policy(root)
     postgres_migration_policy = load_postgres_state_migration_plan_policy(root)
     postgres_state_policy = load_postgres_state_store_evaluation_policy(root)
@@ -1724,6 +1727,86 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
     if str(governance_runbook_policy.get("consumerIndexSource") or "") != "expected_governance_files":
         raise SanguoGovernanceError("policy-governance-runbook consumerIndexSource must be expected_governance_files")
     runbook_consumer_count = len({row["consumer"] for row in expected_governance_files()})
+    repo_root = resolve_repo_root(__file__)
+
+    python_hardcode_allowed_statuses = {
+        str(item).strip() for item in python_hardcode_guard_policy.get("allowedStatuses") or [] if str(item).strip()
+    }
+    if python_hardcode_allowed_statuses != {"approved-baseline", "intentional-fallback"}:
+        raise SanguoGovernanceError("policy-python-hardcode-semantic-guard allowedStatuses mismatch")
+    hardcode_include_globs = [
+        str(item).strip() for item in python_hardcode_guard_policy.get("includeGlobs") or [] if str(item).strip()
+    ]
+    if not hardcode_include_globs:
+        raise SanguoGovernanceError("policy-python-hardcode-semantic-guard includeGlobs cannot be empty")
+    detectors = (
+        python_hardcode_guard_policy.get("detectors")
+        if isinstance(python_hardcode_guard_policy.get("detectors"), dict)
+        else {}
+    )
+    for key in ("topLevelCollection", "numericThreshold", "regexAlternation", "inlineMembership"):
+        if not isinstance(detectors.get(key), dict):
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard detectors.{key} must be object")
+    for key in ("minItems",):
+        if int(detectors["topLevelCollection"].get(key) or 0) <= 0:
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard detectors.topLevelCollection.{key} must be positive")
+    for key in ("minAlternations",):
+        if int(detectors["regexAlternation"].get(key) or 0) <= 0:
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard detectors.regexAlternation.{key} must be positive")
+    for key in ("minItems",):
+        if int(detectors["inlineMembership"].get(key) or 0) <= 0:
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard detectors.inlineMembership.{key} must be positive")
+    top_level_keywords = [str(item).strip() for item in detectors["topLevelCollection"].get("nameKeywords") or [] if str(item).strip()]
+    numeric_keywords = [str(item).strip() for item in detectors["numericThreshold"].get("nameKeywords") or [] if str(item).strip()]
+    if not top_level_keywords or not numeric_keywords:
+        raise SanguoGovernanceError("policy-python-hardcode-semantic-guard detector keywords cannot be empty")
+    if not isinstance(python_hardcode_guard_policy.get("failOnUnapprovedFindings"), bool):
+        raise SanguoGovernanceError("policy-python-hardcode-semantic-guard failOnUnapprovedFindings must be boolean")
+    approved_findings = python_hardcode_guard_policy.get("approvedFindings")
+    if not isinstance(approved_findings, list):
+        raise SanguoGovernanceError("policy-python-hardcode-semantic-guard approvedFindings must be list")
+    approved_ids: set[str] = set()
+    approved_signatures: set[str] = set()
+    for row in approved_findings:
+        if not isinstance(row, dict):
+            raise SanguoGovernanceError("policy-python-hardcode-semantic-guard approvedFindings rows must be objects")
+        row_id = str(row.get("id") or "").strip()
+        status = str(row.get("status") or "").strip()
+        signature = str(row.get("signature") or "").strip()
+        target_path = str(row.get("targetPath") or "").strip()
+        symbol = str(row.get("symbol") or "").strip()
+        if not row_id or row_id in approved_ids:
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard duplicate or blank id: {row_id}")
+        approved_ids.add(row_id)
+        if status not in python_hardcode_allowed_statuses:
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard invalid status: {row_id}={status}")
+        if not signature or signature in approved_signatures:
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard duplicate or blank signature: {row_id}")
+        approved_signatures.add(signature)
+        if not target_path or not (repo_root / target_path).exists():
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard target missing: {row_id} {target_path}")
+        if not symbol:
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard symbol cannot be blank: {row_id}")
+        if not str(row.get("reason") or "").strip():
+            raise SanguoGovernanceError(f"policy-python-hardcode-semantic-guard reason cannot be blank: {row_id}")
+    python_hardcode_scan = scan_python_hardcode_semantics(repo_root=repo_root, policy=python_hardcode_guard_policy)
+    if python_hardcode_scan["summary"]["parseErrorCount"] > 0:
+        raise SanguoGovernanceError(
+            "policy-python-hardcode-semantic-guard parse errors: "
+            + ", ".join(python_hardcode_scan["parseErrors"][:8])
+        )
+    if (
+        python_hardcode_guard_policy.get("failOnUnapprovedFindings")
+        and python_hardcode_scan["summary"]["unapprovedFindingCount"] > 0
+    ):
+        preview = ", ".join(
+            f"{row['targetPath']}:{row['line']}:{row['kind']}:{row['symbol']}"
+            for row in python_hardcode_scan["unapprovedFindings"][:8]
+        )
+        raise SanguoGovernanceError(
+            "policy-python-hardcode-semantic-guard found unapproved hardcode findings: "
+            + preview
+        )
 
     residual_allowed_statuses = {
         str(item).strip() for item in residual_hardcode_policy.get("allowedStatuses") or [] if str(item).strip()
@@ -1740,7 +1823,6 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
         raise SanguoGovernanceError("policy-residual-hardcode-freeze-audit auditItems cannot be empty")
     residual_ids: set[str] = set()
     residual_postponed_count = 0
-    repo_root = resolve_repo_root(__file__)
     for row in residual_items:
         if not isinstance(row, dict):
             raise SanguoGovernanceError("policy-residual-hardcode-freeze-audit auditItems must be objects")
@@ -2036,6 +2118,9 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
         "governanceCiEntrypointRequiredCheckCount": len(ci_required_checks),
         "governanceRunbookSectionCount": len(runbook_required_sections),
         "governanceRunbookConsumerCount": runbook_consumer_count,
+        "pythonHardcodeSemanticGuardFindingCount": python_hardcode_scan["summary"]["findingCount"],
+        "pythonHardcodeSemanticGuardApprovedCount": python_hardcode_scan["summary"]["approvedFindingCount"],
+        "pythonHardcodeSemanticGuardUnapprovedCount": python_hardcode_scan["summary"]["unapprovedFindingCount"],
         "residualHardcodeAuditItemCount": len(residual_items),
         "residualHardcodePostponedCount": residual_postponed_count,
         "postgresMigrationPlanStepCount": len(postgres_migration_steps),

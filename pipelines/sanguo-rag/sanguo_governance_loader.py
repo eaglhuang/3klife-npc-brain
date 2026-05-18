@@ -813,6 +813,20 @@ def load_governance_validation_stabilization_policy(
     return read_governance_json(path, required_id="Policy_GovernanceValidationStabilization_P1")
 
 
+def load_python_hardcode_semantic_guard_policy(
+    root: str | Path | None = None,
+    *,
+    python_hardcode_semantic_guard_policy: str | Path | None = None,
+) -> dict[str, Any]:
+    base = resolve_governance_root(root)
+    path = (
+        Path(python_hardcode_semantic_guard_policy).resolve()
+        if python_hardcode_semantic_guard_policy
+        else _path(base, "policies", "policy-python-hardcode-semantic-guard.json")
+    )
+    return read_governance_json(path, required_id="Policy_PythonHardcodeSemanticGuard_P1")
+
+
 def load_governance_release_readiness_policy(
     root: str | Path | None = None,
     *,
@@ -1076,6 +1090,7 @@ def expected_governance_files() -> list[dict[str, str]]:
         {"section": "policies", "file": "policy-convergence-loop-state.json", "consumer": "run_full_roster_convergence_loop.py / run_progress_advancement_loop.py"},
         {"section": "policies", "file": "policy-governance-regression-harness.json", "consumer": "run_sanguo_governance_regression_harness.py"},
         {"section": "policies", "file": "policy-governance-validation-stabilization.json", "consumer": "run_sanguo_governance_regression_harness.py / validate_sanguo_governance.py"},
+        {"section": "policies", "file": "policy-python-hardcode-semantic-guard.json", "consumer": "scan_python_hardcode_semantics.py / validate_sanguo_governance.py"},
         {"section": "policies", "file": "policy-governance-release-readiness.json", "consumer": "run_sanguo_governance_regression_harness.py"},
         {"section": "policies", "file": "policy-governance-drift-detection.json", "consumer": "run_sanguo_governance_regression_harness.py"},
         {"section": "policies", "file": "policy-governance-operator-summary.json", "consumer": "run_sanguo_governance_regression_harness.py"},

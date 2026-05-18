@@ -33,6 +33,7 @@
     "governanceHarnessSnapshotCount",
     "governanceCiEntrypointRequiredCheckCount",
     "governanceRunbookSectionCount",
+    "pythonHardcodeSemanticGuardFindingCount",
     "residualHardcodeAuditItemCount",
     "postgresMigrationPlanStepCount"
   ],
@@ -42,6 +43,8 @@
     "includeFixtureMatrix": true
   },
   "requiredValidatorSummaryKeys": [
+    "pythonHardcodeSemanticGuardApprovedCount",
+    "pythonHardcodeSemanticGuardUnapprovedCount",
     "vectorProductionRolloutStepCount",
     "governanceMaintenanceAllowedTriggerCount"
   ]

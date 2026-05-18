@@ -1,0 +1,340 @@
+{
+  "id": "Policy_PythonHardcodeSemanticGuard_P1",
+  "description": "Scans Python scripts for suspicious inline domain data, regex cue packs, membership allowlists, and numeric gate thresholds so new hardcoded semantics fail governance validation unless explicitly reviewed.",
+  "includeGlobs": [
+    "pipelines/sanguo-rag/**/*.py"
+  ],
+  "excludeGlobs": [
+    "**/__pycache__/**"
+  ],
+  "failOnUnapprovedFindings": true,
+  "allowedStatuses": [
+    "approved-baseline",
+    "intentional-fallback"
+  ],
+  "detectors": {
+    "topLevelCollection": {
+      "minItems": 6,
+      "nameKeywords": [
+        "TERM",
+        "TERMS",
+        "CUE",
+        "CUES",
+        "RULE",
+        "RULES",
+        "PATTERN",
+        "PATTERNS",
+        "ALLOW",
+        "ALLOWLIST",
+        "GUARD",
+        "GUARDS",
+        "TYPE",
+        "TYPES",
+        "LABEL",
+        "LABELS",
+        "ALIAS",
+        "ALIASES",
+        "BOUNDAR",
+        "CONNECTOR",
+        "GRADE"
+      ]
+    },
+    "numericThreshold": {
+      "ignoreZero": true,
+      "nameKeywords": [
+        "THRESH",
+        "LIMIT",
+        "WINDOW",
+        "SPAN",
+        "PAD"
+      ]
+    },
+    "regexAlternation": {
+      "minAlternations": 5
+    },
+    "inlineMembership": {
+      "minItems": 4
+    }
+  },
+  "approvedFindings": [
+    {
+      "id": "PythonHardcodeBaseline_001",
+      "signature": "numeric_threshold.d2d2a0e45891654a",
+      "targetPath": "pipelines/sanguo-rag/audit_pipeline_inventory.py",
+      "kind": "numeric_threshold",
+      "symbol": "JSON_ARRAY_THRESHOLD",
+      "status": "approved-baseline",
+      "reason": "Baseline numeric threshold kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_002",
+      "signature": "numeric_threshold.8766be47da975c29",
+      "targetPath": "pipelines/sanguo-rag/build_external_observed_overlay.py",
+      "kind": "numeric_threshold",
+      "symbol": "HISTORY_CROSS_FAMILY_THRESHOLD",
+      "status": "approved-baseline",
+      "reason": "Baseline numeric threshold kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_003",
+      "signature": "numeric_threshold.60d1dcbb6c1fb710",
+      "targetPath": "pipelines/sanguo-rag/build_external_observed_overlay.py",
+      "kind": "numeric_threshold",
+      "symbol": "NON_HISTORY_CROSS_FAMILY_THRESHOLD",
+      "status": "approved-baseline",
+      "reason": "Baseline numeric threshold kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_004",
+      "signature": "top_level_collection.e3079e447397578b",
+      "targetPath": "pipelines/sanguo-rag/build_external_relationship_overlay.py",
+      "kind": "top_level_collection",
+      "symbol": "ALLOWED_REPARSE_CLAIM_TYPES",
+      "status": "approved-baseline",
+      "reason": "Baseline inline collection kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_005",
+      "signature": "top_level_collection.63ee926ca696cc32",
+      "targetPath": "pipelines/sanguo-rag/build_external_relationship_overlay.py",
+      "kind": "top_level_collection",
+      "symbol": "RELATIONSHIP_REPARSE_CUE_TERMS",
+      "status": "approved-baseline",
+      "reason": "Baseline inline collection kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_006",
+      "signature": "top_level_collection.b4127e886b47803f",
+      "targetPath": "pipelines/sanguo-rag/build_relationship_claim_graph.py",
+      "kind": "top_level_collection",
+      "symbol": "PROMOTABLE_HISTORY_TYPES",
+      "status": "approved-baseline",
+      "reason": "Baseline inline collection kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_007",
+      "signature": "top_level_collection.d269a9449001d258",
+      "targetPath": "pipelines/sanguo-rag/build_source_event_packets.py",
+      "kind": "top_level_collection",
+      "symbol": "ANGLE_TERMS",
+      "status": "approved-baseline",
+      "reason": "Baseline inline collection kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_008",
+      "signature": "numeric_threshold.f2ebe0da5f25740d",
+      "targetPath": "pipelines/sanguo-rag/build_source_event_packets.py",
+      "kind": "numeric_threshold",
+      "symbol": "HISTORY_CROSS_FAMILY_THRESHOLD",
+      "status": "approved-baseline",
+      "reason": "Baseline numeric threshold kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_009",
+      "signature": "numeric_threshold.06dd4e06db4a4fb6",
+      "targetPath": "pipelines/sanguo-rag/build_source_event_packets.py",
+      "kind": "numeric_threshold",
+      "symbol": "NON_HISTORY_CROSS_FAMILY_THRESHOLD",
+      "status": "approved-baseline",
+      "reason": "Baseline numeric threshold kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_010",
+      "signature": "inline_membership.46abdbe690e369d4",
+      "targetPath": "pipelines/sanguo-rag/build_stable_knowledge_bootstrap.py",
+      "kind": "inline_membership",
+      "symbol": "in-literal",
+      "status": "approved-baseline",
+      "reason": "Baseline inline membership rule kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_011",
+      "signature": "regex_alternation.e2863c96064cd79b",
+      "targetPath": "pipelines/sanguo-rag/collect_observed_mentions.py",
+      "kind": "regex_alternation",
+      "symbol": "search",
+      "status": "approved-baseline",
+      "reason": "Baseline inline regex cue kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_012",
+      "signature": "inline_membership.e10bdf89db19dc86",
+      "targetPath": "pipelines/sanguo-rag/export_general_runtime_profile.py",
+      "kind": "inline_membership",
+      "symbol": "in-literal",
+      "status": "approved-baseline",
+      "reason": "Baseline inline membership rule kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_013",
+      "signature": "inline_membership.3995d185bfe2954a",
+      "targetPath": "pipelines/sanguo-rag/export_general_runtime_profile.py",
+      "kind": "inline_membership",
+      "symbol": "in-literal",
+      "status": "approved-baseline",
+      "reason": "Baseline inline membership rule kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_014",
+      "signature": "inline_membership.1610f9697a27eecf",
+      "targetPath": "pipelines/sanguo-rag/export_general_runtime_profile.py",
+      "kind": "inline_membership",
+      "symbol": "in-literal",
+      "status": "approved-baseline",
+      "reason": "Baseline inline membership rule kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_015",
+      "signature": "regex_alternation.42dbb7e398cb297b",
+      "targetPath": "pipelines/sanguo-rag/extract_event_candidates.py",
+      "kind": "regex_alternation",
+      "symbol": "compile",
+      "status": "approved-baseline",
+      "reason": "Baseline inline regex cue kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_016",
+      "signature": "numeric_threshold.66f35e0c2fef52b4",
+      "targetPath": "pipelines/sanguo-rag/extract_generic_passage_evidence_seeds.py",
+      "kind": "numeric_threshold",
+      "symbol": "RELATION_ANCHOR_DISTANCE_LIMIT",
+      "status": "approved-baseline",
+      "reason": "Baseline numeric threshold kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_017",
+      "signature": "top_level_collection.df623e04f6b36a17",
+      "targetPath": "pipelines/sanguo-rag/extract_generic_passage_evidence_seeds.py",
+      "kind": "top_level_collection",
+      "symbol": "STRICT_KINSHIP_RELATION_LABELS",
+      "status": "approved-baseline",
+      "reason": "Baseline inline collection kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_018",
+      "signature": "numeric_threshold.08082c06d41776a3",
+      "targetPath": "pipelines/sanguo-rag/extract_generic_passage_evidence_seeds.py",
+      "kind": "numeric_threshold",
+      "symbol": "RELATION_DENSE_WINDOW_LIMIT",
+      "status": "approved-baseline",
+      "reason": "Baseline numeric threshold kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_019",
+      "signature": "regex_alternation.e2f6d93341ed27d9",
+      "targetPath": "pipelines/sanguo-rag/extract_generic_passage_evidence_seeds.py",
+      "kind": "regex_alternation",
+      "symbol": "compile",
+      "status": "approved-baseline",
+      "reason": "Baseline inline regex cue kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_020",
+      "signature": "regex_alternation.d1f8498cfbe28110",
+      "targetPath": "pipelines/sanguo-rag/extract_generic_passage_evidence_seeds.py",
+      "kind": "regex_alternation",
+      "symbol": "compile",
+      "status": "approved-baseline",
+      "reason": "Baseline inline regex cue kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_021",
+      "signature": "inline_membership.a53b0170369161ce",
+      "targetPath": "pipelines/sanguo-rag/extract_generic_passage_evidence_seeds.py",
+      "kind": "inline_membership",
+      "symbol": "in-literal",
+      "status": "approved-baseline",
+      "reason": "Baseline inline membership rule kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_022",
+      "signature": "regex_alternation.ac93ad769a25bb11",
+      "targetPath": "pipelines/sanguo-rag/extract_harvested_page_evidence_seeds.py",
+      "kind": "regex_alternation",
+      "symbol": "compile",
+      "status": "approved-baseline",
+      "reason": "Baseline inline regex cue kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_023",
+      "signature": "regex_alternation.245cbd3900380e6c",
+      "targetPath": "pipelines/sanguo-rag/extract_harvested_page_evidence_seeds.py",
+      "kind": "regex_alternation",
+      "symbol": "search",
+      "status": "approved-baseline",
+      "reason": "Baseline inline regex cue kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_024",
+      "signature": "top_level_collection.574be55a926f1a89",
+      "targetPath": "pipelines/sanguo-rag/generate_event_review_choices.py",
+      "kind": "top_level_collection",
+      "symbol": "DIRECT_BATTLE_TERMS",
+      "status": "approved-baseline",
+      "reason": "Baseline inline collection kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_025",
+      "signature": "top_level_collection.6ba23a24efe0fce7",
+      "targetPath": "pipelines/sanguo-rag/generate_event_review_choices.py",
+      "kind": "top_level_collection",
+      "symbol": "LOW_REVIEW_VALUE_TERMS",
+      "status": "approved-baseline",
+      "reason": "Baseline inline collection kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_026",
+      "signature": "top_level_collection.1029f50c14521ddb",
+      "targetPath": "pipelines/sanguo-rag/harvest_external_evidence_seeds.py",
+      "kind": "top_level_collection",
+      "symbol": "ANGLE_TYPES",
+      "status": "approved-baseline",
+      "reason": "Baseline inline collection kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_027",
+      "signature": "regex_alternation.26af6bcc79a7a890",
+      "targetPath": "pipelines/sanguo-rag/resolve_dialogue_mentions.py",
+      "kind": "regex_alternation",
+      "symbol": "findall",
+      "status": "approved-baseline",
+      "reason": "Baseline inline regex cue kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_028",
+      "signature": "inline_membership.57b24b148e9a04c7",
+      "targetPath": "pipelines/sanguo-rag/reviewer_adapters.py",
+      "kind": "inline_membership",
+      "symbol": "in-literal",
+      "status": "approved-baseline",
+      "reason": "Baseline inline membership rule kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_029",
+      "signature": "inline_membership.70e681d4a8bf7580",
+      "targetPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+      "kind": "inline_membership",
+      "symbol": "in-literal",
+      "status": "approved-baseline",
+      "reason": "Baseline inline membership rule kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_030",
+      "signature": "inline_membership.3cac260d1df0e0e5",
+      "targetPath": "pipelines/sanguo-rag/run_progress_advancement_loop.py",
+      "kind": "inline_membership",
+      "symbol": "in-literal",
+      "status": "approved-baseline",
+      "reason": "Baseline inline membership rule kept under explicit guard until governance migration or retention review is completed."
+    },
+    {
+      "id": "PythonHardcodeBaseline_031",
+      "signature": "inline_membership.d797a5aa0f7e3684",
+      "targetPath": "pipelines/sanguo-rag/summarize_knowledge_growth_round.py",
+      "kind": "inline_membership",
+      "symbol": "in-literal",
+      "status": "approved-baseline",
+      "reason": "Baseline inline membership rule kept under explicit guard until governance migration or retention review is completed."
+    }
+  ]
+}
