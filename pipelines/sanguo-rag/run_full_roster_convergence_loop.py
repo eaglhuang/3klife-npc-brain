@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from full_roster_global_seed_pipeline import run_global_seed_pipeline_atom
 from repo_layout import pipeline_config_path, pipeline_root, resolve_npc_brain_root, resolve_repo_root
 from sanguo_governance_loader import (
     SanguoGovernanceError,
@@ -1107,128 +1108,24 @@ def run_global_seed_pipeline(
     dry_run: bool,
     overwrite: bool,
 ) -> dict[str, Any]:
-    pipeline_root = round_root / "external-evidence" / "global-standard-pipeline"
-    merged_seed_path = pipeline_root / "merged-manual-evidence-seeds.jsonl"
-    harvested_seed_path = pipeline_root / "external-evidence-seeds.jsonl"
-    ranking_path = pipeline_root / "external-evidence-seed-ranking.json"
-    candidate_cards_path = pipeline_root / "candidate-evidence-cards.jsonl"
-    candidate_summary_path = pipeline_root / "candidate-evidence-card-summary.json"
-    allowlist_path = pipeline_root / "seed-to-card-priority-person-allowlist.json"
-
-    if not scoreboard_path or not scoreboard_path.exists():
-        return {
-            "enabled": False,
-            "reason": "missing-scoreboard-json",
-            "seedInputCount": len(seed_paths),
-            "seedInputPaths": [repo_relative(path) for path in seed_paths],
-            "mergedSeedPath": None,
-            "harvestedSeedPath": None,
-            "rankingPath": None,
-            "candidateCardsPath": None,
-            "candidateSummaryPath": None,
-            "harvestCommand": None,
-            "scoreCommand": None,
-            "promoteCommand": None,
-            "seedToCardPriorityLimit": int(seed_to_card_priority_limit),
-            "seedToCardMinScore": float(seed_to_card_min_score),
-            "seedToCardPrioritySelectedCount": 0,
-            "seedToCardPriorityAllowlistPath": None,
-            "seedToCardPriorityReason": "missing-scoreboard-json",
-        }
-
-    seed_rows = merge_seed_rows(seed_paths)
-    if not seed_rows:
-        return {
-            "enabled": False,
-            "reason": "no-seed-input",
-            "seedInputCount": 0,
-            "seedInputPaths": [repo_relative(path) for path in seed_paths],
-            "mergedSeedPath": None,
-            "harvestedSeedPath": None,
-            "rankingPath": None,
-            "candidateCardsPath": None,
-            "candidateSummaryPath": None,
-            "harvestCommand": None,
-            "scoreCommand": None,
-            "promoteCommand": None,
-            "seedToCardPriorityLimit": int(seed_to_card_priority_limit),
-            "seedToCardMinScore": float(seed_to_card_min_score),
-            "seedToCardPrioritySelectedCount": 0,
-            "seedToCardPriorityAllowlistPath": None,
-            "seedToCardPriorityReason": "no-seed-input",
-        }
-
-    write_jsonl(merged_seed_path, seed_rows)
-
-    allowlist_ids, allowlist_reason = build_seed_to_card_priority_allowlist(
+    return run_global_seed_pipeline_atom(
+        round_root=round_root,
+        round_id=round_id,
         scoreboard_path=scoreboard_path,
-        limit=int(seed_to_card_priority_limit),
-        output_path=allowlist_path,
-        extra_person_ids=seed_to_card_priority_extra_ids,
+        seed_paths=seed_paths,
+        seed_to_card_priority_limit=seed_to_card_priority_limit,
+        seed_to_card_priority_extra_ids=seed_to_card_priority_extra_ids,
+        seed_to_card_min_score=seed_to_card_min_score,
+        dry_run=dry_run,
+        overwrite=overwrite,
+        repo_root=REPO_ROOT,
+        pipeline_root=PIPELINE_ROOT,
+        merge_seed_rows_fn=merge_seed_rows,
+        build_seed_to_card_priority_allowlist_fn=build_seed_to_card_priority_allowlist,
+        repo_relative_fn=repo_relative,
+        run_command_fn=run_command,
+        write_jsonl_fn=write_jsonl,
     )
-
-    harvest_command = [
-        sys.executable,
-        str((REPO_ROOT / PIPELINE_ROOT / "harvest_external_evidence_seeds.py").resolve()),
-        "--no-default-external-evidence-cards",
-        "--manual-seeds-jsonl",
-        repo_relative(merged_seed_path),
-        "--scoreboard-json",
-        repo_relative(scoreboard_path),
-        "--output-root",
-        repo_relative(pipeline_root),
-    ]
-    if overwrite:
-        harvest_command.append("--overwrite")
-    harvest_result = run_command(harvest_command, dry_run=dry_run)
-
-    score_command = [
-        sys.executable,
-        str((REPO_ROOT / PIPELINE_ROOT / "score_external_evidence_seeds.py").resolve()),
-        "--seeds-jsonl",
-        repo_relative(harvested_seed_path),
-        "--output-root",
-        repo_relative(pipeline_root),
-    ]
-    if overwrite:
-        score_command.append("--overwrite")
-    score_result = run_command(score_command, dry_run=dry_run)
-
-    promote_command = [
-        sys.executable,
-        str((REPO_ROOT / PIPELINE_ROOT / "promote_seed_to_evidence_card.py").resolve()),
-        "--ranking-json",
-        repo_relative(ranking_path),
-        "--output-root",
-        repo_relative(pipeline_root),
-        "--min-score",
-        str(float(seed_to_card_min_score)),
-    ]
-    if allowlist_ids:
-        promote_command.extend(["--person-allowlist-json", repo_relative(allowlist_path)])
-    if overwrite:
-        promote_command.append("--overwrite")
-    promote_result = run_command(promote_command, dry_run=dry_run)
-
-    return {
-        "enabled": True,
-        "reason": None,
-        "seedInputCount": len(seed_rows),
-        "seedInputPaths": [repo_relative(path) for path in seed_paths],
-        "mergedSeedPath": repo_relative(merged_seed_path),
-        "harvestedSeedPath": repo_relative(harvested_seed_path),
-        "rankingPath": repo_relative(ranking_path),
-        "candidateCardsPath": repo_relative(candidate_cards_path),
-        "candidateSummaryPath": repo_relative(candidate_summary_path),
-        "harvestCommand": harvest_result,
-        "scoreCommand": score_result,
-        "promoteCommand": promote_result,
-        "seedToCardPriorityLimit": int(seed_to_card_priority_limit),
-        "seedToCardMinScore": float(seed_to_card_min_score),
-        "seedToCardPrioritySelectedCount": len(allowlist_ids),
-        "seedToCardPriorityAllowlistPath": repo_relative(allowlist_path) if allowlist_ids else None,
-        "seedToCardPriorityReason": allowlist_reason,
-    }
 
 
 def build_external_summary(

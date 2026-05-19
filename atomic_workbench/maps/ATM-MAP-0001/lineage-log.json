@@ -1,0 +1,41 @@
+{
+  "schemaId": "atm.mapLineageLog",
+  "specVersion": "0.1.0",
+  "canonicalMapId": "ATM-MAP-0001",
+  "generatedAt": "2026-05-19T15:18:24.032Z",
+  "transitions": [
+    {
+      "from": "draft",
+      "to": "shadow",
+      "reason": "TASK-ATS-0007 shadow smoke after map integration",
+      "evidenceRefs": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "actor": "ATM replacement lane",
+      "timestamp": "2026-05-19T14:46:40.619Z"
+    },
+    {
+      "from": "shadow",
+      "to": "canary",
+      "reason": "Probe canary blocker for TASK-ATS-0007",
+      "evidenceRefs": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "actor": "ATM replacement lane",
+      "timestamp": "2026-05-19T14:46:41.625Z"
+    },
+    {
+      "from": "canary",
+      "to": "active",
+      "reason": "Replacement lane transition canary -> active.",
+      "evidenceRefs": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.equivalence.report.json",
+        ".atm/history/reports/propagation-report.ATM-NPCBRAIN-0002.json",
+        ".atm/history/reports/review-advisory.ATM-MAP-0001-pilot.json",
+        ".atm/history/reports/human-review.guided-legacy-atomize-guidance-20260519151625-f417f5a6f2.json"
+      ],
+      "actor": "ATM replacement lane",
+      "timestamp": "2026-05-19T15:18:24.032Z"
+    }
+  ]
+}

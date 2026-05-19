@@ -1,0 +1,87 @@
+{
+  "mapId": "ATM-MAP-0001",
+  "fixtureSetId": "fixture.full-roster-convergence.architecture-v1",
+  "mapExecutor": {
+    "modulePath": "atomic_workbench/maps/ATM-MAP-0001/equivalence/map.executor.mjs"
+  },
+  "legacyExecutor": {
+    "modulePath": "atomic_workbench/maps/ATM-MAP-0001/equivalence/legacy.executor.mjs"
+  },
+  "cases": [
+    {
+      "caseId": "case.full-roster.entry-routing",
+      "input": {
+        "stage": "entry-routing",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#full-roster-convergence-orchestrator",
+        "expectedAtomId": "ATM-NPCBRAIN-0001",
+        "expectedRole": "entry-adapter"
+      },
+      "metric": { "name": "architectureContractMatch" },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:full-roster-convergence-orchestrator"
+      ],
+      "knownDivergence": false
+    },
+    {
+      "caseId": "case.full-roster.seed-pipeline",
+      "input": {
+        "stage": "seed-pipeline",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_global_seed_pipeline",
+        "expectedAtomId": "ATM-NPCBRAIN-0002",
+        "expectedRole": "domain-step"
+      },
+      "metric": { "name": "architectureContractMatch" },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:run_global_seed_pipeline"
+      ],
+      "knownDivergence": false
+    },
+    {
+      "caseId": "case.full-roster.runtime-readiness",
+      "input": {
+        "stage": "runtime-readiness",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_runtime_readiness_with_ref_blitz",
+        "expectedAtomId": "ATM-NPCBRAIN-0003",
+        "expectedRole": "domain-step"
+      },
+      "metric": { "name": "architectureContractMatch" },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:run_runtime_readiness_with_ref_blitz"
+      ],
+      "knownDivergence": false
+    },
+    {
+      "caseId": "case.full-roster.precision-lane",
+      "input": {
+        "stage": "precision-lane",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_precision_lane",
+        "expectedAtomId": "ATM-NPCBRAIN-0004",
+        "expectedRole": "domain-step"
+      },
+      "metric": { "name": "architectureContractMatch" },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:run_precision_lane"
+      ],
+      "knownDivergence": false
+    },
+    {
+      "caseId": "case.full-roster.summary-refresh",
+      "input": {
+        "stage": "summary-refresh",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#refresh_round_summaries",
+        "expectedAtomId": "ATM-NPCBRAIN-0005",
+        "expectedRole": "validator"
+      },
+      "metric": { "name": "architectureContractMatch" },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:refresh_round_summaries"
+      ],
+      "knownDivergence": false
+    }
+  ]
+}

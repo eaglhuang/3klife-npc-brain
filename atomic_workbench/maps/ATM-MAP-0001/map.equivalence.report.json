@@ -1,0 +1,276 @@
+{
+  "schemaId": "atm.mapEquivalenceReport",
+  "specVersion": "0.1.0",
+  "migration": {
+    "strategy": "none",
+    "fromVersion": null,
+    "notes": "Initial alpha0 map equivalence report."
+  },
+  "reportId": "map-equivalence.atm-map-0001.full-roster-convergence.architecture-v1",
+  "generatedAt": "2026-05-19T15:15:08.593Z",
+  "mapId": "ATM-MAP-0001",
+  "legacyUris": [
+    "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#full-roster-convergence-orchestrator",
+    "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#refresh_round_summaries",
+    "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_global_seed_pipeline",
+    "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_precision_lane",
+    "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_runtime_readiness_with_ref_blitz"
+  ],
+  "fixtures": [
+    {
+      "fixtureId": "fixture.full-roster-convergence.architecture-v1",
+      "path": "atomic_workbench/maps/ATM-MAP-0001/equivalence/map.equivalence.fixtures.json",
+      "description": "Deterministic fixture set for delegated map equivalence execution."
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "case.full-roster.entry-routing",
+      "input": {
+        "stage": "entry-routing",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#full-roster-convergence-orchestrator",
+        "expectedAtomId": "ATM-NPCBRAIN-0001",
+        "expectedRole": "entry-adapter"
+      },
+      "expected": {
+        "stage": "entry-routing",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#full-roster-convergence-orchestrator",
+        "atomId": "ATM-NPCBRAIN-0001",
+        "role": "entry-adapter",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "actual": {
+        "stage": "entry-routing",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#full-roster-convergence-orchestrator",
+        "atomId": "ATM-NPCBRAIN-0001",
+        "role": "entry-adapter",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "metric": {
+        "name": "architectureContractMatch",
+        "baseline": 1,
+        "current": 1,
+        "delta": 0,
+        "direction": "higher-is-better",
+        "passed": true
+      },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:full-roster-convergence-orchestrator"
+      ],
+      "passed": true,
+      "knownDivergence": false
+    },
+    {
+      "caseId": "case.full-roster.seed-pipeline",
+      "input": {
+        "stage": "seed-pipeline",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_global_seed_pipeline",
+        "expectedAtomId": "ATM-NPCBRAIN-0002",
+        "expectedRole": "domain-step"
+      },
+      "expected": {
+        "stage": "seed-pipeline",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_global_seed_pipeline",
+        "atomId": "ATM-NPCBRAIN-0002",
+        "role": "domain-step",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "actual": {
+        "stage": "seed-pipeline",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_global_seed_pipeline",
+        "atomId": "ATM-NPCBRAIN-0002",
+        "role": "domain-step",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "metric": {
+        "name": "architectureContractMatch",
+        "baseline": 1,
+        "current": 1,
+        "delta": 0,
+        "direction": "higher-is-better",
+        "passed": true
+      },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:run_global_seed_pipeline"
+      ],
+      "passed": true,
+      "knownDivergence": false
+    },
+    {
+      "caseId": "case.full-roster.runtime-readiness",
+      "input": {
+        "stage": "runtime-readiness",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_runtime_readiness_with_ref_blitz",
+        "expectedAtomId": "ATM-NPCBRAIN-0003",
+        "expectedRole": "domain-step"
+      },
+      "expected": {
+        "stage": "runtime-readiness",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_runtime_readiness_with_ref_blitz",
+        "atomId": "ATM-NPCBRAIN-0003",
+        "role": "domain-step",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "actual": {
+        "stage": "runtime-readiness",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_runtime_readiness_with_ref_blitz",
+        "atomId": "ATM-NPCBRAIN-0003",
+        "role": "domain-step",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "metric": {
+        "name": "architectureContractMatch",
+        "baseline": 1,
+        "current": 1,
+        "delta": 0,
+        "direction": "higher-is-better",
+        "passed": true
+      },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:run_runtime_readiness_with_ref_blitz"
+      ],
+      "passed": true,
+      "knownDivergence": false
+    },
+    {
+      "caseId": "case.full-roster.precision-lane",
+      "input": {
+        "stage": "precision-lane",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_precision_lane",
+        "expectedAtomId": "ATM-NPCBRAIN-0004",
+        "expectedRole": "domain-step"
+      },
+      "expected": {
+        "stage": "precision-lane",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_precision_lane",
+        "atomId": "ATM-NPCBRAIN-0004",
+        "role": "domain-step",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "actual": {
+        "stage": "precision-lane",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#run_precision_lane",
+        "atomId": "ATM-NPCBRAIN-0004",
+        "role": "domain-step",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "metric": {
+        "name": "architectureContractMatch",
+        "baseline": 1,
+        "current": 1,
+        "delta": 0,
+        "direction": "higher-is-better",
+        "passed": true
+      },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:run_precision_lane"
+      ],
+      "passed": true,
+      "knownDivergence": false
+    },
+    {
+      "caseId": "case.full-roster.summary-refresh",
+      "input": {
+        "stage": "summary-refresh",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#refresh_round_summaries",
+        "expectedAtomId": "ATM-NPCBRAIN-0005",
+        "expectedRole": "validator"
+      },
+      "expected": {
+        "stage": "summary-refresh",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#refresh_round_summaries",
+        "atomId": "ATM-NPCBRAIN-0005",
+        "role": "validator",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "actual": {
+        "stage": "summary-refresh",
+        "legacyUri": "legacy://pipelines/sanguo-rag/run_full_roster_convergence_loop.py#refresh_round_summaries",
+        "atomId": "ATM-NPCBRAIN-0005",
+        "role": "validator",
+        "legacyPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+        "replacementCoverage": "declared",
+        "contractMode": "architecture-level"
+      },
+      "metric": {
+        "name": "architectureContractMatch",
+        "baseline": 1,
+        "current": 1,
+        "delta": 0,
+        "direction": "higher-is-better",
+        "passed": true
+      },
+      "evidenceRefs": [
+        "decomposition-plan:full-roster-convergence-v1",
+        "legacy-surface:refresh_round_summaries"
+      ],
+      "passed": true,
+      "knownDivergence": false
+    }
+  ],
+  "summary": {
+    "totalCases": 5,
+    "passedCases": 5,
+    "failedCases": 0,
+    "knownDivergenceCount": 0
+  },
+  "metrics": {
+    "latency": 2,
+    "errorRate": 0,
+    "coverage": 1,
+    "edgeCaseCount": 0
+  },
+  "artifacts": [
+    {
+      "artifactPath": "atomic_workbench/maps/ATM-MAP-0001/map.equivalence.report.json",
+      "artifactKind": "report",
+      "producedBy": "map-equivalence-runner"
+    },
+    {
+      "artifactPath": "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+      "artifactKind": "file",
+      "producedBy": "map-equivalence-runner"
+    },
+    {
+      "artifactPath": "atomic_workbench/maps/ATM-MAP-0001/equivalence/map.equivalence.fixtures.json",
+      "artifactKind": "file",
+      "producedBy": "map-equivalence-runner"
+    }
+  ],
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "signalScope": "atom-map",
+      "atomMapId": "ATM-MAP-0001",
+      "summary": "Map equivalence passed for all fixtures.",
+      "artifactPaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.equivalence.report.json",
+        "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+        "atomic_workbench/maps/ATM-MAP-0001/equivalence/map.equivalence.fixtures.json"
+      ]
+    }
+  ],
+  "passed": true
+}

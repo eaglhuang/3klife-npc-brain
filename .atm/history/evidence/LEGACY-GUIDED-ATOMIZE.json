@@ -1,0 +1,47 @@
+[
+  {
+    "schemaId": "atm.evidence.humanReviewDecision",
+    "specVersion": "0.1.0",
+    "migration": {
+      "strategy": "none",
+      "fromVersion": null,
+      "notes": "Human review decision evidence contract."
+    },
+    "evidenceId": "human-review.guided-legacy-atomize-guidance-20260519151625-f417f5a6f2.approve",
+    "workItemId": "LEGACY-GUIDED-ATOMIZE",
+    "evidenceKind": "review",
+    "evidenceType": "human-review-decision",
+    "summary": "Human review approve for guided-legacy-atomize-guidance-20260519151625-f417f5a6f2.",
+    "artifactPaths": [
+      ".atm/history/reports/upgrade-proposals.json",
+      ".atm/history/reports/upgrade-proposals.md"
+    ],
+    "createdAt": "2026-05-19T15:18:12.177Z",
+    "producedBy": "ATM reviewer",
+    "reproducibility": {
+      "replayable": true,
+      "replayCommand": [
+        "node",
+        "scripts/validate-human-review.ts"
+      ],
+      "inputs": [
+        ".atm/history/reports/upgrade-proposals.json"
+      ],
+      "expectedArtifacts": [
+        ".atm/history/reports/upgrade-proposals.json",
+        ".atm/history/reports/upgrade-proposals.md"
+      ],
+      "notes": "Replay the human review decision against the queue snapshot and decision hash."
+    },
+    "details": {
+      "proposalId": "guided-legacy-atomize-guidance-20260519151625-f417f5a6f2",
+      "atomId": "LEGACY-GUIDED-ATOMIZE",
+      "decision": "approve",
+      "reason": "First governed ATM-MAP-0001 pilot is intentionally limited to the mapped safe leaf run_global_seed_pipeline after equivalence, propagation, and advisory evidence turned green.",
+      "queuePath": ".atm/history/reports/upgrade-proposals.json",
+      "projectionPath": ".atm/history/reports/upgrade-proposals.md",
+      "decisionSnapshotHash": "sha256:064a012efd02172e20482c7c7d9cacb1b9d7f161fa9a946fc52857cf75f6979d",
+      "queueStatus": "approved"
+    }
+  }
+]
