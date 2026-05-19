@@ -1,0 +1,39 @@
+{
+  "schemaId": "atm.polymorphImpactReport",
+  "specVersion": "0.1.0",
+  "migration": {
+    "strategy": "none",
+    "fromVersion": null,
+    "notes": "Initial polymorph impact report contract."
+  },
+  "reportId": "polymorph-impact.atm-map-0001.to-0-1-1",
+  "generatedAt": "2026-05-20T00:00:00.000Z",
+  "targetMapId": "ATM-MAP-0001",
+  "requestedReplacementMode": "active",
+  "atomId": "ATM-NPCBRAIN-0002",
+  "toVersion": "0.1.1",
+  "templateHits": [],
+  "impactedMapIds": [],
+  "impactedMaps": [],
+  "propagation": [],
+  "artifacts": [
+    {
+      "artifactPath": "atomic_workbench/maps/ATM-MAP-0001/polymorph-impact-report.json",
+      "artifactKind": "report",
+      "producedBy": "polymorph-impact-runner"
+    }
+  ],
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "signalScope": "atom-map",
+      "atomMapId": "ATM-MAP-0001",
+      "atomId": "ATM-NPCBRAIN-0002",
+      "summary": "Polymorph impact scan found no template-bound members.",
+      "artifactPaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/polymorph-impact-report.json"
+      ]
+    }
+  ],
+  "passed": true
+}
