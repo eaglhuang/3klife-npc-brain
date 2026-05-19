@@ -18,3 +18,14 @@ venv/
 
 # LangGraph local state
 .langgraph_api/
+
+# Local agent/editor settings
+.claude/settings.local.json
+
+# ATM runtime/session outputs
+.atm/runtime/guidance/
+.atm/runtime/locks/
+.atm/runtime/current-task.json
+.atm/runtime/version-cache.json
+.atm/history/guidance/
+.atm/history/reports/
