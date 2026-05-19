@@ -43,5 +43,50 @@
       "decisionSnapshotHash": "sha256:064a012efd02172e20482c7c7d9cacb1b9d7f161fa9a946fc52857cf75f6979d",
       "queueStatus": "approved"
     }
+  },
+  {
+    "schemaId": "atm.evidence.humanReviewDecision",
+    "specVersion": "0.1.0",
+    "migration": {
+      "strategy": "none",
+      "fromVersion": null,
+      "notes": "Human review decision evidence contract."
+    },
+    "evidenceId": "human-review.guided-legacy-atomize-guidance-20260519151625-f417f5a6f2-apply-convergence-loop-state-governance.approve",
+    "workItemId": "LEGACY-GUIDED-ATOMIZE",
+    "evidenceKind": "review",
+    "evidenceType": "human-review-decision",
+    "summary": "Human review approve for guided-legacy-atomize-guidance-20260519151625-f417f5a6f2-apply-convergence-loop-state-governance.",
+    "artifactPaths": [
+      ".atm/history/reports/upgrade-proposals.json",
+      ".atm/history/reports/upgrade-proposals.md"
+    ],
+    "createdAt": "2026-05-19T16:45:42.534Z",
+    "producedBy": "ATM reviewer",
+    "reproducibility": {
+      "replayable": true,
+      "replayCommand": [
+        "node",
+        "scripts/validate-human-review.ts"
+      ],
+      "inputs": [
+        ".atm/history/reports/upgrade-proposals.json"
+      ],
+      "expectedArtifacts": [
+        ".atm/history/reports/upgrade-proposals.json",
+        ".atm/history/reports/upgrade-proposals.md"
+      ],
+      "notes": "Replay the human review decision against the queue snapshot and decision hash."
+    },
+    "details": {
+      "proposalId": "guided-legacy-atomize-guidance-20260519151625-f417f5a6f2-apply-convergence-loop-state-governance",
+      "atomId": "LEGACY-GUIDED-ATOMIZE",
+      "decision": "approve",
+      "reason": "Approve the second ATM-MAP-0001 pilot because apply_convergence_loop_state_governance is a single-call governance initializer with a narrow global-state boundary, no trunk orchestration edits, and a straightforward inline rollback path.",
+      "queuePath": ".atm/history/reports/upgrade-proposals.json",
+      "projectionPath": ".atm/history/reports/upgrade-proposals.md",
+      "decisionSnapshotHash": "sha256:59620ebb830fb63517e5414125ca6d09b53ec3067501e19fccad17656e7481d0",
+      "queueStatus": "approved"
+    }
   }
 ]
