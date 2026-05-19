@@ -1,0 +1,138 @@
+{
+  "schemaId": "atm.integrationInstallManifest",
+  "schemaVersion": "atm.installManifest.v0.1",
+  "specVersion": "0.1.0",
+  "migration": {
+    "strategy": "none",
+    "fromVersion": null,
+    "notes": "Initial integration adapter install manifest."
+  },
+  "adapterId": "copilot",
+  "adapterVersion": "0.0.0",
+  "installedAt": "2026-05-19T08:49:22.873Z",
+  "targetDir": ".github",
+  "files": [
+    {
+      "path": ".github/copilot-instructions.md",
+      "sha256": "sha256:648b980e204f6844b6490d1207c8cfed9b29f3022b4256f3a462db45bd223489",
+      "sizeBytes": 2546,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/instructions/atm-next.instructions.md",
+      "sha256": "sha256:9166780d9ad7b522e3485ca20f8cab0d74dc45219ddacd606afc990514e2b423",
+      "sizeBytes": 2413,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/prompts/atm-next.prompt.md",
+      "sha256": "sha256:7afca99bb506040a4a01142a0b2ce519cd7297f5a76839d31f350674e857df46",
+      "sizeBytes": 2441,
+      "source": "template",
+      "fileFormat": "prompt-md"
+    },
+    {
+      "path": ".github/instructions/atm-orient.instructions.md",
+      "sha256": "sha256:b3494c3caace3478bc4c8504e8411d63507710dd91d3a74621aa0a811bf4de7e",
+      "sizeBytes": 2154,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/prompts/atm-orient.prompt.md",
+      "sha256": "sha256:f40bf23999d17d26f22ce39a8dae92db29d7540cb13bf16805e204e2fac7c3fb",
+      "sizeBytes": 2175,
+      "source": "template",
+      "fileFormat": "prompt-md"
+    },
+    {
+      "path": ".github/instructions/atm-governance-router.instructions.md",
+      "sha256": "sha256:1742bafef62ccd5770735a34f3a26a018aaf729a3a2ca1f5682cf6ec358e2585",
+      "sizeBytes": 4764,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/prompts/atm-governance-router.prompt.md",
+      "sha256": "sha256:ab84eff3a161df7234975e74fc6bec7e20d9ff845e63f2498ba34e77870726c7",
+      "sizeBytes": 4840,
+      "source": "template",
+      "fileFormat": "prompt-md"
+    },
+    {
+      "path": ".github/instructions/atm-create.instructions.md",
+      "sha256": "sha256:d284bb67c9dc1b7f4f5a4220e8c1374a34989da2dcd342f840b430702b2536c4",
+      "sizeBytes": 2191,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/prompts/atm-create.prompt.md",
+      "sha256": "sha256:68b69c38210e2014eba2589be499a2715fea66bfcf705ff81275c2a4ab979139",
+      "sizeBytes": 2212,
+      "source": "template",
+      "fileFormat": "prompt-md"
+    },
+    {
+      "path": ".github/instructions/atm-lock.instructions.md",
+      "sha256": "sha256:84d914e48096d1f6e8f8e0348690fe8bde83df01dba9bbc5dd697bf03e652115",
+      "sizeBytes": 2148,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/prompts/atm-lock.prompt.md",
+      "sha256": "sha256:6c96ecd0cb8854784b43a1706b8b40b6960f6d39eaea9532b2173c0c02d35bb4",
+      "sizeBytes": 2158,
+      "source": "template",
+      "fileFormat": "prompt-md"
+    },
+    {
+      "path": ".github/instructions/atm-evidence.instructions.md",
+      "sha256": "sha256:efbc68b5dc1e51777a779ada31f4cd1f54389b3e3439ef978eb26273943b296b",
+      "sizeBytes": 2163,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/prompts/atm-evidence.prompt.md",
+      "sha256": "sha256:ccfd762e166c4b67afb129778b31893febac9b4c3e96ede96478e2e8de26b13d",
+      "sizeBytes": 2187,
+      "source": "template",
+      "fileFormat": "prompt-md"
+    },
+    {
+      "path": ".github/instructions/atm-upgrade-scan.instructions.md",
+      "sha256": "sha256:b3ce42fed2c1376548c86aeff6d3848e6bc8579b267d60f86795aecc5b9c14cb",
+      "sizeBytes": 2181,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/prompts/atm-upgrade-scan.prompt.md",
+      "sha256": "sha256:29fc70cf06da51fa51b87ec4830c37a097deddbe97aeb73875791bd86c9cdb66",
+      "sizeBytes": 2201,
+      "source": "template",
+      "fileFormat": "prompt-md"
+    },
+    {
+      "path": ".github/instructions/atm-handoff.instructions.md",
+      "sha256": "sha256:d5eafee75dbea439b0bd28b47584911864d5be186a1d7258403d9ab3ba52fd02",
+      "sizeBytes": 2178,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/prompts/atm-handoff.prompt.md",
+      "sha256": "sha256:121b03f3eec8756790d3a8c37777c230f1c7036ca144e439ba88d74c1f5690c4",
+      "sizeBytes": 2186,
+      "source": "template",
+      "fileFormat": "prompt-md"
+    }
+  ],
+  "metadata": {
+    "sourceFileCount": 17
+  }
+}

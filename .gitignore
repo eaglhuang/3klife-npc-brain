@@ -29,3 +29,12 @@ venv/
 .atm/runtime/version-cache.json
 .atm/history/guidance/
 .atm/history/reports/
+
+# ATM release bundles vendored locally but not tracked in this repo
+release/atm-onefile/
+release/atm-root-drop/
+
+# ATM generated timestamp-only noise
+.atm/history/handoff/BOOTSTRAP-0001.json
+.atm/runtime/budget/default-policy.json
+.atm/runtime/default-guards.json

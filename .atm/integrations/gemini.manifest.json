@@ -1,0 +1,75 @@
+{
+  "schemaId": "atm.integrationInstallManifest",
+  "schemaVersion": "atm.installManifest.v0.1",
+  "specVersion": "0.1.0",
+  "migration": {
+    "strategy": "none",
+    "fromVersion": null,
+    "notes": "Initial integration adapter install manifest."
+  },
+  "adapterId": "gemini",
+  "adapterVersion": "0.0.0",
+  "installedAt": "2026-05-19T12:45:24.521Z",
+  "targetDir": ".gemini/commands",
+  "files": [
+    {
+      "path": ".gemini/commands/atm-next.toml",
+      "sha256": "sha256:d3cb3b1f9ac365f355fd2f211e11098af500bc140c64986c44860b72e1a4ee5e",
+      "sizeBytes": 2093,
+      "source": "template",
+      "fileFormat": "toml"
+    },
+    {
+      "path": ".gemini/commands/atm-orient.toml",
+      "sha256": "sha256:15392df07c50c097a465d7045e14f1df471f4d762748a80d3fa27bfb440d539d",
+      "sizeBytes": 2110,
+      "source": "template",
+      "fileFormat": "toml"
+    },
+    {
+      "path": ".gemini/commands/atm-governance-router.toml",
+      "sha256": "sha256:e3c4b8ebc42c111de76ea230089fd7a049fafd09f0b84eba3174dd779a04a149",
+      "sizeBytes": 2229,
+      "source": "template",
+      "fileFormat": "toml"
+    },
+    {
+      "path": ".gemini/commands/atm-create.toml",
+      "sha256": "sha256:8a06d0682ea2525aba82be869a091ba6c6b1b2fb00ff0d34ce652eb7b73c29f6",
+      "sizeBytes": 2188,
+      "source": "template",
+      "fileFormat": "toml"
+    },
+    {
+      "path": ".gemini/commands/atm-lock.toml",
+      "sha256": "sha256:f7c2cbad6a4c49f75bc74aaf9372cb1afd278baaafa41df84f32a2242a87248c",
+      "sizeBytes": 2087,
+      "source": "template",
+      "fileFormat": "toml"
+    },
+    {
+      "path": ".gemini/commands/atm-evidence.toml",
+      "sha256": "sha256:2f2ced5c15626d501b4bbb36454aa48ff996afd4c4a4219fde0a8260e27a3c52",
+      "sizeBytes": 2131,
+      "source": "template",
+      "fileFormat": "toml"
+    },
+    {
+      "path": ".gemini/commands/atm-upgrade-scan.toml",
+      "sha256": "sha256:f39b8f894d9f24573e49c4b53761ae05a70ae6a77a236db756e140235417f9e7",
+      "sizeBytes": 2167,
+      "source": "template",
+      "fileFormat": "toml"
+    },
+    {
+      "path": ".gemini/commands/atm-handoff.toml",
+      "sha256": "sha256:73e33d0a52fdbefaa2bf2ae35051d25884eb394e60d85c387f91987c829a2ce9",
+      "sizeBytes": 2149,
+      "source": "template",
+      "fileFormat": "toml"
+    }
+  ],
+  "metadata": {
+    "sourceFileCount": 8
+  }
+}

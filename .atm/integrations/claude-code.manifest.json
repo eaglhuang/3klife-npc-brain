@@ -1,0 +1,75 @@
+{
+  "schemaId": "atm.integrationInstallManifest",
+  "schemaVersion": "atm.installManifest.v0.1",
+  "specVersion": "0.1.0",
+  "migration": {
+    "strategy": "none",
+    "fromVersion": null,
+    "notes": "Initial integration adapter install manifest."
+  },
+  "adapterId": "claude-code",
+  "adapterVersion": "0.0.0",
+  "installedAt": "2026-05-19T12:45:29.883Z",
+  "targetDir": ".claude/skills",
+  "files": [
+    {
+      "path": ".claude/skills/atm-next/SKILL.md",
+      "sha256": "sha256:cddbcbbac7c2778fbb371e3efc8151e335a45850a85151d89a116ff2d1e7ec53",
+      "sizeBytes": 2442,
+      "source": "template",
+      "fileFormat": "skill"
+    },
+    {
+      "path": ".claude/skills/atm-orient/SKILL.md",
+      "sha256": "sha256:5edb394215416dc309946e4ac408fbfa4c5dd3f31bb047b3db136e0c52e40874",
+      "sizeBytes": 2178,
+      "source": "template",
+      "fileFormat": "skill"
+    },
+    {
+      "path": ".claude/skills/atm-governance-router/SKILL.md",
+      "sha256": "sha256:2fd68c2dc289d659d451141f2eea5b201241ed4bec762cbf66ced6fdad8ec681",
+      "sizeBytes": 4854,
+      "source": "template",
+      "fileFormat": "skill"
+    },
+    {
+      "path": ".claude/skills/atm-create/SKILL.md",
+      "sha256": "sha256:35214fd980b66cebd1a6512350a3f85cf26b4dd80966f0b5fe0295ae5a210ebd",
+      "sizeBytes": 2215,
+      "source": "template",
+      "fileFormat": "skill"
+    },
+    {
+      "path": ".claude/skills/atm-lock/SKILL.md",
+      "sha256": "sha256:7644ffa5cfc6c11210fa10abf176094eba2aad5c2658a8c85cebb0244fd4861d",
+      "sizeBytes": 2159,
+      "source": "template",
+      "fileFormat": "skill"
+    },
+    {
+      "path": ".claude/skills/atm-evidence/SKILL.md",
+      "sha256": "sha256:9deb293b0a5079979a9521b06878cb4bb51a6b36febe59fe7b4bfaeb13afc79d",
+      "sizeBytes": 2192,
+      "source": "template",
+      "fileFormat": "skill"
+    },
+    {
+      "path": ".claude/skills/atm-upgrade-scan/SKILL.md",
+      "sha256": "sha256:8d3b4202e284a0987ccccf4a6d31aca7f8777ac9ed3d48237cbaec6159dcde5c",
+      "sizeBytes": 2210,
+      "source": "template",
+      "fileFormat": "skill"
+    },
+    {
+      "path": ".claude/skills/atm-handoff/SKILL.md",
+      "sha256": "sha256:d56eaa0199b3fb6a804eb8f6d3189a7385f5813444b94c1f162e10f790f10915",
+      "sizeBytes": 2190,
+      "source": "template",
+      "fileFormat": "skill"
+    }
+  ],
+  "metadata": {
+    "sourceFileCount": 8
+  }
+}
