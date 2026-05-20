@@ -6,6 +6,10 @@
 
 ## AI Agent Entry
 
+> **ATM = AI Atomic Framework** (`@ai-atomic-framework`) — 本 repo 使用此框架進行代碼改造治理。
+> ATM 不只是 task manager：它管理的是 Atom（最小代碼單元）、Map（依賴藍圖）與 Guidance Session（改造工作許可）的完整生命週期。
+> 每個 task card 生命週期：`reserve → promote → claim → close`（close 前必須附 evidence JSON）。
+
 After reading this repository overview, run:
 
 ```bash

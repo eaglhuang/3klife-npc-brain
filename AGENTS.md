@@ -2,6 +2,10 @@
 
 ## ATM Governance Entry
 
+> **ATM = AI Atomic Framework** (`@ai-atomic-framework`) — 代碼改造治理框架，不是單純的 task manager。
+> 核心三層：**Atom**（最小改動單元）、**Map**（依賴藍圖，存於 `atomic_workbench/maps/`）、**Guidance Session**（改造工作許可）。
+> 每個 task card 生命週期：`reserve → promote → claim → close`，close 前必須附 evidence JSON。
+
 Read the repository root README.md for project context, then run:
 
 ```bash

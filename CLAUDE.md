@@ -11,7 +11,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### ATM Governance
 
-This repo uses ATM (Automation) governance. When starting work:
+**ATM = AI Atomic Framework** (`@ai-atomic-framework`，npm 生態系) — 一個代碼改造治理框架。
+
+核心理念：把 legacy code 逐步「原子化」（atomize）。每個改動單元叫 **atom**；原子之間的依賴關係由 **map** 描述；每次改動必須走完 **guidance session → review gate → police gate** 才能上線。ATM 不只管 task，它管的是整個改動的生命週期：
+
+| 概念 | 說明 |
+|------|------|
+| **Atom** | 可獨立部署的最小代碼單元（一個函數、一個模組） |
+| **Map** | 描述 atom 之間依賴與改造順序的藍圖（存於 `atomic_workbench/maps/`） |
+| **Guidance Session** | 每個改造目標的工作許可，含 dry-run proposal → approve → apply 三步 |
+| **Police Gate** | 自動驗證改動是否違反隔離不變性（isolation invariants） |
+| **Task Card** | 單張工作記錄，生命週期：reserve → promote → claim → close |
+| **Evidence** | 關閉 task 前必須提交的 JSON 證明檔 |
+
+This repo uses ATM governance. When starting work:
 ```bash
 node atm.mjs next --json
 ```
