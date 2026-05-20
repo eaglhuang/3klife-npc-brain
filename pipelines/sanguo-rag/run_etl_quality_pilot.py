@@ -6,9 +6,10 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from build_keyword_options import build_keyword_pack, load_roster_names
+from build_keyword_options import apply_keyword_option_governance, build_keyword_pack, load_roster_names
 from build_persona_cards import build_persona_card, index_events
 from repo_layout import pipeline_config_path, resolve_repo_root
+from sanguo_governance_loader import SanguoGovernanceError, default_governance_root
 
 
 REPO_ROOT = resolve_repo_root(__file__)
@@ -17,6 +18,7 @@ DEFAULT_GENERIC_CANDIDATES_PATH = Path("artifacts/data-pipeline/sanguo-rag/extra
 DEFAULT_GENERALS_PATH = Path("assets/resources/data/generals.json")
 DEFAULT_MANUAL_ROSTER_PATH = pipeline_config_path(REPO_ROOT, "manual-roster-seeds.json")
 DEFAULT_OUTPUT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/etl-quality-pilot")
+DEFAULT_GOVERNANCE_ROOT = default_governance_root()
 CORE_PILOT_GENERAL_IDS = ["zhang-fei", "guan-yu", "zhao-yun", "liu-bei", "cao-cao", "zhuge-liang"]
 SPEECH_CONTEXT_MODES = ["life_chat", "encounter_line", "inner_monologue", "meeting_statement"]
 
@@ -27,6 +29,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--generic-candidates", default=str(DEFAULT_GENERIC_CANDIDATES_PATH), help="Review-only generic candidates JSONL path")
     parser.add_argument("--generals", default=str(DEFAULT_GENERALS_PATH), help="generals.json path")
     parser.add_argument("--manual-roster", default=str(DEFAULT_MANUAL_ROSTER_PATH), help="manual-roster-seeds.json path")
+    parser.add_argument("--governance-root", default=str(DEFAULT_GOVERNANCE_ROOT), help="Sanguo governance data root")
+    parser.add_argument("--runtime-batch-keyword-policy", default=None, help="Optional runtime keyword policy override")
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT), help="Output directory for pilot artifacts")
     parser.add_argument("--general-id", action="append", default=[], help="Explicit general id to include; repeatable")
     parser.add_argument("--top", type=int, default=24, help="Total pilot general count when --general-id is not provided")
@@ -227,6 +231,10 @@ def render_markdown(report: dict) -> str:
 
 def main() -> None:
     args = parse_args()
+    try:
+        apply_keyword_option_governance(args.governance_root, args.runtime_batch_keyword_policy)
+    except SanguoGovernanceError as exc:
+        raise SystemExit(f"[run_etl_quality_pilot] governance error: {exc}") from None
     events_path = Path(args.events)
     output_root = Path(args.output_root)
     ensure_output_root(output_root, args.overwrite)

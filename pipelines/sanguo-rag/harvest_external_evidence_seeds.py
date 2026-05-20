@@ -11,21 +11,7 @@ from repo_layout import resolve_repo_root
 
 REPO_ROOT = resolve_repo_root(__file__)
 DEFAULT_OUTPUT_ROOT = Path("local/codex-smoke/knowledge-growth/external-evidence-seeds-v3-r1")
-DEFAULT_EXTERNAL_EVIDENCE_CARDS = [
-    Path(
-        "local/codex-smoke/knowledge-growth/full-roster-highway-wang-yi-female-fix-r1/"
-        "full-roster-highway-wang-yi-female-fix-r1-r1/external-evidence/external-evidence-cards.jsonl"
-    ),
-    Path(
-        "local/codex-smoke/knowledge-growth/full-roster-highway-female-targets-r1/"
-        "full-roster-highway-female-targets-r1-r1/external-evidence/external-evidence-cards.jsonl"
-    ),
-]
-DEFAULT_SCOREBOARD_JSON = Path(
-    "local/codex-smoke/knowledge-growth/full-roster-highway-wang-yi-female-fix-r1/"
-    "full-roster-highway-wang-yi-female-fix-r1-r1/scoreboard/full-roster-scoreboard.json"
-)
-DEFAULT_SOURCE_HEALTH_SUMMARY = Path("local/codex-smoke/knowledge-growth/3kweb-check-live-r4/3kweb-check-summary.json")
+DEFAULT_CONFIG_PATH = Path("pipelines/sanguo-rag/config/external-evidence-seed-harvest-defaults.json")
 
 ANGLE_TYPES = {
     "identity",
@@ -148,6 +134,23 @@ def source_health_by_id(path: Path) -> dict[str, dict[str, Any]]:
     return by_id
 
 
+def harvest_defaults(path: Path) -> dict[str, Any]:
+    payload = read_json(path)
+    return payload if isinstance(payload, dict) else {}
+
+
+def default_path_from_config(config: dict[str, Any], key: str) -> Path | None:
+    value = str(config.get(key) or "").strip()
+    return resolve_path(value) if value else None
+
+
+def default_list_from_config(config: dict[str, Any], key: str) -> list[Path]:
+    values = config.get(key)
+    if not isinstance(values, list):
+        return []
+    return [resolve_path(str(value)) for value in values if str(value or "").strip()]
+
+
 def seed_from_card(
     card: dict[str, Any],
     *,
@@ -223,6 +226,7 @@ def parse_args() -> argparse.Namespace:
         description="Harvest low-threshold EvidenceSeed rows from strict cards and optional manual seed JSONL."
     )
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT), help="Output directory for seed artifacts.")
+    parser.add_argument("--defaults-json", default=str(DEFAULT_CONFIG_PATH), help="Optional config JSON for standalone default inputs.")
     parser.add_argument(
         "--external-evidence-cards",
         action="append",
@@ -235,10 +239,9 @@ def parse_args() -> argparse.Namespace:
         help="Do not fall back to built-in strict evidence card paths when none are provided.",
     )
     parser.add_argument("--manual-seeds-jsonl", action="append", default=[], help="Optional hand-written EvidenceSeed JSONL.")
-    parser.add_argument("--scoreboard-json", default=str(DEFAULT_SCOREBOARD_JSON), help="Scoreboard JSON for canonical/shadow split.")
+    parser.add_argument("--scoreboard-json", help="Scoreboard JSON for canonical/shadow split.")
     parser.add_argument(
         "--source-health-summary",
-        default=str(DEFAULT_SOURCE_HEALTH_SUMMARY),
         help="3kweb-check summary JSON used for source status and page titles.",
     )
     parser.add_argument("--overwrite", action="store_true", help="Allow overwriting existing outputs.")
@@ -248,16 +251,23 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     output_root = resolve_path(args.output_root)
+    defaults = harvest_defaults(resolve_path(args.defaults_json)) if args.defaults_json else {}
     seeds_path = output_root / "external-evidence-seeds.jsonl"
     summary_path = output_root / "external-evidence-seeds-summary.json"
     if output_root.exists() and any(output_root.iterdir()) and not args.overwrite:
         raise SystemExit(f"Output root already exists and is not empty: {repo_relative(output_root)}")
 
-    known_general_ids = known_generals_from_scoreboard(resolve_path(args.scoreboard_json))
-    source_health = source_health_by_id(resolve_path(args.source_health_summary))
+    scoreboard_path = resolve_path(args.scoreboard_json) if args.scoreboard_json else default_path_from_config(defaults, "scoreboardJson")
+    source_health_path = (
+        resolve_path(args.source_health_summary)
+        if args.source_health_summary
+        else default_path_from_config(defaults, "sourceHealthSummary")
+    )
+    known_general_ids = known_generals_from_scoreboard(scoreboard_path) if scoreboard_path else set()
+    source_health = source_health_by_id(source_health_path) if source_health_path else {}
     card_paths = [resolve_path(path_text) for path_text in args.external_evidence_cards]
     if not card_paths and not args.no_default_external_evidence_cards:
-        card_paths = [resolve_path(path) for path in DEFAULT_EXTERNAL_EVIDENCE_CARDS if resolve_path(path).exists()]
+        card_paths = [path for path in default_list_from_config(defaults, "externalEvidenceCards") if path.exists()]
 
     seeds: dict[str, dict[str, Any]] = {}
     card_count = 0
@@ -298,8 +308,9 @@ def main() -> int:
             "externalEvidenceCards": [repo_relative(path) for path in card_paths],
             "noDefaultExternalEvidenceCards": bool(args.no_default_external_evidence_cards),
             "manualSeedsJsonl": [repo_relative(resolve_path(path)) for path in args.manual_seeds_jsonl],
-            "scoreboardJson": repo_relative(resolve_path(args.scoreboard_json)),
-            "sourceHealthSummary": repo_relative(resolve_path(args.source_health_summary)),
+            "defaultsJson": repo_relative(resolve_path(args.defaults_json)) if args.defaults_json else None,
+            "scoreboardJson": repo_relative(scoreboard_path) if scoreboard_path else None,
+            "sourceHealthSummary": repo_relative(source_health_path) if source_health_path else None,
         },
         "outputs": {
             "seedsJsonl": repo_relative(seeds_path),

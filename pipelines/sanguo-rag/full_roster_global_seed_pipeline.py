@@ -20,6 +20,9 @@ def run_global_seed_pipeline_atom(
     seed_to_card_priority_limit: int,
     seed_to_card_priority_extra_ids: list[str] | None,
     seed_to_card_min_score: float,
+    anchor_first_verification: bool,
+    anchor_index_root: Path | None,
+    anchor_verification_topk: int,
     dry_run: bool,
     overwrite: bool,
     repo_root: Path,
@@ -34,6 +37,9 @@ def run_global_seed_pipeline_atom(
     pipeline_run_root = round_root / "external-evidence" / "global-standard-pipeline"
     merged_seed_path = pipeline_run_root / "merged-manual-evidence-seeds.jsonl"
     harvested_seed_path = pipeline_run_root / "external-evidence-seeds.jsonl"
+    anchor_verification_root = pipeline_run_root / "anchor-verification"
+    anchor_verified_seed_path = anchor_verification_root / "seed-anchor-verification.jsonl"
+    anchor_verification_summary_path = anchor_verification_root / "seed-anchor-verification-summary.json"
     ranking_path = pipeline_run_root / "external-evidence-seed-ranking.json"
     candidate_cards_path = pipeline_run_root / "candidate-evidence-cards.jsonl"
     candidate_summary_path = pipeline_run_root / "candidate-evidence-card-summary.json"
@@ -82,11 +88,29 @@ def run_global_seed_pipeline_atom(
         harvest_command.append("--overwrite")
     harvest_result = run_command_fn(harvest_command, dry_run=dry_run)
 
+    anchor_verify_result = None
+    scored_seed_input_path = harvested_seed_path
+    if anchor_first_verification and anchor_index_root is not None:
+        anchor_verify_command = [
+            sys.executable,
+            str((repo_root / pipeline_root / "verify_seed_against_anchor_corpus.py").resolve()),
+            "--seeds-jsonl",
+            repo_relative_fn(harvested_seed_path),
+            "--anchor-index-root",
+            repo_relative_fn(anchor_index_root),
+            "--output-root",
+            repo_relative_fn(anchor_verification_root),
+            "--topk",
+            str(max(int(anchor_verification_topk), 1)),
+        ]
+        anchor_verify_result = run_command_fn(anchor_verify_command, dry_run=dry_run)
+        scored_seed_input_path = anchor_verified_seed_path
+
     score_command = [
         sys.executable,
         str((repo_root / pipeline_root / "score_external_evidence_seeds.py").resolve()),
         "--seeds-jsonl",
-        repo_relative_fn(harvested_seed_path),
+        repo_relative_fn(scored_seed_input_path),
         "--output-root",
         repo_relative_fn(pipeline_run_root),
     ]
@@ -117,10 +141,18 @@ def run_global_seed_pipeline_atom(
         "seedInputPaths": [repo_relative_fn(path) for path in seed_paths],
         "mergedSeedPath": repo_relative_fn(merged_seed_path),
         "harvestedSeedPath": repo_relative_fn(harvested_seed_path),
+        "anchorFirstVerificationEnabled": bool(anchor_first_verification and anchor_index_root is not None),
+        "anchorVerificationPath": repo_relative_fn(anchor_verified_seed_path)
+        if anchor_first_verification and anchor_index_root is not None
+        else None,
+        "anchorVerificationSummaryPath": repo_relative_fn(anchor_verification_summary_path)
+        if anchor_first_verification and anchor_index_root is not None
+        else None,
         "rankingPath": repo_relative_fn(ranking_path),
         "candidateCardsPath": repo_relative_fn(candidate_cards_path),
         "candidateSummaryPath": repo_relative_fn(candidate_summary_path),
         "harvestCommand": harvest_result,
+        "anchorVerifyCommand": anchor_verify_result,
         "scoreCommand": score_result,
         "promoteCommand": promote_result,
         "seedToCardPriorityLimit": int(seed_to_card_priority_limit),
@@ -146,10 +178,14 @@ def _disabled_pipeline_result(
         "seedInputPaths": [str(path).replace("\\", "/") for path in seed_paths],
         "mergedSeedPath": None,
         "harvestedSeedPath": None,
+        "anchorFirstVerificationEnabled": False,
+        "anchorVerificationPath": None,
+        "anchorVerificationSummaryPath": None,
         "rankingPath": None,
         "candidateCardsPath": None,
         "candidateSummaryPath": None,
         "harvestCommand": None,
+        "anchorVerifyCommand": None,
         "scoreCommand": None,
         "promoteCommand": None,
         "seedToCardPriorityLimit": int(seed_to_card_priority_limit),

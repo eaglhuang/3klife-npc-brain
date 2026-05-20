@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "anchor.index.build.sources.v0.1",
+  "description": "Data-driven inputs for rebuilding the anchor passage index from already extracted primary-canon artifacts. Scripts should read this file instead of embedding source paths.",
+  "sources": [
+    {
+      "path": "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone/primary-canon-relationship-backbone.jsonl",
+      "kind": "primary-canon-claims",
+      "enabled": true
+    },
+    {
+      "path": "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone/primary-text-top20-r2-refined/merged-primary-text-top20-relationship-evidence.jsonl",
+      "kind": "primary-canon-relationship-evidence",
+      "enabled": true
+    }
+  ],
+  "globSources": [
+    {
+      "root": "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone",
+      "pattern": "candidate-evidence-cards.jsonl",
+      "recursive": true,
+      "kind": "primary-canon-candidate-cards",
+      "enabled": true
+    },
+    {
+      "root": "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone",
+      "pattern": "manual-evidence-seeds.jsonl",
+      "recursive": true,
+      "kind": "primary-canon-manual-evidence-seeds",
+      "enabled": true
+    }
+  ]
+}

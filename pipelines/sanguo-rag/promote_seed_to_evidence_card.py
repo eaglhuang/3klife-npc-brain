@@ -74,6 +74,9 @@ def person_id(seed: dict[str, Any]) -> str:
 
 
 def can_promote(seed: dict[str, Any], min_score: float) -> tuple[bool, str]:
+    anchor_result = seed.get("anchorEvidence") if isinstance(seed.get("anchorEvidence"), dict) else {}
+    if str(anchor_result.get("anchorVerdict") or "") == ANCHOR_VERDICT_SUSPECTED_CONFLICT:
+        return False, "anchor-gate suspected-conflict"
     if seed.get("promotionTarget") != "candidate-card":
         return False, "promotionTarget is not candidate-card"
     if float(seed.get("seedConfidenceScore") or 0.0) < min_score:
@@ -134,6 +137,9 @@ def card_from_seed(seed: dict[str, Any]) -> dict[str, Any]:
         card["generalIds"] = [person]
     else:
         card["candidatePersonIds"] = [person]
+    anchor_result = seed.get("anchorEvidence") if isinstance(seed.get("anchorEvidence"), dict) else None
+    if anchor_result:
+        card = attach_anchor_evidence_to_card(card, anchor_result)
     return card
 
 
@@ -257,8 +263,10 @@ def build_anchor_evidence_for_card(anchor_result: dict[str, Any]) -> dict[str, A
         "anchorHistoryMatchCount": int(anchor_result.get("anchorHistoryMatchCount", 0)),
         "anchorRomanceMatchCount": int(anchor_result.get("anchorRomanceMatchCount", 0)),
         "anchorVerdict": str(anchor_result.get("anchorVerdict", "unverified")),
+        "targetOnlySeed": bool(anchor_result.get("targetOnlySeed")),
         "supportingLocators": list(anchor_result.get("supportingLocators", [])),
         "supportingTextHashes": list(anchor_result.get("supportingTextHashes", [])),
+        "supportingSnippets": list(anchor_result.get("supportingSnippets", [])),
         "canonicalWrites": False,
     }
 

@@ -234,6 +234,9 @@ def raw_seed_score(seed: dict[str, Any]) -> tuple[float, dict[str, float]]:
 def promotion_target(seed: dict[str, Any], score: float) -> str:
     ensure_external_evidence_scoring_governance_loaded()
     policy = promotion_policy()
+    anchor_evidence = seed.get("anchorEvidence") if isinstance(seed.get("anchorEvidence"), dict) else {}
+    if str(anchor_evidence.get("anchorVerdict") or "") == "suspected-conflict":
+        return "human-review"
     has_quote = bool(seed.get("hasQuote") or seed.get("quote"))
     has_locator_or_hash = bool(seed.get("hasLocator") or seed.get("locator") or seed.get("textHash"))
     cross_count = int(seed.get("crossSiteMatchCount") or 0)

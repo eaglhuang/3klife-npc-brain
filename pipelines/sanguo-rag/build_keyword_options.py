@@ -139,7 +139,7 @@ def compact_label(label: str, max_chars: int) -> str:
 def build_event_display_label(event: dict) -> tuple[str, str | None, int]:
     event_key = str(event.get("eventKey") or event.get("eventId") or "event")
     full_label = str(event.get("summary") or event_key).strip()
-    max_chars = CATEGORY_LABEL_LIMITS["event"]
+    max_chars = CATEGORY_LABEL_LIMITS.get("event", DEFAULT_UI_LABEL_MAX_CHARS or 24)
     if event_key in EVENT_LABEL_OVERRIDES:
         return EVENT_LABEL_OVERRIDES[event_key], full_label, max_chars
 

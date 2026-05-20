@@ -96,6 +96,8 @@ DEFAULT_GENERIC_EXTRACTOR = PIPELINE_ROOT / "extract_generic_passage_evidence_se
 DEFAULT_SEED_HARVESTER = PIPELINE_ROOT / "harvest_external_evidence_seeds.py"
 DEFAULT_SEED_SCORER = PIPELINE_ROOT / "score_external_evidence_seeds.py"
 DEFAULT_SEED_PROMOTER = PIPELINE_ROOT / "promote_seed_to_evidence_card.py"
+DEFAULT_SEED_ANCHOR_VERIFIER = PIPELINE_ROOT / "verify_seed_against_anchor_corpus.py"
+DEFAULT_ANCHOR_INDEX_ROOT = Path("artifacts/data-pipeline/sanguo-rag/anchor-index")
 
 SOURCE_CLASSES: tuple[str, ...] = ()
 
@@ -411,6 +413,68 @@ def run_json_command(command: list[str], *, cwd: Path = REPO_ROOT) -> dict[str, 
     return json.loads(stdout)
 
 
+def source_health_precheck_via_python(
+    *,
+    source_id: str,
+    url: str,
+    timeout_seconds: float,
+    source_row: dict[str, Any] | None,
+) -> dict[str, Any]:
+    request_url = normalize_request_url(url)
+    term_keywords = normalize_term_hit_keywords((source_row or {}).get("termHitKeywords"))
+    payload: dict[str, Any] = {
+        "version": "1.0.0",
+        "generatedAt": utc_now(),
+        "mode": "source-health-python-fallback",
+        "sourceId": source_id,
+        "url": url,
+        "finalUrl": request_url,
+        "httpStatus": 0,
+        "liveStatus": "fetch-error",
+        "reason": "",
+        "title": "",
+        "snippet": "",
+        "termHitCount": 0,
+        "bytesRead": 0,
+        "contentType": "",
+        "healthBackend": "python-urllib",
+        "canonicalWrites": False,
+    }
+    try:
+        request = Request(
+            request_url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (3KLife Source Health Fallback)",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,text/plain;q=0.8,*/*;q=0.5",
+            },
+        )
+        with urlopen(request, timeout=max(timeout_seconds, 1.0)) as response:
+            content = response.read(128_000)
+            content_type = str(response.headers.get("Content-Type") or "")
+            charset = detect_charset_from_bytes(content_type, content)
+            raw_text = content.decode(charset, errors="ignore")
+            plain_text = strip_html_to_text(raw_text) if "<" in raw_text and ">" in raw_text else raw_text
+            title = extract_title_from_html(raw_text) or source_id
+            status = int(getattr(response, "status", 0) or response.getcode() or 0)
+            payload.update(
+                {
+                    "finalUrl": str(getattr(response, "url", "") or request_url),
+                    "httpStatus": status,
+                    "liveStatus": "ok" if status == 200 else "http-error",
+                    "reason": "ok" if status == 200 else f"httpStatus={status}",
+                    "title": title,
+                    "snippet": plain_text[:1200],
+                    "termHitCount": count_term_hits(plain_text, term_keywords),
+                    "bytesRead": len(content),
+                    "contentType": content_type,
+                    "charset": charset,
+                }
+            )
+    except Exception as exc:
+        payload["reason"] = f"{type(exc).__name__}: {exc}"
+    return payload
+
+
 def bool_ratio(numerator: int, denominator: int) -> float:
     if denominator <= 0:
         return 0.0
@@ -429,26 +493,54 @@ def stage1_precheck(
     url: str,
     timeout_seconds: float,
     source_health_cli: Path,
+    source_health_mode: str,
     source_config_path: Path,
     source_row: dict[str, Any] | None,
     precheck_policy: dict[str, Any],
 ) -> tuple[dict[str, Any], list[str], bool]:
-    command = [
-        "node",
-        str(source_health_cli),
-        "--source-id",
-        source_id,
-        "--url",
-        url,
-        "--timeout-seconds",
-        str(max(timeout_seconds, 1.0)),
-        "--sources-config",
-        str(source_config_path),
-        "--json",
-    ]
-    for keyword in normalize_term_hit_keywords((source_row or {}).get("termHitKeywords")):
-        command.extend(["--term-hit-keyword", str(keyword)])
-    payload = run_json_command(command)
+    mode = str(source_health_mode or "auto").strip().lower()
+    if mode == "off":
+        payload = {
+            "version": "1.0.0",
+            "generatedAt": utc_now(),
+            "mode": "source-health-disabled",
+            "sourceId": source_id,
+            "url": url,
+            "httpStatus": 200,
+            "liveStatus": "source-health-disabled",
+            "reason": "source-health-mode=off",
+            "title": source_id,
+            "snippet": source_id,
+            "termHitCount": max(1, to_int(precheck_policy.get("minimumTermHitCount"), 1)),
+            "bytesRead": 0,
+            "contentType": "text/plain",
+            "healthBackend": "disabled",
+            "canonicalWrites": False,
+        }
+    elif mode == "python" or (mode == "auto" and not source_health_cli.exists()):
+        payload = source_health_precheck_via_python(
+            source_id=source_id,
+            url=url,
+            timeout_seconds=timeout_seconds,
+            source_row=source_row,
+        )
+    else:
+        command = [
+            "node",
+            str(source_health_cli),
+            "--source-id",
+            source_id,
+            "--url",
+            url,
+            "--timeout-seconds",
+            str(max(timeout_seconds, 1.0)),
+            "--sources-config",
+            str(source_config_path),
+            "--json",
+        ]
+        for keyword in normalize_term_hit_keywords((source_row or {}).get("termHitKeywords")):
+            command.extend(["--term-hit-keyword", str(keyword)])
+        payload = run_json_command(command)
     snippet = str(payload.get("snippet") or "")
     title = str(payload.get("title") or "")
     combined = f"{title}\n{snippet}".lower()
@@ -898,17 +990,23 @@ def harvest_source(
                     ),
                     [],
                 )
-            except Exception:
-                return (
-                    harvest_single_page(
+            except Exception as exc:
+                try:
+                    fallback = harvest_single_page(
                         source_id=source_id,
                         source_url=source_url,
                         run_root=run_root,
                         timeout_seconds=args.timeout_seconds,
                         term_hit_keywords=normalize_term_hit_keywords((source_row or {}).get("termHitKeywords")),
-                    ),
-                    [],
-                )
+                    )
+                    fallback["harvestBackend"] = "python-single-page-fallback"
+                    fallback["fallbackReason"] = f"{type(exc).__name__}: {exc}"
+                    return fallback, []
+                except Exception as fallback_exc:
+                    return None, [
+                        f"single-page-harvester-failed:{type(exc).__name__}",
+                        f"python-single-page-fallback-failed:{type(fallback_exc).__name__}",
+                    ]
         return None, ["missing-harvestPolicy-or-singlePagePolicy"]
     link_include = args.link_include or list(harvest_policy.get("linkInclude") or [])
     link_exclude = list(harvest_policy.get("linkExclude") or [])
@@ -996,7 +1094,27 @@ def harvest_source(
         command.extend(["--api-max-index-pages", str(api_max_index_pages)])
     if same_origin:
         command.append("--same-origin")
-    return run_json_command(command), []
+    try:
+        if not harvester_cli.exists():
+            raise FileNotFoundError(str(harvester_cli))
+        return run_json_command(command), []
+    except Exception as exc:
+        try:
+            fallback = harvest_single_page(
+                source_id=source_id,
+                source_url=str(harvest_policy.get("indexUrl") or source_url),
+                run_root=run_root,
+                timeout_seconds=args.timeout_seconds,
+                term_hit_keywords=normalize_term_hit_keywords((source_row or {}).get("termHitKeywords")),
+            )
+            fallback["harvestBackend"] = "python-single-page-fallback"
+            fallback["fallbackReason"] = f"{type(exc).__name__}: {exc}"
+            return fallback, []
+        except Exception as fallback_exc:
+            return None, [
+                f"harvester-failed:{type(exc).__name__}",
+                f"python-single-page-fallback-failed:{type(fallback_exc).__name__}",
+            ]
 
 
 def evaluate_stage2(harvest_summary: dict[str, Any], gate_policy: dict[str, float]) -> tuple[dict[str, Any], list[str]]:
@@ -1041,6 +1159,9 @@ def run_seed_pipeline(
     alias_map_path: Path,
     scoreboard_path: Path,
     single_source_health_path: Path,
+    anchor_first_verification: bool,
+    anchor_index_root: Path,
+    anchor_verification_topk: int,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     extracted_root = run_root / "extracted-seeds"
     standard_root = run_root / "standard-pipeline"
@@ -1085,12 +1206,30 @@ def run_seed_pipeline(
             "--overwrite",
         ]
     )
+    scored_seed_input_path = standard_root / "external-evidence-seeds.jsonl"
+    if anchor_first_verification:
+        anchor_root = standard_root / "anchor-verification"
+        run_command(
+            [
+                sys.executable,
+                str(resolve_path(DEFAULT_SEED_ANCHOR_VERIFIER)),
+                "--seeds-jsonl",
+                str(scored_seed_input_path),
+                "--anchor-index-root",
+                str(anchor_index_root),
+                "--output-root",
+                str(anchor_root),
+                "--topk",
+                str(max(int(anchor_verification_topk), 1)),
+            ]
+        )
+        scored_seed_input_path = anchor_root / "seed-anchor-verification.jsonl"
     run_command(
         [
             sys.executable,
             str(resolve_path(DEFAULT_SEED_SCORER)),
             "--seeds-jsonl",
-            str(standard_root / "external-evidence-seeds.jsonl"),
+            str(scored_seed_input_path),
             "--output-root",
             str(standard_root),
             "--overwrite",
@@ -1146,6 +1285,9 @@ def stage3_metrics_common(
         "quoteLocatorHashCoverage": quote_locator_hash_coverage,
         "outputs": {
             "extractSummary": repo_relative(run_root / "extracted-seeds" / "manual-evidence-seeds-summary.json"),
+            "anchorVerificationSummary": repo_relative(
+                run_root / "standard-pipeline" / "anchor-verification" / "seed-anchor-verification-summary.json"
+            ),
             "rankingJson": repo_relative(run_root / "standard-pipeline" / "external-evidence-seed-ranking.json"),
             "candidateSummary": repo_relative(run_root / "standard-pipeline" / "candidate-evidence-card-summary.json"),
         },
@@ -1301,7 +1443,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--alias-map", default=str(DEFAULT_ALIAS_MAP))
     parser.add_argument("--scoreboard-json", default=str(DEFAULT_SCOREBOARD_JSON))
     parser.add_argument("--source-health-cli", default=str(DEFAULT_SOURCE_HEALTH_CLI))
+    parser.add_argument("--source-health-mode", choices=["auto", "node", "python", "off"], default="auto")
     parser.add_argument("--harvester-cli", default=str(DEFAULT_HARVESTER_CLI))
+    parser.add_argument("--anchor-first-verification", dest="anchor_first_verification", action="store_true")
+    parser.add_argument("--no-anchor-first-verification", dest="anchor_first_verification", action="store_false")
+    parser.set_defaults(anchor_first_verification=True)
+    parser.add_argument("--anchor-index-root", default=str(DEFAULT_ANCHOR_INDEX_ROOT))
+    parser.add_argument("--anchor-verification-topk", type=int, default=8)
     parser.add_argument("--timeout-seconds", type=float, default=20.0)
     parser.add_argument("--concurrency", type=int, default=4)
     parser.add_argument("--link-include", action="append", default=[])
@@ -1364,6 +1512,7 @@ def main() -> int:
     harvester_cli = resolve_path(args.harvester_cli)
     alias_map_path = resolve_existing_path(args.alias_map)
     scoreboard_path = resolve_existing_path(args.scoreboard_json)
+    anchor_index_root = resolve_existing_path(args.anchor_index_root)
     single_source_health_path = run_root / "single-source-health-summary.json"
     benchmark_summary_path = run_root / "benchmark-summary.json"
     benchmark_markdown_path = run_root / "benchmark-summary.zh-TW.md"
@@ -1373,6 +1522,7 @@ def main() -> int:
         url=source_url,
         timeout_seconds=args.timeout_seconds,
         source_health_cli=source_health_cli,
+        source_health_mode=args.source_health_mode,
         source_config_path=source_config_path,
         source_row=source_row,
         precheck_policy=precheck_policy,
@@ -1413,6 +1563,9 @@ def main() -> int:
             alias_map_path=alias_map_path,
             scoreboard_path=scoreboard_path,
             single_source_health_path=single_source_health_path,
+            anchor_first_verification=bool(args.anchor_first_verification),
+            anchor_index_root=anchor_index_root,
+            anchor_verification_topk=max(int(args.anchor_verification_topk), 1),
         )
         fetched_pages = int(((harvest_summary.get("metrics") or {}).get("fetchedPageCount") or 0))
         stage3_metrics = stage3_metrics_common(
@@ -1446,6 +1599,9 @@ def main() -> int:
             "precheckPolicy": precheck_policy,
             "stage2GatePolicy": stage2_gate_policy,
             "stage3GatePolicy": stage3_gate_policy,
+            "anchorFirstVerification": bool(args.anchor_first_verification),
+            "anchorIndexRoot": repo_relative(anchor_index_root),
+            "anchorVerificationTopk": max(int(args.anchor_verification_topk), 1),
         },
         "stage1Precheck": precheck_payload,
         "stage1Passed": stage1_passed,

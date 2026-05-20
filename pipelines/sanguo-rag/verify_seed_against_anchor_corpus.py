@@ -22,6 +22,7 @@ REPO_ROOT = resolve_repo_root(__file__)
 
 DEFAULT_ANCHOR_INDEX_ROOT = Path("artifacts/data-pipeline/sanguo-rag/anchor-index")
 DEFAULT_OUTPUT_ROOT = Path("local/verify-seed-anchor")
+DEFAULT_POLICY_PATH = Path("pipelines/sanguo-rag/config/anchor-verification-policy.json")
 SCHEMA_VERSION = "anchor.verification.v0.1"
 
 ANCHOR_VERDICT_HISTORY_CORROBORATED = "history-corroborated"
@@ -29,16 +30,14 @@ ANCHOR_VERDICT_ROMANCE_CORROBORATED = "romance-corroborated"
 ANCHOR_VERDICT_SUSPECTED_CONFLICT = "suspected-conflict"
 ANCHOR_VERDICT_UNVERIFIED = "unverified"
 
-MIN_NGRAM_OVERLAP = 4
-MIN_GROUNDED_HITS = 1
-CONFLICT_KEYWORD_PATTERNS = [
-    r"並非",
-    r"不是",
-    r"誤傳",
-    r"後世附會",
-    r"無此記載",
-]
-
+DEFAULT_POLICY = {
+    "minNgramOverlap": 4,
+    "minGroundedHits": 1,
+    "directPersonMatchBoost": 5,
+    "targetOnlyPersonMatchBoost": 20,
+    "targetOnlyAngleMatchBoost": 3,
+    "conflictKeywordPatterns": [],
+}
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -61,11 +60,40 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
     return rows
 
 
+def read_json(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    return payload if isinstance(payload, dict) else {}
+
+
+def load_policy(path: Path | None) -> dict[str, Any]:
+    policy = dict(DEFAULT_POLICY)
+    if path is not None:
+        configured = read_json(path)
+        for key, value in configured.items():
+            if key == "conflictKeywordPatterns" and isinstance(value, list):
+                policy[key] = [str(item) for item in value if str(item).strip()]
+            elif key in policy:
+                policy[key] = value
+    policy["minNgramOverlap"] = max(int(policy.get("minNgramOverlap") or 4), 1)
+    policy["minGroundedHits"] = max(int(policy.get("minGroundedHits") or 1), 1)
+    policy["directPersonMatchBoost"] = max(int(policy.get("directPersonMatchBoost") or 0), 0)
+    policy["targetOnlyPersonMatchBoost"] = max(int(policy.get("targetOnlyPersonMatchBoost") or 0), 0)
+    policy["targetOnlyAngleMatchBoost"] = max(int(policy.get("targetOnlyAngleMatchBoost") or 0), 0)
+    return policy
+
+
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as f:
         for row in rows:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def write_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def normalize_cjk(text: str) -> str:
@@ -88,24 +116,87 @@ def load_anchor_index(index_root: Path) -> list[dict[str, Any]]:
     return all_passages
 
 
+def as_bool(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    return str(value or "").strip().lower() in {"1", "true", "yes", "y"}
+
+
+def is_target_only_seed(seed: dict[str, Any]) -> bool:
+    manual_quote = seed.get("manualQuote") if isinstance(seed.get("manualQuote"), dict) else {}
+    target_only = as_bool(seed.get("manualQuoteTarget")) or as_bool(manual_quote.get("targetOnly"))
+    has_direct_quote = as_bool(seed.get("manualQuoteHasDirectQuote")) or as_bool(manual_quote.get("hasDirectQuote"))
+    return bool(target_only and not has_direct_quote)
+
+
+def seed_search_text(seed: dict[str, Any]) -> str:
+    if not is_target_only_seed(seed):
+        return str(seed.get("seedText") or seed.get("quote") or seed.get("translatedTraditionalText") or "")
+    manual_quote = seed.get("manualQuote") if isinstance(seed.get("manualQuote"), dict) else {}
+    parts = [
+        seed.get("matchedName"),
+        manual_quote.get("curationKeyword"),
+        seed.get("displayName"),
+        seed.get("generalName"),
+        seed.get("generalId"),
+        seed.get("angleType"),
+    ]
+    return " ".join(str(part).strip() for part in parts if str(part or "").strip())
+
+
+def passage_has_person(passage: dict[str, Any], general_id: str) -> bool:
+    if not general_id:
+        return False
+    person_ids = passage.get("personIds")
+    if isinstance(person_ids, list) and general_id in {str(item) for item in person_ids}:
+        return True
+    return str(passage.get("generalId") or "") == general_id
+
+
+def passage_angle_match(passage: dict[str, Any], angle_type: str) -> bool:
+    angle = str(angle_type or "").strip()
+    if not angle:
+        return False
+    locator = str(passage.get("locator") or "")
+    return f"field=page-text-{angle}" in locator or f"field={angle}" in locator
+
+
 def hybrid_retrieve(
     passages: list[dict[str, Any]],
     seed_text: str,
     general_id: str,
+    *,
+    angle_type: str = "",
+    target_only: bool = False,
+    policy: dict[str, Any] | None = None,
     topk: int = 8,
 ) -> list[dict[str, Any]]:
     """從 anchor passages 中找出與 seed_text 最相關的 topk 條。"""
-    scored: list[tuple[int, dict[str, Any]]] = []
+    active_policy = policy or DEFAULT_POLICY
+    scored: list[tuple[int, int, int, dict[str, Any]]] = []
     for passage in passages:
         overlap = ngram_overlap(passage.get("normalizedText", ""), seed_text)
-        if overlap > 0:
-            scored.append((overlap, passage))
-    scored.sort(key=lambda x: x[0], reverse=True)
-    return [p for _, p in scored[:topk]]
+        person_match = passage_has_person(passage, general_id)
+        angle_match = passage_angle_match(passage, angle_type)
+        if target_only:
+            if not person_match and overlap <= 0:
+                continue
+            score = overlap
+            if person_match:
+                score += int(active_policy.get("targetOnlyPersonMatchBoost") or 0)
+            if angle_match:
+                score += int(active_policy.get("targetOnlyAngleMatchBoost") or 0)
+        else:
+            if overlap <= 0:
+                continue
+            score = overlap + (int(active_policy.get("directPersonMatchBoost") or 0) if person_match else 0)
+        scored.append((score, int(person_match), int(angle_match), passage))
+    scored.sort(key=lambda x: (x[0], x[1], x[2]), reverse=True)
+    return [p for _, _, _, p in scored[:topk]]
 
 
-def is_conflict_hint(passage_text: str, seed_text: str) -> bool:
-    for pattern in CONFLICT_KEYWORD_PATTERNS:
+def is_conflict_hint(passage_text: str, seed_text: str, policy: dict[str, Any]) -> bool:
+    for pattern in policy.get("conflictKeywordPatterns") or []:
         if re.search(pattern, passage_text):
             return True
     return False
@@ -114,11 +205,12 @@ def is_conflict_hint(passage_text: str, seed_text: str) -> bool:
 def classify_anchor_verdict(
     grounded: list[dict[str, Any]],
     seed_text: str,
+    policy: dict[str, Any],
 ) -> str:
     if not grounded:
         return ANCHOR_VERDICT_UNVERIFIED
     for hit in grounded:
-        if is_conflict_hint(hit.get("normalizedText", ""), seed_text):
+        if is_conflict_hint(hit.get("normalizedText", ""), seed_text, policy):
             return ANCHOR_VERDICT_SUSPECTED_CONFLICT
     history_hits = [h for h in grounded if h.get("layer") == "history"]
     romance_hits = [h for h in grounded if h.get("layer") == "romance"]
@@ -129,30 +221,67 @@ def classify_anchor_verdict(
     return ANCHOR_VERDICT_UNVERIFIED
 
 
+def dedupe_anchor_hits(hits: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    deduped: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for hit in hits:
+        key = (str(hit.get("locator") or ""), str(hit.get("textHash") or ""))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(hit)
+    return deduped
+
+
 def verify_seed(
     seed: dict[str, Any],
     passages: list[dict[str, Any]],
+    policy: dict[str, Any],
     topk: int = 8,
 ) -> dict[str, Any]:
-    seed_text = seed.get("seedText", "")
-    general_id = seed.get("generalId", "")
-    hits = hybrid_retrieve(passages, seed_text, general_id, topk=topk)
-    grounded = [
-        hit for hit in hits
-        if ngram_overlap(hit.get("normalizedText", ""), seed_text, n=MIN_NGRAM_OVERLAP) >= MIN_NGRAM_OVERLAP
-    ]
-    verdict = classify_anchor_verdict(grounded, seed_text)
+    seed_text = seed_search_text(seed)
+    general_id = str(seed.get("generalId", "") or "")
+    angle_type = str(seed.get("angleType") or "")
+    target_only = is_target_only_seed(seed)
+    hits = hybrid_retrieve(
+        passages,
+        seed_text,
+        general_id,
+        angle_type=angle_type,
+        target_only=target_only,
+        policy=policy,
+        topk=topk,
+    )
+    min_overlap = int(policy.get("minNgramOverlap") or 4)
+    if target_only:
+        grounded = [
+            hit for hit in hits
+            if passage_has_person(hit, general_id)
+            or ngram_overlap(hit.get("normalizedText", ""), seed_text, n=min_overlap) >= min_overlap
+        ]
+    else:
+        grounded = [
+            hit for hit in hits
+            if ngram_overlap(hit.get("normalizedText", ""), seed_text, n=min_overlap) >= min_overlap
+        ]
+    grounded = dedupe_anchor_hits(grounded)
+    if len(grounded) < int(policy.get("minGroundedHits") or 1):
+        grounded = []
+    verdict = classify_anchor_verdict(grounded, seed_text, policy)
     history_hits = [h for h in grounded if h.get("layer") == "history"]
     romance_hits = [h for h in grounded if h.get("layer") == "romance"]
     return {
         "generalId": general_id,
         "seedId": seed.get("seedId", ""),
+        "targetOnlySeed": target_only,
+        "searchTextHash": "sha256:" + hashlib.sha256(normalize_cjk(seed_text).encode("utf-8")).hexdigest()[:16],
         "anchorMatchCount": len(grounded),
         "anchorHistoryMatchCount": len(history_hits),
         "anchorRomanceMatchCount": len(romance_hits),
         "anchorVerdict": verdict,
         "supportingLocators": [h["locator"] for h in grounded[:3]],
         "supportingTextHashes": [h["textHash"] for h in grounded[:3]],
+        "supportingSnippets": [h.get("normalizedText", "") for h in grounded[:3]],
         "canonicalWrites": False,
         "verifiedAt": utc_now(),
     }
@@ -161,11 +290,12 @@ def verify_seed(
 def verify_seeds_batch(
     seeds: list[dict[str, Any]],
     passages: list[dict[str, Any]],
+    policy: dict[str, Any],
     topk: int = 8,
 ) -> list[dict[str, Any]]:
     results = []
     for seed in seeds:
-        result = verify_seed(seed, passages, topk=topk)
+        result = verify_seed(seed, passages, policy=policy, topk=topk)
         results.append({**seed, "anchorEvidence": result})
     return results
 
@@ -175,6 +305,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seeds-jsonl", required=True, help="Input seeds JSONL path")
     parser.add_argument("--anchor-index-root", default=str(DEFAULT_ANCHOR_INDEX_ROOT))
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
+    parser.add_argument("--policy-json", default=str(DEFAULT_POLICY_PATH))
     parser.add_argument("--topk", type=int, default=8)
     parser.add_argument("--general-id", help="Filter by generalId")
     return parser.parse_args()
@@ -185,6 +316,8 @@ def main() -> None:
     seeds_path = resolve_path(args.seeds_jsonl)
     anchor_root = resolve_path(args.anchor_index_root)
     out_root = resolve_path(args.output_root)
+    policy_path = resolve_path(args.policy_json) if args.policy_json else None
+    policy = load_policy(policy_path)
 
     print(f"Loading seeds from {seeds_path}...")
     seeds = read_jsonl(seeds_path)
@@ -197,7 +330,7 @@ def main() -> None:
         print("WARNING: No anchor passages found. Run anchor_passage_index_builder.py first.")
 
     print(f"Verifying {len(seeds)} seeds against {len(passages)} passages...")
-    results = verify_seeds_batch(seeds, passages, topk=args.topk)
+    results = verify_seeds_batch(seeds, passages, policy=policy, topk=args.topk)
 
     out_path = out_root / "seed-anchor-verification.jsonl"
     write_jsonl(out_path, results)
@@ -207,6 +340,40 @@ def main() -> None:
     for r in results:
         v = r.get("anchorEvidence", {}).get("anchorVerdict", "unverified")
         verdicts[v] = verdicts.get(v, 0) + 1
+    summary = {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedAt": utc_now(),
+        "canonicalWrites": False,
+        "inputs": {
+            "seedsJsonl": str(seeds_path),
+            "anchorIndexRoot": str(anchor_root),
+            "policyJson": str(policy_path) if policy_path else None,
+            "topk": args.topk,
+            "generalId": args.general_id,
+        },
+        "outputs": {
+            "verifiedSeedsJsonl": str(out_path),
+            "summaryJson": str(out_root / "seed-anchor-verification-summary.json"),
+        },
+        "metrics": {
+            "seedCount": len(results),
+            "anchorPassageCount": len(passages),
+            "verdictCounts": dict(sorted(verdicts.items())),
+            "anchorMatchedSeedCount": sum(
+                1 for row in results if int(row.get("anchorEvidence", {}).get("anchorMatchCount") or 0) > 0
+            ),
+            "targetOnlySeedCount": sum(
+                1 for row in results if bool(row.get("anchorEvidence", {}).get("targetOnlySeed"))
+            ),
+            "targetOnlyMatchedSeedCount": sum(
+                1
+                for row in results
+                if bool(row.get("anchorEvidence", {}).get("targetOnlySeed"))
+                and int(row.get("anchorEvidence", {}).get("anchorMatchCount") or 0) > 0
+            ),
+        },
+    }
+    write_json(out_root / "seed-anchor-verification-summary.json", summary)
     print("Verdict distribution:", verdicts)
 
 

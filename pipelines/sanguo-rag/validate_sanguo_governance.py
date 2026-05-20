@@ -1472,7 +1472,8 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
         raise SanguoGovernanceError("policy-convergence-loop-state roiStatePolicy.actions must include keep")
 
     harness_phases = governance_regression_harness_policy.get("phaseMatrix") if isinstance(governance_regression_harness_policy.get("phaseMatrix"), list) else []
-    if not harness_phases:
+    phase_matrix_archived = str(governance_regression_harness_policy.get("phaseMatrixStatus") or "").strip() == "archived"
+    if not harness_phases and not phase_matrix_archived:
         raise SanguoGovernanceError("policy-governance-regression-harness phaseMatrix cannot be empty")
     phase_numbers = [int(row.get("phase")) for row in harness_phases if isinstance(row, dict) and row.get("phase") is not None]
     if sorted(set(phase_numbers)) != phase_numbers:
@@ -1614,10 +1615,11 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
         raise SanguoGovernanceError("policy-governance-report-bundle requiredPayloadKeys cannot be empty")
 
 
+    plan_encoding_archived = str(governance_plan_encoding_policy.get("status") or "").strip() == "archived"
     plan_targets = [str(item).strip() for item in governance_plan_encoding_policy.get("targetPlanFiles") or []]
     forbidden_fragments = ["\ufffd" if str(item).upper() == "U+FFFD" else str(item) for item in governance_plan_encoding_policy.get("forbiddenFragments") or []]
     required_title_prefix = str(governance_plan_encoding_policy.get("requiredTitlePrefix") or "").strip()
-    if not plan_targets or any(not item for item in plan_targets):
+    if (not plan_targets or any(not item for item in plan_targets)) and not plan_encoding_archived:
         raise SanguoGovernanceError("policy-governance-plan-encoding-repair targetPlanFiles cannot be empty")
     if not forbidden_fragments:
         raise SanguoGovernanceError("policy-governance-plan-encoding-repair forbiddenFragments cannot be empty")

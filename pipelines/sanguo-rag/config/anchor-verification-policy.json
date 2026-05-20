@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "anchor.verification.policy.v0.1",
+  "minNgramOverlap": 4,
+  "minGroundedHits": 1,
+  "directPersonMatchBoost": 5,
+  "targetOnlyPersonMatchBoost": 20,
+  "targetOnlyAngleMatchBoost": 3,
+  "conflictKeywordPatterns": [
+    "非是",
+    "誤作",
+    "讹作",
+    "訛作",
+    "疑為",
+    "一作"
+  ]
+}

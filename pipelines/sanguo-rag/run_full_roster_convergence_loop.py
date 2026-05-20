@@ -30,7 +30,14 @@ NPC_BRAIN_ROOT = resolve_npc_brain_root(REPO_ROOT)
 DEFAULT_OUTPUT_ROOT = Path("local/codex-smoke/knowledge-growth")
 DEFAULT_SOURCE_CONFIG = pipeline_config_path(REPO_ROOT, "external-evidence-sources.json")
 DEFAULT_LANE_POLICY_CONFIG = pipeline_config_path(REPO_ROOT, "full-roster-lane-policy.json")
+DEFAULT_ANCHOR_INDEX_ROOT = Path("artifacts/data-pipeline/sanguo-rag/anchor-index")
+DEFAULT_ANCHOR_INDEX_SOURCE_CONFIG = pipeline_config_path(REPO_ROOT, "anchor-index-build-sources.json")
 DEFAULT_GENERALS_PATH = Path("assets/resources/data/generals.json")
+DEFAULT_ROSTER_IDENTITY_RECORDS_PATH = Path(
+    "artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/roster-identity-records.json"
+)
+DEFAULT_KNOWN_FEMALE_NAMES_PATH = Path("data/sanguo/catalogs/catalog-known-female-names.jsonl")
+DEFAULT_FEMALE_PROFILE_OVERRIDES_PATH = Path("data/sanguo/catalogs/catalog-female-profile-overrides.jsonl")
 DEFAULT_EVENTS_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/events/events.jsonl")
 DEFAULT_GENERIC_CANDIDATES_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/events/generic-battle-candidates.jsonl")
 DEFAULT_ROUND_JSON_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/knowledge-growth-rounds")
@@ -43,6 +50,12 @@ AUTO_RETIRED_VERDICTS: set[str] = set()
 TRANSIENT_HTTP_STATUS: set[int] = set()
 TRANSIENT_REASON_KEYWORDS: tuple[str, ...] = ()
 CONVERGENCE_LOOP_STATE_POLICY: dict[str, Any] = {}
+FRONTIER_FEEDBACK_PURPOSE_POLICY: dict[str, tuple[str, ...] | str] = {
+    "manualQuoteTargetLanes": ("evidence-discovery", "seed-to-card"),
+    "seedToCardLane": "seed-to-card",
+    "precisionLanes": ("deterministic-repair", "skill-preview", "human-review", "rumination"),
+    "skipLane": "runtime-readiness",
+}
 
 
 def apply_full_roster_runner_governance(governance_root: str | Path | None, runner_policy: str | Path | None = None) -> None:
@@ -200,6 +213,24 @@ def profile_lane_policy(lane_policy: dict[str, Any], profile: str) -> dict[str, 
 def compact_text(value: Any) -> str:
     text = str(value or "").strip()
     return " ".join(text.split())
+
+
+def normalize_string_list(raw_values: Any) -> list[str]:
+    if isinstance(raw_values, str):
+        values = [raw_values]
+    elif isinstance(raw_values, (list, tuple)):
+        values = [str(value or "") for value in raw_values]
+    else:
+        values = []
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        token = str(value or "").strip()
+        if not token or token in seen:
+            continue
+        seen.add(token)
+        normalized.append(token)
+    return normalized
 
 
 def command_text(command: list[str]) -> str:
@@ -617,6 +648,116 @@ def load_roster_names(path: Path) -> dict[str, str]:
     return names
 
 
+def read_jsonl_labels(path: Path, key: str = "name") -> set[str]:
+    labels: set[str] = set()
+    for row in read_jsonl(path):
+        value = str(row.get(key) or "").strip()
+        if value:
+            labels.add(value)
+    return labels
+
+
+def alias_labels_from_record(row: dict[str, Any]) -> list[str]:
+    labels: list[str] = []
+    for key in ("name", "title"):
+        value = str(row.get(key) or "").strip()
+        if value:
+            labels.append(value)
+    aliases = row.get("alias")
+    if isinstance(aliases, str):
+        labels.append(aliases)
+    elif isinstance(aliases, list):
+        for item in aliases:
+            if isinstance(item, dict):
+                value = str(item.get("label") or item.get("name") or item.get("alias") or "").strip()
+            else:
+                value = str(item or "").strip()
+            if value:
+                labels.append(value)
+    identity_aliases = row.get("aliases")
+    if isinstance(identity_aliases, list):
+        for item in identity_aliases:
+            if isinstance(item, dict):
+                value = str(item.get("label") or item.get("name") or item.get("alias") or "").strip()
+            else:
+                value = str(item or "").strip()
+            if value:
+                labels.append(value)
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for label in labels:
+        if label in seen:
+            continue
+        seen.add(label)
+        deduped.append(label)
+    return deduped
+
+
+def load_female_label_hints() -> set[str]:
+    labels = read_jsonl_labels(resolve_existing_path(DEFAULT_KNOWN_FEMALE_NAMES_PATH))
+    labels.update(read_jsonl_labels(resolve_existing_path(DEFAULT_FEMALE_PROFILE_OVERRIDES_PATH)))
+    return labels
+
+
+def materialize_generals_fallback(generals_path: Path, run_root: Path) -> tuple[Path, dict[str, Any]]:
+    payload = read_json(generals_path)
+    if isinstance(payload, list):
+        return generals_path, {
+            "applied": False,
+            "reason": "input-generals-ok",
+            "generalsPath": repo_relative(generals_path),
+        }
+
+    identity_path = resolve_existing_path(DEFAULT_ROSTER_IDENTITY_RECORDS_PATH)
+    identity_payload = read_json(identity_path)
+    identity_rows = identity_payload.get("data") if isinstance(identity_payload, dict) else []
+    if not isinstance(identity_rows, list) or not identity_rows:
+        return generals_path, {
+            "applied": False,
+            "reason": "fallback-roster-identity-missing",
+            "generalsPath": repo_relative(generals_path),
+            "fallbackIdentityPath": repo_relative(identity_path),
+        }
+
+    female_hints = load_female_label_hints()
+    converted: list[dict[str, Any]] = []
+    for row in identity_rows:
+        if not isinstance(row, dict):
+            continue
+        general_id = str(row.get("generalId") or row.get("id") or "").strip()
+        if not general_id:
+            continue
+        labels = alias_labels_from_record(row)
+        name = str(row.get("name") or (labels[0] if labels else "") or general_id).strip()
+        alias_values = [label for label in labels if label != name]
+        is_female = name in female_hints or any(label in female_hints for label in alias_values)
+        converted.append(
+            {
+                "id": general_id,
+                "name": name,
+                "faction": row.get("faction"),
+                "title": row.get("title"),
+                "alias": alias_values,
+                "gender": row.get("gender") or ("female" if is_female else "unknown"),
+                "sourceLayer": "auto-roster-fallback",
+                "canonicalWrites": False,
+            }
+        )
+
+    fallback_path = run_root / "_auto-inputs" / "generals.from-roster-identity.json"
+    write_json(fallback_path, converted)
+    return fallback_path, {
+        "applied": True,
+        "reason": "input-generals-missing-or-invalid",
+        "generalsPath": repo_relative(fallback_path),
+        "originalGeneralsPath": repo_relative(generals_path),
+        "fallbackIdentityPath": repo_relative(identity_path),
+        "rowCount": len(converted),
+        "femaleHintCount": sum(1 for row in converted if row.get("gender") == "female"),
+        "canonicalWrites": False,
+    }
+
+
 def collect_generic_clues(path: Path) -> dict[str, list[dict[str, Any]]]:
     by_general: dict[str, list[dict[str, Any]]] = {}
     for row in read_jsonl(path):
@@ -943,11 +1084,348 @@ def merge_seed_rows(paths: list[Path]) -> list[dict[str, Any]]:
     return rows
 
 
+def load_manual_quote_alias_index(generals_path: Path) -> dict[str, list[dict[str, Any]]]:
+    index: dict[str, list[dict[str, Any]]] = {}
+
+    def add_record(row: dict[str, Any], source_path: Path) -> None:
+        general_id = str(row.get("id") or row.get("generalId") or "").strip()
+        if not general_id:
+            return
+        name = str(row.get("name") or general_id).strip()
+        for label in alias_labels_from_record(row):
+            normalized = compact_text(label)
+            if not normalized:
+                continue
+            bucket = index.setdefault(normalized, [])
+            if any(item.get("generalId") == general_id for item in bucket):
+                continue
+            bucket.append(
+                {
+                    "generalId": general_id,
+                    "name": name,
+                    "label": label,
+                    "sourcePath": repo_relative(source_path),
+                }
+            )
+
+    for path in [generals_path, resolve_existing_path(DEFAULT_ROSTER_IDENTITY_RECORDS_PATH)]:
+        payload = read_json(path)
+        rows = payload.get("data") if isinstance(payload, dict) else payload
+        if not isinstance(rows, list):
+            continue
+        for row in rows:
+            if isinstance(row, dict):
+                add_record(row, path)
+    return index
+
+
+def manual_quote_angles(source: dict[str, Any]) -> list[str]:
+    manual_quote_angle_types = {
+        "identity",
+        "relationship",
+        "event",
+        "location",
+        "title",
+        "trait",
+        "activity",
+        "role",
+        "dialogue_seed",
+        "worldbuilding_note",
+    }
+    scopes = source.get("claimScopes") if isinstance(source.get("claimScopes"), list) else []
+    angles: list[str] = []
+    for scope in scopes:
+        angle = str(scope or "").strip()
+        if angle in manual_quote_angle_types and angle not in angles:
+            angles.append(angle)
+    return angles or ["worldbuilding_note"]
+
+
+def append_manual_quote_target_rows(
+    *,
+    source: dict[str, Any],
+    seed_rows: list[dict[str, Any]],
+    card_rows: list[dict[str, Any]],
+    selected_pairs: set[tuple[str, str]],
+    sid: str,
+    source_family: str,
+    source_layer: str,
+    trust_tier: str,
+    source_url: str,
+    general_id: str,
+    matched_name: str,
+    label: str,
+    angle: str,
+    feedback_target: dict[str, Any] | None = None,
+) -> bool:
+    general_id = str(general_id or "").strip()
+    angle = str(angle or "").strip()
+    if not general_id or not angle:
+        return False
+    pair = (general_id, angle)
+    if pair in selected_pairs:
+        return False
+    selected_pairs.add(pair)
+
+    ordinal = len(seed_rows) + 1
+    locator = f"{source_url}#target-{ordinal:03d}"
+    feedback_suffix = "; feedback=frontier" if feedback_target else ""
+    quote = (
+        f"manual_quote target: source={sid}; person={general_id}; "
+        f"label={label}; angle={angle}{feedback_suffix}"
+    )
+    digest = stable_hash(sid, general_id, label, angle, ordinal, "frontier" if feedback_target else "configured")
+    text_hash = f"sha256:{stable_hash(quote, length=32)}"
+    seed_id = f"seed:{sid}:{general_id}:{angle}:manual-target:{digest}"
+    evidence_id = f"manual-target-card:{sid}:{general_id}:{angle}:{digest}"
+    manual_quote = {
+        "targetOnly": True,
+        "hasDirectQuote": False,
+        "configuredManualEvidenceCount": int(source.get("manualEvidenceCount") or 0),
+        "curationKeyword": label,
+    }
+    quality_flags = ["manual_quote_target_without_direct_quote"]
+    if feedback_target:
+        manual_quote["frontierFeedback"] = {
+            "roundId": feedback_target.get("roundId"),
+            "rank": feedback_target.get("rank"),
+            "feedbackScore": feedback_target.get("feedbackScore"),
+            "nextLane": feedback_target.get("nextLane"),
+            "purposes": list(feedback_target.get("purposes") or []),
+        }
+        quality_flags.append("frontier_feedback_target")
+
+    common = {
+        "version": "3.0.0",
+        "sourceId": sid,
+        "sourceFamily": source_family,
+        "sourceLayer": source_layer,
+        "trustTier": trust_tier,
+        "sourceUrl": source_url,
+        "pageTitle": sid,
+        "generalId": general_id,
+        "matchedName": matched_name or label or general_id,
+        "angleType": angle,
+        "seedText": quote,
+        "quote": quote,
+        "locator": locator,
+        "textHash": text_hash,
+        "manualQuoteTarget": True,
+        "manualQuoteHasDirectQuote": False,
+        "manualQuote": manual_quote,
+        "scoreboardLayerOverride": "worldbuilding",
+        "qualityFlags": quality_flags,
+        "frontierFeedbackTarget": bool(feedback_target),
+        "canonicalWrites": False,
+    }
+    seed_rows.append(
+        {
+            **common,
+            "seedId": seed_id,
+            "sourceEvidenceId": evidence_id,
+            "hasQuote": True,
+            "hasLocator": True,
+            "hasTime": False,
+            "hasLocation": angle == "location",
+            "extractionMethod": "manual_quote_target",
+            "sourceLiveStatus": "manual_quote",
+            "seedConfidenceScore": 0.0,
+            "siteReliabilityMultiplier": 1.0,
+            "crossSiteMatchCount": 0,
+            "promotionTarget": "seed-only",
+        }
+    )
+    card_rows.append(
+        {
+            "version": "3.0.0",
+            "evidenceId": evidence_id,
+            "sourceSeedId": seed_id,
+            "sourceEvidenceId": evidence_id,
+            "sourcePolicyId": sid,
+            "sourceFamily": source_family,
+            "sourceLayer": source_layer,
+            "trustTier": trust_tier,
+            "singleSourceMaxGrade": "B",
+            "url": source_url,
+            "pageTitle": sid,
+            "locator": locator,
+            "quote": quote,
+            "textHash": text_hash,
+            "claimType": angle,
+            "claimScopes": [angle],
+            "seedConfidenceScore": 0.0,
+            "siteReliabilityMultiplier": 1.0,
+            "crossSiteMatchCount": 0,
+            "crossSiteSourceFamilies": [],
+            "reviewGrade": "B",
+            "promotionState": "manual-quote-target",
+            "generalIds": [general_id],
+            "matchedName": matched_name or label or general_id,
+            "manualQuoteTarget": True,
+            "manualQuoteHasDirectQuote": False,
+            "manualQuote": manual_quote,
+            "scoreboardLayerOverride": "worldbuilding",
+            "qualityFlags": quality_flags,
+            "frontierFeedbackTarget": bool(feedback_target),
+            "canonicalWrites": False,
+        }
+    )
+    return True
+
+
+def materialize_manual_quote_source(
+    *,
+    source: dict[str, Any],
+    alias_index: dict[str, list[dict[str, Any]]],
+    output_root: Path,
+    feedback_targets: list[dict[str, Any]] | None = None,
+    prefer_feedback_targets: bool = True,
+) -> dict[str, Any]:
+    sid = str(source.get("sourceId") or "").strip()
+    output_root.mkdir(parents=True, exist_ok=True)
+    seed_path = output_root / f"{sid}.manual-evidence-seeds.jsonl"
+    card_path = output_root / f"{sid}.candidate-evidence-cards.jsonl"
+    summary_path = output_root / f"{sid}.manual-quote-summary.json"
+
+    keywords = normalize_string_list(source.get("termHitKeywords"))
+    angles = manual_quote_angles(source)
+    manual_limit = int(source.get("manualEvidenceCount") or 0)
+    if manual_limit <= 0:
+        manual_limit = max(len(keywords), 1)
+
+    source_family = str(source.get("sourceFamily") or sid).strip()
+    source_layer = str(source.get("sourceLayer") or "worldbuilding").strip()
+    trust_tier = str(source.get("trustTier") or "secondary").strip()
+    source_url = str(source.get("baseUrl") or f"about:{sid}").strip()
+    seed_rows: list[dict[str, Any]] = []
+    card_rows: list[dict[str, Any]] = []
+    unresolved_keywords: list[str] = []
+    selected_pairs: set[tuple[str, str]] = set()
+
+    def append_feedback_targets() -> int:
+        appended = 0
+        for target in feedback_targets or []:
+            if len(seed_rows) >= manual_limit:
+                break
+            if not isinstance(target, dict):
+                continue
+            general_id = str(target.get("generalId") or "").strip()
+            if not general_id:
+                continue
+            matched_name = str(target.get("displayName") or general_id).strip()
+            label = matched_name or general_id
+            missing_angles = [str(item).strip() for item in (target.get("missingAngles") or []) if str(item).strip()]
+            matching_angles = [angle for angle in missing_angles if angle in set(angles)]
+            target_angles = (matching_angles[:1] or angles[:1])
+            enriched_target = dict(target)
+            for angle in target_angles:
+                if len(seed_rows) >= manual_limit:
+                    break
+                if append_manual_quote_target_rows(
+                    source=source,
+                    seed_rows=seed_rows,
+                    card_rows=card_rows,
+                    selected_pairs=selected_pairs,
+                    sid=sid,
+                    source_family=source_family,
+                    source_layer=source_layer,
+                    trust_tier=trust_tier,
+                    source_url=source_url,
+                    general_id=general_id,
+                    matched_name=matched_name,
+                    label=label,
+                    angle=angle,
+                    feedback_target=enriched_target,
+                ):
+                    appended += 1
+        return appended
+
+    def append_configured_keyword_targets() -> None:
+        for keyword in keywords:
+            if len(seed_rows) >= manual_limit:
+                break
+            matches = alias_index.get(compact_text(keyword), [])
+            if not matches:
+                unresolved_keywords.append(keyword)
+                continue
+            for match in matches[:2]:
+                if len(seed_rows) >= manual_limit:
+                    break
+                general_id = str(match.get("generalId") or "").strip()
+                if not general_id:
+                    continue
+                for angle in angles:
+                    if len(seed_rows) >= manual_limit:
+                        break
+                    append_manual_quote_target_rows(
+                        source=source,
+                        seed_rows=seed_rows,
+                        card_rows=card_rows,
+                        selected_pairs=selected_pairs,
+                        sid=sid,
+                        source_family=source_family,
+                        source_layer=source_layer,
+                        trust_tier=trust_tier,
+                        source_url=source_url,
+                        general_id=general_id,
+                        matched_name=str(match.get("name") or keyword),
+                        label=keyword,
+                        angle=angle,
+                    )
+
+    feedback_target_count = 0
+    if prefer_feedback_targets:
+        feedback_target_count = append_feedback_targets()
+        append_configured_keyword_targets()
+    else:
+        append_configured_keyword_targets()
+        feedback_target_count = append_feedback_targets()
+
+    selected_people = {
+        str((row.get("generalIds") or [""])[0] or "").strip()
+        for row in card_rows
+        if isinstance(row.get("generalIds"), list) and (row.get("generalIds") or [])
+    }
+    selected_people.discard("")
+
+    write_jsonl(seed_path, seed_rows)
+    write_jsonl(card_path, card_rows)
+    summary = {
+        "version": "1.0.0",
+        "generatedAt": utc_now(),
+        "mode": "manual-quote-target-materialization",
+        "canonicalWrites": False,
+        "sourceId": sid,
+        "sourceLayer": source_layer,
+        "scoreboardLayerOverride": "worldbuilding",
+        "manualEvidenceCountConfigured": int(source.get("manualEvidenceCount") or 0),
+        "seedCount": len(seed_rows),
+        "candidateCardCount": len(card_rows),
+        "canonicalPeople": len(selected_people),
+        "frontierFeedbackTargetCount": feedback_target_count,
+        "frontierFeedbackPreferred": bool(prefer_feedback_targets),
+        "unresolvedKeywordCount": len(unresolved_keywords),
+        "unresolvedKeywords": unresolved_keywords[:50],
+        "outputs": {
+            "manualSeedJsonlPath": repo_relative(seed_path),
+            "candidateCardsPath": repo_relative(card_path),
+            "summaryPath": repo_relative(summary_path),
+        },
+        "notes": [
+            "These rows materialize manual_quote target coverage only.",
+            "They intentionally set manualQuoteHasDirectQuote=false and scoreboardLayerOverride=worldbuilding to avoid historicalTrustScore provenance pollution.",
+        ],
+    }
+    write_json(summary_path, summary)
+    return summary
+
+
 def collect_manual_source_metrics(
     *,
     manual_source_ids: set[str],
     card_paths: list[Path],
     ranking_paths: list[Path],
+    seed_paths: list[Path] | None = None,
     injection_root: Path,
 ) -> dict[str, dict[str, Any]]:
     metrics: dict[str, dict[str, Any]] = {
@@ -994,6 +1472,25 @@ def collect_manual_source_metrics(
         for row in ranked:
             if not isinstance(row, dict):
                 continue
+            source_id = str(row.get("sourceId") or "").strip()
+            if source_id not in metrics:
+                continue
+            bucket = metrics[source_id]
+            seed_id = str(row.get("seedId") or "").strip()
+            if not seed_id:
+                seed_id = f"seed:auto:{stable_hash(source_id, row.get('generalId'), row.get('candidatePersonId'), row.get('seedText'))}"
+            normalized = dict(row)
+            normalized["seedId"] = seed_id
+            bucket["seedRows"][seed_id] = normalized
+            general_id = str(normalized.get("generalId") or "").strip()
+            candidate_person_id = str(normalized.get("candidatePersonId") or "").strip()
+            if general_id:
+                bucket["canonicalPeople"].add(general_id)
+            elif candidate_person_id:
+                bucket["shadowPeople"].add(candidate_person_id)
+
+    for seed_path in seed_paths or []:
+        for row in read_jsonl(seed_path):
             source_id = str(row.get("sourceId") or "").strip()
             if source_id not in metrics:
                 continue
@@ -1097,6 +1594,315 @@ def build_seed_to_card_priority_allowlist(
     return selected_ids, "ok"
 
 
+def target_limit_from_args(args: argparse.Namespace) -> int:
+    configured = int(getattr(args, "frontier_feedback_target_limit", 0) or 0)
+    if configured > 0:
+        return configured
+    candidates = [
+        int(getattr(args, "top", 0) or 0),
+        int(getattr(args, "seed_to_card_priority_limit", 0) or 0),
+        int(getattr(args, "precision_top_generals", 0) or 0),
+        int(getattr(args, "include_cold", 0) or 0),
+    ]
+    return max([value for value in candidates if value > 0] or [0])
+
+
+def pilot_feedback_limit_from_args(args: argparse.Namespace) -> int:
+    configured = int(getattr(args, "frontier_feedback_pilot_limit", 0) or 0)
+    if configured > 0:
+        return configured
+    candidates = [
+        int(getattr(args, "include_cold", 0) or 0),
+        int(getattr(args, "precision_top_generals", 0) or 0),
+    ]
+    return max([value for value in candidates if value > 0] or [1])
+
+
+def feedback_mode_enabled(args: argparse.Namespace) -> bool:
+    return str(getattr(args, "frontier_feedback_mode", "round") or "round").strip().lower() != "off"
+
+
+def feedback_row_purposes(row: dict[str, Any]) -> list[str]:
+    lane = str(row.get("nextLane") or "").strip()
+    purposes: list[str] = []
+    manual_target_lanes = tuple(FRONTIER_FEEDBACK_PURPOSE_POLICY.get("manualQuoteTargetLanes") or ())
+    seed_to_card_lane = str(FRONTIER_FEEDBACK_PURPOSE_POLICY.get("seedToCardLane") or "")
+    precision_lanes = tuple(FRONTIER_FEEDBACK_PURPOSE_POLICY.get("precisionLanes") or ())
+    if lane in manual_target_lanes or int(row.get("externalEvidenceCount") or 0) <= 0:
+        purposes.append("manual-quote-target")
+    if lane == seed_to_card_lane or int(row.get("seedCount") or 0) > int(row.get("cardCount") or 0):
+        purposes.append("seed-to-card")
+    if int(row.get("genericCandidateCount") or 0) > 0 or int(row.get("eventQuestionSeedCount") or 0) > 0:
+        purposes.append("pilot")
+    if lane in precision_lanes or row.get("missingFields"):
+        purposes.append("precision")
+    return list(dict.fromkeys(purposes))
+
+
+def feedback_row_score(row: dict[str, Any]) -> float:
+    missing_count = len(row.get("missingAngles") or []) + len(row.get("missingFields") or [])
+    signal_count = (
+        int(row.get("genericCandidateCount") or 0)
+        + int(row.get("eventQuestionSeedCount") or 0)
+        + int(row.get("seedCount") or 0)
+    )
+    evidence_gap = 1 if int(row.get("externalEvidenceCount") or 0) <= 0 else 0
+    return round(float(row.get("priorityScore") or 0.0) + missing_count + min(signal_count, 10) + evidence_gap, 2)
+
+
+def build_frontier_feedback_targets(rows: list[dict[str, Any]], limit: int) -> list[dict[str, Any]]:
+    candidates: list[dict[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        general_id = str(row.get("generalId") or "").strip()
+        if not general_id:
+            continue
+        if str(row.get("rosterState") or "canonical").strip() != "canonical":
+            continue
+        lane = str(row.get("nextLane") or "").strip()
+        if lane == str(FRONTIER_FEEDBACK_PURPOSE_POLICY.get("skipLane") or ""):
+            continue
+        purposes = feedback_row_purposes(row)
+        if not purposes:
+            continue
+        feedback_score = feedback_row_score(row)
+        target = {
+            "generalId": general_id,
+            "displayName": row.get("displayName") or general_id,
+            "gender": row.get("gender"),
+            "reviewGrade": row.get("reviewGrade"),
+            "gradeType": row.get("gradeType"),
+            "nextLane": lane,
+            "feedbackScore": feedback_score,
+            "priorityScore": row.get("priorityScore"),
+            "historicalTrustScore": row.get("historicalTrustScore"),
+            "worldbuildingUsabilityScore": row.get("worldbuildingUsabilityScore"),
+            "missingFields": list(row.get("missingFields") or []),
+            "missingAngles": list(row.get("missingAngles") or []),
+            "eventSignalCount": int(row.get("eventSignalCount") or 0),
+            "eventQuestionSeedCount": int(row.get("eventQuestionSeedCount") or 0),
+            "genericCandidateCount": int(row.get("genericCandidateCount") or 0),
+            "seedCount": int(row.get("seedCount") or 0),
+            "cardCount": int(row.get("cardCount") or 0),
+            "externalEvidenceCount": int(row.get("externalEvidenceCount") or 0),
+            "externalHistoryCount": int(row.get("externalHistoryCount") or 0),
+            "externalRomanceCount": int(row.get("externalRomanceCount") or 0),
+            "externalWorldbuildingCount": int(row.get("externalWorldbuildingCount") or 0),
+            "purposes": purposes,
+            "reasonSignals": [
+                signal
+                for signal, enabled in [
+                    ("lane:" + lane, bool(lane)),
+                    ("missingFields", bool(row.get("missingFields"))),
+                    ("missingAngles", bool(row.get("missingAngles"))),
+                    ("noExternalEvidence", int(row.get("externalEvidenceCount") or 0) <= 0),
+                    ("hasGenericCandidates", int(row.get("genericCandidateCount") or 0) > 0),
+                    ("hasEventQuestionSeeds", int(row.get("eventQuestionSeedCount") or 0) > 0),
+                    ("seedBacklog", int(row.get("seedCount") or 0) > int(row.get("cardCount") or 0)),
+                ]
+                if enabled
+            ],
+            "canonicalWrites": False,
+        }
+        candidates.append(target)
+
+    candidates.sort(
+        key=lambda row: (
+            -float(row.get("feedbackScore") or 0.0),
+            -float(row.get("priorityScore") or 0.0),
+            float(row.get("worldbuildingUsabilityScore") or 0.0),
+            float(row.get("historicalTrustScore") or 0.0),
+            str(row.get("generalId") or ""),
+        )
+    )
+    limited = candidates[: max(int(limit), 0)] if limit > 0 else candidates
+    for index, row in enumerate(limited, 1):
+        row["rank"] = index
+    return limited
+
+
+def render_frontier_feedback_md(payload: dict[str, Any]) -> str:
+    lines = [
+        "# Frontier Feedback",
+        "",
+        f"- Round ID: `{payload.get('roundId')}`",
+        f"- Generated At: `{payload.get('generatedAt')}`",
+        f"- canonicalWrites: `{payload.get('canonicalWrites')}`",
+        f"- Target Count: `{payload.get('targetCount')}`",
+        "",
+        "## Purpose Counts",
+        "",
+    ]
+    purpose_counts = payload.get("purposeCounts") if isinstance(payload.get("purposeCounts"), dict) else {}
+    for purpose, count in sorted(purpose_counts.items()):
+        lines.append(f"- `{purpose}`: `{count}`")
+    lines.extend(
+        [
+            "",
+            "## Top Targets",
+            "",
+            "| Rank | General | Lane | Grade | Score | Purposes | Missing |",
+            "|---:|---|---|---|---:|---|---|",
+        ]
+    )
+    for row in list(payload.get("targets") or [])[:30]:
+        missing = ",".join([*list(row.get("missingFields") or []), *list(row.get("missingAngles") or [])])
+        lines.append(
+            "| `{rank}` | `{gid}` {name} | `{lane}` | `{grade}` | `{score}` | `{purposes}` | `{missing}` |".format(
+                rank=row.get("rank"),
+                gid=row.get("generalId"),
+                name=str(row.get("displayName") or "").replace("|", "\\|"),
+                lane=row.get("nextLane"),
+                grade=row.get("reviewGrade"),
+                score=row.get("feedbackScore"),
+                purposes=",".join(row.get("purposes") or []),
+                missing=missing or "-",
+            )
+        )
+    lines.append("")
+    return "\n".join(lines)
+
+
+def build_frontier_feedback_packet(
+    *,
+    round_id: str,
+    rows: list[dict[str, Any]],
+    output_root: Path,
+    target_limit: int,
+) -> dict[str, Any]:
+    output_root.mkdir(parents=True, exist_ok=True)
+    targets = build_frontier_feedback_targets(rows, limit=target_limit)
+    purpose_counter: Counter[str] = Counter()
+    lane_counter: Counter[str] = Counter()
+    for target in targets:
+        lane_counter[str(target.get("nextLane") or "unknown")] += 1
+        for purpose in target.get("purposes") or []:
+            purpose_counter[str(purpose)] += 1
+    json_path = output_root / "frontier-feedback.json"
+    md_path = output_root / "frontier-feedback.zh-TW.md"
+    payload = {
+        "version": "1.0.0",
+        "generatedAt": utc_now(),
+        "mode": "full-roster-frontier-feedback",
+        "canonicalWrites": False,
+        "roundId": round_id,
+        "targetLimit": int(target_limit),
+        "targetCount": len(targets),
+        "purposeCounts": dict(sorted(purpose_counter.items())),
+        "laneCounts": dict(sorted(lane_counter.items())),
+        "outputs": {
+            "jsonPath": repo_relative(json_path),
+            "markdownPath": repo_relative(md_path),
+        },
+        "targets": targets,
+    }
+    write_json(json_path, payload)
+    md_path.write_text(render_frontier_feedback_md(payload), encoding="utf-8")
+    return payload
+
+
+def feedback_targets_for_purpose(payload: dict[str, Any] | None, purpose: str, limit: int = 0) -> list[dict[str, Any]]:
+    if not isinstance(payload, dict):
+        return []
+    selected: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    feedback_round_id = payload.get("roundId")
+    for row in payload.get("targets") or []:
+        if not isinstance(row, dict):
+            continue
+        general_id = str(row.get("generalId") or "").strip()
+        if not general_id or general_id in seen:
+            continue
+        if purpose not in set(str(item) for item in (row.get("purposes") or [])):
+            continue
+        selected.append({**row, "roundId": feedback_round_id})
+        seen.add(general_id)
+        if limit > 0 and len(selected) >= limit:
+            break
+    return selected
+
+
+def feedback_target_ids(payload: dict[str, Any] | None, purpose: str, limit: int = 0) -> list[str]:
+    return [str(row.get("generalId") or "") for row in feedback_targets_for_purpose(payload, purpose, limit=limit)]
+
+
+def feedback_search_terms(payload: dict[str, Any] | None, limit: int) -> list[str]:
+    terms: list[str] = []
+    seen: set[str] = set()
+    if not isinstance(payload, dict):
+        return terms
+    for row in payload.get("targets") or []:
+        labels = [row.get("displayName"), row.get("generalId")]
+        for label in labels:
+            token = str(label or "").strip()
+            if not token or token in seen:
+                continue
+            seen.add(token)
+            terms.append(token)
+            if limit > 0 and len(terms) >= limit:
+                return terms
+    return terms
+
+
+def materialize_feedback_source_config(
+    *,
+    source_config_path: Path,
+    feedback_payload: dict[str, Any] | None,
+    output_path: Path,
+    term_limit: int,
+) -> dict[str, Any]:
+    terms = feedback_search_terms(feedback_payload, limit=max(int(term_limit), 0))
+    if not terms:
+        return {"applied": False, "reason": "no-feedback-search-terms", "sourceConfigPath": repo_relative(source_config_path)}
+    payload = read_json(source_config_path)
+    if not isinstance(payload, dict):
+        return {"applied": False, "reason": "invalid-source-config", "sourceConfigPath": repo_relative(source_config_path)}
+    rows = payload.get("sources")
+    if not isinstance(rows, list):
+        return {"applied": False, "reason": "missing-sources", "sourceConfigPath": repo_relative(source_config_path)}
+
+    updated_rows: list[dict[str, Any]] = []
+    touched_source_count = 0
+    for row in rows:
+        if not isinstance(row, dict):
+            updated_rows.append(row)
+            continue
+        updated = dict(row)
+        adapter = str(updated.get("adapterType") or "").strip().lower()
+        status = normalize_status(updated.get("status"))
+        if status == "approved" and adapter != "manual_quote":
+            base_terms = normalize_string_list(updated.get("termHitKeywords"))
+            merged_terms = normalize_string_list([*base_terms, *terms])
+            if merged_terms != base_terms:
+                updated["termHitKeywords"] = merged_terms
+                updated["feedbackTermHitKeywords"] = [term for term in terms if term not in base_terms]
+                updated["feedbackTermSource"] = "full-roster-frontier-feedback"
+                touched_source_count += 1
+        updated_rows.append(updated)
+
+    updated_payload = dict(payload)
+    updated_payload["sources"] = updated_rows
+    updated_payload["runtimeFeedback"] = {
+        "mode": "frontier-feedback-source-config",
+        "generatedAt": utc_now(),
+        "sourceConfigPath": repo_relative(source_config_path),
+        "feedbackRoundId": (feedback_payload or {}).get("roundId") if isinstance(feedback_payload, dict) else None,
+        "termCount": len(terms),
+        "touchedSourceCount": touched_source_count,
+        "canonicalWrites": False,
+    }
+    write_json(output_path, updated_payload)
+    return {
+        "applied": touched_source_count > 0,
+        "reason": "ok" if touched_source_count > 0 else "no-approved-live-sources",
+        "sourceConfigPath": repo_relative(output_path),
+        "baseSourceConfigPath": repo_relative(source_config_path),
+        "termCount": len(terms),
+        "touchedSourceCount": touched_source_count,
+    }
+
+
 def run_global_seed_pipeline(
     *,
     round_root: Path,
@@ -1106,6 +1912,9 @@ def run_global_seed_pipeline(
     seed_to_card_priority_limit: int,
     seed_to_card_priority_extra_ids: list[str] | None,
     seed_to_card_min_score: float,
+    anchor_first_verification: bool,
+    anchor_index_root: Path | None,
+    anchor_verification_topk: int,
     dry_run: bool,
     overwrite: bool,
 ) -> dict[str, Any]:
@@ -1117,6 +1926,9 @@ def run_global_seed_pipeline(
         seed_to_card_priority_limit=seed_to_card_priority_limit,
         seed_to_card_priority_extra_ids=seed_to_card_priority_extra_ids,
         seed_to_card_min_score=seed_to_card_min_score,
+        anchor_first_verification=anchor_first_verification,
+        anchor_index_root=anchor_index_root,
+        anchor_verification_topk=anchor_verification_topk,
         dry_run=dry_run,
         overwrite=overwrite,
         repo_root=REPO_ROOT,
@@ -1127,6 +1939,56 @@ def run_global_seed_pipeline(
         run_command_fn=run_command,
         write_jsonl_fn=write_jsonl,
     )
+
+
+def prepare_anchor_index(
+    *,
+    enabled: bool,
+    anchor_index_root: Path,
+    source_config_path: Path,
+    rebuild: bool,
+    dry_run: bool,
+) -> dict[str, Any]:
+    summary_path = anchor_index_root / "index-summary.json"
+    existing_summary = read_json(summary_path) if summary_path.exists() else {}
+    existing_count = int(existing_summary.get("totalPassages") or 0) if isinstance(existing_summary, dict) else 0
+    if not enabled:
+        return {
+            "enabled": False,
+            "reason": "anchor-first-disabled",
+            "anchorIndexRoot": repo_relative(anchor_index_root),
+            "summaryPath": repo_relative(summary_path),
+            "totalPassages": existing_count,
+            "command": None,
+        }
+    if existing_count > 0 and not rebuild:
+        return {
+            "enabled": True,
+            "reason": "existing-anchor-index",
+            "anchorIndexRoot": repo_relative(anchor_index_root),
+            "summaryPath": repo_relative(summary_path),
+            "totalPassages": existing_count,
+            "command": None,
+        }
+    command = [
+        sys.executable,
+        str((REPO_ROOT / PIPELINE_ROOT / "anchor_passage_index_builder.py").resolve()),
+        "--output-root",
+        repo_relative(anchor_index_root),
+        "--source-config",
+        repo_relative(source_config_path),
+    ]
+    result = run_command(command, dry_run=dry_run)
+    rebuilt_summary = read_json(summary_path) if summary_path.exists() else {}
+    rebuilt_count = int(rebuilt_summary.get("totalPassages") or 0) if isinstance(rebuilt_summary, dict) else 0
+    return {
+        "enabled": True,
+        "reason": "rebuilt-anchor-index" if result.get("returnCode") == 0 else "anchor-index-build-failed",
+        "anchorIndexRoot": repo_relative(anchor_index_root),
+        "summaryPath": repo_relative(summary_path),
+        "totalPassages": rebuilt_count,
+        "command": result,
+    }
 
 
 def build_external_summary(
@@ -2204,7 +3066,15 @@ def run_external_benchmarks(
     round_id: str,
     sources: list[dict[str, Any]],
     source_config_path: Path,
+    generals_path: Path,
     scoreboard_path: Path | None,
+    feedback_targets: list[dict[str, Any]] | None,
+    prefer_feedback_targets: bool,
+    source_health_mode: str,
+    timeout_seconds: float,
+    anchor_first_verification: bool,
+    anchor_index_root: Path,
+    anchor_verification_topk: int,
     dry_run: bool,
     overwrite: bool,
 ) -> tuple[list[dict[str, Any]], list[Path], list[Path], list[Path], list[Path]]:
@@ -2216,6 +3086,7 @@ def run_external_benchmarks(
     manual_source_ids: set[str] = set()
     benchmark_root = run_root / "source-benchmarks"
     benchmark_root.mkdir(parents=True, exist_ok=True)
+    manual_alias_index = load_manual_quote_alias_index(generals_path)
 
     for source in sources:
         sid = str(source.get("sourceId") or "").strip()
@@ -2262,6 +3133,23 @@ def run_external_benchmarks(
             continue
         if adapter == "manual_quote" or status == "manual_quote":
             manual_source_ids.add(sid)
+            manual_artifacts = materialize_manual_quote_source(
+                source=source,
+                alias_index=manual_alias_index,
+                output_root=benchmark_root / "manual-quote-artifacts",
+                feedback_targets=feedback_targets,
+                prefer_feedback_targets=prefer_feedback_targets,
+            )
+            manual_seed_path_text = str((manual_artifacts.get("outputs") or {}).get("manualSeedJsonlPath") or "").strip()
+            manual_card_path_text = str((manual_artifacts.get("outputs") or {}).get("candidateCardsPath") or "").strip()
+            if manual_seed_path_text:
+                candidate = resolve_existing_path(manual_seed_path_text)
+                if candidate.exists():
+                    manual_seed_paths.append(candidate)
+            if manual_card_path_text:
+                candidate = resolve_existing_path(manual_card_path_text)
+                if candidate.exists():
+                    card_paths.append(candidate)
             source_results.append(
                 {
                     "sourceId": sid,
@@ -2273,15 +3161,16 @@ def run_external_benchmarks(
                     "stage3Passed": None,
                     "samplePageCount": 0,
                     "fetchedPageCount": 0,
-                    "seedCount": 0,
-                    "candidateCardCount": 0,
+                    "seedCount": int(manual_artifacts.get("seedCount") or 0),
+                    "candidateCardCount": int(manual_artifacts.get("candidateCardCount") or 0),
                     "seedPerPage": None,
                     "candidateCardPerPage": None,
-                    "canonicalPeople": 0,
+                    "canonicalPeople": int(manual_artifacts.get("canonicalPeople") or 0),
                     "shadowPeople": 0,
                     "manualEvidenceCount": int(source.get("manualEvidenceCount") or 0),
-                    "manualSeedJsonlPath": None,
-                    "manualSeedInjected": False,
+                    "manualSeedJsonlPath": manual_seed_path_text or None,
+                    "manualSeedInjected": bool(int(manual_artifacts.get("seedCount") or 0)),
+                    "manualQuoteSummaryPath": str((manual_artifacts.get("outputs") or {}).get("summaryPath") or "") or None,
                     "summaryJsonPath": None,
                     "stage1FailureReasons": [],
                     "stage1HttpStatus": None,
@@ -2311,7 +3200,19 @@ def run_external_benchmarks(
             repo_relative(benchmark_root),
             "--source-config",
             repo_relative(source_config_path),
+            "--source-health-mode",
+            str(source_health_mode or "auto"),
+            "--timeout-seconds",
+            str(max(float(timeout_seconds), 1.0)),
+            "--anchor-index-root",
+            repo_relative(anchor_index_root),
+            "--anchor-verification-topk",
+            str(max(int(anchor_verification_topk), 1)),
         ]
+        if bool(anchor_first_verification):
+            command.append("--anchor-first-verification")
+        else:
+            command.append("--no-anchor-first-verification")
         if scoreboard_path and scoreboard_path.exists():
             command.extend(["--scoreboard-json", repo_relative(scoreboard_path)])
         if overwrite:
@@ -2373,6 +3274,7 @@ def run_external_benchmarks(
             manual_source_ids=manual_source_ids,
             card_paths=card_paths,
             ranking_paths=ranking_paths,
+            seed_paths=manual_seed_paths,
             injection_root=benchmark_root / "manual-seed-injections",
         )
         for row in source_results:
@@ -2791,6 +3693,7 @@ def run_round(
     carry_forward_external_artifacts: dict[str, list[Path]] | None,
     carry_forward_round_json_paths: list[Path] | None,
     previous_scoreboard_path: Path | None,
+    frontier_feedback: dict[str, Any] | None,
     dry_run: bool,
 ) -> dict[str, Any]:
     round_id = f"{args.run_id}-r{round_index}"
@@ -2825,12 +3728,48 @@ def run_round(
             if candidate.exists():
                 effective_scoreboard_path = candidate
 
+    feedback_targets = (
+        feedback_targets_for_purpose(
+            frontier_feedback,
+            "manual-quote-target",
+            limit=target_limit_from_args(args),
+        )
+        if feedback_mode_enabled(args)
+        else []
+    )
+    feedback_source_config_info: dict[str, Any] = {
+        "applied": False,
+        "reason": "feedback-disabled" if not feedback_mode_enabled(args) else "no-feedback-payload",
+        "sourceConfigPath": repo_relative(source_config_path),
+    }
+    effective_source_config_path = source_config_path
+    if feedback_mode_enabled(args) and isinstance(frontier_feedback, dict) and frontier_feedback.get("targets"):
+        feedback_config_path = round_root / "frontier-feedback-input" / "external-evidence-sources.feedback.json"
+        feedback_source_config_info = materialize_feedback_source_config(
+            source_config_path=source_config_path,
+            feedback_payload=frontier_feedback,
+            output_path=feedback_config_path,
+            term_limit=max(int(getattr(args, "frontier_feedback_term_limit", 0) or 0), target_limit_from_args(args)),
+        )
+        feedback_config_text = str(feedback_source_config_info.get("sourceConfigPath") or "").strip()
+        feedback_config_candidate = resolve_existing_path(feedback_config_text) if feedback_config_text else Path()
+        if feedback_source_config_info.get("applied") and feedback_config_candidate.exists():
+            effective_source_config_path = feedback_config_candidate
+
     source_results, card_paths, ranking_paths, harvested_seed_paths, manual_seed_paths = run_external_benchmarks(
         run_root=round_root,
         round_id=round_id,
         sources=sources,
-        source_config_path=source_config_path,
+        source_config_path=effective_source_config_path,
+        generals_path=generals_path,
         scoreboard_path=effective_scoreboard_path,
+        feedback_targets=feedback_targets,
+        prefer_feedback_targets=bool(args.frontier_feedback_prefer_targets),
+        source_health_mode=args.external_source_health_mode,
+        timeout_seconds=args.external_timeout_seconds,
+        anchor_first_verification=bool(args.anchor_first_verification),
+        anchor_index_root=resolve_existing_path(args.anchor_index_root),
+        anchor_verification_topk=max(int(args.anchor_verification_topk), 1),
         dry_run=dry_run,
         overwrite=args.overwrite,
     )
@@ -2847,8 +3786,16 @@ def run_round(
         seed_to_card_priority_extra_ids=[
             *[str(item or "").strip() for item in (args.seed_to_card_priority_general_id or [])],
             *[str(item or "").strip() for item in (args.precision_general_id or [])],
+            *feedback_target_ids(
+                frontier_feedback if feedback_mode_enabled(args) else None,
+                "seed-to-card",
+                limit=max(int(args.seed_to_card_priority_limit), 0),
+            ),
         ],
         seed_to_card_min_score=float(args.seed_to_card_min_score),
+        anchor_first_verification=bool(args.anchor_first_verification),
+        anchor_index_root=resolve_existing_path(args.anchor_index_root) if args.anchor_first_verification else None,
+        anchor_verification_topk=max(int(args.anchor_verification_topk), 1),
         dry_run=dry_run,
         overwrite=args.overwrite,
     )
@@ -2909,6 +3856,9 @@ def run_round(
         "--output-root",
         repo_relative(full_pilot_root),
     ]
+    if feedback_mode_enabled(args):
+        for general_id in feedback_target_ids(frontier_feedback, "pilot", limit=pilot_feedback_limit_from_args(args)):
+            pilot_command.extend(["--general-id", general_id])
     if args.overwrite:
         pilot_command.append("--overwrite")
     pilot_result = run_command(pilot_command, dry_run=dry_run)
@@ -3466,8 +4416,13 @@ def run_round(
         "externalSummaryPath": repo_relative(external_summary_path),
         "externalSourceRoiPath": repo_relative(external_roi_md_path),
         "externalCardsPath": repo_relative(cards_path),
+        "feedbackSourceConfigPath": feedback_source_config_info.get("sourceConfigPath"),
+        "feedbackSourceConfig": feedback_source_config_info,
+        "feedbackInputTargetCount": len(feedback_targets),
         "globalSeedRankingPath": global_seed_pipeline.get("rankingPath"),
         "globalCandidateCardsPath": global_seed_pipeline.get("candidateCardsPath"),
+        "anchorVerificationPath": global_seed_pipeline.get("anchorVerificationPath"),
+        "anchorVerificationSummaryPath": global_seed_pipeline.get("anchorVerificationSummaryPath"),
         "rankingInputPaths": [repo_relative(path) for path in ranking_inputs],
         "roundJsonPaths": [repo_relative(path) for path in round_json_inputs],
         "carryForwardExternalCardPathCount": len(carry_forward_card_paths),
@@ -3543,6 +4498,7 @@ def run_round(
         "commands": {
             "pilot": pilot_result,
             "globalSeedHarvest": global_seed_pipeline.get("harvestCommand"),
+            "globalSeedAnchorVerify": global_seed_pipeline.get("anchorVerifyCommand"),
             "globalSeedScore": global_seed_pipeline.get("scoreCommand"),
             "globalSeedPromote": global_seed_pipeline.get("promoteCommand"),
             "overlayObserved": observed_overlay_result,
@@ -3636,8 +4592,8 @@ def render_summary_md(summary: dict[str, Any]) -> str:
         "",
         "## Rounds",
         "",
-        "| Round | New Evidence | Pending | Avg H-Score | Avg W-Score | Overall % | Precision | Precision Carry | Three-Lane | Runtime Fail | Ref Blitz |",
-        "|---|---:|---:|---:|---:|---:|---|---|---|---:|---|",
+        "| Round | Evidence Cards | Delta | Pending | Avg H-Score | Avg W-Score | Overall % | Precision | Precision Carry | Three-Lane | Runtime Fail | Ref Blitz |",
+        "|---|---:|---:|---:|---:|---:|---:|---|---|---|---:|---|",
     ]
     for row in summary.get("rounds") or []:
         runtime_ref_blitz = "-"
@@ -3661,9 +4617,10 @@ def render_summary_md(summary: dict[str, Any]) -> str:
         if autopick and autopick.get("overrideApplied"):
             carry_text = f"{carry_text}/auto:{autopick.get('overrideReason') or '-'}"
         lines.append(
-            "| `{rid}` | `{new}` | `{pending}` | `{h}` | `{w}` | `{overall}` | `{precision}` | `{carry}` | `{three}` | `{runtime_fail}` | {ref_blitz} |".format(
+            "| `{rid}` | `{new}` | `{delta}` | `{pending}` | `{h}` | `{w}` | `{overall}` | `{precision}` | `{carry}` | `{three}` | `{runtime_fail}` | {ref_blitz} |".format(
                 rid=row.get("roundId"),
                 new=row.get("newEvidenceCardCount"),
+                delta=row.get("evidenceCardDeltaCount"),
                 pending=row.get("pendingReviewCount"),
                 h=row.get("avgHistoricalTrustScore"),
                 w=row.get("avgWorldbuildingUsabilityScore"),
@@ -3685,6 +4642,7 @@ def render_summary_md(summary: dict[str, Any]) -> str:
             f"- Scoreboard Summary: `{summary.get('outputs', {}).get('scoreboardSummaryMarkdownPath')}`",
             f"- Bottleneck Delta: `{summary.get('outputs', {}).get('bottleneckDeltaMarkdownPath')}`",
             f"- Next Lane Summary: `{summary.get('outputs', {}).get('nextLaneSummaryMarkdownPath')}`",
+            f"- Frontier Feedback: `{summary.get('outputs', {}).get('frontierFeedbackMarkdownPath')}`",
             f"- Runtime Readiness Round Summary: `{summary.get('outputs', {}).get('runtimeReadinessRoundSummaryPath')}`",
             f"- Summary JSON: `{summary.get('outputs', {}).get('summaryJsonPath')}`",
             "",
@@ -3739,6 +4697,89 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-roi-min-card-page-community", type=float, default=0.2)
     parser.add_argument("--source-roi-min-primary-cards", type=int, default=20)
     parser.add_argument("--source-roi-min-primary-seeds", type=int, default=20)
+    parser.add_argument(
+        "--external-source-health-mode",
+        choices=["auto", "node", "python", "off"],
+        default="auto",
+        help="Source health backend for live external benchmark precheck.",
+    )
+    parser.add_argument(
+        "--external-timeout-seconds",
+        type=float,
+        default=20.0,
+        help="Per-source external benchmark fetch timeout.",
+    )
+    parser.add_argument(
+        "--frontier-feedback-mode",
+        choices=["off", "round"],
+        default="round",
+        help="Use prior round scoreboard feedback to prioritize next-round front-stage work.",
+    )
+    parser.add_argument(
+        "--frontier-feedback-target-limit",
+        type=int,
+        default=0,
+        help="Maximum scoreboard-derived frontier targets to carry into next round (0 derives from run limits).",
+    )
+    parser.add_argument(
+        "--frontier-feedback-term-limit",
+        type=int,
+        default=0,
+        help="Maximum feedback-derived terms injected into the per-run source config (0 follows target limit).",
+    )
+    parser.add_argument(
+        "--frontier-feedback-pilot-limit",
+        type=int,
+        default=0,
+        help="Maximum feedback-derived general ids passed to ETL pilot (0 derives from cold/precision limits).",
+    )
+    parser.add_argument(
+        "--frontier-feedback-prefer-targets",
+        dest="frontier_feedback_prefer_targets",
+        action="store_true",
+        help="Let manual_quote target materialization prefer scoreboard-derived frontier targets before configured keywords.",
+    )
+    parser.add_argument(
+        "--no-frontier-feedback-prefer-targets",
+        dest="frontier_feedback_prefer_targets",
+        action="store_false",
+        help="Use configured manual_quote keywords first, then fill remaining slots with feedback targets.",
+    )
+    parser.set_defaults(frontier_feedback_prefer_targets=True)
+    parser.add_argument(
+        "--anchor-first-verification",
+        dest="anchor_first_verification",
+        action="store_true",
+        help="Verify harvested external seeds against the local anchor index before seed scoring.",
+    )
+    parser.add_argument(
+        "--no-anchor-first-verification",
+        dest="anchor_first_verification",
+        action="store_false",
+        help="Skip anchor-first verification between harvest and scoring.",
+    )
+    parser.set_defaults(anchor_first_verification=True)
+    parser.add_argument(
+        "--anchor-index-root",
+        default=str(DEFAULT_ANCHOR_INDEX_ROOT),
+        help="Anchor passage index root used by seed verification.",
+    )
+    parser.add_argument(
+        "--anchor-index-source-config",
+        default=str(DEFAULT_ANCHOR_INDEX_SOURCE_CONFIG),
+        help="Data-driven source config for rebuilding the anchor passage index.",
+    )
+    parser.add_argument(
+        "--rebuild-anchor-index",
+        action="store_true",
+        help="Rebuild the anchor passage index before the convergence loop.",
+    )
+    parser.add_argument(
+        "--anchor-verification-topk",
+        type=int,
+        default=8,
+        help="Top-K anchor passages inspected for each external seed.",
+    )
     parser.add_argument(
         "--event-throughput-external-seed-min-score",
         type=float,
@@ -3929,6 +4970,7 @@ def main() -> int:
     source_config_path = resolve_existing_path(args.source_config)
     lane_policy_config_path = resolve_existing_path(args.lane_policy_config)
     generals_path = resolve_existing_path(args.generals)
+    generals_path, roster_fallback = materialize_generals_fallback(generals_path, run_root)
     events_path = resolve_existing_path(args.events)
     generic_candidates_path = resolve_existing_path(args.generic_candidates)
     observed_mentions_path = resolve_existing_path(args.observed_mentions)
@@ -3962,6 +5004,15 @@ def main() -> int:
         carry_forward_round_json_paths = existing_paths([*carry_forward_round_json_paths, *fallback_round_json_paths])
     roster_names = load_roster_names(generals_path)
     generic_clues = collect_generic_clues(generic_candidates_path)
+    anchor_index_root = resolve_existing_path(args.anchor_index_root)
+    anchor_index_source_config_path = resolve_existing_path(args.anchor_index_source_config)
+    anchor_index_info = prepare_anchor_index(
+        enabled=bool(args.anchor_first_verification),
+        anchor_index_root=anchor_index_root,
+        source_config_path=anchor_index_source_config_path,
+        rebuild=bool(args.rebuild_anchor_index),
+        dry_run=bool(args.dry_run),
+    )
 
     rounds: list[dict[str, Any]] = []
     command_count = 0
@@ -3970,6 +5021,7 @@ def main() -> int:
     next_action = "run next convergence round"
     weak_delta_streak = 0
     zero_evidence_streak = 0
+    previous_evidence_card_count: int | None = None
     repeat_residual_streak = 0
     previous_avg_world: float | None = None
     previous_signature: str | None = None
@@ -3990,6 +5042,15 @@ def main() -> int:
             break
 
     effective_events_path = baseline_seed_events_path or events_path
+    frontier_feedback_payload: dict[str, Any] | None = None
+    if feedback_mode_enabled(args):
+        baseline_feedback_text = baseline_path(baseline_manifest, "frontierFeedbackPath", "frontierFeedbackJsonPath")
+        if baseline_feedback_text:
+            baseline_feedback_path = resolve_existing_path(baseline_feedback_text)
+            if baseline_feedback_path.exists():
+                baseline_feedback = read_json(baseline_feedback_path)
+                if isinstance(baseline_feedback, dict):
+                    frontier_feedback_payload = baseline_feedback
 
     for round_index in range(1, max(args.max_rounds, 1) + 1):
         if args.max_wall_time_minutes is not None and args.max_wall_time_minutes > 0:
@@ -4033,6 +5094,7 @@ def main() -> int:
             carry_forward_external_artifacts=carry_forward_external_artifacts,
             carry_forward_round_json_paths=carry_forward_round_json_paths,
             previous_scoreboard_path=previous_scoreboard_path,
+            frontier_feedback=frontier_feedback_payload,
             dry_run=args.dry_run,
         )
         round_snapshot = {key: value for key, value in round_info.items() if key not in {"externalSummary", "scoreboardRows", "runtimeReadiness"}}
@@ -4226,8 +5288,15 @@ def main() -> int:
             if int(result.get("returnCode") or 0) != 0:
                 command_failures += 1
 
-        new_cards = int(round_info.get("newEvidenceCardCount") or 0)
-        zero_evidence_streak = zero_evidence_streak + 1 if new_cards == 0 else 0
+        evidence_card_count = int(round_info.get("newEvidenceCardCount") or 0)
+        if previous_evidence_card_count is None:
+            evidence_card_delta_count = evidence_card_count
+        else:
+            evidence_card_delta_count = max(0, evidence_card_count - previous_evidence_card_count)
+        previous_evidence_card_count = max(previous_evidence_card_count or 0, evidence_card_count)
+        round_info["evidenceCardDeltaCount"] = evidence_card_delta_count
+        round_snapshot["evidenceCardDeltaCount"] = evidence_card_delta_count
+        zero_evidence_streak = zero_evidence_streak + 1 if evidence_card_delta_count == 0 else 0
 
         current_world = round_info.get("avgWorldbuildingUsabilityScore")
         delta_world: float | None = None
@@ -4251,6 +5320,20 @@ def main() -> int:
         previous_signature = signature
 
         round_rows = list(round_info.get("scoreboardRows") or [])
+        if feedback_mode_enabled(args):
+            frontier_feedback_payload = build_frontier_feedback_packet(
+                round_id=str(round_info.get("roundId") or f"{args.run_id}-r{round_index}"),
+                rows=round_rows,
+                output_root=run_root / "frontier-feedback" / str(round_info.get("roundId") or f"{args.run_id}-r{round_index}"),
+                target_limit=target_limit_from_args(args),
+            )
+            feedback_outputs = frontier_feedback_payload.get("outputs") if isinstance(frontier_feedback_payload.get("outputs"), dict) else {}
+            round_info["frontierFeedbackPath"] = feedback_outputs.get("jsonPath")
+            round_info["frontierFeedbackMarkdownPath"] = feedback_outputs.get("markdownPath")
+            round_info["frontierFeedbackTargetCount"] = frontier_feedback_payload.get("targetCount")
+            round_snapshot["frontierFeedbackPath"] = feedback_outputs.get("jsonPath")
+            round_snapshot["frontierFeedbackMarkdownPath"] = feedback_outputs.get("markdownPath")
+            round_snapshot["frontierFeedbackTargetCount"] = frontier_feedback_payload.get("targetCount")
         current_a_map: dict[str, dict[str, Any]] = {
             str(row.get("generalId") or ""): row
             for row in round_rows
@@ -4371,6 +5454,9 @@ def main() -> int:
         "externalSummaryPath": latest_round.get("externalSummaryPath"),
         "externalSourceRoiPath": latest_round.get("externalSourceRoiPath"),
         "externalCardsPath": latest_round.get("externalCardsPath"),
+        "feedbackSourceConfigPath": latest_round.get("feedbackSourceConfigPath"),
+        "frontierFeedbackPath": latest_round.get("frontierFeedbackPath"),
+        "frontierFeedbackMarkdownPath": latest_round.get("frontierFeedbackMarkdownPath"),
         "globalSeedRankingPath": latest_round.get("globalSeedRankingPath"),
         "globalCandidateCardsPath": latest_round.get("globalCandidateCardsPath"),
         "rankingInputPaths": latest_round.get("rankingInputPaths"),
@@ -4484,6 +5570,17 @@ def main() -> int:
             "precisionCarryScoreboardMinImprove": float(args.precision_carry_scoreboard_min_improve),
             "precisionCarryScoreboardMaxRegression": float(args.precision_carry_scoreboard_max_regression),
             "seedToCardPriorityLimit": int(args.seed_to_card_priority_limit),
+            "externalSourceHealthMode": str(args.external_source_health_mode),
+            "externalTimeoutSeconds": float(args.external_timeout_seconds),
+            "frontierFeedbackMode": str(args.frontier_feedback_mode),
+            "frontierFeedbackTargetLimit": target_limit_from_args(args),
+            "frontierFeedbackTermLimit": max(int(args.frontier_feedback_term_limit or 0), target_limit_from_args(args)),
+            "frontierFeedbackPilotLimit": pilot_feedback_limit_from_args(args),
+            "frontierFeedbackPreferTargets": bool(args.frontier_feedback_prefer_targets),
+            "anchorFirstVerification": bool(args.anchor_first_verification),
+            "anchorIndexRoot": repo_relative(anchor_index_root),
+            "anchorIndexSourceConfig": repo_relative(anchor_index_source_config_path),
+            "anchorVerificationTopk": int(args.anchor_verification_topk),
             "eventThroughputExternalSeedMinScore": float(args.event_throughput_external_seed_min_score),
             "eventThroughputHistoryCrossFamilyThreshold": int(args.event_throughput_history_cross_family_threshold),
             "eventThroughputNonHistoryCrossFamilyThreshold": int(args.event_throughput_non_history_cross_family_threshold),
@@ -4515,8 +5612,12 @@ def main() -> int:
             "laneProfilePolicy": lane_profile_policy,
             "approvedSourceCount": len(approved_rows),
             "rosterCount": len(roster_names),
+            "rosterFallback": roster_fallback,
             "sourceConfigSanity": config_sanity,
             "seedToCardMinScore": float(args.seed_to_card_min_score),
+            "externalSourceHealthMode": str(args.external_source_health_mode),
+            "externalTimeoutSeconds": float(args.external_timeout_seconds),
+            "anchorIndex": anchor_index_info,
             "seedToCardPriorityGeneralIds": [str(item or "").strip() for item in (args.seed_to_card_priority_general_id or []) if str(item or "").strip()],
             "eventThroughputExternalSeedMinScore": float(args.event_throughput_external_seed_min_score),
             "eventThroughputHistoryCrossFamilyThreshold": int(args.event_throughput_history_cross_family_threshold),
@@ -4546,6 +5647,8 @@ def main() -> int:
             "bottleneckDeltaMarkdownPath": latest_round.get("bottleneckDeltaMarkdownPath"),
             "nextLaneSummaryJsonPath": latest_round.get("nextLaneSummaryJsonPath"),
             "nextLaneSummaryMarkdownPath": latest_round.get("nextLaneSummaryMarkdownPath"),
+            "frontierFeedbackPath": latest_round.get("frontierFeedbackPath"),
+            "frontierFeedbackMarkdownPath": latest_round.get("frontierFeedbackMarkdownPath"),
             "runtimeReadinessRoundSummaryPath": latest_round.get("runtimeReadinessRoundSummaryPath"),
             "roundSummaryRoot": latest_round.get("roundSummaryRoot"),
         },

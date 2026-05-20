@@ -109,7 +109,8 @@ DEFAULT_SCOREBOARD_SCORING_POLICY: dict[str, dict[str, float | int]] = {
         "staleEvidencePenalty": 1.0,
     },
     "worldbuildingUsabilityWeights": {
-        "historicalScore": 0.45,
+        "historicalScore": 0.40,
+        "anchorCorroborationScore": 0.10,
         "romanceFolkloreSupportScore": 0.20,
         "profileCompletenessScore": 0.15,
         "relationshipPlayableScore": 0.10,
@@ -405,6 +406,9 @@ def gather_card_stats(card_rows: list[dict[str, Any]]) -> tuple[dict[str, dict[s
             "distinctHistoryFamilies": set(),
             "quoteLocatorHashCount": 0,
             "crossFamilyClaimCountFromCards": 0,
+            "anchorMatchCount": 0,
+            "anchorHistoryMatchCount": 0,
+            "anchorRomanceMatchCount": 0,
         }
     )
     shadow_index: dict[str, dict[str, Any]] = {}
@@ -412,26 +416,39 @@ def gather_card_stats(card_rows: list[dict[str, Any]]) -> tuple[dict[str, dict[s
     for card in card_rows:
         source_family = str(card.get("sourceFamily") or card.get("sourcePolicyId") or "").strip()
         source_layer = str(card.get("sourceLayer") or "").strip().lower()
-        has_trace = bool(card.get("quote")) and bool(card.get("locator") or card.get("textHash"))
+        manual_quote_meta = card.get("manualQuote") if isinstance(card.get("manualQuote"), dict) else {}
+        is_manual_quote_target = bool(card.get("manualQuoteTarget") or manual_quote_meta.get("targetOnly"))
+        has_direct_manual_quote = bool(card.get("manualQuoteHasDirectQuote") or manual_quote_meta.get("hasDirectQuote"))
+        score_layer_override = str(card.get("scoreboardLayerOverride") or "").strip().lower()
+        effective_source_layer = score_layer_override or source_layer
+        has_trace = (
+            bool(card.get("quote"))
+            and bool(card.get("locator") or card.get("textHash"))
+            and (not is_manual_quote_target or has_direct_manual_quote)
+        )
         cross_families = list(card.get("crossSiteSourceFamilies") or [])
+        anchor_evidence = card.get("anchorEvidence") if isinstance(card.get("anchorEvidence"), dict) else {}
         for roster_state, person_id in person_ids_from_card(card):
             target = stats[person_id]
             target["cardCount"] += 1
             target["externalEvidenceCount"] += 1
-            if source_layer == "history":
+            if effective_source_layer == "history":
                 target["externalHistoryCount"] += 1
-            elif source_layer == "romance":
+            elif effective_source_layer == "romance":
                 target["externalRomanceCount"] += 1
             else:
                 target["externalWorldbuildingCount"] += 1
             if source_family:
                 target["distinctSourceFamilies"].add(source_family)
-                if source_layer == "history":
+                if effective_source_layer == "history":
                     target["distinctHistoryFamilies"].add(source_family)
             if has_trace:
                 target["quoteLocatorHashCount"] += 1
             if len(cross_families) >= 2:
                 target["crossFamilyClaimCountFromCards"] += 1
+            target["anchorMatchCount"] += int(anchor_evidence.get("anchorMatchCount") or 0)
+            target["anchorHistoryMatchCount"] += int(anchor_evidence.get("anchorHistoryMatchCount") or 0)
+            target["anchorRomanceMatchCount"] += int(anchor_evidence.get("anchorRomanceMatchCount") or 0)
 
             if roster_state == "shadow":
                 info = shadow_index.get(person_id) or {
@@ -559,6 +576,8 @@ def confidence_breakdown(
     completeness: float,
     keyword_total: int,
     female_boost: float,
+    anchor_history_match_count: int = 0,
+    anchor_romance_match_count: int = 0,
 ) -> dict[str, float]:
     source_strength = clamp(
         10.0
@@ -594,6 +613,7 @@ def confidence_breakdown(
         reviewer_agreement = 35.0
 
     romance_support = clamp(external_romance_count * 18.0 + external_worldbuilding_count * 10.0)
+    anchor_support = anchor_corroboration_score(anchor_history_match_count, anchor_romance_match_count)
     relationship_playable = clamp(relationship_edge_count * 22.0)
     activity_dialogue = 100.0 if keyword_total >= 15 else 70.0 if keyword_total >= 5 else 0.0
     conflict_penalty = 12.0 if generic_candidate_count > 0 and event_count == 0 else 0.0
@@ -608,6 +628,7 @@ def confidence_breakdown(
         "extractorAgreementScore": round(extractor_agreement, 2),
         "reviewerAgreementScore": round(reviewer_agreement, 2),
         "romanceFolkloreSupportScore": round(romance_support, 2),
+        "anchorCorroborationScore": round(anchor_support, 2),
         "profileCompletenessScore": round(completeness, 2),
         "relationshipPlayableScore": round(relationship_playable, 2),
         "activityDialogueSeedScore": round(activity_dialogue, 2),
@@ -642,6 +663,7 @@ def worldbuilding_usability_score(*, historical_score: float, breakdown: dict[st
     value = (
         historical_score * float(weights.get("historicalScore", 0.45))
         + breakdown["romanceFolkloreSupportScore"] * float(weights.get("romanceFolkloreSupportScore", 0.20))
+        + breakdown.get("anchorCorroborationScore", 0.0) * float(weights.get("anchorCorroborationScore", 0.10))
         + breakdown["profileCompletenessScore"] * float(weights.get("profileCompletenessScore", 0.15))
         + breakdown["relationshipPlayableScore"] * float(weights.get("relationshipPlayableScore", 0.10))
         + breakdown["activityDialogueSeedScore"] * float(weights.get("activityDialogueSeedScore", 0.10))
@@ -809,6 +831,9 @@ def build_row(
     distinct_history_family_count: int,
     cross_family_claim_count: int,
     quote_locator_hash_count: int,
+    anchor_match_count: int,
+    anchor_history_match_count: int,
+    anchor_romance_match_count: int,
 ) -> dict[str, Any]:
     effective_event_count = event_count + min(max(event_question_seed_count, 0), 3)
     effective_relationship_edge_count = relationship_edge_count + min(max(relationship_evidence_count, 0), 4)
@@ -868,6 +893,8 @@ def build_row(
         completeness=completeness,
         keyword_total=keyword_total,
         female_boost=female_boost,
+        anchor_history_match_count=anchor_history_match_count,
+        anchor_romance_match_count=anchor_romance_match_count,
     )
     historical_score = historical_trust_score(breakdown)
     worldbuilding_score = worldbuilding_usability_score(
@@ -927,6 +954,9 @@ def build_row(
         "seedCount": seed_count,
         "cardCount": card_count,
         "crossFamilyClaimCount": cross_family_claim_count,
+        "anchorMatchCount": anchor_match_count,
+        "anchorHistoryMatchCount": anchor_history_match_count,
+        "anchorRomanceMatchCount": anchor_romance_match_count,
         "externalEvidenceCount": external_evidence_count,
         "externalHistoryCount": external_history_count,
         "externalRomanceCount": external_romance_count,
@@ -1143,6 +1173,9 @@ def main() -> int:
                 distinct_history_family_count=len(card_row.get("distinctHistoryFamilies") or set()),
                 cross_family_claim_count=int(seed_row.get("crossFamilyClaimCount") or 0) + int(card_row.get("crossFamilyClaimCountFromCards") or 0),
                 quote_locator_hash_count=int(card_row.get("quoteLocatorHashCount") or 0),
+                anchor_match_count=int(card_row.get("anchorMatchCount") or 0),
+                anchor_history_match_count=int(card_row.get("anchorHistoryMatchCount") or 0),
+                anchor_romance_match_count=int(card_row.get("anchorRomanceMatchCount") or 0),
             )
         )
 
@@ -1183,6 +1216,9 @@ def main() -> int:
                 distinct_history_family_count=len(card_row.get("distinctHistoryFamilies") or set()),
                 cross_family_claim_count=int(seed_row.get("crossFamilyClaimCount") or 0) + int(card_row.get("crossFamilyClaimCountFromCards") or 0),
                 quote_locator_hash_count=int(card_row.get("quoteLocatorHashCount") or 0),
+                anchor_match_count=int(card_row.get("anchorMatchCount") or 0),
+                anchor_history_match_count=int(card_row.get("anchorHistoryMatchCount") or 0),
+                anchor_romance_match_count=int(card_row.get("anchorRomanceMatchCount") or 0),
             )
         )
 
