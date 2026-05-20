@@ -38,11 +38,13 @@ DEFAULT_GOVERNANCE_ROOT = default_governance_root()
 RELATIONSHIP_RUNTIME_CANON_POLICY: dict[str, Any] = {}
 RELATIONSHIP_POLICY_TEXT: dict[str, Any] = {}
 A_ROMANCE_REVIEW_CAUTION_ZH_TW = ""
+BODY_BOUNDARY_TELEMETRY_POLICY: dict[str, Any] = {}
 
 
 
 def apply_external_source_benchmark_governance(policy: dict[str, Any], cue_rules: list[dict[str, Any]]) -> None:
-    global SOURCE_CLASSES, DEFAULT_TERM_HIT_KEYWORDS, DEFAULT_PRECHECK_POLICY, DEFAULT_STAGE2_GATE_POLICY, DEFAULT_STAGE3_CLASS_GATE_POLICY
+    global SOURCE_CLASSES, DEFAULT_TERM_HIT_KEYWORDS, DEFAULT_PRECHECK_POLICY, DEFAULT_STAGE2_GATE_POLICY
+    global DEFAULT_STAGE3_CLASS_GATE_POLICY, BODY_BOUNDARY_TELEMETRY_POLICY
     SOURCE_CLASSES = tuple(str(item).strip() for item in policy.get("sourceClasses") or [] if str(item).strip())
     DEFAULT_PRECHECK_POLICY = dict(policy.get("precheckDefaults") or {})
     DEFAULT_STAGE2_GATE_POLICY = dict(policy.get("stage2GateDefaults") or {})
@@ -51,6 +53,7 @@ def apply_external_source_benchmark_governance(policy: dict[str, Any], cue_rules
         for key, value in (policy.get("stage3ClassGateDefaults") or {}).items()
         if isinstance(value, dict)
     }
+    BODY_BOUNDARY_TELEMETRY_POLICY = dict(policy.get("bodyBoundaryTelemetry") or {})
     by_name = {str(row.get("constantName") or ""): row for row in cue_rules}
     term_row = by_name.get("DEFAULT_TERM_HIT_KEYWORDS", {})
     DEFAULT_TERM_HIT_KEYWORDS = tuple(str(item).strip() for item in term_row.get("terms") or [] if str(item).strip())
@@ -167,6 +170,396 @@ def read_json(path: Path) -> Any:
 def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def read_jsonl(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    rows: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
+        text = line.strip()
+        if not text:
+            continue
+        row = json.loads(text)
+        if isinstance(row, dict):
+            rows.append(row)
+    return rows
+
+
+def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def string_list(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value] if value.strip() else []
+    if not isinstance(value, list):
+        return []
+    return [str(item or "").strip() for item in value if str(item or "").strip()]
+
+
+def int_policy(policy: dict[str, Any], key: str, fallback: int = 0) -> int:
+    try:
+        return max(int(policy.get(key) if policy.get(key) is not None else fallback), 0)
+    except (TypeError, ValueError):
+        return max(int(fallback), 0)
+
+
+def stable_marker_hash(marker: str) -> str:
+    if not marker:
+        return ""
+    return "sha256:" + stable_sha256_short(marker)
+
+
+def strip_metadata_header_for_boundary(raw_text: str, telemetry_policy: dict[str, Any]) -> str:
+    pattern = str(telemetry_policy.get("metadataHeaderSeparatorPattern") or "").strip()
+    if not pattern:
+        return raw_text
+    parts = re.split(pattern, raw_text, maxsplit=1)
+    return parts[1] if len(parts) == 2 else raw_text
+
+
+def read_page_text_for_boundary(page: dict[str, Any], telemetry_policy: dict[str, Any]) -> tuple[str, str | None]:
+    text_path_value = str(page.get("textPath") or "").strip()
+    if text_path_value:
+        text_path = resolve_existing_path(text_path_value)
+        if text_path.exists():
+            return strip_metadata_header_for_boundary(
+                text_path.read_text(encoding="utf-8-sig", errors="ignore"),
+                telemetry_policy,
+            ), str(text_path)
+    return str(page.get("snippet") or ""), str(resolve_existing_path(text_path_value)) if text_path_value else None
+
+
+def source_extractor_policy(source_row: dict[str, Any] | None) -> dict[str, Any]:
+    raw_policy = (source_row or {}).get("extractorPolicy") if isinstance(source_row, dict) else {}
+    return raw_policy if isinstance(raw_policy, dict) else {}
+
+
+def marker_fields_from_policy(source_row: dict[str, Any] | None, field_names: list[str]) -> list[str]:
+    extractor_policy = source_extractor_policy(source_row)
+    markers: list[str] = []
+    for field_name in field_names:
+        markers.extend(string_list(extractor_policy.get(field_name)))
+    return markers
+
+
+def load_boundary_cleanup_markers(telemetry_policy: dict[str, Any]) -> dict[str, list[str]]:
+    rule_path_value = str(telemetry_policy.get("pageTextCleanupRulePath") or "").strip()
+    if not rule_path_value:
+        return {"noiseMarkers": [], "tailTrimMarkers": []}
+    rule_path = resolve_existing_path(rule_path_value)
+    if not rule_path.exists():
+        return {"noiseMarkers": [], "tailTrimMarkers": []}
+    roles = telemetry_policy.get("cleanupRuleConstantRoles")
+    role_map = roles if isinstance(roles, dict) else {}
+    extractors = set(string_list(telemetry_policy.get("cleanupRuleExtractors")))
+    noise_names = set(string_list(role_map.get("noiseMarkers")))
+    tail_names = set(string_list(role_map.get("tailTrimMarkers")))
+    markers = {"noiseMarkers": [], "tailTrimMarkers": []}
+    for row in read_jsonl(rule_path):
+        extractor = str(row.get("extractor") or "").strip()
+        if extractors and extractor not in extractors:
+            continue
+        constant_name = str(row.get("constantName") or "").strip()
+        values = string_list(row.get("value"))
+        if constant_name in noise_names:
+            markers["noiseMarkers"].extend(values)
+        if constant_name in tail_names:
+            markers["tailTrimMarkers"].extend(values)
+    for key in list(markers):
+        seen: set[str] = set()
+        unique = []
+        for marker in sorted(markers[key], key=len, reverse=True):
+            if marker in seen:
+                continue
+            seen.add(marker)
+            unique.append(marker)
+        markers[key] = unique
+    return markers
+
+
+def marker_occurrence_candidates(
+    text: str,
+    markers: list[str],
+    *,
+    role: str,
+    boundary: str,
+    limit_chars: int,
+    offset_shift: int,
+    offset_at_marker_end: bool = False,
+) -> list[dict[str, Any]]:
+    candidates: list[dict[str, Any]] = []
+    search_text = text[:limit_chars] if limit_chars > 0 else text
+    for marker in markers:
+        start = 0
+        while marker:
+            index = search_text.find(marker, start)
+            if index < 0:
+                break
+            offset = index + len(marker) if offset_at_marker_end else index + offset_shift
+            candidates.append(
+                {
+                    "role": role,
+                    "boundary": boundary,
+                    "offset": offset,
+                    "markerHash": stable_marker_hash(marker),
+                }
+            )
+            start = index + len(marker)
+    return candidates
+
+
+def select_boundary_candidate(
+    candidates: list[dict[str, Any]],
+    *,
+    strategy: str,
+    fallback_offset: int,
+    min_offset: int = 0,
+    max_offset: int | None = None,
+) -> dict[str, Any] | None:
+    filtered = []
+    for candidate in candidates:
+        offset = int(candidate.get("offset") or 0)
+        if offset < min_offset:
+            continue
+        if max_offset is not None and offset > max_offset:
+            continue
+        filtered.append({**candidate, "offset": offset})
+    if not filtered:
+        return None
+    if strategy == "minOffset":
+        return min(filtered, key=lambda row: row["offset"])
+    if strategy == "maxOffset":
+        return max(filtered, key=lambda row: row["offset"])
+    return min(filtered, key=lambda row: abs(row["offset"] - fallback_offset))
+
+
+def select_boundary_candidate_by_priority(
+    candidates: list[dict[str, Any]],
+    *,
+    role_priority: list[str],
+    strategy: str,
+    fallback_offset: int,
+    min_offset: int = 0,
+    max_offset: int | None = None,
+) -> dict[str, Any] | None:
+    if not role_priority:
+        return select_boundary_candidate(
+            candidates,
+            strategy=strategy,
+            fallback_offset=fallback_offset,
+            min_offset=min_offset,
+            max_offset=max_offset,
+        )
+    for role in role_priority:
+        scoped = [candidate for candidate in candidates if str(candidate.get("role") or "") == role]
+        choice = select_boundary_candidate(
+            scoped,
+            strategy=strategy,
+            fallback_offset=fallback_offset,
+            min_offset=min_offset,
+            max_offset=max_offset,
+        )
+        if choice:
+            return choice
+    return None
+
+
+def derive_body_boundary_telemetry(
+    *,
+    page: dict[str, Any],
+    raw_text: str,
+    source_row: dict[str, Any] | None,
+    term_hit_keywords: list[str],
+    cleanup_markers: dict[str, list[str]],
+    telemetry_policy: dict[str, Any],
+    text_path: str | None,
+) -> dict[str, Any]:
+    start_limit = int_policy(telemetry_policy, "bodyStartSearchLimitChars", len(raw_text))
+    term_context = int_policy(telemetry_policy, "termHitStartContextChars", 0)
+    start_candidates: list[dict[str, Any]] = []
+    for marker in marker_fields_from_policy(source_row, string_list(telemetry_policy.get("bodyStartMarkerFields"))):
+        start_candidates.extend(
+            marker_occurrence_candidates(
+                raw_text,
+                [marker],
+                role="sourcePolicy.bodyStartMarkers",
+                boundary="start",
+                limit_chars=start_limit,
+                offset_shift=len(marker),
+            )
+        )
+    start_candidates.extend(
+        marker_occurrence_candidates(
+            raw_text,
+            cleanup_markers.get("noiseMarkers") or [],
+            role="cleanup.noiseMarkers",
+            boundary="start",
+            limit_chars=start_limit,
+            offset_shift=0,
+            offset_at_marker_end=True,
+        )
+    )
+    for keyword in term_hit_keywords:
+        for candidate in marker_occurrence_candidates(
+            raw_text,
+            [keyword],
+            role="sourcePolicy.termHitKeywords",
+            boundary="start",
+            limit_chars=start_limit,
+            offset_shift=-term_context,
+        ):
+            candidate["offset"] = max(int(candidate.get("offset") or 0), 0)
+            start_candidates.append(candidate)
+
+    start_choice = select_boundary_candidate_by_priority(
+        start_candidates,
+        role_priority=string_list(telemetry_policy.get("bodyStartCandidateRolePriority")),
+        strategy=str(telemetry_policy.get("startCandidateStrategy") or ""),
+        fallback_offset=0,
+        max_offset=len(raw_text),
+    )
+    body_start = int(start_choice.get("offset") or 0) if start_choice else 0
+
+    end_candidates: list[dict[str, Any]] = []
+    for marker in marker_fields_from_policy(source_row, string_list(telemetry_policy.get("bodyEndMarkerFields"))):
+        end_candidates.extend(
+            marker_occurrence_candidates(
+                raw_text,
+                [marker],
+                role="sourcePolicy.bodyEndMarkers",
+                boundary="end",
+                limit_chars=0,
+                offset_shift=0,
+            )
+        )
+    end_candidates.extend(
+        marker_occurrence_candidates(
+            raw_text,
+            cleanup_markers.get("tailTrimMarkers") or [],
+            role="cleanup.tailTrimMarkers",
+            boundary="end",
+            limit_chars=0,
+            offset_shift=0,
+        )
+    )
+    min_end = max(body_start + int_policy(telemetry_policy, "bodyEndMinOffset", 0), 0)
+    end_choice = select_boundary_candidate_by_priority(
+        end_candidates,
+        role_priority=string_list(telemetry_policy.get("bodyEndCandidateRolePriority")),
+        strategy=str(telemetry_policy.get("endCandidateStrategy") or ""),
+        fallback_offset=len(raw_text),
+        min_offset=min_end,
+        max_offset=len(raw_text),
+    )
+    body_end = int(end_choice.get("offset") or len(raw_text)) if end_choice else len(raw_text)
+    body_start = min(max(body_start, 0), len(raw_text))
+    body_end = min(max(body_end, body_start), len(raw_text))
+    body_text = raw_text[body_start:body_end]
+    context_chars = int_policy(telemetry_policy, "contextChars", 0)
+    telemetry_id = f"body-boundary:{page.get('sourceId') or ''}:{stable_sha256_short(str(page.get('pageId') or page.get('url') or text_path or ''))}"
+    return {
+        "schemaVersion": str(telemetry_policy.get("schemaVersion") or ""),
+        "telemetryId": telemetry_id,
+        "pageId": page.get("pageId"),
+        "sourceId": page.get("sourceId"),
+        "url": page.get("url"),
+        "textPath": text_path,
+        "textHash": page.get("textHash"),
+        "rawTextLength": len(raw_text),
+        "bodyStartOffset": body_start,
+        "bodyEndOffset": body_end,
+        "bodyTextLength": len(body_text),
+        "bodyTextHash": "sha256:" + stable_sha256_short(body_text),
+        "bodyStartReason": start_choice.get("role") if start_choice else "unbounded",
+        "bodyEndReason": end_choice.get("role") if end_choice else "unbounded",
+        "bodyStartMarkerHash": start_choice.get("markerHash") if start_choice else "",
+        "bodyEndMarkerHash": end_choice.get("markerHash") if end_choice else "",
+        "bodyStartContext": raw_text[body_start : body_start + context_chars] if context_chars > 0 else "",
+        "bodyEndContext": raw_text[max(body_end - context_chars, 0) : body_end] if context_chars > 0 else "",
+        "canonicalWrites": False,
+        "generatedAt": utc_now(),
+    }
+
+
+def materialize_body_boundary_telemetry(
+    *,
+    harvest_root: Path,
+    source_row: dict[str, Any] | None,
+    term_hit_keywords: list[str] | None,
+    telemetry_policy: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    active_policy = dict(telemetry_policy or BODY_BOUNDARY_TELEMETRY_POLICY)
+    if not bool(active_policy.get("enabled")):
+        return {"enabled": False, "pageCount": 0, "telemetryCount": 0}
+    output_file = str(active_policy.get("outputFile") or "").strip()
+    if not output_file:
+        return {"enabled": True, "pageCount": 0, "telemetryCount": 0, "status": "missing-output-file"}
+    pages_jsonl = harvest_root / "pages.jsonl"
+    pages = read_jsonl(pages_jsonl)
+    cleanup_markers = load_boundary_cleanup_markers(active_policy)
+    telemetry_path = harvest_root / output_file
+    telemetry_rows: list[dict[str, Any]] = []
+    for page in pages:
+        raw_text, text_path = read_page_text_for_boundary(page, active_policy)
+        if not raw_text:
+            continue
+        telemetry = derive_body_boundary_telemetry(
+            page=page,
+            raw_text=raw_text,
+            source_row=source_row,
+            term_hit_keywords=term_hit_keywords or [],
+            cleanup_markers=cleanup_markers,
+            telemetry_policy=active_policy,
+            text_path=text_path,
+        )
+        telemetry_rows.append(telemetry)
+        telemetry_path_field = str(active_policy.get("pageTelemetryPathField") or "").strip()
+        telemetry_id_field = str(active_policy.get("pageTelemetryIdField") or "").strip()
+        if telemetry_path_field:
+            page[telemetry_path_field] = str(telemetry_path.resolve())
+        if telemetry_id_field:
+            page[telemetry_id_field] = telemetry["telemetryId"]
+    if pages_jsonl.exists():
+        write_jsonl(pages_jsonl, pages)
+    write_jsonl(telemetry_path, telemetry_rows)
+    bounded_rows = [
+        row
+        for row in telemetry_rows
+        if int(row.get("bodyStartOffset") or 0) > 0 or int(row.get("bodyEndOffset") or 0) < int(row.get("rawTextLength") or 0)
+    ]
+    return {
+        "enabled": True,
+        "schemaVersion": str(active_policy.get("schemaVersion") or ""),
+        "path": str(telemetry_path.resolve()),
+        "pageCount": len(pages),
+        "telemetryCount": len(telemetry_rows),
+        "boundedPageCount": len(bounded_rows),
+        "noiseMarkerCount": len(cleanup_markers.get("noiseMarkers") or []),
+        "tailTrimMarkerCount": len(cleanup_markers.get("tailTrimMarkers") or []),
+        "canonicalWrites": False,
+    }
+
+
+def attach_body_boundary_summary(harvest_summary: dict[str, Any], boundary_summary: dict[str, Any]) -> dict[str, Any]:
+    if not boundary_summary or not boundary_summary.get("enabled"):
+        return harvest_summary
+    outputs = harvest_summary.setdefault("outputs", {})
+    metrics = harvest_summary.setdefault("metrics", {})
+    if boundary_summary.get("path"):
+        outputs["bodyBoundaryTelemetryJsonl"] = str(boundary_summary["path"])
+    metrics["bodyBoundaryTelemetryCount"] = int(boundary_summary.get("telemetryCount") or 0)
+    metrics["bodyBoundaryBoundedPageCount"] = int(boundary_summary.get("boundedPageCount") or 0)
+    harvest_summary["bodyBoundaryTelemetry"] = boundary_summary
+    summary_path_text = str(outputs.get("summaryJson") or "").strip()
+    if summary_path_text:
+        summary_path = resolve_existing_path(summary_path_text)
+        write_json(summary_path, harvest_summary)
+    return harvest_summary
 
 
 def load_source_row_from_payload(payload: dict[str, Any], source_id: str) -> dict[str, Any] | None:
@@ -809,6 +1202,7 @@ def harvest_single_page(
     source_url: str,
     run_root: Path,
     timeout_seconds: float,
+    source_row: dict[str, Any] | None = None,
     term_hit_keywords: list[str] | None = None,
 ) -> dict[str, Any]:
     harvest_root = run_root / "harvest"
@@ -872,6 +1266,11 @@ def harvest_single_page(
     pages_jsonl.write_text(json.dumps(page_row, ensure_ascii=False) + "\n", encoding="utf-8")
     errors_jsonl = harvest_root / "fetch-errors.jsonl"
     errors_jsonl.write_text("", encoding="utf-8")
+    boundary_summary = materialize_body_boundary_telemetry(
+        harvest_root=harvest_root,
+        source_row=source_row,
+        term_hit_keywords=term_hit_keywords or [],
+    )
     summary = {
         "version": "1.0.0",
         "generatedAt": utc_now(),
@@ -900,6 +1299,7 @@ def harvest_single_page(
             }
         ],
     }
+    attach_body_boundary_summary(summary, boundary_summary)
     write_json(harvest_root / "harvest-summary.json", summary)
     (harvest_root / "harvest-summary.zh-TW.md").write_text(
         "\n".join(
@@ -978,18 +1378,22 @@ def harvest_source(
         single_page_policy = (source_row or {}).get("singlePagePolicy") or {}
         if single_page_policy:
             try:
-                return (
-                    harvest_single_page_via_harvester(
-                        source_id=source_id,
-                        source_url=source_url,
-                        run_root=run_root,
-                        timeout_seconds=args.timeout_seconds,
-                        source_config_path=source_config_path,
-                        harvester_cli=harvester_cli,
-                        term_hit_keywords=normalize_term_hit_keywords((source_row or {}).get("termHitKeywords")),
-                    ),
-                    [],
+                term_keywords = normalize_term_hit_keywords((source_row or {}).get("termHitKeywords"))
+                harvest_summary = harvest_single_page_via_harvester(
+                    source_id=source_id,
+                    source_url=source_url,
+                    run_root=run_root,
+                    timeout_seconds=args.timeout_seconds,
+                    source_config_path=source_config_path,
+                    harvester_cli=harvester_cli,
+                    term_hit_keywords=term_keywords,
                 )
+                boundary_summary = materialize_body_boundary_telemetry(
+                    harvest_root=run_root / "harvest",
+                    source_row=source_row,
+                    term_hit_keywords=term_keywords,
+                )
+                return attach_body_boundary_summary(harvest_summary, boundary_summary), []
             except Exception as exc:
                 try:
                     fallback = harvest_single_page(
@@ -997,6 +1401,7 @@ def harvest_source(
                         source_url=source_url,
                         run_root=run_root,
                         timeout_seconds=args.timeout_seconds,
+                        source_row=source_row,
                         term_hit_keywords=normalize_term_hit_keywords((source_row or {}).get("termHitKeywords")),
                     )
                     fallback["harvestBackend"] = "python-single-page-fallback"
@@ -1097,7 +1502,13 @@ def harvest_source(
     try:
         if not harvester_cli.exists():
             raise FileNotFoundError(str(harvester_cli))
-        return run_json_command(command), []
+        harvest_summary = run_json_command(command)
+        boundary_summary = materialize_body_boundary_telemetry(
+            harvest_root=harvest_root,
+            source_row=source_row,
+            term_hit_keywords=normalize_term_hit_keywords((source_row or {}).get("termHitKeywords")),
+        )
+        return attach_body_boundary_summary(harvest_summary, boundary_summary), []
     except Exception as exc:
         try:
             fallback = harvest_single_page(
@@ -1105,6 +1516,7 @@ def harvest_source(
                 source_url=str(harvest_policy.get("indexUrl") or source_url),
                 run_root=run_root,
                 timeout_seconds=args.timeout_seconds,
+                source_row=source_row,
                 term_hit_keywords=normalize_term_hit_keywords((source_row or {}).get("termHitKeywords")),
             )
             fallback["harvestBackend"] = "python-single-page-fallback"

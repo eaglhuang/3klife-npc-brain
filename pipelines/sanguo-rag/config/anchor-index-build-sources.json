@@ -1,6 +1,43 @@
 {
   "schemaVersion": "anchor.index.build.sources.v0.1",
   "description": "Data-driven inputs for rebuilding the anchor passage index from already extracted primary-canon artifacts. Scripts should read this file instead of embedding source paths.",
+  "sourcePolicyPath": "pipelines/sanguo-rag/config/external-evidence-sources.json",
+  "aliasMapPath": "artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/formal-mention-map.json",
+  "pageTextCleanupRulePath": "data/sanguo/rules/rule-page-text-cleanup.jsonl",
+  "segmentationPolicy": {
+    "minPassageChars": 20,
+    "maxPassageChars": 420,
+    "paragraphSplitPattern": "\\n{2,}",
+    "sentenceBoundaryPattern": "(?<=[。！？!?])",
+    "stripMetadataHeader": true,
+    "metadataHeaderSeparatorPattern": "\\r?\\n\\r?\\n",
+    "locatorField": "full-text",
+    "textFields": ["plainText", "text", "content", "body", "snippet"],
+    "evidenceTextFields": ["quote", "sourceQuote", "evidenceText", "seedText", "translatedTraditionalText"],
+    "aliasStatuses": ["high-confidence", "accepted"],
+    "minAliasChars": 2,
+    "maxPersonIdsPerPassage": 12,
+    "cleanupRuleExtractors": ["harvestedPage", "genericPassage"],
+    "cleanupRuleConstantRoles": {
+      "tailTrimMarkers": ["BODY_TAIL_MARKERS", "TAIL_TRIM_MARKERS"],
+      "noiseMarkers": ["BODY_NOISE_MARKERS", "NOISE_MARKERS"]
+    },
+    "removeNoiseMarkerOccurrences": true,
+    "dropNoiseLines": false,
+    "tailTrimMinIndex": 800,
+    "bodyEndMinIndex": 48,
+    "applyBodyBoundaryTelemetry": true,
+    "bodyBoundaryTelemetryFileNames": ["body-boundary-telemetry.jsonl"],
+    "bodyBoundaryTelemetryPathFields": ["bodyBoundaryTelemetryPath"],
+    "bodyBoundaryTelemetryMatchFields": ["pageId", "textHash", "url", "textPath"],
+    "bodyBoundaryTelemetryRequireTextHash": true
+  },
+  "normalizationReplacements": [
+    {
+      "from": "　",
+      "to": " "
+    }
+  ],
   "sources": [
     {
       "path": "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone/primary-canon-relationship-backbone.jsonl",
@@ -26,6 +63,24 @@
       "pattern": "manual-evidence-seeds.jsonl",
       "recursive": true,
       "kind": "primary-canon-manual-evidence-seeds",
+      "enabled": true
+    }
+  ],
+  "harvestedPageGlobSources": [
+    {
+      "root": "local/codex-smoke/knowledge-growth",
+      "pattern": "pages.jsonl",
+      "recursive": true,
+      "kind": "local-run-harvested-pages",
+      "enabled": true
+    }
+  ],
+  "harvestedPageSummaryGlobSources": [
+    {
+      "root": "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone",
+      "pattern": "manual-evidence-seeds-summary.json",
+      "recursive": true,
+      "kind": "primary-canon-seed-summary-pages-jsonl",
       "enabled": true
     }
   ]

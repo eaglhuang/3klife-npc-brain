@@ -51,5 +51,50 @@
       "seedPerPageMin": 0.8,
       "candidateCardPerPageMin": 0.2
     }
+  },
+  "bodyBoundaryTelemetry": {
+    "enabled": true,
+    "schemaVersion": "harvest.body-boundary-telemetry.v0.1",
+    "outputFile": "body-boundary-telemetry.jsonl",
+    "pageTextCleanupRulePath": "data/sanguo/rules/rule-page-text-cleanup.jsonl",
+    "metadataHeaderSeparatorPattern": "\\r?\\n\\r?\\n",
+    "cleanupRuleExtractors": [
+      "harvestedPage",
+      "genericPassage"
+    ],
+    "cleanupRuleConstantRoles": {
+      "tailTrimMarkers": [
+        "BODY_TAIL_MARKERS",
+        "TAIL_TRIM_MARKERS"
+      ],
+      "noiseMarkers": [
+        "BODY_NOISE_MARKERS",
+        "NOISE_MARKERS"
+      ]
+    },
+    "bodyStartMarkerFields": [
+      "bodyStartMarkers"
+    ],
+    "bodyEndMarkerFields": [
+      "bodyEndMarkers"
+    ],
+    "bodyStartCandidateRolePriority": [
+      "sourcePolicy.bodyStartMarkers",
+      "cleanup.noiseMarkers",
+      "sourcePolicy.termHitKeywords"
+    ],
+    "bodyEndCandidateRolePriority": [
+      "sourcePolicy.bodyEndMarkers",
+      "cleanup.tailTrimMarkers"
+    ],
+    "startCandidateStrategy": "maxOffset",
+    "endCandidateStrategy": "minOffset",
+    "bodyStartSearchLimitChars": 2400,
+    "bodyEndMinOffset": 48,
+    "tailTrimMinOffset": 800,
+    "termHitStartContextChars": 24,
+    "contextChars": 80,
+    "pageTelemetryPathField": "bodyBoundaryTelemetryPath",
+    "pageTelemetryIdField": "bodyBoundaryTelemetryId"
   }
 }
