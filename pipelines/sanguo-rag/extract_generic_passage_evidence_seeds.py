@@ -32,11 +32,9 @@ from sanguo_governance_loader import (
 REPO_ROOT = resolve_repo_root(__file__)
 DEFAULT_PAGES_JSONL = Path("local/codex-smoke/knowledge-growth/tmp-wikisource-sanguozhi-sample/pages.jsonl")
 DEFAULT_SOURCE_CONFIG = pipeline_config_path(REPO_ROOT, "external-evidence-sources.json")
+DEFAULT_SEED_HARVEST_DEFAULTS = pipeline_config_path(REPO_ROOT, "external-evidence-seed-harvest-defaults.json")
 DEFAULT_ALIAS_MAP = Path("artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/formal-mention-map.json")
-DEFAULT_SCOREBOARD_JSON = Path(
-    "local/codex-smoke/knowledge-growth/full-roster-highway-wang-yi-female-fix-r1/"
-    "full-roster-highway-wang-yi-female-fix-r1-r1/scoreboard/full-roster-scoreboard.json"
-)
+DEFAULT_SCOREBOARD_JSON = "auto"
 DEFAULT_OUTPUT_ROOT = Path("local/codex-smoke/knowledge-growth/generic-passage-seeds-r1")
 DEFAULT_GOVERNANCE_ROOT = default_governance_root()
 REQUIRED_SOURCE_POLICY_FIELDS: tuple[str, ...] = ("sourceId", "sourceClass", "sourceFamily", "sourceLayer", "trustTier")
@@ -171,6 +169,68 @@ def repo_relative(path: Path) -> str:
 
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+def read_json_optional(path: Path) -> Any:
+    if not path.exists():
+        return {}
+    return read_json(path)
+
+
+def string_list(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value] if value.strip() else []
+    if not isinstance(value, list):
+        return []
+    return [str(item or "").strip() for item in value if str(item or "").strip()]
+
+
+def scoreboard_auto_sentinels() -> set[str]:
+    return {"", "auto", "latest", "default"}
+
+
+def discover_scoreboard_candidates(defaults_payload: dict[str, Any]) -> list[Path]:
+    discovery = defaults_payload.get("scoreboardDiscovery") if isinstance(defaults_payload, dict) else {}
+    if not isinstance(discovery, dict):
+        return []
+    patterns = string_list(discovery.get("patterns")) or ["full-roster-scoreboard.json"]
+    recursive = bool(discovery.get("recursive", True))
+    candidates: list[Path] = []
+    for root_text in string_list(discovery.get("roots")):
+        root = resolve_path(root_text)
+        if not root.exists():
+            continue
+        for pattern in patterns:
+            iterator = root.rglob(pattern) if recursive else root.glob(pattern)
+            candidates.extend(path for path in iterator if path.is_file())
+    unique = {path.resolve(): path.resolve() for path in candidates}
+    return sorted(unique.values(), key=lambda path: path.stat().st_mtime, reverse=True)
+
+
+def resolve_scoreboard_path(path_text: str | Path) -> Path:
+    raw_text = str(path_text or "").strip()
+    if raw_text.lower() not in scoreboard_auto_sentinels():
+        return resolve_path(raw_text)
+
+    defaults_payload = read_json_optional(DEFAULT_SEED_HARVEST_DEFAULTS)
+    candidate_texts = [
+        *string_list(defaults_payload.get("scoreboardJson")),
+        *string_list(defaults_payload.get("scoreboardJsonCandidates")),
+    ]
+    for candidate_text in candidate_texts:
+        candidate = resolve_path(candidate_text)
+        if candidate.exists():
+            return candidate
+
+    discovered = discover_scoreboard_candidates(defaults_payload)
+    if discovered:
+        return discovered[0]
+
+    searched_roots = string_list((defaults_payload.get("scoreboardDiscovery") or {}).get("roots"))
+    raise FileNotFoundError(
+        "No scoreboard JSON found from external evidence seed defaults. "
+        f"defaults={repo_relative(DEFAULT_SEED_HARVEST_DEFAULTS)} roots={searched_roots}"
+    )
 
 
 def iter_jsonl(path: Path) -> Iterable[dict[str, Any]]:
@@ -1248,7 +1308,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pages-jsonl", default=str(DEFAULT_PAGES_JSONL))
     parser.add_argument("--source-config", default=str(DEFAULT_SOURCE_CONFIG))
     parser.add_argument("--alias-map", default=str(DEFAULT_ALIAS_MAP))
-    parser.add_argument("--scoreboard-json", default=str(DEFAULT_SCOREBOARD_JSON))
+    parser.add_argument(
+        "--scoreboard-json",
+        default=DEFAULT_SCOREBOARD_JSON,
+        help="Scoreboard JSON path, or 'auto' to resolve from external-evidence-seed-harvest-defaults.json.",
+    )
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
     parser.add_argument("--governance-root", default=str(DEFAULT_GOVERNANCE_ROOT))
     parser.add_argument("--evidence-seed-policy", default=None)
@@ -1281,7 +1345,7 @@ def main() -> int:
     pages_path = resolve_path(args.pages_jsonl)
     source_config_path = resolve_path(args.source_config)
     alias_map_path = resolve_path(args.alias_map)
-    scoreboard_path = resolve_path(args.scoreboard_json)
+    scoreboard_path = resolve_scoreboard_path(args.scoreboard_json)
     output_root = resolve_path(args.output_root)
     governance_root = resolve_path(args.governance_root)
     seeds_path = output_root / "manual-evidence-seeds.jsonl"

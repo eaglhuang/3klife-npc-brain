@@ -28,11 +28,9 @@ REPO_ROOT = resolve_repo_root(__file__)
 PIPELINE_ROOT = pipeline_root(REPO_ROOT)
 DEFAULT_OUTPUT_ROOT = Path("local/codex-smoke/knowledge-growth")
 DEFAULT_SOURCE_CONFIG = pipeline_config_path(REPO_ROOT, "external-evidence-sources.json")
+DEFAULT_SEED_HARVEST_DEFAULTS = pipeline_config_path(REPO_ROOT, "external-evidence-seed-harvest-defaults.json")
 DEFAULT_ALIAS_MAP = Path("artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/formal-mention-map.json")
-DEFAULT_SCOREBOARD_JSON = Path(
-    "local/codex-smoke/knowledge-growth/full-roster-highway-wang-yi-female-fix-r1/"
-    "full-roster-highway-wang-yi-female-fix-r1-r1/scoreboard/full-roster-scoreboard.json"
-)
+DEFAULT_SCOREBOARD_JSON = "auto"
 NPC_BRAIN_ROOT = resolve_npc_brain_root(REPO_ROOT)
 DEFAULT_GOVERNANCE_ROOT = default_governance_root()
 RELATIONSHIP_RUNTIME_CANON_POLICY: dict[str, Any] = {}
@@ -165,6 +163,54 @@ def read_json(path: Path) -> Any:
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+def scoreboard_auto_sentinels() -> set[str]:
+    return {"", "auto", "latest", "default"}
+
+
+def discover_scoreboard_candidates(defaults_payload: dict[str, Any]) -> list[Path]:
+    discovery = defaults_payload.get("scoreboardDiscovery") if isinstance(defaults_payload, dict) else {}
+    if not isinstance(discovery, dict):
+        return []
+    patterns = string_list(discovery.get("patterns")) or ["full-roster-scoreboard.json"]
+    recursive = bool(discovery.get("recursive", True))
+    candidates: list[Path] = []
+    for root_text in string_list(discovery.get("roots")):
+        root = resolve_path(root_text)
+        if not root.exists():
+            continue
+        for pattern in patterns:
+            iterator = root.rglob(pattern) if recursive else root.glob(pattern)
+            candidates.extend(path for path in iterator if path.is_file())
+    unique = {path.resolve(): path.resolve() for path in candidates}
+    return sorted(unique.values(), key=lambda path: path.stat().st_mtime, reverse=True)
+
+
+def resolve_scoreboard_path(path_text: str | Path) -> Path:
+    raw_text = str(path_text or "").strip()
+    if raw_text.lower() not in scoreboard_auto_sentinels():
+        return resolve_existing_path(raw_text)
+
+    defaults_payload = read_json(DEFAULT_SEED_HARVEST_DEFAULTS)
+    candidate_texts = [
+        *string_list(defaults_payload.get("scoreboardJson")),
+        *string_list(defaults_payload.get("scoreboardJsonCandidates")),
+    ]
+    for candidate_text in candidate_texts:
+        candidate = resolve_existing_path(candidate_text)
+        if candidate.exists():
+            return candidate
+
+    discovered = discover_scoreboard_candidates(defaults_payload)
+    if discovered:
+        return discovered[0]
+
+    searched_roots = string_list((defaults_payload.get("scoreboardDiscovery") or {}).get("roots"))
+    raise FileNotFoundError(
+        "No scoreboard JSON found from external evidence seed defaults. "
+        f"defaults={repo_relative(DEFAULT_SEED_HARVEST_DEFAULTS)} roots={searched_roots}"
+    )
 
 
 def write_json(path: Path, payload: Any) -> None:
@@ -1853,7 +1899,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--external-source-benchmark-policy", default=None)
     parser.add_argument("--external-source-benchmark-cue-rules", default=None)
     parser.add_argument("--alias-map", default=str(DEFAULT_ALIAS_MAP))
-    parser.add_argument("--scoreboard-json", default=str(DEFAULT_SCOREBOARD_JSON))
+    parser.add_argument(
+        "--scoreboard-json",
+        default=DEFAULT_SCOREBOARD_JSON,
+        help="Scoreboard JSON path, or 'auto' to resolve from external-evidence-seed-harvest-defaults.json.",
+    )
     parser.add_argument("--source-health-cli", default=str(DEFAULT_SOURCE_HEALTH_CLI))
     parser.add_argument("--source-health-mode", choices=["auto", "node", "python", "off"], default="auto")
     parser.add_argument("--harvester-cli", default=str(DEFAULT_HARVESTER_CLI))
@@ -1923,7 +1973,7 @@ def main() -> int:
     source_health_cli = resolve_path(args.source_health_cli)
     harvester_cli = resolve_path(args.harvester_cli)
     alias_map_path = resolve_existing_path(args.alias_map)
-    scoreboard_path = resolve_existing_path(args.scoreboard_json)
+    scoreboard_path = resolve_scoreboard_path(args.scoreboard_json)
     anchor_index_root = resolve_existing_path(args.anchor_index_root)
     single_source_health_path = run_root / "single-source-health-summary.json"
     benchmark_summary_path = run_root / "benchmark-summary.json"
