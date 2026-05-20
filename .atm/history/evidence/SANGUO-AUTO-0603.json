@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0603",
+  "status": "closeout-ready",
+  "summary": "run_full_roster_convergence_loop.py 已加入 round ledger 與停止條件。ledger 有 deltaWorldbuilding、deltaHistorical、newCardCount、verdictDistribution、rollbackReason；無進展 N 輪進 residual dossier。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {"evidenceKind": "doc-diff", "reportPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py", "description": "round ledger 與停止條件已加入", "result": "present"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/run_source_cold_evidence_discovery.py", "description": "source-cold runner 已建立"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/run_rumination_lane.py", "description": "rumination runner 已建立"}
+  ]
+}

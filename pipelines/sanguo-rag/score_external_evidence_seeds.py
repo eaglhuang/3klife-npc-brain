@@ -494,5 +494,47 @@ def main() -> int:
     return 0
 
 
+# ── SANGUO-AUTO-0302: Anchor evidence pass-through ──────────────────────────
+def attach_anchor_evidence_to_seed(
+    seed: dict[str, Any],
+    anchor_evidence: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Merge anchor verification result into seed scoring report.
+    anchor 結果在 anchorEvidence 子物件，與 crossSiteSignalScore 分開，
+    不直接改 siteReliabilityMultiplier。
+    """
+    merged = dict(seed)
+    merged["anchorEvidence"] = {
+        "anchorMatchCount": anchor_evidence.get("anchorMatchCount", 0),
+        "anchorHistoryMatchCount": anchor_evidence.get("anchorHistoryMatchCount", 0),
+        "anchorRomanceMatchCount": anchor_evidence.get("anchorRomanceMatchCount", 0),
+        "anchorVerdict": anchor_evidence.get("anchorVerdict", "unverified"),
+        "supportingLocators": anchor_evidence.get("supportingLocators", []),
+        "supportingTextHashes": anchor_evidence.get("supportingTextHashes", []),
+        "canonicalWrites": False,
+    }
+    return merged
+
+
+# ── SANGUO-AUTO-0403: Bayesian smoothing for site multiplier ────────────────
+def bayesian_smoothed_site_multiplier(
+    raw_multiplier: float,
+    sample_count: int,
+    prior_mean: float = 0.5,
+    prior_strength: int = 5,
+    upper_cap: float = 1.5,
+) -> float:
+    """
+    Bayesian smoothing for siteReliabilityMultiplier。
+    低樣本 source multiplier 靠近先驗（prior_mean）；
+    高樣本 source 才讓實際 accepted/promotion/conflict 分布主導。
+    upper_cap 仍維持規格限制。
+    """
+    weight = sample_count / (sample_count + prior_strength)
+    smoothed = weight * raw_multiplier + (1.0 - weight) * prior_mean
+    return min(smoothed, upper_cap)
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

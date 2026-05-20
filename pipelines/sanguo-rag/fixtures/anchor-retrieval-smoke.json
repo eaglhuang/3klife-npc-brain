@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "anchor-retrieval-smoke.v0.1",
+  "description": "SANGUO-AUTO-0203 anchor retrieval smoke fixtures",
+  "fixtureGroups": [
+    {
+      "groupId": "top-generals",
+      "description": "知名武將查詢",
+      "fixtures": [
+        {
+          "generalId": "liu-bei",
+          "query": "劉備 仁義 蜀漢",
+          "expectedHits": [
+            {
+              "corpusId": "sanguozhi",
+              "locatorPrefix": "sanguozhi",
+              "minOverlapScore": 0.5
+            }
+          ]
+        },
+        {
+          "generalId": "zhuge-liang",
+          "query": "諸葛亮 隆中對 北伐",
+          "expectedHits": [
+            {
+              "corpusId": "sanguozhi",
+              "locatorPrefix": "sanguozhi",
+              "minOverlapScore": 0.5
+            }
+          ]
+        },
+        {
+          "generalId": "cao-cao",
+          "query": "曹操 挾天子 官渡",
+          "expectedHits": [
+            {
+              "corpusId": "sanguozhi",
+              "locatorPrefix": "sanguozhi",
+              "minOverlapScore": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupId": "obscure-generals",
+      "description": "冷門人物查詢",
+      "fixtures": [
+        {
+          "generalId": "chen-gong",
+          "query": "陳宮 呂布 兗州",
+          "expectedHits": [
+            {
+              "corpusId": "sanguozhi",
+              "locatorPrefix": "sanguozhi",
+              "minOverlapScore": 0.3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "acceptanceCriteria": {
+    "minTopK": 3,
+    "requiredFields": ["locator", "textHash", "overlapScore"],
+    "overlapScoreThreshold": 0.3
+  }
+}

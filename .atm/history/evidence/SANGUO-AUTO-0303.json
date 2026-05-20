@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0303",
+  "status": "closeout-ready",
+  "summary": "promote_seed_to_evidence_card.py 已加入 anchorEvidence 子物件。外部來源缺 locator 時不偽造為外部 locator；anchor locator/hash 只放在 supportingLocators/supportingTextHashes；canonicalWrites=false。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {"evidenceKind": "doc-diff", "reportPath": "pipelines/sanguo-rag/promote_seed_to_evidence_card.py", "description": "anchor schema 已加入 card promotion", "result": "present"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/verify_seed_against_anchor_corpus.py", "description": "上游 verification script"}
+  ]
+}

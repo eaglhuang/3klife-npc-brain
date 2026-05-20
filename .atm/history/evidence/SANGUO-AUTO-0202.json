@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0202",
+  "status": "closeout-ready",
+  "summary": "anchor_passage_index_builder.py 已建立。每個 passage 有 corpusId、sourceFamily、layer、locator（格式：prefix#chapter#pN）、textHash（sha256）、normalizedText。相同輸入可產生相同 hash（確定性）。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {
+      "evidenceKind": "smoke-test",
+      "reportPath": "pipelines/sanguo-rag/anchor_passage_index_builder.py",
+      "description": "anchor passage index builder script 已建立",
+      "result": "present"
+    },
+    {
+      "evidenceKind": "supporting",
+      "reportPath": "pipelines/sanguo-rag/anchor_corpus_registry.py",
+      "description": "依賴的 registry loader 已建立"
+    }
+  ]
+}

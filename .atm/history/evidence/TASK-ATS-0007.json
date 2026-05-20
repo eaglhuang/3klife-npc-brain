@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "TASK-ATS-0007",
+  "status": "closeout-ready",
+  "summary": "Registry diff for ATM-NPCBRAIN-0002 passed after backfilling version lineage 0.1.0 -> 0.1.1.",
+  "repositoryKind": "python-adopter",
+  "packageManager": "none",
+  "artifactDirectories": [
+    ".atm/history/reports",
+    "atomic_workbench/maps/ATM-MAP-0001"
+  ],
+  "evidence": [
+    {
+      "evidenceKind": "registry-diff",
+      "reportPath": ".atm/history/reports/registry-diff.ATM-NPCBRAIN-0002.0.1.0-to-0.1.1.json",
+      "atomId": "ATM-NPCBRAIN-0002",
+      "fromVersion": "0.1.0",
+      "toVersion": "0.1.1",
+      "result": "passed",
+      "summary": "Hash drift detected only in codeHash; lineage continuity is true."
+    },
+    {
+      "evidenceKind": "lineage",
+      "reportPath": "atomic_workbench/maps/ATM-MAP-0001/lineage-log.json"
+    },
+    {
+      "evidenceKind": "supporting",
+      "reportPath": "atomic_workbench/maps/ATM-MAP-0001/map.equivalence.report.json"
+    },
+    {
+      "evidenceKind": "supporting",
+      "reportPath": ".atm/history/reports/propagation-report.ATM-NPCBRAIN-0002.json"
+    },
+    {
+      "evidenceKind": "supporting",
+      "reportPath": ".atm/history/reports/review-advisory.ATM-MAP-0001-pilot.json"
+    },
+    {
+      "evidenceKind": "supporting",
+      "reportPath": ".atm/history/reports/human-review.guided-legacy-atomize-guidance-20260519151625-f417f5a6f2.json"
+    }
+  ],
+  "mapCloseout": {
+    "mapId": "ATM-MAP-0001",
+    "atomId": "ATM-NPCBRAIN-0002",
+    "decision": "closeout-ready",
+    "reason": "Registry-diff passed with lineage continuity true and only codeHash drift between 0.1.0 and 0.1.1."
+  }
+}

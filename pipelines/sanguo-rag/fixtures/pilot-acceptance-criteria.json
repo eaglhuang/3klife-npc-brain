@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "pilot-acceptance.v0.1",
+  "description": "SANGUO-AUTO-0701/0702 pilot 驗收標準",
+  "top50PilotCriteria": {
+    "strictGovernancePass": true,
+    "canonicalWritesFalse": true,
+    "maxHumanPendingCount": 20,
+    "scoreIsolationNoFail": true,
+    "requiredChecks": ["anchor-isolation", "female-boost-isolation", "sandbox-alias-safety", "single-site-no-A"]
+  },
+  "top500FullRosterCriteria": {
+    "humanPendingCountThreshold": 50,
+    "sourceColdResidualExplainable": true,
+    "historicalScoreNoPollution": true,
+    "runtimeReadinessNotRegressed": true
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "anchor.registry.v0.1",
+  "generatedAt": "2026-05-20T00:00:00Z",
+  "description": "Anchor corpus 正式清單。每個 corpus 是穩定的離線文本，可產生穩定 textHash 與 locator，用作外部 seed 查證參照。同一部書跨站抓取不算獨立 sourceFamily。",
+  "locatorSeparator": "#",
+  "corpora": [
+    {
+      "corpusId": "sanguozhi",
+      "displayName": "三國志（陳壽）",
+      "layer": "history",
+      "trustTier": "A-history",
+      "sourceFamily": "sanguozhi",
+      "locatorPrefix": "sanguozhi",
+      "locatorFormat": "sanguozhi#<juan-id>#p<page>",
+      "hashAlgorithm": "sha256",
+      "equivalentSites": ["zh.wikisource.org/三國志", "ctext.org/sanguo-zhi"],
+      "notes": "正史首要來源。陳壽撰，裴松之注。多站抓取仍為同一 sourceFamily。"
+    },
+    {
+      "corpusId": "houhanshu",
+      "displayName": "後漢書（范曄）",
+      "layer": "history",
+      "trustTier": "A-history",
+      "sourceFamily": "houhanshu",
+      "locatorPrefix": "houhanshu",
+      "locatorFormat": "houhanshu#<juan-id>#p<page>",
+      "hashAlgorithm": "sha256",
+      "equivalentSites": ["zh.wikisource.org/後漢書", "ctext.org/hou-han-shu"],
+      "notes": "正史補充來源，用於東漢人物背景。"
+    },
+    {
+      "corpusId": "zizhitongjian",
+      "displayName": "資治通鑑（司馬光）",
+      "layer": "history",
+      "trustTier": "A-history",
+      "sourceFamily": "zizhitongjian",
+      "locatorPrefix": "zztj",
+      "locatorFormat": "zztj#<juan-id>#p<page>",
+      "hashAlgorithm": "sha256",
+      "equivalentSites": ["zh.wikisource.org/資治通鑑", "ctext.org/zizhi-tongjian"],
+      "notes": "編年史，用於大事時序校驗。"
+    },
+    {
+      "corpusId": "sanguoyanyi",
+      "displayName": "三國演義（羅貫中）",
+      "layer": "romance",
+      "trustTier": "A-romance",
+      "sourceFamily": "sanguoyanyi",
+      "locatorPrefix": "sgyy",
+      "locatorFormat": "sgyy#c<chapter>#p<para>",
+      "hashAlgorithm": "sha256",
+      "equivalentSites": ["zh.wikisource.org/三國演義"],
+      "notes": "演義正文。注意：演義世界觀補強不得污染 historicalTrustScore。"
+    }
+  ]
+}

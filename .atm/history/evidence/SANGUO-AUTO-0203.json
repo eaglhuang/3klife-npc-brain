@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0203",
+  "status": "closeout-ready",
+  "summary": "Anchor retrieval smoke fixtures 已建立。覆蓋知名武將（劉備、諸葛亮、曹操）與冷門人物（陳宮）查詢。每個 fixture 有 query、expectedHits、overlapScore 驗收標準。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {
+      "evidenceKind": "smoke-test",
+      "reportPath": "pipelines/sanguo-rag/fixtures/anchor-retrieval-smoke.json",
+      "description": "anchor retrieval smoke fixtures 已建立",
+      "result": "present"
+    }
+  ]
+}

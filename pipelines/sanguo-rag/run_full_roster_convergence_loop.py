@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from full_roster_convergence_state_governance import apply_convergence_loop_state_governance_atom
 from full_roster_global_seed_pipeline import run_global_seed_pipeline_atom
 from repo_layout import pipeline_config_path, pipeline_root, resolve_npc_brain_root, resolve_repo_root
 from sanguo_governance_loader import (
@@ -56,11 +57,11 @@ def apply_convergence_loop_state_governance(
     governance_root: str | Path | None,
     convergence_state_policy: str | Path | None = None,
 ) -> None:
-    policy = load_convergence_loop_state_policy(
-        governance_root,
+    globals()["CONVERGENCE_LOOP_STATE_POLICY"] = apply_convergence_loop_state_governance_atom(
+        governance_root=governance_root,
         convergence_state_policy=convergence_state_policy,
+        load_convergence_loop_state_policy_fn=load_convergence_loop_state_policy,
     )
-    globals()["CONVERGENCE_LOOP_STATE_POLICY"] = dict(policy)
 
 
 def utc_now() -> str:

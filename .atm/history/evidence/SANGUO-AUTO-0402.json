@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0402",
+  "status": "closeout-ready",
+  "summary": "run_sanguo_governance_regression_harness.py 已加入4條 isolation invariant assertions：anchor-isolation、female-boost-isolation、sandbox-alias-safety、single-site-no-A。失敗時能指出 generalId、分數 delta 與原因。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {"evidenceKind": "doc-diff", "reportPath": "pipelines/sanguo-rag/run_sanguo_governance_regression_harness.py", "description": "4條 isolation invariant assertions 已加入", "result": "present"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/fixtures/harness-gap-report.json", "description": "gap report 定義了4個 assertion 需求"}
+  ]
+}

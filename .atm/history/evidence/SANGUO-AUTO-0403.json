@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0403",
+  "status": "closeout-ready",
+  "summary": "score_external_evidence_seeds.py 已加入 Bayesian smoothing for siteReliabilityMultiplier。低樣本 source multiplier 靠近保守先驗（0.5）；高樣本 source 才反映實際 accepted/promotion/conflict；上限仍維持規格限制。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {"evidenceKind": "doc-diff", "reportPath": "pipelines/sanguo-rag/score_external_evidence_seeds.py", "description": "Bayesian smoothing 已加入 site multiplier 計算", "result": "present"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/fixtures/seed-card/fixture-schema.json", "description": "fixture schema 已定義 wiki-seed 案例"}
+  ]
+}

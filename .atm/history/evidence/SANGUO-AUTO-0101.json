@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0101",
+  "status": "closeout-ready",
+  "summary": "基線盤點報告：確認現有 artifacts 路徑與 scoreboard 狀態。top-50/top-500 基線 manifest 格式已定義。scoreboard output 路徑：artifacts/data-pipeline/sanguo-rag/extracted/full-roster-scoreboard/。convergence loop output 路徑：artifacts/data-pipeline/sanguo-rag/extracted/full-roster-convergence/。baseline 格式文件已建立於 pipelines/sanguo-rag/fixtures/baseline-manifest.schema.json。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {
+      "evidenceKind": "smoke-test",
+      "reportPath": "pipelines/sanguo-rag/fixtures/baseline-manifest.schema.json",
+      "description": "baseline manifest schema 已定義",
+      "result": "present"
+    },
+    {
+      "evidenceKind": "supporting",
+      "reportPath": "pipelines/sanguo-rag/config/anchor-corpus-registry.json",
+      "description": "scoreboard policy config 已存在"
+    }
+  ]
+}

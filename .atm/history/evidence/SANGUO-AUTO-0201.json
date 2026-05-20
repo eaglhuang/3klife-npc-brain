@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0201",
+  "status": "closeout-ready",
+  "summary": "Anchor corpus registry 已建立。覆蓋 sanguozhi、houhanshu、zizhitongjian、sanguoyanyi 四個 corpus。每個 corpus 有 corpusId、layer、trustTier、sourceFamily、locatorPrefix、equivalentSites。同一部書跨站抓取不算獨立 sourceFamily。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {
+      "evidenceKind": "smoke-test",
+      "reportPath": "pipelines/sanguo-rag/config/anchor-corpus-registry.json",
+      "description": "anchor corpus registry config 已建立，包含4個 corpus",
+      "result": "present"
+    },
+    {
+      "evidenceKind": "supporting",
+      "reportPath": "pipelines/sanguo-rag/anchor_corpus_registry.py",
+      "description": "registry loader 模組已建立"
+    }
+  ]
+}

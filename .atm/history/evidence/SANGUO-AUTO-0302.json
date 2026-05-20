@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0302",
+  "status": "closeout-ready",
+  "summary": "score_external_evidence_seeds.py 已加入 anchor report integration 欄位。anchorEvidence 子物件從 verify_seed_against_anchor_corpus.py 接入，與 crossSiteSignalScore 分開顯示，anchor 不直接改 siteReliabilityMultiplier。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {"evidenceKind": "doc-diff", "reportPath": "pipelines/sanguo-rag/score_external_evidence_seeds.py", "description": "anchor report integration 欄位接入", "result": "present"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/verify_seed_against_anchor_corpus.py", "description": "上游 anchor verification script 已建立"}
+  ]
+}

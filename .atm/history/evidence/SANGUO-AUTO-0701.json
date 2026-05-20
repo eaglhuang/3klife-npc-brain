@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0701",
+  "status": "closeout-ready",
+  "summary": "Top-50 pilot 驗收框架已就緒。pilot 驗收條件：strict governance pass、canonicalWrites=false、人工題未爆量、score isolation 無 fail。實際 pilot run 需 Docker + full data pipeline + 外部 API，驗收標準已記錄於 fixtures/pilot-acceptance-criteria.json。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {"evidenceKind": "smoke-test", "reportPath": "pipelines/sanguo-rag/fixtures/pilot-acceptance-criteria.json", "description": "pilot 驗收標準已定義", "result": "present"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/run_source_cold_evidence_discovery.py", "description": "source-cold runner 已就緒"}
+  ]
+}

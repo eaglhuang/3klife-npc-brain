@@ -242,5 +242,69 @@ def main() -> int:
     return 0
 
 
+# ── SANGUO-AUTO-0303: Evidence card anchor schema ────────────────────────────
+
+def build_anchor_evidence_for_card(anchor_result: dict[str, Any]) -> dict[str, Any]:
+    """
+    建立 card 的 anchorEvidence 子物件。
+    規則：
+    - anchor locator/hash 只能放在 supportingLocators/supportingTextHashes
+    - 外部來源缺 locator 時，不能把 anchor locator 偽造為外部 locator
+    - canonicalWrites=false
+    """
+    return {
+        "anchorMatchCount": int(anchor_result.get("anchorMatchCount", 0)),
+        "anchorHistoryMatchCount": int(anchor_result.get("anchorHistoryMatchCount", 0)),
+        "anchorRomanceMatchCount": int(anchor_result.get("anchorRomanceMatchCount", 0)),
+        "anchorVerdict": str(anchor_result.get("anchorVerdict", "unverified")),
+        "supportingLocators": list(anchor_result.get("supportingLocators", [])),
+        "supportingTextHashes": list(anchor_result.get("supportingTextHashes", [])),
+        "canonicalWrites": False,
+    }
+
+
+def attach_anchor_evidence_to_card(
+    card: dict[str, Any],
+    anchor_result: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """
+    Attach anchor evidence to a candidate evidence card.
+    anchor 的 locator 不會回填到 card 主欄位 locator。
+    """
+    if not anchor_result:
+        return card
+    updated = dict(card)
+    updated["anchorEvidence"] = build_anchor_evidence_for_card(anchor_result)
+    return updated
+
+
+# ── SANGUO-AUTO-0304: Contradiction/unverified gate ──────────────────────────
+
+ANCHOR_VERDICT_SUSPECTED_CONFLICT = "suspected-conflict"
+ANCHOR_VERDICT_UNVERIFIED = "unverified"
+
+
+def anchor_gate_check(
+    card: dict[str, Any],
+    anchor_result: dict[str, Any] | None,
+) -> tuple[bool, str]:
+    """
+    Anchor verification gate:
+    - suspected-conflict → block (requires human-review)
+    - unverified → keep as seed-only, do not promote to A
+    - returns (allowed_to_promote, reason)
+    """
+    if not anchor_result:
+        return True, "no-anchor-evidence"
+    verdict = str(anchor_result.get("anchorVerdict", "unverified"))
+    if verdict == ANCHOR_VERDICT_SUSPECTED_CONFLICT:
+        return False, f"anchor-gate: suspected-conflict for {card.get('evidenceId')}"
+    if verdict == ANCHOR_VERDICT_UNVERIFIED:
+        max_grade = card.get("singleSourceMaxGrade", "B")
+        if max_grade in {"A", "A-history", "A-romance"}:
+            return False, f"anchor-gate: unverified anchor cannot promote to A-grade"
+    return True, "anchor-gate-pass"
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

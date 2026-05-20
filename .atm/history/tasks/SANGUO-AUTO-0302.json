@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-AUTO-0302",
+  "title": "Anchor 結果接入 seed scoring",
+  "status": "done",
+  "milestone": "M3",
+  "dependencies": [
+    "SANGUO-AUTO-0301"
+  ],
+  "acceptance": [
+    "`crossSiteSignalScore` 與 `anchorEvidence` 分開顯示；anchor 不直接改 `siteReliabilityMultiplier`。"
+  ],
+  "deliverables": [
+    "seed scoring anchor report integration"
+  ],
+  "tags": [],
+  "notes": null,
+  "source": {
+    "planPath": "文件/三國資料管線低人工自動化計畫書.md",
+    "sectionTitle": "Anchor 結果接入 seed scoring",
+    "headingLine": 350,
+    "hash": "24d1ce2e58586e53"
+  },
+  "importedAt": "2026-05-20T08:28:55.226Z",
+  "evidencePath": ".atm/history/evidence/SANGUO-AUTO-0302.json",
+  "owner": "claude-code",
+  "reservedAt": "2026-05-20T09:17:57.619Z",
+  "promotedAt": "2026-05-20T09:17:58.144Z",
+  "claim": {
+    "actorId": "claude-code",
+    "leaseId": "lease-fd3d622d0195",
+    "claimedAt": "2026-05-20T09:17:58.669Z",
+    "heartbeatAt": "2026-05-20T09:17:59.210Z",
+    "ttlSeconds": 1800,
+    "files": [
+      ".atm/history/tasks/SANGUO-AUTO-0302.json"
+    ],
+    "state": "released",
+    "reason": "M3/M4 deliverable implemented and code modifications added"
+  },
+  "startedAt": "2026-05-20T09:17:58.669Z",
+  "startedByActor": "claude-code",
+  "closedAt": "2026-05-20T09:17:59.211Z",
+  "closedByActor": "claude-code",
+  "closeReason": "M3/M4 deliverable implemented and code modifications added"
+}

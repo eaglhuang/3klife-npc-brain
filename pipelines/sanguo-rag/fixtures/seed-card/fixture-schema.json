@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "seed-card-fixture.v0.1",
+  "description": "SANGUO-AUTO-0102 seed/card regression fixture schema",
+  "fixtureKinds": [
+    {
+      "kind": "history-seed",
+      "description": "正史來源 seed，預期 promotionTarget=A-history，reviewGrade=A",
+      "expectedFields": ["generalId", "seedText", "sourceLayer", "sourceFamily", "locator", "textHash", "promotionTarget", "reviewGrade", "canonicalWrites"]
+    },
+    {
+      "kind": "romance-seed",
+      "description": "演義來源 seed，預期 promotionTarget=A-romance",
+      "expectedFields": ["generalId", "seedText", "sourceLayer", "sourceFamily", "locator", "textHash", "promotionTarget", "canonicalWrites"]
+    },
+    {
+      "kind": "wiki-seed",
+      "description": "wiki 來源 seed，預期不得直接升 A-history",
+      "expectedFields": ["generalId", "seedText", "sourceLayer", "siteReliabilityMultiplier", "canonicalWrites"]
+    },
+    {
+      "kind": "blocked-seed",
+      "description": "被 gate 阻擋的 seed，promotionTarget=blocked",
+      "expectedFields": ["generalId", "seedText", "blockReason", "canonicalWrites"]
+    },
+    {
+      "kind": "unverified-seed",
+      "description": "anchor 未支持的 seed，anchorVerdict=unverified",
+      "expectedFields": ["generalId", "seedText", "anchorEvidence.anchorVerdict", "canonicalWrites"]
+    },
+    {
+      "kind": "contradicted-seed",
+      "description": "anchor 疑似衝突的 seed，anchorVerdict=suspected-conflict",
+      "expectedFields": ["generalId", "seedText", "anchorEvidence.anchorVerdict", "canonicalWrites"]
+    }
+  ]
+}

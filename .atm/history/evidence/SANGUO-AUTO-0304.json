@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0304",
+  "status": "closeout-ready",
+  "summary": "Contradiction/unverified 分流 gate 已實作。suspected-conflict 進 human-review 或 blocked；unverified 保持 seed-only/discovery；不直接產 A。gate 邏輯整合於 promote_seed_to_evidence_card.py。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {"evidenceKind": "doc-diff", "reportPath": "pipelines/sanguo-rag/promote_seed_to_evidence_card.py", "description": "contradiction/unverified 分流 gate 已加入", "result": "present"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/fixtures/harness-gap-report.json", "description": "gate fixture 格式已定義"}
+  ]
+}

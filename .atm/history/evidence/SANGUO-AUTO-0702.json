@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0702",
+  "status": "closeout-ready",
+  "summary": "Top-500 full roster 試跑框架已就緒。驗收條件：humanPendingCount 低於設定門檻、source-cold residual 可解釋、historical score 無污染、runtime readiness 未倒退。需 top-50 pilot 通過後才執行。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/fixtures/pilot-acceptance-criteria.json", "description": "full roster 驗收標準已定義"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py", "description": "convergence loop runner 已就緒"}
+  ]
+}

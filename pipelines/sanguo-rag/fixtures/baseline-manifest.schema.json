@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "baseline-manifest.v0.1",
+  "description": "SANGUO-AUTO-0101 baseline manifest schema - 用於凍結 scoreboard 基線",
+  "fields": {
+    "snapshotId": "string - 快照唯一識別（時間戳）",
+    "generatedAt": "ISO8601 timestamp",
+    "topN": "int - 包含人數（50 or 500）",
+    "rows": "array of BaselineRow"
+  },
+  "baselineRow": {
+    "generalId": "string",
+    "displayName": "string",
+    "historicalTrustScore": "float [0-100]",
+    "worldbuildingUsabilityScore": "float [0-100]",
+    "nextLane": "string - evidence-discovery|staging|ready-for-runtime",
+    "reviewGrade": "string - A|B|C|D|ungraded",
+    "humanPendingCount": "int",
+    "sourceFamilyCount": "int",
+    "snapshotAt": "ISO8601 timestamp"
+  }
+}

@@ -1283,5 +1283,40 @@ def main() -> int:
     return 0
 
 
+# ── SANGUO-AUTO-0401: Anchor corroboration score ─────────────────────────────
+def anchor_corroboration_score(
+    history_hit_count: int,
+    romance_hit_count: int,
+    history_weight: float = 15.0,
+    romance_weight: float = 8.0,
+    max_score: float = 60.0,
+) -> float:
+    """
+    anchorCorroborationScore — SANGUO-AUTO-0401
+    只進 worldbuildingUsabilityScore 或報表，不得被 historical_trust_score() 引用。
+    公式：clamp(historyHit * 15 + romanceHit * 8, 0, 60)
+    """
+    raw = history_hit_count * history_weight + romance_hit_count * romance_weight
+    return max(0.0, min(raw, max_score))
+
+
+def apply_anchor_corroboration_to_worldbuilding(
+    worldbuilding_score: float,
+    anchor_evidence: dict[str, Any] | None,
+    anchor_weight: float = 0.1,
+) -> float:
+    """
+    將 anchorCorroborationScore 按比例注入 worldbuildingUsabilityScore。
+    anchor 只能提升世界觀分數，不能改動 historicalTrustScore。
+    """
+    if not anchor_evidence:
+        return worldbuilding_score
+    history_hits = int(anchor_evidence.get("anchorHistoryMatchCount", 0))
+    romance_hits = int(anchor_evidence.get("anchorRomanceMatchCount", 0))
+    boost = anchor_corroboration_score(history_hits, romance_hits)
+    delta = boost * anchor_weight
+    return min(worldbuilding_score + delta, 100.0)
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

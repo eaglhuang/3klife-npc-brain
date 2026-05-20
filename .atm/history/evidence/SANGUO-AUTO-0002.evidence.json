@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0002",
+  "status": "closeout-ready",
+  "summary": "ATM task card 範本確認完成。26張 SANGUO-AUTO-* 任務卡已透過 node atm.mjs tasks import 匯入 .atm/history/tasks/，格式符合 atm.workItem.v0.2 schema：包含 workItemId、title、status、milestone、dependencies、acceptance、deliverables、source.planPath、importedAt 等欄位。reserve→promote→claim lifecycle 驗證可運作。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {
+      "evidenceKind": "smoke-test",
+      "reportPath": ".atm/history/tasks/SANGUO-AUTO-0002.json",
+      "description": "任務卡 JSON 格式驗證通過，欄位完整",
+      "result": "passed"
+    },
+    {
+      "evidenceKind": "supporting",
+      "reportPath": ".atm/history/tasks/SANGUO-AUTO-0001.json",
+      "description": "26張任務卡已全數匯入，reserve/promote/claim lifecycle 可執行"
+    }
+  ]
+}

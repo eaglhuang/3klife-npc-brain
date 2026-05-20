@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0001",
+  "status": "closeout-ready",
+  "summary": "低人工自動化計畫書已建立完成。文件包含現況分析、目標架構（mermaid flowchart）、里程碑總覽（M0-M8）、26張任務卡（詳述+驗收+證據欄位）、驗證計畫、工程偽代碼附錄、Governance invariants、風險與回滾策略。doc_id doc_server_service_0012 與既有文件無衝突。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {
+      "evidenceKind": "doc-diff",
+      "reportPath": "文件/三國資料管線低人工自動化計畫書.md",
+      "description": "計畫書主文件已建立，包含所有里程碑與26張任務卡詳述",
+      "result": "present"
+    },
+    {
+      "evidenceKind": "supporting",
+      "reportPath": ".atm/history/tasks/SANGUO-AUTO-0001.json",
+      "description": "ATM work item 已匯入，source.planPath 正確指向計畫書"
+    }
+  ]
+}

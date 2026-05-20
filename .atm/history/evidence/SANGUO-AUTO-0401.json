@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0401",
+  "status": "closeout-ready",
+  "summary": "build_full_roster_scoreboard.py 已加入 anchorCorroborationScore。anchor hit 能提升 worldbuildingUsabilityScore；historical_trust_score() 不引用 anchor component。公式：clamp(historyHit*15 + romanceHit*8, 0, 60)。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {"evidenceKind": "doc-diff", "reportPath": "pipelines/sanguo-rag/build_full_roster_scoreboard.py", "description": "anchorCorroborationScore 加入 confidence_breakdown", "result": "present"},
+    {"evidenceKind": "supporting", "reportPath": "pipelines/sanguo-rag/fixtures/harness-gap-report.json", "description": "isolation invariant 已定義"}
+  ]
+}

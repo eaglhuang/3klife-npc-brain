@@ -24,7 +24,29 @@
                                         {
                                             "atomId":  "ATM-NPCBRAIN-0002",
                                             "version":  "0.1.0",
-                                            "role":  "domain-step"
+                                            "role":  "domain-step",
+                                            "versionLineage":  {
+                                                                   "currentVersion":  "0.1.1",
+                                                                   "versions":  [
+                                                                                   {
+                                                                                       "version":  "0.1.0",
+                                                                                       "specHash":  "sha256:61a3d8771957f9717ad4850e1ac572bce2d124e972d263c8978d2f7392071e24",
+                                                                                       "codeHash":  "sha256:9658fe3b20f9826fdb7e74eac992138de3f62d40ab166970d8820e3cd9964cd3",
+                                                                                       "testHash":  "sha256:f1ae017ac370d69d7dc404909be9613c5c9205050dbce1e7af692fb2a363217f",
+                                                                                       "timestamp":  "2026-05-19T15:15:25.494Z"
+                                                                                   },
+                                                                                   {
+                                                                                       "version":  "0.1.1",
+                                                                                       "specHash":  "sha256:61a3d8771957f9717ad4850e1ac572bce2d124e972d263c8978d2f7392071e24",
+                                                                                       "codeHash":  "sha256:629c35949af97b4f5efdbe505ee30c2222cf3751e807cbe113c3cd4d0b28b20a",
+                                                                                       "testHash":  "sha256:f1ae017ac370d69d7dc404909be9613c5c9205050dbce1e7af692fb2a363217f",
+                                                                                       "timestamp":  "2026-05-20T10:35:36.000Z"
+                                                                                   }
+                                                                               ],
+                                                                   "sourceRef":  "atomic_workbench/maps/ATM-MAP-0001/lineage-log.json",
+                                                                   "advisory":  "Backfilled from propagation, human-review, and polymorph-impact evidence so ATM-NPCBRAIN-0002 can be diffed from 0.1.0 to 0.1.1.",
+                                                                   "updatedAt":  "2026-05-20T10:35:36.000Z"
+                                                               }
                                         },
                                         {
                                             "atomId":  "ATM-NPCBRAIN-0003",
@@ -113,6 +135,7 @@
                                                                  "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json",
                                                                  "atomic_workbench/maps/ATM-MAP-0001/map.equivalence.report.json",
                                                                  ".atm/history/reports/propagation-report.ATM-NPCBRAIN-0002.json",
+                                                                 ".atm/history/reports/registry-diff.ATM-NPCBRAIN-0002.0.1.0-to-0.1.1.json",
                                                                  ".atm/history/reports/review-advisory.ATM-MAP-0001-pilot.json",
                                                                  ".atm/history/reports/human-review.guided-legacy-atomize-guidance-20260519151625-f417f5a6f2.json"
                                                              ]
@@ -139,6 +162,7 @@
                                          "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
                                          "atomic_workbench/maps/ATM-MAP-0001/map.integration.test.ts",
                                          "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json",
+                                         ".atm/history/reports/registry-diff.ATM-NPCBRAIN-0002.0.1.0-to-0.1.1.json",
                                          "atomic_workbench/maps/ATM-MAP-0001/lineage-log.json"
                                      ]
                     }

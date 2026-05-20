@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "harness-gap-report.v0.1",
+  "generatedAt": "2026-05-20T00:00:00Z",
+  "taskId": "SANGUO-AUTO-0103",
+  "summary": "現有 run_sanguo_governance_regression_harness.py 擴充點盤點結果",
+  "existingAssertions": [
+    "canonicalWrites=false on all staging artifacts",
+    "grade distribution check (A/B/C/D)",
+    "humanPendingCount threshold check",
+    "source policy compliance check"
+  ],
+  "gapAssertions": [
+    {
+      "assertionId": "anchor-isolation",
+      "description": "若沒有新增獨立 history sourceFamily，historicalTrustScore 不得因自動採證上升超過 2.0",
+      "targetScript": "run_sanguo_governance_regression_harness.py",
+      "requiredFixture": "fixtures/anchor-isolation-baseline.jsonl",
+      "failureMessage": "anchor isolation violation: generalId={generalId} history delta={delta} > 2.0",
+      "strictFlag": "--strict-anchor-isolation"
+    },
+    {
+      "assertionId": "female-boost-isolation",
+      "description": "女性優先採證與 worldbuilding boost 不得進 historicalTrustScore",
+      "targetScript": "run_sanguo_governance_regression_harness.py",
+      "requiredFixture": "fixtures/female-boost-baseline.jsonl",
+      "failureMessage": "female boost isolation violation: generalId={generalId} female boost leaked to historical score",
+      "strictFlag": "--strict-female-isolation"
+    },
+    {
+      "assertionId": "sandbox-alias-safety",
+      "description": "auto-applied alias 必須 sandboxStatus=pass，且不得命中 noise labels",
+      "targetScript": "run_sanguo_governance_regression_harness.py",
+      "requiredFixture": "fixtures/alias-sandbox-safety.jsonl",
+      "failureMessage": "alias safety violation: alias={alias} sandboxStatus={status} noise_hit={noise}",
+      "strictFlag": "--strict-alias-safety"
+    },
+    {
+      "assertionId": "single-site-no-a",
+      "description": "單一網站或單一 sourceFamily 不得把 wiki/百科/玩家整理升成 A-history",
+      "targetScript": "run_sanguo_governance_regression_harness.py",
+      "requiredFixture": "fixtures/single-site-no-a.jsonl",
+      "failureMessage": "single-site no-A violation: generalId={generalId} A-history from single sourceFamily={family}",
+      "strictFlag": "--strict-single-site"
+    }
+  ],
+  "implementationPriority": "SANGUO-AUTO-0402"
+}

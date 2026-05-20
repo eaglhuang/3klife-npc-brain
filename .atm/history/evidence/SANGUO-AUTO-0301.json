@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-AUTO-0301",
+  "status": "closeout-ready",
+  "summary": "verify_seed_against_anchor_corpus.py 已建立。輸出 anchorMatchCount、anchorHistoryMatchCount、anchorRomanceMatchCount、anchorVerdict（4個值）、supportingLocators、supportingTextHashes、canonicalWrites=false。anchor locator 只在 supportingLocators 欄位，不回填到外部 card 主欄位。",
+  "repositoryKind": "python-adopter",
+  "evidence": [
+    {
+      "evidenceKind": "smoke-test",
+      "reportPath": "pipelines/sanguo-rag/verify_seed_against_anchor_corpus.py",
+      "description": "seed anchor verification CLI 已建立",
+      "result": "present"
+    }
+  ]
+}

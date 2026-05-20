@@ -667,5 +667,116 @@ def main() -> None:
         raise SystemExit(1)
 
 
+# ── SANGUO-AUTO-0402: Trust isolation invariant assertions ───────────────────
+
+def assert_anchor_isolation(
+    prev_row: dict[str, Any],
+    new_row: dict[str, Any],
+    max_delta: float = 2.0,
+) -> dict[str, Any]:
+    """
+    Anchor isolation invariant：若沒有新增獨立 history sourceFamily，
+    historicalTrustScore 不得因自動採證上升超過 max_delta。
+    """
+    prev_score = float(prev_row.get("historicalTrustScore", 0))
+    new_score = float(new_row.get("historicalTrustScore", 0))
+    prev_families = set(prev_row.get("historySourceFamilies") or [])
+    new_families = set(new_row.get("historySourceFamilies") or [])
+    new_family_added = bool(new_families - prev_families)
+    delta = new_score - prev_score
+    violation = not new_family_added and delta > max_delta
+    return {
+        "assertionId": "anchor-isolation",
+        "generalId": new_row.get("generalId"),
+        "historicalDelta": delta,
+        "newFamilyAdded": new_family_added,
+        "maxDelta": max_delta,
+        "ok": not violation,
+        "message": f"anchor isolation violation: generalId={new_row.get('generalId')} history delta={delta:.2f} > {max_delta}" if violation else None,
+    }
+
+
+def assert_female_boost_isolation(
+    row: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Female boost isolation：女性優先採證與 worldbuilding boost 不得進 historicalTrustScore。
+    檢查 femaleBoostApplied 旗標與 historicalTrustScore 的關係。
+    """
+    female_boost = bool(row.get("femaleBoostApplied"))
+    historical_boosted_by_female = bool(row.get("historicalBoostedByFemale"))
+    violation = female_boost and historical_boosted_by_female
+    return {
+        "assertionId": "female-boost-isolation",
+        "generalId": row.get("generalId"),
+        "femaleBoostApplied": female_boost,
+        "historicalBoostedByFemale": historical_boosted_by_female,
+        "ok": not violation,
+        "message": f"female boost isolation violation: generalId={row.get('generalId')} female boost leaked to historical score" if violation else None,
+    }
+
+
+def assert_sandbox_alias_safety(
+    alias_entry: dict[str, Any],
+    noise_labels: set[str] | None = None,
+) -> dict[str, Any]:
+    """
+    Sandbox alias safety：auto-applied alias 必須 sandboxStatus=pass，
+    且不得命中 noise labels。
+    """
+    sandbox_status = str(alias_entry.get("sandboxStatus") or "pending")
+    alias_value = str(alias_entry.get("value") or "")
+    noise_hit = alias_value in (noise_labels or set())
+    violation = sandbox_status != "pass" or noise_hit
+    return {
+        "assertionId": "sandbox-alias-safety",
+        "alias": alias_value,
+        "sandboxStatus": sandbox_status,
+        "noiseHit": noise_hit,
+        "ok": not violation,
+        "message": f"alias safety violation: alias={alias_value} sandboxStatus={sandbox_status} noise_hit={noise_hit}" if violation else None,
+    }
+
+
+def assert_single_site_no_a(
+    row: dict[str, Any],
+    min_distinct_family_count: int = 2,
+) -> dict[str, Any]:
+    """
+    Single-site no-A：單一 sourceFamily 不得把 wiki/百科/玩家整理升成 A-history。
+    """
+    review_grade = str(row.get("reviewGrade") or "")
+    grade_type = str(row.get("gradeType") or "")
+    family_count = int(row.get("externalDistinctHistoryFamilyCount") or 0)
+    is_a_history = review_grade == "A" and grade_type == "A-history"
+    violation = is_a_history and family_count < min_distinct_family_count
+    return {
+        "assertionId": "single-site-no-A",
+        "generalId": row.get("generalId"),
+        "reviewGrade": review_grade,
+        "gradeType": grade_type,
+        "externalDistinctHistoryFamilyCount": family_count,
+        "ok": not violation,
+        "message": f"single-site no-A violation: generalId={row.get('generalId')} A-history from {family_count} sourceFamily (min={min_distinct_family_count})" if violation else None,
+    }
+
+
+def run_isolation_invariant_checks(
+    rows: list[dict[str, Any]],
+    prev_rows: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    """Run all 4 isolation invariant assertions over a scoreboard row list."""
+    prev_by_id = {r.get("generalId"): r for r in (prev_rows or [])}
+    results: list[dict[str, Any]] = []
+    for row in rows:
+        general_id = row.get("generalId")
+        prev = prev_by_id.get(general_id)
+        if prev:
+            results.append(assert_anchor_isolation(prev, row))
+        results.append(assert_female_boost_isolation(row))
+        results.append(assert_single_site_no_a(row))
+    return results
+
+
 if __name__ == "__main__":
     main()
