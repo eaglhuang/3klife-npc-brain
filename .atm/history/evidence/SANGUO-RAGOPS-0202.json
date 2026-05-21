@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0202",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M2 evidence repository adapter delivered. EvidenceRepository abstract with three concrete backends (JsonlEvidenceRepository, PostgresEvidenceRepository, DualEvidenceRepository), factory build_repository, RepositorySettings.from_env reading SANGUO_RAG_REPO_MODE / SANGUO_RAG_PG_DSN / SANGUO_RAG_PG_SCHEMA / SANGUO_RAG_LAKE_ROOT / SANGUO_RAG_REPO_DRY_RUN. All writes are idempotent (per-table key + sha256), PostgreSQL upserts use ON CONFLICT, dual mode mirrors without overriding JSONL canonical. 7 smoke tests pass.",
+  "expectedEvidence": [
+    "adapter implementation or design proof",
+    "jsonl/postgres/dual smoke fixtures",
+    "feature flag documentation"
+  ],
+  "artifacts": [
+    {
+      "kind": "implementation",
+      "path": "pipelines/sanguo-rag/evidence_repository.py",
+      "description": "Abstract EvidenceRepository, three concrete backends, RepositorySettings.from_env, RetryPolicy with exponential backoff, per-table idempotent key derivation, JSONB columns coerced via json.dumps before psycopg executemany."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/evidence_repository_smoke_test.py",
+      "description": "7 tests: jsonl idempotent write, jsonl dry-run no I/O, postgres dry-run write report, postgres requires DSN when live, dual aggregation, factory default, factory rejects unknown mode. All pass."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "state/evidence repository abstraction with jsonl/postgres/dual modes",
+      "evidence": "EvidenceRepository ABC + JsonlEvidenceRepository + PostgresEvidenceRepository + DualEvidenceRepository + build_repository factory."
+    },
+    {
+      "criterion": "default mode is jsonl; dual only mirrors and does not change canonical JSONL behavior",
+      "evidence": "RepositorySettings.from_env defaults mode='jsonl'; DualEvidenceRepository calls jsonl first then postgres and merges results so JSONL write semantics are unchanged."
+    },
+    {
+      "criterion": "connection info from env or settings, no DSN/schema/namespace hardcoded",
+      "evidence": "RepositorySettings.from_env reads SANGUO_RAG_PG_DSN, SANGUO_RAG_PG_SCHEMA, SANGUO_RAG_LAKE_ROOT, SANGUO_RAG_REPO_MODE, SANGUO_RAG_REPO_DRY_RUN."
+    },
+    {
+      "criterion": "idempotent upsert, error ledger, retry/backoff, no-write dry-run",
+      "evidence": "Per-table idempotent keys; WriteResult.errors captured per attempt; RetryPolicy with sleep_for(attempt) for exponential backoff; dry_run=True writes nothing while still counting."
+    }
+  ],
+  "smokeRunResult": {
+    "command": "python -B pipelines/sanguo-rag/evidence_repository_smoke_test.py",
+    "passCount": 7,
+    "failCount": 0
+  },
+  "featureFlags": {
+    "SANGUO_RAG_REPO_MODE": "jsonl|postgres|dual (default: jsonl)",
+    "SANGUO_RAG_REPO_DRY_RUN": "0|1 (default: 0)",
+    "SANGUO_RAG_PG_DSN": "PostgreSQL DSN; required when mode != jsonl and dry_run=False",
+    "SANGUO_RAG_PG_SCHEMA": "schema name (default: sanguo_rag)",
+    "SANGUO_RAG_LAKE_ROOT": "JSONL lake root (default: artifacts/data-pipeline/sanguo-rag/lake)"
+  },
+  "nextActions": [
+    "SANGUO-RAGOPS-0203: backfill runner uses this adapter in postgres mode",
+    "SANGUO-RAGOPS-0204: parity gate compares JsonlEvidenceRepository state against PostgresEvidenceRepository state"
+  ]
+}
