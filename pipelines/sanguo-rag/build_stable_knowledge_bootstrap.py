@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import relationship_type_refinement as relationship_types
 from repo_layout import pipeline_config_path, resolve_repo_root
 from sanguo_governance_loader import default_governance_root, load_stable_bootstrap_governance
 
@@ -246,11 +247,12 @@ def ensure_output_root(path: Path, overwrite: bool) -> None:
 
 def load_people(generals_path: Path, manual_roster_path: Path) -> list[dict[str, Any]]:
     people = []
-    for raw in read_json(generals_path):
-        record = dict(raw)
-        record["generalId"] = record.get("id")
-        record["sourceLayer"] = "generals"
-        people.append(record)
+    if generals_path.exists():
+        for raw in read_json(generals_path):
+            record = dict(raw)
+            record["generalId"] = record.get("id")
+            record["sourceLayer"] = "generals"
+            people.append(record)
     if manual_roster_path.exists():
         for raw in (read_json(manual_roster_path).get("entries") or []):
             record = dict(raw)
@@ -286,6 +288,130 @@ def resolve_name(name: str, index: dict[str, dict[str, Any]]) -> dict[str, Any] 
 
 def edge_key(edge: dict[str, Any]) -> tuple[str, str, str]:
     return (str(edge.get("fromId")), str(edge.get("toId")), str(edge.get("type")))
+
+
+def relationship_pair_key(left_id: str, right_id: str) -> str:
+    left = str(left_id or "").strip()
+    right = str(right_id or "").strip()
+    if not left or not right or left == right:
+        return ""
+    return "::".join(sorted([left, right]))
+
+
+def a_canon_conflicts_with_stable_edge(candidate: dict[str, Any], stable_edge: dict[str, Any]) -> str:
+    candidate_type = str(candidate.get("type") or "").strip()
+    stable_type = str(stable_edge.get("type") or "").strip()
+    if not candidate_type or not stable_type or candidate_type == stable_type:
+        return ""
+    candidate_family = relationship_types.relationship_type_family(candidate_type)
+    stable_family = relationship_types.relationship_type_family(stable_type)
+    if candidate_type in relationship_types.KINSHIP_RELATIONSHIP_TYPES and stable_type in relationship_types.KINSHIP_RELATIONSHIP_TYPES:
+        return "kinship-type-conflicts-with-stable-baseline"
+    if candidate_family and stable_family and candidate_family != stable_family:
+        return "type-family-conflicts-with-stable-baseline"
+    return ""
+
+
+def stable_a_canon_conflict(candidate: dict[str, Any], existing_edges: list[dict[str, Any]]) -> dict[str, Any] | None:
+    candidate_pair_key = relationship_pair_key(candidate.get("fromId"), candidate.get("toId"))
+    if not candidate_pair_key:
+        return None
+    for stable_edge in existing_edges:
+        if str(stable_edge.get("sourceLayer") or "") != STABLE_BOOTSTRAP_SOURCE_LAYER:
+            continue
+        if relationship_pair_key(stable_edge.get("fromId"), stable_edge.get("toId")) != candidate_pair_key:
+            continue
+        reason = a_canon_conflicts_with_stable_edge(candidate, stable_edge)
+        if not reason:
+            continue
+        return {
+            "kind": "relationship-claim-graph-row",
+            "status": "skipped-stable-exclusive-conflict",
+            "reason": reason,
+            "pairKey": candidate_pair_key,
+            "claimId": candidate.get("claimId"),
+            "claimGrade": candidate.get("claimGrade"),
+            "candidateType": candidate.get("type"),
+            "candidateSourceLayer": candidate.get("sourceLayer"),
+            "candidateSourceEvidenceId": candidate.get("sourceEvidenceId"),
+            "stableType": stable_edge.get("type"),
+            "stableSourceLayer": stable_edge.get("sourceLayer"),
+            "stableEvidenceRefs": list(stable_edge.get("evidenceRefs") or []),
+        }
+    return None
+
+
+def parent_child_direction_index(edges: list[dict[str, Any]]) -> dict[str, set[tuple[str, str]]]:
+    index: dict[str, set[tuple[str, str]]] = defaultdict(set)
+    for edge in edges:
+        if str(edge.get("type") or "") != "parent_child":
+            continue
+        from_id = str(edge.get("fromId") or "").strip()
+        to_id = str(edge.get("toId") or "").strip()
+        pair_key = relationship_pair_key(from_id, to_id)
+        if pair_key:
+            index[pair_key].add((from_id, to_id))
+    return index
+
+
+def stable_parent_child_directions(existing_edges: list[dict[str, Any]], pair_key: str) -> set[tuple[str, str]]:
+    directions: set[tuple[str, str]] = set()
+    for edge in existing_edges:
+        if str(edge.get("sourceLayer") or "") != STABLE_BOOTSTRAP_SOURCE_LAYER:
+            continue
+        if str(edge.get("type") or "") != "parent_child":
+            continue
+        from_id = str(edge.get("fromId") or "").strip()
+        to_id = str(edge.get("toId") or "").strip()
+        if relationship_pair_key(from_id, to_id) == pair_key:
+            directions.add((from_id, to_id))
+    return directions
+
+
+def parent_child_direction_conflict(
+    candidate: dict[str, Any],
+    existing_edges: list[dict[str, Any]],
+    direction_index: dict[str, set[tuple[str, str]]],
+) -> dict[str, Any] | None:
+    if str(candidate.get("type") or "") != "parent_child":
+        return None
+    from_id = str(candidate.get("fromId") or "").strip()
+    to_id = str(candidate.get("toId") or "").strip()
+    pair_key = relationship_pair_key(from_id, to_id)
+    if not pair_key:
+        return None
+    candidate_direction = (from_id, to_id)
+    stable_directions = stable_parent_child_directions(existing_edges, pair_key)
+    if stable_directions and candidate_direction not in stable_directions:
+        return {
+            "kind": "relationship-claim-graph-row",
+            "status": "skipped-stable-parent-child-direction-conflict",
+            "reason": "parent-child-direction-conflicts-with-stable-baseline",
+            "pairKey": pair_key,
+            "claimId": candidate.get("claimId"),
+            "claimGrade": candidate.get("claimGrade"),
+            "candidateType": candidate.get("type"),
+            "candidateDirection": list(candidate_direction),
+            "stableDirections": [list(item) for item in sorted(stable_directions)],
+            "candidateSourceLayer": candidate.get("sourceLayer"),
+            "candidateSourceEvidenceId": candidate.get("sourceEvidenceId"),
+        }
+    candidate_directions = direction_index.get(pair_key, set())
+    if len(candidate_directions) > 1 and not stable_directions:
+        return {
+            "kind": "relationship-claim-graph-row",
+            "status": "skipped-ambiguous-parent-child-direction",
+            "reason": "parent-child-direction-ambiguous-without-stable-baseline",
+            "pairKey": pair_key,
+            "claimId": candidate.get("claimId"),
+            "claimGrade": candidate.get("claimGrade"),
+            "candidateType": candidate.get("type"),
+            "candidateDirection": list(candidate_direction),
+            "candidateDirections": [list(item) for item in sorted(candidate_directions)],
+            "candidateSourceLayer": candidate.get("sourceLayer"),
+            "candidateSourceEvidenceId": candidate.get("sourceEvidenceId"),
+        }
+    return None
 
 
 def add_edge(edges: list[dict[str, Any]], edge: dict[str, Any], seen: set[tuple[str, str, str]]) -> None:
@@ -1209,6 +1335,7 @@ def render_markdown(payload: dict[str, Any]) -> str:
 def main() -> None:
     args = parse_args()
     apply_stable_bootstrap_governance(args.governance_root)
+    relationship_types.apply_relationship_type_refinement_rules(args.governance_root)
     output_root = Path(args.output_root)
     ensure_output_root(output_root, args.overwrite)
 
@@ -1224,7 +1351,16 @@ def main() -> None:
     relationship_edges, missing_relationships = build_relationship_edges(name_index)
     seen_relationships = {edge_key(edge) for edge in relationship_edges}
     a_canon_edges, missing_claim_graph = load_a_canon_claim_edges(Path(args.relationship_claim_graph))
+    a_canon_parent_child_directions = parent_child_direction_index(a_canon_edges)
     for edge in a_canon_edges:
+        direction_conflict = parent_child_direction_conflict(edge, relationship_edges, a_canon_parent_child_directions)
+        if direction_conflict is not None:
+            missing_claim_graph.append(direction_conflict)
+            continue
+        stable_conflict = stable_a_canon_conflict(edge, relationship_edges)
+        if stable_conflict is not None:
+            missing_claim_graph.append(stable_conflict)
+            continue
         upsert_a_canon_edge(relationship_edges, edge, seen_relationships)
     for edge in build_parent_summary_edges(people, name_index):
         add_edge(relationship_edges, edge, seen_relationships)

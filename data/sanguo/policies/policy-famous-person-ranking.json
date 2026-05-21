@@ -1,0 +1,212 @@
+{
+  "id": "Policy_FamousPersonRanking_P1",
+  "description": "Data-driven fame ranking weights for Sanguo top-person production. This ranks broad recognizability from corpus signals, separate from completion or repair priority.",
+  "excludedGeneralIdPrefixes": [
+    "romance-person-"
+  ],
+  "candidateRequirements": {
+    "minAnySignalCount": 1
+  },
+  "scoreWeights": {
+    "directMentionLog": 28.0,
+    "directChapterCoverage": 24.0,
+    "scenePresenceLog": 8.0,
+    "sourcePacketLog": 14.0,
+    "relationshipLog": 8.0,
+    "stableKnowledgeSignalLog": 10.0,
+    "priorityProfileSignalLog": 18.0,
+    "seedFamilyCoverage": 10.0,
+    "readyEventLog": 4.0
+  },
+  "stableKnowledgeSignal": {
+    "sections": [
+      "sourceCandidates",
+      "relationshipEdges",
+      "plainFactProposals",
+      "plainRelationshipProposals",
+      "socialRoleSeeds",
+      "autoSocialRoleSeeds",
+      "factionTimelines",
+      "femalePriorityProfiles",
+      "basicProfileSeeds"
+    ],
+    "idKeys": [
+      "generalId",
+      "sourceGeneralId",
+      "targetGeneralId",
+      "fromId",
+      "toId"
+    ],
+    "idArrayKeys": [
+      "generalIds"
+    ]
+  },
+  "normalization": {
+    "chapterCoverageDenominator": 120.0,
+    "seedFamilyDenominator": 11.0,
+    "priorityProfileFocusDenominator": 3.0
+  },
+  "representation": {
+    "enabled": true,
+    "groupField": "gender",
+    "groupAliases": {
+      "female": [
+        "女",
+        "女性",
+        "female",
+        "woman",
+        "f"
+      ],
+      "male": [
+        "男",
+        "男性",
+        "male",
+        "man",
+        "m"
+      ]
+    },
+    "minCounts": {
+      "female": 12
+    },
+    "priorityProfileSection": "femalePriorityProfiles",
+    "priorityProfileFocusIdKeys": [
+      "relationshipFocusIds"
+    ],
+    "selectionReason": "policy-min-female-representation",
+    "candidateSort": {
+      "preferPriorityProfile": true,
+      "preferExternalSourceReady": true,
+      "focusIdWeight": 4.0,
+      "eventHookWeight": 2.0,
+      "preferredAffectTagWeight": 1.5,
+      "preferredAffectTags": [
+        "romance_love",
+        "friendship_loyalty",
+        "family_affection"
+      ],
+      "fallbackToFameScore": true
+    }
+  },
+  "relationshipAudit": {
+    "stableEdgeSection": "relationshipEdges",
+    "allowedTypes": [
+      "alliance_oath",
+      "betrayal_surrender",
+      "enemy_rival",
+      "mentor_student",
+      "parent_child",
+      "patron_client",
+      "protects",
+      "ruler_subject",
+      "sibling",
+      "spouse",
+      "sworn_sibling"
+    ],
+    "coreTypes": [
+      "spouse",
+      "ruler_subject",
+      "enemy_rival",
+      "parent_child",
+      "sibling",
+      "sworn_sibling",
+      "patron_client",
+      "protects",
+      "mentor_student",
+      "alliance_oath",
+      "betrayal_surrender"
+    ],
+    "symmetricTypes": [
+      "alliance_oath",
+      "sibling",
+      "spouse",
+      "sworn_sibling"
+    ],
+    "strictSymmetricTypes": [
+    ],
+    "exclusiveTypeGroups": [
+      [
+        "parent_child",
+        "sibling",
+        "spouse",
+        "sworn_sibling"
+      ]
+    ],
+    "unknownTypeSeverity": "warning",
+    "excludeUnknownTypesFromCounts": true,
+    "nonBondHintTypes": [
+      "commands"
+    ],
+    "authorityCoverage": {
+      "enabled": true,
+      "authorityTypes": [
+        "ruler_subject",
+        "patron_client"
+      ],
+      "roleSections": [
+        "socialRoleSeeds",
+        "autoSocialRoleSeeds",
+        "basicProfileSeeds"
+      ],
+      "requiredRoleActivityTags": [
+        "general_commander",
+        "strategist_advisor",
+        "civil_governance"
+      ],
+      "exemptRoleActivityTags": [
+        "warlord_ruler"
+      ],
+      "exemptRepresentationGroups": [
+        "female"
+      ],
+      "minEdgeConfidence": 0.8,
+      "severity": "warning",
+      "issueType": "missing-authority-anchor"
+    },
+    "focusRelationTypes": [
+      "alliance_oath",
+      "betrayal_surrender",
+      "enemy_rival",
+      "mentor_student",
+      "parent_child",
+      "patron_client",
+      "protects",
+      "ruler_subject",
+      "sibling",
+      "spouse",
+      "sworn_sibling"
+    ],
+    "requiredEvidenceFields": [
+      "evidenceRefs"
+    ],
+    "minEdgeConfidence": 0.8
+  },
+  "dataCompleteness": {
+    "gradeThresholds": {
+      "pass": 80.0,
+      "warn": 60.0
+    },
+    "weights": {
+      "identity": 15.0,
+      "observedMentions": 20.0,
+      "sourcePackets": 18.0,
+      "relationshipEvidence": 20.0,
+      "seedFamilies": 12.0,
+      "readyEvents": 8.0,
+      "priorityFocusCoverage": 7.0
+    },
+    "targets": {
+      "directMentionCount": 20.0,
+      "sourceEventPacketCount": 5.0,
+      "relationshipEvidenceCount": 3.0,
+      "seedFamilyCount": 5.0,
+      "readyEventCount": 2.0
+    }
+  },
+  "tieBreakers": [
+    "directMentionCount",
+    "directChapterCount",
+    "sourceEventPacketCount",
+    "relationshipEvidenceCount",
+    "generalId"
+  ]
+}

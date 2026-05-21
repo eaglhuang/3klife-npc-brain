@@ -8,6 +8,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from build_relationship_claim_graph import edge_has_direct_pair_signal, edge_pair_relation_cue_evidence
+import relationship_type_refinement as relationship_types
 from relationship_type_refinement import refine_relationship_type
 
 
@@ -15,6 +17,7 @@ DEFAULT_BASE_EVENTS_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/ev
 DEFAULT_RELATIONSHIP_EVIDENCE_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/relationship-evidence/source-grounded-relationship-edges.jsonl")
 DEFAULT_REVIEW_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/etl-quality-pilot")
 DEFAULT_OUTPUT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/core-person-progress")
+DEFAULT_ALIAS_MAP_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/alias-to-general-map.json")
 
 
 def parse_args() -> argparse.Namespace:
@@ -22,6 +25,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--review-root", action="append", default=[], help="Review root to scan. Can be repeated.")
     parser.add_argument("--base-events", default=str(DEFAULT_BASE_EVENTS_PATH), help="Canonical ready events JSONL used as merge base.")
     parser.add_argument("--base-relationship-evidence", default=str(DEFAULT_RELATIONSHIP_EVIDENCE_PATH), help="Source-grounded relationship evidence JSONL used as merge base.")
+    parser.add_argument("--alias-map", default=str(DEFAULT_ALIAS_MAP_PATH), help="Alias-to-general map used to strict-replay staged relationship edges.")
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT), help="Output directory")
     parser.add_argument("--round-id", default="current")
     parser.add_argument("--core-general-id", action="append", default=[], help="Optional filter to these focus generalIds.")
@@ -60,6 +64,26 @@ def write_json(path: Path, payload: Any) -> None:
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows), encoding="utf-8")
+
+
+def build_alias_index(alias_map_path: Path) -> dict[str, list[str]]:
+    payload = read_json(alias_map_path) if alias_map_path.exists() else {}
+    entries = payload.get("entries") if isinstance(payload, dict) else []
+    aliases: dict[str, list[str]] = {}
+    if not isinstance(entries, list):
+        return aliases
+    for row in entries:
+        if not isinstance(row, dict):
+            continue
+        alias = str(row.get("alias") or "").strip()
+        general_ids = row.get("generalIds") or []
+        if len(alias) < 2 or not isinstance(general_ids, list) or len(general_ids) != 1:
+            continue
+        general_id = str(general_ids[0] or "").strip()
+        if not general_id:
+            continue
+        aliases.setdefault(general_id, []).append(alias)
+    return {key: sorted(set(values), key=lambda item: (-len(item), item)) for key, values in aliases.items()}
 
 
 def slug(value: str) -> str:
@@ -204,13 +228,35 @@ def relationship_key(edge: dict[str, Any]) -> tuple[str, str, str, str]:
     )
 
 
-def relationship_evidence_from_events(staged_events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def staged_relationship_skip_reason(
+    row: dict[str, Any],
+    refined_type: str,
+    alias_index: dict[str, list[str]],
+) -> str | None:
+    if not edge_has_direct_pair_signal(row, alias_index):
+        return "missing-direct-pair-signal"
+    relationship_types.ensure_relationship_type_refinement_rules_loaded()
+    if refined_type in relationship_types.STABLE_RELATIONSHIP_TYPES and edge_pair_relation_cue_evidence(
+        row,
+        alias_index,
+        refined_type,
+    ) is None:
+        return "missing-strict-pair-relation-cue"
+    return None
+
+
+def relationship_evidence_from_events(
+    staged_events: list[dict[str, Any]],
+    alias_index: dict[str, list[str]],
+) -> tuple[list[dict[str, Any]], Counter[str]]:
     rows: list[dict[str, Any]] = []
+    skipped_counts: Counter[str] = Counter()
     for event in staged_events:
         for edge in event.get("relationshipEdges") or []:
             from_id = str(edge.get("fromId") or "").strip()
             to_id = str(edge.get("toId") or "").strip()
             if not from_id or not to_id:
+                skipped_counts["invalid-endpoints"] += 1
                 continue
             row = {
                 "fromId": from_id,
@@ -228,10 +274,14 @@ def relationship_evidence_from_events(staged_events: list[dict[str, Any]]) -> li
                 "canonicalWrites": False,
             }
             refined_type, reasons = refine_relationship_type(row, event.get("sourceQuote") or "")
+            skip_reason = staged_relationship_skip_reason(row, refined_type, alias_index)
+            if skip_reason:
+                skipped_counts[skip_reason] += 1
+                continue
             row["type"] = refined_type
             row["refinementReasons"] = reasons
             rows.append(row)
-    return rows
+    return rows, skipped_counts
 
 
 def merge_relationship_evidence(base_rows: list[dict[str, Any]], staged_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -271,6 +321,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Base Events: `{report['baseEventCount']}`",
         f"- Staged Ready Candidates: `{report['stagedReadyCandidateCount']}`",
         f"- Staged Relationship Evidence: `{report['stagedRelationshipEvidenceCount']}`",
+        f"- Staged Relationship Skipped: `{report.get('stagedRelationshipSkippedCount', 0)}`",
         f"- B Edit Backlog: `{report['editBacklogCount']}`",
         f"- Merged Ready Events: `{report['mergedReadyEventCount']}`",
         f"- Merged Relationship Evidence: `{report['mergedRelationshipEvidenceCount']}`",
@@ -281,6 +332,10 @@ def render_markdown(report: dict[str, Any]) -> str:
     ]
     for general_id, count in report["summary"]["readyCandidateCountsByGeneral"].items():
         lines.append(f"- `{general_id}`: `{count}`")
+    if report.get("stagedRelationshipSkippedByReason"):
+        lines.extend(["", "## Skipped Staged Relationships", ""])
+        for reason, count in report["stagedRelationshipSkippedByReason"].items():
+            lines.append(f"- `{reason}`: `{count}`")
     lines.extend(["", "## Outputs", ""])
     for key, value in report["outputs"].items():
         lines.append(f"- `{key}`: `{value}`")
@@ -311,7 +366,8 @@ def main() -> None:
     base_events = read_jsonl(Path(args.base_events))
     base_relationships = read_jsonl(Path(args.base_relationship_evidence))
     merged_events = merge_events(base_events, ready_candidates)
-    staged_relationships = relationship_evidence_from_events(ready_candidates)
+    alias_index = build_alias_index(Path(args.alias_map))
+    staged_relationships, staged_relationship_skip_counts = relationship_evidence_from_events(ready_candidates, alias_index)
     merged_relationships = merge_relationship_evidence(base_relationships, staged_relationships)
     ready_eval_events = build_ready_eval_events(merged_events) if args.emit_ready_eval else []
     report = {
@@ -324,6 +380,7 @@ def main() -> None:
             "reviewRoots": [str(root) for root in roots],
             "baseEvents": args.base_events,
             "baseRelationshipEvidence": args.base_relationship_evidence,
+            "aliasMap": args.alias_map,
             "coreGeneralIds": args.core_general_id,
         },
         "reviewFileCount": len(paths),
@@ -331,6 +388,8 @@ def main() -> None:
         "baseRelationshipEvidenceCount": len(base_relationships),
         "stagedReadyCandidateCount": len(ready_candidates),
         "stagedRelationshipEvidenceCount": len(staged_relationships),
+        "stagedRelationshipSkippedCount": sum(staged_relationship_skip_counts.values()),
+        "stagedRelationshipSkippedByReason": dict(sorted(staged_relationship_skip_counts.items())),
         "editBacklogCount": len(edit_backlog),
         "mergedReadyEventCount": len(merged_events),
         "mergedRelationshipEvidenceCount": len(merged_relationships),

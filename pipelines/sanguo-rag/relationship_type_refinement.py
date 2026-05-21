@@ -8,6 +8,7 @@ from sanguo_governance_loader import SanguoGovernanceError, load_relationship_ty
 
 
 COARSE_RELATIONSHIP_TYPES: set[str] = set()
+NON_STABLE_COARSE_TYPES: set[str] = set()
 STABLE_RELATIONSHIP_TYPES: set[str] = set()
 KINSHIP_RELATIONSHIP_TYPES: set[str] = set()
 
@@ -22,6 +23,8 @@ ALLIANCE_TERMS: list[str] = []
 ENEMY_TERMS: list[str] = []
 COMMAND_TERMS: list[str] = []
 SPOUSE_TERMS: list[str] = []
+SPOUSE_PARENT_CHILD_CONTEXT_TERMS: list[str] = []
+SPOUSE_DIRECT_BINDING_TERMS: list[str] = []
 PARENT_CHILD_TERMS: list[str] = []
 SIBLING_TERMS: list[str] = []
 SWORN_SIBLING_TERMS: list[str] = []
@@ -34,6 +37,13 @@ def _required_rule_value(by_name: dict[str, dict[str, Any]], constant_name: str)
     row = by_name.get(constant_name)
     if row is None:
         raise SanguoGovernanceError(f"rule-relationship-type-refinement missing constantName: {constant_name}")
+    return row.get("value")
+
+
+def _optional_rule_value(by_name: dict[str, dict[str, Any]], constant_name: str, default: Any) -> Any:
+    row = by_name.get(constant_name)
+    if row is None:
+        return default
     return row.get("value")
 
 
@@ -64,10 +74,11 @@ def apply_relationship_type_refinement_rules(
     relationship_type_refinement_rules: str | Path | None = None,
 ) -> None:
     global _RELATIONSHIP_TYPE_REFINEMENT_RULES_LOADED
-    global COARSE_RELATIONSHIP_TYPES, STABLE_RELATIONSHIP_TYPES, KINSHIP_RELATIONSHIP_TYPES
+    global COARSE_RELATIONSHIP_TYPES, NON_STABLE_COARSE_TYPES, STABLE_RELATIONSHIP_TYPES, KINSHIP_RELATIONSHIP_TYPES
     global RELATIONSHIP_TYPE_FAMILIES, TYPE_LABELS
     global BETRAYAL_TERMS, MENTOR_TERMS, PATRON_TERMS, ALLIANCE_TERMS, ENEMY_TERMS, COMMAND_TERMS
-    global SPOUSE_TERMS, PARENT_CHILD_TERMS, SIBLING_TERMS, SWORN_SIBLING_TERMS
+    global SPOUSE_TERMS, SPOUSE_PARENT_CHILD_CONTEXT_TERMS, SPOUSE_DIRECT_BINDING_TERMS
+    global PARENT_CHILD_TERMS, SIBLING_TERMS, SWORN_SIBLING_TERMS
 
     rows = load_relationship_type_refinement_rules(
         governance_root,
@@ -75,6 +86,7 @@ def apply_relationship_type_refinement_rules(
     )
     by_name = {str(row.get("constantName") or ""): row for row in rows}
     COARSE_RELATIONSHIP_TYPES = _string_set(_required_rule_value(by_name, "COARSE_RELATIONSHIP_TYPES"))
+    NON_STABLE_COARSE_TYPES = _string_set(_optional_rule_value(by_name, "NON_STABLE_COARSE_TYPES", []))
     STABLE_RELATIONSHIP_TYPES = _string_set(_required_rule_value(by_name, "STABLE_RELATIONSHIP_TYPES"))
     KINSHIP_RELATIONSHIP_TYPES = _string_set(_required_rule_value(by_name, "KINSHIP_RELATIONSHIP_TYPES"))
     RELATIONSHIP_TYPE_FAMILIES = _string_mapping(_required_rule_value(by_name, "RELATIONSHIP_TYPE_FAMILIES"))
@@ -86,6 +98,10 @@ def apply_relationship_type_refinement_rules(
     ENEMY_TERMS = _string_list(_required_rule_value(by_name, "ENEMY_TERMS"))
     COMMAND_TERMS = _string_list(_required_rule_value(by_name, "COMMAND_TERMS"))
     SPOUSE_TERMS = _string_list(_required_rule_value(by_name, "SPOUSE_TERMS"))
+    SPOUSE_PARENT_CHILD_CONTEXT_TERMS = _string_list(
+        _optional_rule_value(by_name, "SPOUSE_PARENT_CHILD_CONTEXT_TERMS", [])
+    )
+    SPOUSE_DIRECT_BINDING_TERMS = _string_list(_optional_rule_value(by_name, "SPOUSE_DIRECT_BINDING_TERMS", []))
     PARENT_CHILD_TERMS = _string_list(_required_rule_value(by_name, "PARENT_CHILD_TERMS"))
     SIBLING_TERMS = _string_list(_required_rule_value(by_name, "SIBLING_TERMS"))
     SWORN_SIBLING_TERMS = _string_list(_required_rule_value(by_name, "SWORN_SIBLING_TERMS"))
@@ -115,6 +131,14 @@ def contains_any(text: str, terms: list[str]) -> bool:
     return any(term in text for term in terms)
 
 
+def input_type_is_pre_refined(edge: dict[str, Any], original_type: str) -> bool:
+    source_original_type = str(edge.get("originalType") or "").strip()
+    if source_original_type and source_original_type != original_type:
+        return True
+    refinement_reasons = {str(reason) for reason in edge.get("refinementReasons") or []}
+    return any(reason.endswith("_terms") or reason.endswith("_cue_override") for reason in refinement_reasons)
+
+
 def relationship_type_family(relation_type: str) -> str:
     ensure_relationship_type_refinement_rules_loaded()
     normalized = str(relation_type or "").strip()
@@ -124,19 +148,31 @@ def relationship_type_family(relation_type: str) -> str:
 def refine_relationship_type(edge: dict[str, Any], fallback_text: str = "") -> tuple[str, list[str]]:
     ensure_relationship_type_refinement_rules_loaded()
     original_type = str(edge.get("type") or "").strip()
+    source_original_type = str(edge.get("originalType") or "").strip()
+    pre_refined_input = input_type_is_pre_refined(edge, original_type)
     text = edge_text(edge, fallback_text)
     reasons: list[str] = []
 
-    if original_type in STABLE_RELATIONSHIP_TYPES:
+    if original_type in STABLE_RELATIONSHIP_TYPES and not pre_refined_input:
         return original_type, ["stable_relationship_type"]
     if original_type == "allies":
         return "alliance_oath", ["original_allies"]
     if original_type in {"confronts", "killing"}:
         return "enemy_rival", [f"original_{original_type}"]
+    if original_type in NON_STABLE_COARSE_TYPES:
+        reasons.append("non_stable_coarse_type")
+        return original_type or "relationship", reasons
 
     if contains_any(text, SWORN_SIBLING_TERMS):
         reasons.append("sworn_sibling_terms")
         return "sworn_sibling", reasons
+    if (
+        contains_any(text, SPOUSE_TERMS)
+        and contains_any(text, SPOUSE_PARENT_CHILD_CONTEXT_TERMS)
+        and not contains_any(text, SPOUSE_DIRECT_BINDING_TERMS)
+    ):
+        reasons.append("spouse_parent_child_context_guard")
+        return original_type or "relationship", reasons
     if contains_any(text, SPOUSE_TERMS):
         reasons.append("spouse_terms")
         return "spouse", reasons
@@ -160,7 +196,7 @@ def refine_relationship_type(edge: dict[str, Any], fallback_text: str = "") -> t
         reasons.append("alliance_or_oath_terms")
         return "alliance_oath", reasons
 
-    if original_type == "commands" or contains_any(text, COMMAND_TERMS):
+    if contains_any(text, COMMAND_TERMS):
         reasons.append("command_hierarchy_terms")
         return "ruler_subject", reasons
     if contains_any(text, ENEMY_TERMS):
@@ -170,4 +206,6 @@ def refine_relationship_type(edge: dict[str, Any], fallback_text: str = "") -> t
     if original_type in COARSE_RELATIONSHIP_TYPES:
         reasons.append("coarse_type_defaulted_to_ruler_subject")
         return "ruler_subject", reasons
+    if pre_refined_input:
+        return source_original_type or "relationship", ["unchanged_relationship_type"]
     return original_type or "relationship", ["unchanged_relationship_type"]

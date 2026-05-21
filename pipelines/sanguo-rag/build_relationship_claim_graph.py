@@ -860,6 +860,44 @@ def kinship_subject_bound_pair_cue(
     return None
 
 
+def authority_subject_bound_pair_cue(
+    *,
+    rel_type: str,
+    left: str,
+    right: str,
+    left_span: tuple[int, int],
+    right_span: tuple[int, int],
+    edge: dict[str, Any],
+    text: str,
+) -> dict[str, Any] | None:
+    if relationship_type_family(rel_type) != "authority":
+        return None
+    if left_span[0] > right_span[0]:
+        return None
+    pair_start = left_span[0]
+    pair_end = right_span[1]
+    if pair_end - pair_start > pair_cues.PAIR_CUE_MAX_SPAN:
+        return None
+    between = text[left_span[1] : right_span[0]]
+    if has_clause_boundary(between):
+        return None
+    cue = term_span(between, pair_cues.PAIR_CUE_AUTHORITY_DIRECT_TERMS, offset=left_span[1])
+    if cue is None:
+        return None
+    return pair_relation_cue_payload(
+        rel_type=rel_type,
+        binding="authority-direct-subject-cue",
+        from_alias=left,
+        to_alias=right,
+        from_span=left_span,
+        to_span=right_span,
+        cue=cue,
+        text=text,
+        source_claim_type=edge.get("sourceClaimType"),
+        source_claim_scopes=edge.get("sourceClaimScopes"),
+    )
+
+
 def relationship_subject_bound_pair_cue(
     *,
     rel_type: str,
@@ -872,6 +910,16 @@ def relationship_subject_bound_pair_cue(
 ) -> dict[str, Any] | None:
     if rel_type == "enemy_rival":
         return enemy_subject_bound_pair_cue(
+            left=left,
+            right=right,
+            left_span=left_span,
+            right_span=right_span,
+            edge=edge,
+            text=text,
+        )
+    if relationship_type_family(rel_type) == "authority":
+        return authority_subject_bound_pair_cue(
+            rel_type=rel_type,
             left=left,
             right=right,
             left_span=left_span,
@@ -932,6 +980,8 @@ def edge_pair_relation_cue_evidence(
                     )
                     if relation_cue is not None:
                         return relation_cue
+                    if relationship_type_family(rel_type) == "authority":
+                        continue
                     if pair_end - pair_start > pair_cues.PAIR_CUE_MAX_SPAN:
                         continue
                     between = text[pair_start:pair_end]
@@ -987,7 +1037,11 @@ def edge_has_pair_relation_cue(
 ) -> bool:
     if edge_pair_relation_cue_evidence(edge, alias_index, rel_type) is not None:
         return True
+    if rel_type in relationship_types.KINSHIP_RELATIONSHIP_TYPES:
+        return False
     if rel_type == "enemy_rival":
+        return False
+    if relationship_type_family(rel_type) == "authority":
         return False
     return edge_has_legacy_pair_relation_cue(edge, alias_index, rel_type)
 
@@ -1314,6 +1368,23 @@ def normalize_edge_to_claim(
         "canonicalWrites": False,
     }
     return claim, None
+
+
+def imported_claim_requires_revalidation(row: dict[str, Any]) -> bool:
+    refinement_reasons = {str(reason) for reason in row.get("refinementReasons") or []}
+    return bool(refinement_reasons) or bool(row.get("pairRelationRequired"))
+
+
+def imported_claim_as_edge(row: dict[str, Any], source_file: str) -> dict[str, Any]:
+    edge = dict(row)
+    edge.setdefault("_sourceFile", source_file)
+    if row.get("pairRelationRequired") and not edge.get("pattern"):
+        edge["pattern"] = "external-relationship-card-gate"
+    if not edge.get("originalType") and imported_claim_requires_revalidation(row):
+        edge["originalType"] = "relationship_external"
+    if row.get("quote") and not edge.get("sourceQuote"):
+        edge["sourceQuote"] = row.get("quote")
+    return edge
 
 
 def dedupe_claims(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1775,7 +1846,18 @@ def main() -> int:
         if reject:
             rejected.append(reject)
     for path in relationship_claim_paths:
-        claims.extend(read_jsonl(path))
+        for row in read_jsonl(path):
+            claim, reject = normalize_edge_to_claim(
+                imported_claim_as_edge(row, repo_relative(path)),
+                alias_index=alias_index,
+                source_policy_index=source_policy_index,
+                external_card_index=external_card_index,
+                source_file=repo_relative(path),
+            )
+            if claim:
+                claims.append(claim)
+            if reject:
+                rejected.append(reject)
 
     claims = dedupe_claims(claims)
     claims, cross_source_promotions = promote_cross_source_history_claims(claims)

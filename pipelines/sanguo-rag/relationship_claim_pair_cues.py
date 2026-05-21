@@ -31,6 +31,7 @@ PAIR_CUE_ENEMY_RECIPROCAL_TAIL_TERMS: list[str] = []
 PAIR_CUE_ENEMY_ENCOUNTER_TERMS: list[str] = []
 PAIR_CUE_ENEMY_PASSIVE_TAIL_TERMS: list[str] = []
 PAIR_CUE_ENEMY_COMMAND_GUARDS: set[str] = set()
+PAIR_CUE_AUTHORITY_DIRECT_TERMS: list[str] = []
 PAIR_CUE_WEAK_TERMS: dict[str, set[str]] = {}
 PAIR_CUE_SINGLE_CHAR_ALLOW_RELATION_TYPES: set[str] = set()
 PAIR_CUE_ENEMY_CONTEXT_GUARD_TYPES: set[str] = set()
@@ -124,6 +125,7 @@ def apply_relationship_claim_pair_cue_rules(
     global PAIR_CUE_ENEMY_ENCOUNTER_TERMS
     global PAIR_CUE_ENEMY_PASSIVE_TAIL_TERMS
     global PAIR_CUE_ENEMY_COMMAND_GUARDS
+    global PAIR_CUE_AUTHORITY_DIRECT_TERMS
     global PAIR_CUE_WEAK_TERMS
     global PAIR_CUE_SINGLE_CHAR_ALLOW_RELATION_TYPES
     global PAIR_CUE_ENEMY_CONTEXT_GUARD_TYPES
@@ -176,6 +178,9 @@ def apply_relationship_claim_pair_cue_rules(
         _required_rule_value(by_name, "PAIR_CUE_ENEMY_PASSIVE_TAIL_TERMS")
     )
     PAIR_CUE_ENEMY_COMMAND_GUARDS = _string_set(_required_rule_value(by_name, "PAIR_CUE_ENEMY_COMMAND_GUARDS"))
+    PAIR_CUE_AUTHORITY_DIRECT_TERMS = _string_list(
+        _required_rule_value(by_name, "PAIR_CUE_AUTHORITY_DIRECT_TERMS")
+    )
     PAIR_CUE_WEAK_TERMS = _mapping_terms(_required_rule_value(by_name, "PAIR_CUE_WEAK_TERMS"))
     PAIR_CUE_SINGLE_CHAR_ALLOW_RELATION_TYPES = _string_set(
         _required_rule_value(by_name, "PAIR_CUE_SINGLE_CHAR_ALLOW_RELATION_TYPES")
