@@ -242,6 +242,7 @@ def run_command(
     *,
     dry_run: bool,
     env_overrides: dict[str, str] | None = None,
+    timeout_seconds: float | None = None,
 ) -> dict[str, Any]:
     if dry_run:
         return {
@@ -250,25 +251,43 @@ def run_command(
             "dryRun": True,
             "stdout": "",
             "stderr": "",
+            "timedOut": False,
+            "timeoutSeconds": timeout_seconds,
         }
     env = os.environ.copy()
     if env_overrides:
         env.update({str(key): str(value) for key, value in env_overrides.items() if value is not None})
-    result = subprocess.run(
-        command,
-        cwd=REPO_ROOT,
-        text=True,
-        capture_output=True,
-        encoding="utf-8",
-        errors="replace",
-        env=env,
-    )
+    try:
+        result = subprocess.run(
+            command,
+            cwd=REPO_ROOT,
+            text=True,
+            capture_output=True,
+            encoding="utf-8",
+            errors="replace",
+            env=env,
+            timeout=timeout_seconds if timeout_seconds and timeout_seconds > 0 else None,
+        )
+    except subprocess.TimeoutExpired as exc:
+        stdout = exc.stdout.decode("utf-8", errors="replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
+        stderr = exc.stderr.decode("utf-8", errors="replace") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
+        return {
+            "command": command_text(command),
+            "returnCode": 124,
+            "dryRun": False,
+            "stdout": str(stdout).strip()[-8000:],
+            "stderr": str(stderr).strip()[-8000:],
+            "timedOut": True,
+            "timeoutSeconds": timeout_seconds,
+        }
     return {
         "command": command_text(command),
         "returnCode": result.returncode,
         "dryRun": False,
         "stdout": (result.stdout or "").strip()[-8000:],
         "stderr": (result.stderr or "").strip()[-8000:],
+        "timedOut": False,
+        "timeoutSeconds": timeout_seconds,
     }
 
 
@@ -349,6 +368,33 @@ def sample_size_for_source(row: dict[str, Any]) -> int:
     if cls == "primary-text-site":
         return min(max_pages, 30) if max_pages > 0 else 30
     return min(max_pages, 20) if max_pages > 0 else 20
+
+
+def source_sample_override(row: dict[str, Any]) -> int:
+    return max(int(row.get("__sampleSizeOverride") or sample_size_for_source(row)), 1)
+
+
+def remaining_source_weight(sources: list[dict[str, Any]], start_index: int) -> int:
+    return sum(source_sample_override(row) for row in sources[start_index:])
+
+
+def source_wall_time_budget_seconds(
+    *,
+    sources: list[dict[str, Any]],
+    source_index: int,
+    wall_clock_start: float | None,
+    max_wall_time_minutes: float | None,
+) -> float | None:
+    if wall_clock_start is None or max_wall_time_minutes is None or max_wall_time_minutes <= 0:
+        return None
+    remaining_seconds = float(max_wall_time_minutes) * 60.0 - (time.monotonic() - wall_clock_start)
+    if remaining_seconds <= 0:
+        return 0.0
+    remaining_weight = remaining_source_weight(sources, source_index)
+    if remaining_weight <= 0:
+        return remaining_seconds
+    current_weight = source_sample_override(sources[source_index])
+    return max(1.0, remaining_seconds * (current_weight / remaining_weight))
 
 
 def external_verdict_bucket(verdict: Any) -> str:
@@ -3075,6 +3121,8 @@ def run_external_benchmarks(
     anchor_first_verification: bool,
     anchor_index_root: Path,
     anchor_verification_topk: int,
+    wall_clock_start: float | None,
+    max_wall_time_minutes: float | None,
     dry_run: bool,
     overwrite: bool,
 ) -> tuple[list[dict[str, Any]], list[Path], list[Path], list[Path], list[Path]]:
@@ -3088,7 +3136,7 @@ def run_external_benchmarks(
     benchmark_root.mkdir(parents=True, exist_ok=True)
     manual_alias_index = load_manual_quote_alias_index(generals_path)
 
-    for source in sources:
+    for source_index, source in enumerate(sources):
         sid = str(source.get("sourceId") or "").strip()
         if not sid:
             continue
@@ -3097,7 +3145,48 @@ def run_external_benchmarks(
         status = normalize_status(source.get("status"))
         roi_action = str(source.get("__roiPolicyAction") or "keep")
         roi_reason = str(source.get("__roiPolicyReason") or "")
-        sample_override = int(source.get("__sampleSizeOverride") or sample_size_for_source(source))
+        sample_override = source_sample_override(source)
+        benchmark_timeout_seconds = source_wall_time_budget_seconds(
+            sources=sources,
+            source_index=source_index,
+            wall_clock_start=wall_clock_start,
+            max_wall_time_minutes=max_wall_time_minutes,
+        )
+        if benchmark_timeout_seconds is not None and benchmark_timeout_seconds <= 0:
+            source_results.append(
+                {
+                    "sourceId": sid,
+                    "sourceClass": sclass,
+                    "adapterType": adapter,
+                    "finalVerdict": "max-wall-time-skipped",
+                    "stage1Passed": False,
+                    "stage2Passed": None,
+                    "stage3Passed": None,
+                    "samplePageCount": sample_override,
+                    "fetchedPageCount": 0,
+                    "seedCount": 0,
+                    "candidateCardCount": 0,
+                    "seedPerPage": None,
+                    "candidateCardPerPage": None,
+                    "canonicalPeople": 0,
+                    "shadowPeople": 0,
+                    "manualEvidenceCount": int(source.get("manualEvidenceCount") or 0),
+                    "manualSeedJsonlPath": None,
+                    "manualSeedInjected": False,
+                    "summaryJsonPath": None,
+                    "stage1FailureReasons": ["max-wall-time-skipped"],
+                    "stage1HttpStatus": None,
+                    "stage1LiveStatus": "",
+                    "stage1Reason": "max-wall-time-skipped",
+                    "stage2FailureReasons": [],
+                    "stage3FailureReasons": [],
+                    "roiPolicyAction": roi_action,
+                    "roiPolicyReason": roi_reason,
+                    "sourceBenchmarkTimeoutSeconds": benchmark_timeout_seconds,
+                    "sourceBenchmarkTimedOut": False,
+                }
+            )
+            continue
         if bool(source.get("__skipRoi")):
             source_results.append(
                 {
@@ -3235,6 +3324,12 @@ def run_external_benchmarks(
         if harvested_seed_path.exists():
             harvested_seed_paths.append(harvested_seed_path)
 
+        timed_out = bool(result.get("timedOut"))
+        stage1_failure_reasons = summary.get("stage1FailureReasons") if isinstance(summary, dict) else []
+        if timed_out and not stage1_failure_reasons:
+            stage1_failure_reasons = ["benchmark-timeout"]
+        stage2_failure_reasons = summary.get("stage2FailureReasons") if isinstance(summary, dict) else []
+        stage3_failure_reasons = summary.get("stage3FailureReasons") if isinstance(summary, dict) else []
         source_results.append(
             {
                 "sourceId": sid,
@@ -3243,16 +3338,16 @@ def run_external_benchmarks(
                 "command": result.get("command"),
                 "returnCode": result.get("returnCode"),
                 "summaryJsonPath": repo_relative(summary_path),
-                "finalVerdict": summary.get("finalVerdict") if isinstance(summary, dict) else "reject",
+                "finalVerdict": summary.get("finalVerdict") if isinstance(summary, dict) else ("benchmark-timeout" if timed_out else "reject"),
                 "stage1Passed": summary.get("stage1Passed") if isinstance(summary, dict) else False,
-                "stage1FailureReasons": summary.get("stage1FailureReasons") if isinstance(summary, dict) else [],
+                "stage1FailureReasons": stage1_failure_reasons,
                 "stage1HttpStatus": stage1.get("httpStatus") if isinstance(stage1, dict) else None,
                 "stage1LiveStatus": stage1.get("liveStatus") if isinstance(stage1, dict) else "",
-                "stage1Reason": stage1.get("reason") if isinstance(stage1, dict) else "",
+                "stage1Reason": stage1.get("reason") if isinstance(stage1, dict) else ("benchmark-timeout" if timed_out else ""),
                 "stage2Passed": summary.get("stage2Passed") if isinstance(summary, dict) else False,
-                "stage2FailureReasons": summary.get("stage2FailureReasons") if isinstance(summary, dict) else [],
+                "stage2FailureReasons": stage2_failure_reasons,
                 "stage3Passed": summary.get("stage3Passed") if isinstance(summary, dict) else False,
-                "stage3FailureReasons": summary.get("stage3FailureReasons") if isinstance(summary, dict) else [],
+                "stage3FailureReasons": stage3_failure_reasons,
                 "samplePageCount": (stage2 or {}).get("samplePageCount") if isinstance(stage2, dict) else 0,
                 "fetchedPageCount": (stage2 or {}).get("fetchedPageCount") if isinstance(stage2, dict) else 0,
                 "seedCount": (stage3 or {}).get("seedCount") if isinstance(stage3, dict) else 0,
@@ -3266,6 +3361,8 @@ def run_external_benchmarks(
                 "manualSeedInjected": False,
                 "roiPolicyAction": roi_action,
                 "roiPolicyReason": roi_reason,
+                "sourceBenchmarkTimeoutSeconds": benchmark_timeout_seconds,
+                "sourceBenchmarkTimedOut": timed_out,
             }
         )
 
@@ -3770,6 +3867,8 @@ def run_round(
         anchor_first_verification=bool(args.anchor_first_verification),
         anchor_index_root=resolve_existing_path(args.anchor_index_root),
         anchor_verification_topk=max(int(args.anchor_verification_topk), 1),
+        wall_clock_start=getattr(args, "_wall_clock_start", None),
+        max_wall_time_minutes=getattr(args, "max_wall_time_minutes", None),
         dry_run=dry_run,
         overwrite=args.overwrite,
     )
@@ -5029,6 +5128,7 @@ def main() -> int:
     previous_a_map: dict[str, dict[str, Any]] = {}
     rumination_rows: list[dict[str, Any]] = []
     wall_clock_start = time.monotonic()
+    setattr(args, "_wall_clock_start", wall_clock_start)
     human_batch_info: dict[str, Any] | None = None
     prior_source_results = previous_source_results_from_manifest(baseline_manifest)
     baseline_seed_events_path: Path | None = None

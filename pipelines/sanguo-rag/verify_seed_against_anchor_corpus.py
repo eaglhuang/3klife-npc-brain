@@ -101,10 +101,16 @@ def normalize_cjk(text: str) -> str:
     return re.sub(r"\s+", "", text)
 
 
+def normalized_ngrams(text: str, n: int = 4) -> set[str]:
+    if len(text) < n:
+        return set()
+    return {text[i:i+n] for i in range(len(text) - n + 1)}
+
+
 def ngram_overlap(a: str, b: str, n: int = 4) -> int:
     na, nb = normalize_cjk(a), normalize_cjk(b)
-    grams_a = {na[i:i+n] for i in range(len(na) - n + 1)}
-    grams_b = {nb[i:i+n] for i in range(len(nb) - n + 1)}
+    grams_a = normalized_ngrams(na, n)
+    grams_b = normalized_ngrams(nb, n)
     return len(grams_a & grams_b)
 
 
@@ -161,8 +167,54 @@ def passage_angle_match(passage: dict[str, Any], angle_type: str) -> bool:
     return f"field=page-text-{angle}" in locator or f"field={angle}" in locator
 
 
+class AnchorSearchIndex:
+    """In-memory n-gram index for anchor passages."""
+
+    def __init__(self, passages: list[dict[str, Any]], ngram_size: int = 4) -> None:
+        self.passages = passages
+        self.ngram_size = max(int(ngram_size or 4), 1)
+        self.normalized_texts: list[str] = []
+        self.gram_sets: list[set[str]] = []
+        self.gram_to_indices: dict[str, set[int]] = {}
+        self.person_to_indices: dict[str, set[int]] = {}
+
+        for idx, passage in enumerate(passages):
+            normalized_text = normalize_cjk(str(passage.get("normalizedText") or passage.get("text") or ""))
+            grams = normalized_ngrams(normalized_text, self.ngram_size)
+            self.normalized_texts.append(normalized_text)
+            self.gram_sets.append(grams)
+            for gram in grams:
+                self.gram_to_indices.setdefault(gram, set()).add(idx)
+
+            person_ids: set[str] = set()
+            raw_person_ids = passage.get("personIds")
+            if isinstance(raw_person_ids, list):
+                person_ids.update(str(item).strip() for item in raw_person_ids if str(item).strip())
+            general_id = str(passage.get("generalId") or "").strip()
+            if general_id:
+                person_ids.add(general_id)
+            for person_id in person_ids:
+                self.person_to_indices.setdefault(person_id, set()).add(idx)
+
+    def seed_grams(self, seed_text: str) -> set[str]:
+        return normalized_ngrams(normalize_cjk(seed_text), self.ngram_size)
+
+    def candidate_indices(self, seed_text: str, general_id: str, *, target_only: bool = False) -> set[int]:
+        candidates: set[int] = set()
+        for gram in self.seed_grams(seed_text):
+            candidates.update(self.gram_to_indices.get(gram, set()))
+        if target_only and general_id:
+            candidates.update(self.person_to_indices.get(general_id, set()))
+        return candidates
+
+    def overlap_count(self, passage_index: int, seed_grams: set[str]) -> int:
+        if not seed_grams:
+            return 0
+        return len(self.gram_sets[passage_index] & seed_grams)
+
+
 def hybrid_retrieve(
-    passages: list[dict[str, Any]],
+    passages: list[dict[str, Any]] | AnchorSearchIndex,
     seed_text: str,
     general_id: str,
     *,
@@ -173,9 +225,12 @@ def hybrid_retrieve(
 ) -> list[dict[str, Any]]:
     """從 anchor passages 中找出與 seed_text 最相關的 topk 條。"""
     active_policy = policy or DEFAULT_POLICY
+    index = passages if isinstance(passages, AnchorSearchIndex) else AnchorSearchIndex(passages)
+    query_grams = index.seed_grams(seed_text)
     scored: list[tuple[int, int, int, dict[str, Any]]] = []
-    for passage in passages:
-        overlap = ngram_overlap(passage.get("normalizedText", ""), seed_text)
+    for passage_index in sorted(index.candidate_indices(seed_text, general_id, target_only=target_only)):
+        passage = index.passages[passage_index]
+        overlap = index.overlap_count(passage_index, query_grams)
         person_match = passage_has_person(passage, general_id)
         angle_match = passage_angle_match(passage, angle_type)
         if target_only:
@@ -235,7 +290,7 @@ def dedupe_anchor_hits(hits: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def verify_seed(
     seed: dict[str, Any],
-    passages: list[dict[str, Any]],
+    passages: list[dict[str, Any]] | AnchorSearchIndex,
     policy: dict[str, Any],
     topk: int = 8,
 ) -> dict[str, Any]:
@@ -293,9 +348,10 @@ def verify_seeds_batch(
     policy: dict[str, Any],
     topk: int = 8,
 ) -> list[dict[str, Any]]:
+    index = AnchorSearchIndex(passages)
     results = []
     for seed in seeds:
-        result = verify_seed(seed, passages, policy=policy, topk=topk)
+        result = verify_seed(seed, index, policy=policy, topk=topk)
         results.append({**seed, "anchorEvidence": result})
     return results
 
