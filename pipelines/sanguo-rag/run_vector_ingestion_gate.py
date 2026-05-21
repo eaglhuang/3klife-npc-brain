@@ -57,6 +57,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--persona-card", default="", help="explicit persona card path for readiness (optional)")
     parser.add_argument("--force-ingestion", action="store_true", help="force export + upsert even when inputs did not change")
     parser.add_argument("--skip-readiness", action="store_true", help="skip build_api_readiness_index")
+    parser.add_argument("--dry-run", action="store_true", help="print ingestion plan without export, upsert, probe, readiness, or state writes")
+    parser.add_argument("--skip-upsert", action="store_true", help="export vector records but skip provider upsert")
+    parser.add_argument("--skip-probe", action="store_true", help="skip provider query probe and mark vector check report as skipped")
     parser.add_argument("--governance-root", default=str(DEFAULT_GOVERNANCE_ROOT), help="Sanguo governance root")
     parser.add_argument("--source-browser-vector-policy", default=None, help="Override policy-source-browser-vector-readiness.json path")
     parser.add_argument("--vector-ingestion-hardening-policy", default=None, help="Override policy-vector-ingestion-hardening.json path")
@@ -128,6 +131,10 @@ def read_json(path: Path) -> dict:
 def write_json(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def print_dry_run_plan(plan: dict) -> None:
+    print(json.dumps(plan, ensure_ascii=False, indent=2))
 
 
 def safe_print(text: str) -> None:
@@ -252,6 +259,46 @@ def main() -> None:
     previous_fingerprint = str(previous_state.get("inputFingerprint") or "")
     changed = args.force_ingestion or (input_state["fingerprint"] != previous_fingerprint)
 
+    if args.dry_run:
+        print_dry_run_plan(
+            {
+                "schemaVersion": "vector-ingestion-dry-run-plan.v0.1",
+                "generatedAt": utc_now(),
+                "changed": bool(changed),
+                "forceIngestion": bool(args.force_ingestion),
+                "inputFingerprint": input_state["fingerprint"],
+                "previousFingerprint": previous_fingerprint,
+                "inputFileCount": input_state["fileCount"],
+                "providers": providers,
+                "embeddingProvider": args.embedding_provider,
+                "limit": args.limit,
+                "topK": args.top_k,
+                "paths": {
+                    "events": repo_relative(events_path),
+                    "keywordRoot": repo_relative(keyword_root),
+                    "personaRoot": repo_relative(persona_root),
+                    "vectorReadyRoot": repo_relative(vector_ready_root),
+                    "apiReadinessRoot": repo_relative(api_readiness_root),
+                    "statePath": repo_relative(state_path),
+                    "checkReportPath": repo_relative(check_report_path),
+                },
+                "wouldExport": bool(changed),
+                "wouldUpsert": bool(changed and not args.skip_upsert),
+                "wouldProbe": not bool(args.skip_probe),
+                "wouldBuildReadiness": not bool(args.skip_readiness),
+                "wouldWriteState": False,
+                "wouldWriteCheckReport": False,
+                "guards": [
+                    "no-export",
+                    "no-provider-upsert",
+                    "no-query-probe",
+                    "no-readiness-write",
+                    "no-state-write",
+                ],
+            }
+        )
+        return
+
     if changed:
         run_python(
             PIPELINE_ROOT / "export_vector_records.py",
@@ -268,40 +315,55 @@ def main() -> None:
             ],
         )
 
-        for provider in providers:
-            upsert_args = [
-                "--provider",
-                provider,
-                "--records-root",
-                str(vector_ready_root),
-                "--embedding-provider",
-                args.embedding_provider,
-            ]
-            if args.limit > 0:
-                upsert_args.extend(["--limit", str(args.limit)])
-            run_python(PIPELINE_ROOT / "upsert_pinecone_records.py", upsert_args)
+        if args.skip_upsert:
+            print("[vector-ingestion-gate] skip provider upsert (--skip-upsert).")
+        else:
+            for provider in providers:
+                upsert_args = [
+                    "--provider",
+                    provider,
+                    "--records-root",
+                    str(vector_ready_root),
+                    "--embedding-provider",
+                    args.embedding_provider,
+                ]
+                if args.limit > 0:
+                    upsert_args.extend(["--limit", str(args.limit)])
+                run_python(PIPELINE_ROOT / "upsert_pinecone_records.py", upsert_args)
     else:
         print("[vector-ingestion-gate] inputs unchanged; skip export + upsert.")
 
-    probe_record = pick_probe_record(vector_ready_root)
     provider_results: dict[str, dict] = {}
-    for provider in providers:
-        provider_results[provider] = run_query_probe(
-            provider=provider,
-            namespace=probe_record.namespace,
-            record_id=probe_record.id,
-            query_text=probe_record.text,
-            top_k=args.top_k,
-            embedding_provider=args.embedding_provider,
-        )
-
-    status = "pass" if all(result.get("containsExpected") for result in provider_results.values()) else "fail"
+    if args.skip_probe:
+        probe_record = None
+        for provider in providers:
+            provider_results[provider] = {
+                "skipped": True,
+                "containsExpected": None,
+                "matchCount": 0,
+                "topIds": [],
+            }
+        status = "skipped"
+    else:
+        probe_record = pick_probe_record(vector_ready_root)
+        for provider in providers:
+            provider_results[provider] = run_query_probe(
+                provider=provider,
+                namespace=probe_record.namespace,
+                record_id=probe_record.id,
+                query_text=probe_record.text,
+                top_k=args.top_k,
+                embedding_provider=args.embedding_provider,
+            )
+        status = "pass" if all(result.get("containsExpected") for result in provider_results.values()) else "fail"
     check_report = {
         "status": status,
         "generatedAt": utc_now(),
         "changed": bool(changed),
-        "expectedRecordId": probe_record.id,
-        "namespace": probe_record.namespace,
+        "skipUpsert": bool(args.skip_upsert),
+        "skipProbe": bool(args.skip_probe),
+        "expectedRecordId": probe_record.id if probe_record is not None else "",
+        "namespace": probe_record.namespace if probe_record is not None else "",
         "providers": provider_results,
     }
     write_json(check_report_path, check_report)
@@ -334,6 +396,8 @@ def main() -> None:
         "inputFileCount": input_state["fileCount"],
         "lastRunChanged": bool(changed),
         "lastCheckStatus": status,
+        "lastSkipUpsert": bool(args.skip_upsert),
+        "lastSkipProbe": bool(args.skip_probe),
         "providers": providers,
         "vectorReadyRoot": repo_relative(vector_ready_root),
         "apiReadinessRoot": repo_relative(api_readiness_root),

@@ -30,6 +30,7 @@ from backfill_evidence_to_postgres_smoke_test import _build_fixtures  # noqa: E4
 from dual_write_parity_gate import (  # noqa: E402
     ERROR_KIND_READ_PATH_FLIPPED,
     run_parity_gate,
+    write_error_ledger,
 )
 
 
@@ -79,6 +80,12 @@ def test_gate_fails_when_read_path_flipped() -> None:
         _expect("gate ok=False when read-path flipped to postgres", report["ok"] is False)
         kinds = {err["kind"] for err in report["errors"]}
         _expect("read-path-flipped error recorded", ERROR_KIND_READ_PATH_FLIPPED in kinds)
+        ledger_path = lake / "parity-errors.jsonl"
+        written = write_error_ledger(ledger_path, report)
+        _expect("error ledger writes one failure row", written == 1)
+        ledger_rows = [json.loads(line) for line in ledger_path.read_text(encoding="utf-8").splitlines()]
+        _expect("error ledger row carries run id", ledger_rows[0]["runId"] == manifest.run_id)
+        _expect("error ledger row carries error kind", ledger_rows[0]["error"]["kind"] == ERROR_KIND_READ_PATH_FLIPPED)
 
 
 def test_gate_row_and_sha_parity() -> None:
