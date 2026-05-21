@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0201",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M2 PostgreSQL evidence-lake schema migration delivered. Adds 8 tables (pipeline_runs, source_runs, harvested_pages, evidence_seeds, evidence_cards, anchor_passages, proposal_ledger, vector_ingestion_records), 22 indexes (run/source/family/text_hash), and one rollup view. Each high-volume table has idempotent key, text/hash index, and JSONB raw payload column. Migration is additive only; observed_mentions / alias_map_entries / triage_label_decisions untouched. Dry-run runner and 3-mode rollback plan included.",
+  "expectedEvidence": [
+    "schema migration diff",
+    "schema smoke report",
+    "rollback/truncate plan"
+  ],
+  "artifacts": [
+    {
+      "kind": "sql-migration",
+      "path": "pipelines/sanguo-rag/sql/postgres_evidence_lake_schema.sql",
+      "description": "Additive evidence-lake schema. 8 tables + 22 indexes + 1 view, all using CREATE ... IF NOT EXISTS, all referencing pipeline_runs(run_id) with ON DELETE cascade or SET NULL as appropriate."
+    },
+    {
+      "kind": "sql-rollback",
+      "path": "pipelines/sanguo-rag/sql/postgres_evidence_lake_rollback.sql",
+      "description": "Three rollback modes (TRUNCATE, DROP TABLE, DROP SCHEMA CASCADE), all wrapped in transactions ending with ROLLBACK so the file is safe to execute as-is; operator promotes to COMMIT after review."
+    },
+    {
+      "kind": "runner",
+      "path": "pipelines/sanguo-rag/apply_postgres_evidence_lake_schema.py",
+      "description": "Dry-run / apply runner. Default --dry-run prints plan summary (counts, table list, index list, view list). --apply requires SANGUO_RAG_PG_DSN. Rollback SQL is never auto-executed."
+    }
+  ],
+  "schemaSmokeReport": {
+    "command": "python -B pipelines/sanguo-rag/apply_postgres_evidence_lake_schema.py --dry-run",
+    "statementCount": 32,
+    "counts": {
+      "create-schema": 1,
+      "create-table": 8,
+      "create-index": 22,
+      "create-view": 1
+    },
+    "tables": [
+      "sanguo_rag.pipeline_runs",
+      "sanguo_rag.source_runs",
+      "sanguo_rag.harvested_pages",
+      "sanguo_rag.evidence_seeds",
+      "sanguo_rag.evidence_cards",
+      "sanguo_rag.anchor_passages",
+      "sanguo_rag.proposal_ledger",
+      "sanguo_rag.vector_ingestion_records"
+    ],
+    "views": ["sanguo_rag.evidence_lake_run_summary"]
+  },
+  "acceptanceMapping": [
+    {
+      "criterion": "evidence-lake schema covers 8 required tables",
+      "evidence": "schemaSmokeReport.tables == required list"
+    },
+    {
+      "criterion": "each high-volume table has idempotent key + text/hash key + run/source index + JSONB raw payload",
+      "evidence": "evidence_seeds.seed_id PK + seed_text_hash idx + (run_id, source_id) idx + payload jsonb; same pattern for evidence_cards (evidence_id PK + quote_hash idx + general_ids GIN), harvested_pages (uq (run_id, url_hash, text_hash) + text_hash idx + raw_payload), anchor_passages (uq (corpus, layer, locator, text_hash) + text_hash idx + raw_payload), vector_ingestion_records (uq (provider, namespace, record_id, record_sha256) + payload), proposal_ledger (signature idx + payload)."
+    },
+    {
+      "criterion": "migration does not modify JSONL output and does not force PostgreSQL at runtime",
+      "evidence": "additive-only DDL; no app/* code changes; runner default is --dry-run; --apply gated on env DSN."
+    },
+    {
+      "criterion": "dry-run schema apply + rollback/truncate design",
+      "evidence": "apply_postgres_evidence_lake_schema.py supports --dry-run; postgres_evidence_lake_rollback.sql provides TRUNCATE / DROP TABLE / DROP SCHEMA CASCADE modes wrapped in ROLLBACK by default."
+    }
+  ],
+  "guards": [
+    "no-runtime-schema-change-before-adapter",
+    "jsonl-export-remains-canonical-until-cutover",
+    "additive-migration-only",
+    "rollback-requires-explicit-operator-promotion"
+  ],
+  "nextActions": [
+    "SANGUO-RAGOPS-0202: repository adapter uses this schema for upsert in postgres / dual modes",
+    "SANGUO-RAGOPS-0203: backfill JSONL evidence into these tables",
+    "SANGUO-RAGOPS-0204: parity gate diffs JSONL manifests against these tables"
+  ]
+}
