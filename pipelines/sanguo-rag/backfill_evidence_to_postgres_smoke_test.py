@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
 import tempfile
 from datetime import datetime, timezone
@@ -33,6 +34,13 @@ if str(ROOT) not in sys.path:
 from backfill_evidence_to_postgres import backfill  # noqa: E402
 from evidence_manifest import EvidenceManifest, validate_manifest  # noqa: E402
 from evidence_repository import RepositorySettings, RetryPolicy  # noqa: E402
+
+
+def _temp_parent() -> Path:
+    base_text = os.environ.get("SANGUO_RAG_TEST_TMPDIR")
+    base = Path(base_text) if base_text else Path.cwd() / "local" / "tmp" / "sanguo-rag-smoke"
+    base.mkdir(parents=True, exist_ok=True)
+    return base
 
 
 def _expect(label: str, condition: bool) -> None:
@@ -172,7 +180,7 @@ def _build_fixtures(root: Path) -> tuple[EvidenceManifest, list[Path]]:
 
 
 def test_backfill_dry_run_parity() -> None:
-    with tempfile.TemporaryDirectory() as tmp:
+    with tempfile.TemporaryDirectory(dir=_temp_parent()) as tmp:
         lake = Path(tmp)
         manifest, files = _build_fixtures(lake)
         manifest_hashes = {path: _sha256_bytes(path.read_bytes()) for path in files}
