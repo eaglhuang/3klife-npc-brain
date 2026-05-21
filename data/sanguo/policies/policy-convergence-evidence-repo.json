@@ -1,0 +1,79 @@
+{
+  "id": "Policy_ConvergenceEvidenceRepo_P1",
+  "description": "Opt-in contract for wiring the full-roster convergence loop to the evidence repository adapter (SANGUO-RAGOPS-0601). Defines env-var gates, allowed tables, write semantics, and isolation invariants. The convergence loop never modifies JSONL canonical outputs; all writes are mirror-only idempotent upserts to the repository backend.",
+  "schemaVersion": "convergence-evidence-repo-policy.v0.1",
+  "enabledByDefault": false,
+  "optIn": {
+    "envVar": "SANGUO_RAG_CONVERGENCE_REPO_ENABLED",
+    "enabledValue": "1",
+    "description": "Set to '1' to enable evidence repository writes from the convergence loop. Default is disabled (any value other than '1' disables writes)."
+  },
+  "repoMode": {
+    "envVar": "SANGUO_RAG_CONVERGENCE_REPO_MODE",
+    "default": "postgres",
+    "allowedValues": ["jsonl", "postgres", "dual"],
+    "description": "Repository mode forwarded to RepositorySettings.from_env(). Inherits SANGUO_RAG_REPO_MODE if convergence-specific var not set."
+  },
+  "dryRun": {
+    "envVar": "SANGUO_RAG_CONVERGENCE_REPO_DRY_RUN",
+    "default": "1",
+    "description": "Default is dry-run (1). Set to '0' to issue real writes. A non-empty string other than '0' is treated as dry-run."
+  },
+  "policyPath": {
+    "envVar": "SANGUO_RAG_CONVERGENCE_REPO_POLICY",
+    "default": "data/sanguo/policies/policy-convergence-evidence-repo.json",
+    "description": "Path to this policy file relative to repo root. Override to swap policy without touching code."
+  },
+  "allowedTables": [
+    "pipeline_runs",
+    "source_runs",
+    "evidence_cards",
+    "evidence_seeds",
+    "harvested_pages",
+    "anchor_passages"
+  ],
+  "writeSemantics": {
+    "idempotentUpsert": true,
+    "mirrorOnly": true,
+    "jsonlCanonicalNotModified": true,
+    "canonicalWritesAlwaysFalse": true,
+    "description": "All writes are idempotent ON CONFLICT upserts. The evidence repository is a mirror only; JSONL canonical export remains the source of truth. The 'canonicalWrites' field is always set to false for all convergence-loop rows."
+  },
+  "roundWritePolicy": {
+    "triggerOncePerRound": true,
+    "sourceIdFromManifest": true,
+    "evidenceCardsFromPaths": [
+      "externalCardsPath",
+      "globalCandidateCardsPath"
+    ],
+    "skipIfNoCards": true,
+    "reviewStatusCoercion": "candidate",
+    "description": "After each convergence round completes, evidence_cards are extracted from the round's externalCardsPath and globalCandidateCardsPath. Cards with unknown reviewStatus are coerced to 'candidate'. source_runs rows are emitted with fetch/seed/card counts from the round's externalSummary."
+  },
+  "runWritePolicy": {
+    "triggerOnRunCompletion": true,
+    "pipelineRunsTableEnabled": true,
+    "description": "On run completion, a pipeline_runs row is written with the convergence loop's runId, stopReason, and summary."
+  },
+  "errorHandling": {
+    "errorLedgerEnabled": true,
+    "continueOnError": true,
+    "errorLedgerRelPath": "_convergence-repo-error-ledger.jsonl",
+    "description": "Repository write errors are appended to the error ledger inside the run root. The convergence loop continues even if repository writes fail — isolation invariant: evidence repo errors never abort the main pipeline."
+  },
+  "guards": [
+    "no-hardcoded-general-id-or-source-id",
+    "no-hardcoded-dsn-or-schema-or-namespace",
+    "jsonl-canonical-export-not-modified",
+    "canonical-writes-always-false-for-convergence-loop",
+    "no-production-credentials-in-repo",
+    "all-budgets-and-thresholds-from-policy-not-from-code",
+    "mirror-only-read-path-not-flipped"
+  ],
+  "smokeTestCommand": "python -B pipelines/sanguo-rag/run_convergence_repo_parity_rehearsal.py --dry-run",
+  "relatedPolicies": [
+    "data/sanguo/policies/policy-artifact-lake-layout.json",
+    "data/sanguo/policies/policy-large-run-rehearsal.json"
+  ],
+  "lastUpdatedAt": "2026-05-21T00:00:00+08:00"
+}

@@ -1,25 +1,52 @@
 {
   "schemaVersion": "atm.evidence.v0.1",
   "workItemId": "SANGUO-RAGOPS-0601",
-  "status": "open",
+  "status": "closed",
   "createdAt": "2026-05-21T00:00:00+08:00",
-  "summary": "Task opened for defining the M6 opt-in contract that lets run_full_roster_convergence_loop.py route evidence artifacts through EvidenceRepository and EvidenceManifest without changing default canonical JSONL behavior.",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M6 opt-in contract delivered as policy-convergence-evidence-repo.json. Defines SANGUO_RAG_CONVERGENCE_REPO_ENABLED (default off), SANGUO_RAG_CONVERGENCE_REPO_MODE (default postgres), SANGUO_RAG_CONVERGENCE_REPO_DRY_RUN (default 1), allowed tables, write semantics (mirrorOnly, idempotentUpsert, canonicalWritesAlwaysFalse), error handling (continueOnError), and 7 guards. All thresholds, modes, and destinations are data-driven. enabledByDefault=false.",
   "expectedEvidence": [
     "opt-in contract document or policy",
     "flag and environment variable matrix",
     "repository seam boundary definition",
     "rollback and disable semantics"
   ],
-  "artifacts": [],
-  "acceptanceMapping": [],
+  "artifacts": [
+    {
+      "kind": "policy",
+      "path": "data/sanguo/policies/policy-convergence-evidence-repo.json",
+      "description": "Opt-in contract policy. Defines env vars for enable/mode/dry-run, allowedTables (6 tables), writeSemantics, roundWritePolicy, runWritePolicy, errorHandling, and 7 guards. smokeTestCommand referenced for CI integration."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "Explicit opt-in contract with CLI/env flags, defaults, kill switch, dry-run semantics, allowed artifact classes",
+      "evidence": "policy.optIn.envVar=SANGUO_RAG_CONVERGENCE_REPO_ENABLED; policy.dryRun.default='1'; policy.allowedTables lists 6 tables; policy.writeSemantics.canonicalWritesAlwaysFalse=true"
+    },
+    {
+      "criterion": "PostgreSQL and vector backends are mirrors/smoke only; no direct provider dependency",
+      "evidence": "policy.writeSemantics.mirrorOnly=true; policy.guards includes mirror-only-read-path-not-flipped"
+    },
+    {
+      "criterion": "All thresholds, modes, and destinations data-driven, not hardcoded in runner",
+      "evidence": "policy.repoMode/dryRun/roundWritePolicy/errorHandling all env-var or policy-file driven; guards list no-hardcoded-general-id-or-source-id, no-hardcoded-dsn-or-schema-or-namespace"
+    },
+    {
+      "criterion": "Rollback and disable semantics documented",
+      "evidence": "policy.optIn: set env var to '0' or unset disables; policy.errorHandling.continueOnError=true; policy.guards: mirror-only-read-path-not-flipped prevents irreversible cutover"
+    }
+  ],
   "guards": [
     "default-canonical-jsonl-behavior-unchanged",
     "repository-mode-explicit-opt-in-only",
     "postgres-and-vector-provider-code-hidden-behind-adapters",
-    "no-hardcoded-thresholds-or-provider-settings"
+    "no-hardcoded-thresholds-or-provider-settings",
+    "canonicalWrites-always-false-convergence-loop",
+    "error-ledger-for-repo-failures-not-abort"
   ],
   "nextActions": [
-    "Claim SANGUO-RAGOPS-0601 before implementing any convergence-loop repository behavior.",
-    "Use SANGUO-RAGOPS-0601 output as the contract for SANGUO-RAGOPS-0602 through SANGUO-RAGOPS-0606."
+    "SANGUO-RAGOPS-0602: implement convergence_evidence_seam.py using this contract",
+    "SANGUO-RAGOPS-0603: integrate EvidenceManifest writing and resume scan into convergence loop",
+    "SANGUO-RAGOPS-0604: run parity rehearsal gate against convergence loop output"
   ]
 }

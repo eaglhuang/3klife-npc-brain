@@ -2,7 +2,7 @@
   "schemaVersion": "atm.workItem.v0.2",
   "workItemId": "SANGUO-RAGOPS-0601",
   "title": "Convergence loop evidence repository opt-in contract",
-  "status": "open",
+  "status": "closed",
   "milestone": "RAGOPS-M6",
   "priority": "P0",
   "dependencies": [
@@ -37,7 +37,7 @@
     "opt-in",
     "contract"
   ],
-  "notes": "2026-05-21 | 狀態: open | 驗證: pending | 變更: opened M6 contract card for opt-in convergence-loop repository integration | 阻塞: none",
+  "notes": "2026-05-21 | 狀態: closed | 驗證: policy JSON schema + guard list | 變更: 新增 policy-convergence-evidence-repo.json，定義 opt-in env var、allowed tables、write semantics、error handling 與隔離不變性；enabledByDefault=false，所有 threshold 與 destination 皆資料化 | 阻塞: none",
   "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0601.json",
   "source": {
     "planPath": "文件/三國RAG證據資料產線PostgreSQL與向量化開發計畫.md",
