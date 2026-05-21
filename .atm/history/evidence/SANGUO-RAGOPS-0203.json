@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0203",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M2 JSONL → PostgreSQL backfill runner delivered with idempotent upsert, parity report, and rollback instructions. Reads evidence manifest (M1-0102) and writes mirror rows into the 8 evidence-lake tables (M2-0201) via the repository adapter (M2-0202). Default is dry-run; --apply gated on SANGUO_RAG_PG_DSN. Smoke test asserts row count parity, re-run idempotency, and zero modification of JSONL artifacts.",
+  "expectedEvidence": [
+    "backfill dry-run report",
+    "count/hash parity report",
+    "rollback instructions"
+  ],
+  "artifacts": [
+    {
+      "kind": "runner",
+      "path": "pipelines/sanguo-rag/backfill_evidence_to_postgres.py",
+      "description": "Reads EvidenceManifest, groups entries by (table, sourceId), coerces JSONL rows into PG-shaped dicts (handles harvested_pages, evidence_seeds, evidence_cards, anchor_passages, proposal_ledger), rolls up source_runs, returns parity report with JSONL count/sha256 vs PG written/skipped/errors."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/backfill_evidence_to_postgres_smoke_test.py",
+      "description": "17 assertions: parity report covers all 6 evidence tables + pipeline_runs + source_runs, JSONL row counts match PG requested counts, re-run reports identical counts, JSONL artifacts untouched."
+    },
+    {
+      "kind": "fixture",
+      "path": "pipelines/sanguo-rag/fixtures/backfill-parity-report.sample.json",
+      "description": "Sample parity report showing schemaVersion=backfill-parity-report.v0.1, all parityOk=true, dryRun=true, guards listing jsonl-canonical-export-not-modified."
+    },
+    {
+      "kind": "rollback-spec",
+      "path": "pipelines/sanguo-rag/backfill-rollback-instructions.zh-TW.md",
+      "description": "Three rollback modes: A) single-run delete via pipeline_runs cascade; B) drop tables + re-apply schema + re-backfill; C) DROP SCHEMA CASCADE last resort. All preserve JSONL canonical and require post-rollback governance regression."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "dry-run backfill from artifact manifest into PostgreSQL mirror",
+      "evidence": "backfill_evidence_to_postgres.py default --dry-run; smoke test passes mode=postgres dry_run=True."
+    },
+    {
+      "criterion": "idempotent upsert, re-run produces no duplicates",
+      "evidence": "Adapter uses ON CONFLICT (per _PG_UPSERT_TEMPLATES); smoke test re-runs backfill and asserts identical row counts."
+    },
+    {
+      "criterion": "JSONL count/hash vs PostgreSQL count/hash parity report",
+      "evidence": "Parity report items contain jsonlRowCount + jsonlSha256 + pgRequested + pgWritten + pgSkippedDuplicate + pgErrors + parityOk."
+    },
+    {
+      "criterion": "rollback/truncate plan with no JSONL modification",
+      "evidence": "backfill-rollback-instructions.zh-TW.md modes A/B/C; smoke test asserts SHA256 of every JSONL fixture is unchanged after backfill."
+    }
+  ],
+  "smokeRunResult": {
+    "command": "python -B pipelines/sanguo-rag/backfill_evidence_to_postgres_smoke_test.py",
+    "assertions": 17,
+    "passCount": 17,
+    "failCount": 0
+  },
+  "nextActions": [
+    "SANGUO-RAGOPS-0204: parity gate integrates this backfill report into governance regression",
+    "SANGUO-RAGOPS-0301: vector exporter can resolve evidence_card and anchor_passage rows from the same manifest"
+  ]
+}

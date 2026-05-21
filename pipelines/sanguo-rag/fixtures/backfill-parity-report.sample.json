@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "backfill-parity-report.v0.1",
+  "runId": "smoke-run",
+  "mode": "postgres",
+  "dryRun": true,
+  "generatedAt": "2026-05-21T02:40:00+00:00",
+  "parity": [
+    {
+      "table": "pipeline_runs",
+      "jsonlRowCount": 1,
+      "jsonlSha256": "",
+      "pgRequested": 1,
+      "pgWritten": 1,
+      "pgSkippedDuplicate": 0,
+      "pgErrors": [],
+      "parityOk": true
+    },
+    {
+      "table": "harvested_pages",
+      "jsonlRowCount": 2,
+      "jsonlSha256": "fa6f0c4d7e5d6a1c8b3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c",
+      "pgRequested": 2,
+      "pgWritten": 2,
+      "pgSkippedDuplicate": 0,
+      "pgErrors": [],
+      "parityOk": true
+    },
+    {
+      "table": "evidence_seeds",
+      "jsonlRowCount": 3,
+      "jsonlSha256": "9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d",
+      "pgRequested": 3,
+      "pgWritten": 3,
+      "pgSkippedDuplicate": 0,
+      "pgErrors": [],
+      "parityOk": true
+    },
+    {
+      "table": "evidence_cards",
+      "jsonlRowCount": 1,
+      "jsonlSha256": "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
+      "pgRequested": 1,
+      "pgWritten": 1,
+      "pgSkippedDuplicate": 0,
+      "pgErrors": [],
+      "parityOk": true
+    },
+    {
+      "table": "anchor_passages",
+      "jsonlRowCount": 2,
+      "jsonlSha256": "3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f",
+      "pgRequested": 2,
+      "pgWritten": 2,
+      "pgSkippedDuplicate": 0,
+      "pgErrors": [],
+      "parityOk": true
+    },
+    {
+      "table": "proposal_ledger",
+      "jsonlRowCount": 1,
+      "jsonlSha256": "5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f",
+      "pgRequested": 1,
+      "pgWritten": 1,
+      "pgSkippedDuplicate": 0,
+      "pgErrors": [],
+      "parityOk": true
+    },
+    {
+      "table": "source_runs",
+      "jsonlRowCount": 1,
+      "jsonlSha256": "",
+      "pgRequested": 1,
+      "pgWritten": 1,
+      "pgSkippedDuplicate": 0,
+      "pgErrors": [],
+      "parityOk": true
+    }
+  ],
+  "skipped": [],
+  "ok": true,
+  "guards": [
+    "jsonl-canonical-export-not-modified",
+    "no-destructive-postgres-operation",
+    "idempotent-upsert-only"
+  ]
+}
