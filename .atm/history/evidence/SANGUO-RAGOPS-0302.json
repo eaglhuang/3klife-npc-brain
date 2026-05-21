@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0302",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M3 evidence vector smoke namespace ingestion gate delivered. run_evidence_vector_smoke_gate.py wires evidence manifest → exporter → mock/policy-allowed provider upsert → query probe → dedupe/upsert manifest → rollback manifest. Production namespaces (-prod) are blocked unless --allow-production-namespace. Provider must be in policy allowlist; mock is permitted only for offline smoke. Batch size, retry, namespace, top-k, dedupe key fields all read from policy-vector-ingestion-hardening.json. 4 smoke tests (10 assertions) pass.",
+  "expectedEvidence": [
+    "smoke namespace upsert manifest",
+    "probe report",
+    "rollback manifest"
+  ],
+  "artifacts": [
+    {
+      "kind": "runner",
+      "path": "pipelines/sanguo-rag/run_evidence_vector_smoke_gate.py",
+      "description": "Gate runner. Loads policy-vector-ingestion-hardening.json (allowed providers, dedupe key fields, upsert batch defaults, probe topK + minMatchCount), exports vector records, builds upsert manifest deduped by policy fields, runs provider upsert, runs probe, emits rollback manifest."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/run_evidence_vector_smoke_gate_smoke_test.py",
+      "description": "4 tests with 10 assertions: happy path probe finds expected record, production namespace blocked, unknown provider rejected, dedupe key fields read from policy."
+    },
+    {
+      "kind": "sample-report",
+      "path": "pipelines/sanguo-rag/fixtures/evidence-vector-smoke-gate.sample.json",
+      "description": "End-to-end sample gate report with upsertManifest (3 entries deduped by namespace+id+sha256), probe topK=5 / matchCount>=1 / expected record present, rollbackManifest with deleteByRecordIds and deleteByDedupeKeys, deterministicSha256 inherited from exporter."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "smoke namespace upsert + query probe + dedupe manifest + rollback manifest",
+      "evidence": "Gate report fields upsertManifest, probe, rollbackManifest, recordCounts.deduped vs exported."
+    },
+    {
+      "criterion": "provider must be in policy allowlist; production namespace disabled by default",
+      "evidence": "_resolve_allowed_providers + namespace endswith('-prod') guard + --allow-production-namespace gate. Smoke test asserts rejections."
+    },
+    {
+      "criterion": "probe verifies expected record can be recalled; outputs topK, match count, namespace, provider",
+      "evidence": "Probe section includes query, expectedRecordId, topK, minRequiredMatchCount, matchCount, matchedRecordIds, probeOk."
+    },
+    {
+      "criterion": "batch size, retry, backoff, namespace, limit all from policy/CLI/env",
+      "evidence": "upsertPolicy.defaultLimit / retryCount / retryBackoffSeconds + probePolicy.defaultTopK / minRequiredMatchCount + providerPolicy.allowedProviders read at runtime; CLI flags override (--top-k, --batch-size, --namespace, --provider)."
+    }
+  ],
+  "smokeRunResult": {
+    "command": "python -B pipelines/sanguo-rag/run_evidence_vector_smoke_gate_smoke_test.py",
+    "passCount": 10,
+    "failCount": 0
+  },
+  "guards": [
+    "production-namespace-blocked-by-default",
+    "provider-must-be-in-policy-allowlist",
+    "dedupe-key-fields-read-from-policy",
+    "rollback-manifest-emitted",
+    "raw-seed-never-upserted"
+  ],
+  "nextActions": [
+    "SANGUO-RAGOPS-0401: include this gate in large-run rehearsal vector-smoke mode",
+    "SANGUO-RAGOPS-0402: governance runbook documents rollback workflow",
+    "SANGUO-RAGOPS-0501: cutover decision packet requires multiple smoke probes + rollback exercises"
+  ]
+}

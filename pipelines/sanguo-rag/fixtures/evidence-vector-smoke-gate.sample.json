@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "evidence-vector-smoke-gate.v0.1",
+  "runId": "smoke-run",
+  "provider": "mock",
+  "namespace": "sanguo-rag-evidence-smoke-smoke-run",
+  "canonicalWrites": false,
+  "generatedAt": "2026-05-21T06:35:27+00:00",
+  "recordCounts": {
+    "exported": 3,
+    "upserted": 3,
+    "dedupedManifestEntries": 3
+  },
+  "probe": {
+    "query": "桃園結義",
+    "expectedRecordId": "anchor::anchor-001",
+    "topK": 5,
+    "minRequiredMatchCount": 1,
+    "matchCount": 3,
+    "matchedRecordIds": [
+      "anchor::anchor-001",
+      "anchor::anchor-002",
+      "evidence::ev-001"
+    ],
+    "probeOk": true
+  },
+  "policyRefs": [
+    "C:\\Users\\User\\3klife-npc-brain\\data\\sanguo\\policies\\policy-vector-ingestion-hardening.json"
+  ],
+  "upsertManifest": {
+    "schemaVersion": "evidence-vector-upsert-manifest.v0.1",
+    "provider": "mock",
+    "namespace": "sanguo-rag-evidence-smoke-smoke-run",
+    "dedupeKeyFields": [
+      "namespace",
+      "id",
+      "sha256"
+    ],
+    "entryCount": 3,
+    "entries": [
+      {
+        "dedupeKey": "sanguo-rag-evidence-smoke-smoke-run::anchor::anchor-001::73f8f8dde6b36c57cc953bc087fc72cce83cb9e4481cefcd44d7c3b498f2da39",
+        "provider": "mock",
+        "namespace": "sanguo-rag-evidence-smoke-smoke-run",
+        "recordId": "anchor::anchor-001",
+        "sha256": "73f8f8dde6b36c57cc953bc087fc72cce83cb9e4481cefcd44d7c3b498f2da39",
+        "recordType": "anchor_passage"
+      },
+      {
+        "dedupeKey": "sanguo-rag-evidence-smoke-smoke-run::anchor::anchor-002::3cb2360221b995d138ae750a3ab6aa53c63addddc4fc5857ee03224fb546136f",
+        "provider": "mock",
+        "namespace": "sanguo-rag-evidence-smoke-smoke-run",
+        "recordId": "anchor::anchor-002",
+        "sha256": "3cb2360221b995d138ae750a3ab6aa53c63addddc4fc5857ee03224fb546136f",
+        "recordType": "anchor_passage"
+      },
+      {
+        "dedupeKey": "sanguo-rag-evidence-smoke-smoke-run::evidence::ev-001::45be54194b6e4e2e8474a3eefed8a53418347a4561496bb110fc66af58a83d39",
+        "provider": "mock",
+        "namespace": "sanguo-rag-evidence-smoke-smoke-run",
+        "recordId": "evidence::ev-001",
+        "sha256": "45be54194b6e4e2e8474a3eefed8a53418347a4561496bb110fc66af58a83d39",
+        "recordType": "evidence_card"
+      }
+    ]
+  },
+  "rollbackManifest": {
+    "schemaVersion": "evidence-vector-rollback-manifest.v0.1",
+    "provider": "mock",
+    "namespace": "sanguo-rag-evidence-smoke-smoke-run",
+    "deleteByRecordIds": [
+      "anchor::anchor-001",
+      "anchor::anchor-002",
+      "evidence::ev-001"
+    ],
+    "deleteByDedupeKeys": [
+      "sanguo-rag-evidence-smoke-smoke-run::anchor::anchor-001::73f8f8dde6b36c57cc953bc087fc72cce83cb9e4481cefcd44d7c3b498f2da39",
+      "sanguo-rag-evidence-smoke-smoke-run::anchor::anchor-002::3cb2360221b995d138ae750a3ab6aa53c63addddc4fc5857ee03224fb546136f",
+      "sanguo-rag-evidence-smoke-smoke-run::evidence::ev-001::45be54194b6e4e2e8474a3eefed8a53418347a4561496bb110fc66af58a83d39"
+    ],
+    "rollbackCommand": "python -B pipelines/sanguo-rag/run_evidence_vector_smoke_gate.py --rollback --rollback-manifest <path>"
+  },
+  "deterministicSha256": {
+    "anchor_passage": "44ad54c2810929b8535f027bfe53a5666ecfaa589afbb8f6af625196b3a6f4c7",
+    "evidence_card": "95d8efd212809b1e3ce89e4e7fc389202191cc39957d40ec12b64c2915cb89d0",
+    "combined": "59507bed63d918aba3f6e2c6e871a52301bac758998a17d5fd15b47aa27e2742"
+  },
+  "ok": true,
+  "guards": [
+    "production-namespace-blocked-by-default",
+    "provider-must-be-in-policy-allowlist",
+    "dedupe-key-fields-read-from-policy",
+    "rollback-manifest-emitted",
+    "raw-seed-never-upserted"
+  ]
+}
