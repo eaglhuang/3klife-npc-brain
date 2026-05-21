@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "dual-write-parity-gate.v0.1",
+  "runId": "smoke-run",
+  "generatedAt": "2026-05-21T06:28:59+00:00",
+  "featureFlagReadPath": "jsonl",
+  "dryRun": true,
+  "rowCountChecks": [
+    {
+      "table": "anchor_passages",
+      "jsonlOnlyRowCount": 2,
+      "dualRowCount": 2,
+      "dualBackendWritten": 4
+    },
+    {
+      "table": "evidence_cards",
+      "jsonlOnlyRowCount": 1,
+      "dualRowCount": 1,
+      "dualBackendWritten": 2
+    },
+    {
+      "table": "evidence_seeds",
+      "jsonlOnlyRowCount": 3,
+      "dualRowCount": 3,
+      "dualBackendWritten": 6
+    },
+    {
+      "table": "harvested_pages",
+      "jsonlOnlyRowCount": 2,
+      "dualRowCount": 2,
+      "dualBackendWritten": 4
+    },
+    {
+      "table": "pipeline_runs",
+      "jsonlOnlyRowCount": 1,
+      "dualRowCount": 1,
+      "dualBackendWritten": 2
+    },
+    {
+      "table": "proposal_ledger",
+      "jsonlOnlyRowCount": 1,
+      "dualRowCount": 1,
+      "dualBackendWritten": 2
+    },
+    {
+      "table": "source_runs",
+      "jsonlOnlyRowCount": 2,
+      "dualRowCount": 2,
+      "dualBackendWritten": 4
+    }
+  ],
+  "sha256Checks": [
+    {
+      "table": "anchor_passages",
+      "jsonlOnlySha256": "fe600cbec0d8f8d0779a36124346216a9e1ba73a2347aec0251df3ac3748df34",
+      "dualSha256": "fe600cbec0d8f8d0779a36124346216a9e1ba73a2347aec0251df3ac3748df34"
+    },
+    {
+      "table": "evidence_cards",
+      "jsonlOnlySha256": "f06ce5a56cbafd6ff634821b1ef2661ac658377b69ecbdeadfcf190bac524d7f",
+      "dualSha256": "f06ce5a56cbafd6ff634821b1ef2661ac658377b69ecbdeadfcf190bac524d7f"
+    },
+    {
+      "table": "evidence_seeds",
+      "jsonlOnlySha256": "6f1b41a42aa515655b79cbae8ab6724c180b9b492700af6ab9a660dcb1898183",
+      "dualSha256": "6f1b41a42aa515655b79cbae8ab6724c180b9b492700af6ab9a660dcb1898183"
+    },
+    {
+      "table": "harvested_pages",
+      "jsonlOnlySha256": "3e1cad28a66fa7dbfe2d7e6d3c4d26e1908a75fa3cca63d74f8c56de52dc57f4",
+      "dualSha256": "3e1cad28a66fa7dbfe2d7e6d3c4d26e1908a75fa3cca63d74f8c56de52dc57f4"
+    },
+    {
+      "table": "pipeline_runs",
+      "jsonlOnlySha256": "",
+      "dualSha256": ""
+    },
+    {
+      "table": "proposal_ledger",
+      "jsonlOnlySha256": "31bcc0ab0dac2f3ce9447dff1aa27e6a9a620f7af2d388e18f1e00bded3485f0",
+      "dualSha256": "31bcc0ab0dac2f3ce9447dff1aa27e6a9a620f7af2d388e18f1e00bded3485f0"
+    },
+    {
+      "table": "source_runs",
+      "jsonlOnlySha256": "",
+      "dualSha256": ""
+    }
+  ],
+  "canonicalWritesCheck": {
+    "manifestCanonicalWrites": false,
+    "expected": false,
+    "ok": true
+  },
+  "artifactUriCoverage": {
+    "expectedCount": 5,
+    "missing": []
+  },
+  "runSourceCoverage": {
+    "expectedPairs": [
+      "smoke-run::3kweb",
+      "smoke-run::novel-tang"
+    ],
+    "reportedRowCount": 2
+  },
+  "errors": [],
+  "ok": true,
+  "guards": [
+    "jsonl-canonical-export-unchanged",
+    "read-path-defaults-to-jsonl",
+    "errors-written-to-ledger",
+    "dual-write-mirror-only"
+  ]
+}

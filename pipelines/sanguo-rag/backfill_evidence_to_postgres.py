@@ -221,6 +221,7 @@ def backfill(manifest: EvidenceManifest, settings: RepositorySettings, lake_root
         "raw_payload": {},
     }
     pg_results["pipeline_runs"] = repo.upsert("pipeline_runs", [pipeline_row])
+    jsonl_counts["pipeline_runs"] = 1
 
     # Group manifest entries by (table, source_id)
     grouped: dict[tuple[str, str], list[tuple[Path, str]]] = {}
@@ -284,18 +285,24 @@ def backfill(manifest: EvidenceManifest, settings: RepositorySettings, lake_root
         })
     if source_runs_rows:
         pg_results["source_runs"] = repo.upsert("source_runs", source_runs_rows)
+        jsonl_counts["source_runs"] = len(source_runs_rows)
 
     for table, write_result in pg_results.items():
+        backend_count = max(1, write_result.backend_count)
+        logical_row_count = jsonl_counts.get(table, write_result.requested // backend_count)
+        per_backend_written = write_result.written // backend_count
+        per_backend_skipped = write_result.skipped_duplicate // backend_count
         parity.append({
             "table": table,
-            "jsonlRowCount": jsonl_counts.get(table, write_result.requested),
+            "jsonlRowCount": logical_row_count,
             "jsonlSha256": jsonl_hashes.get(table, ""),
             "pgRequested": write_result.requested,
             "pgWritten": write_result.written,
             "pgSkippedDuplicate": write_result.skipped_duplicate,
             "pgErrors": write_result.errors,
+            "backendCount": backend_count,
             "parityOk": (
-                jsonl_counts.get(table, write_result.requested) == (write_result.written + write_result.skipped_duplicate)
+                logical_row_count == (per_backend_written + per_backend_skipped)
                 and not write_result.errors
             ),
         })

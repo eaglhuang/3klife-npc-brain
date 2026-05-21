@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0204",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M2 dual-write parity gate delivered. dual_write_parity_gate.py runs the backfill twice (jsonl mode and dual mode) and asserts row count, sha256, canonicalWrites carry-over, artifactUri coverage, and run/source coverage parity. Errors are emitted to an error ledger; the gate fails when the feature flag flips read path to postgres. Read path defaults to jsonl. JSONL artifacts remain unchanged. Sample gate fixture and 3 smoke tests (16 assertions) included.",
+  "expectedEvidence": [
+    "dual-write smoke evidence",
+    "parity gate output",
+    "governance regression output"
+  ],
+  "artifacts": [
+    {
+      "kind": "implementation",
+      "path": "pipelines/sanguo-rag/dual_write_parity_gate.py",
+      "description": "run_parity_gate() drives backfill in jsonl + dual modes and compares row count, sha256, canonicalWrites, artifactUri, run/source coverage; structured errors with kind enum (row-count-mismatch, canonical-writes-drift, missing-artifact-uri, run-source-coverage-gap, sha256-drift, backfill-failure, read-path-flipped)."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/dual_write_parity_gate_smoke_test.py",
+      "description": "3 tests with 16+ assertions: gate ok=True on healthy manifest, gate ok=False when read-path flipped, per-table row count and sha256 parity, JSONL artifacts unchanged."
+    },
+    {
+      "kind": "fixture",
+      "path": "pipelines/sanguo-rag/fixtures/dual-write-parity-gate.sample.json",
+      "description": "Sample gate output captured from the smoke run. Shows ok=true, rowCountChecks for 7 tables, sha256Checks for 7 tables, canonicalWritesCheck.ok=true, artifactUriCoverage with no missing URIs, runSourceCoverage matching expectedPairs."
+    },
+    {
+      "kind": "infra-tweak",
+      "path": "pipelines/sanguo-rag/evidence_repository.py",
+      "description": "Added WriteResult.backend_count so dual-mode merged results can be normalized to per-backend counts in parity reports."
+    },
+    {
+      "kind": "infra-tweak",
+      "path": "pipelines/sanguo-rag/backfill_evidence_to_postgres.py",
+      "description": "Backfill parity report now records backendCount and computes parityOk against per-backend written + skipped; jsonl_counts pre-populated for pipeline_runs/source_runs."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "dual-write mode mirrors JSONL and PostgreSQL on small fixture / smoke run",
+      "evidence": "Smoke test builds 5-artifact lake (harvested, seed, card, anchor, proposal) and runs the gate; parityOk True for all 7 tables."
+    },
+    {
+      "criterion": "parity gate checks row count, sha256, canonicalWrites, artifactUri, run/source coverage",
+      "evidence": "Gate returns rowCountChecks, sha256Checks, canonicalWritesCheck, artifactUriCoverage, runSourceCoverage in every report."
+    },
+    {
+      "criterion": "parity failure does not affect JSONL output, errors written to ledger",
+      "evidence": "Smoke test verifies SHA256 of every JSONL fixture is unchanged after gate run; failure path returns errors[] structured ledger and non-zero exit."
+    },
+    {
+      "criterion": "read path defaults to JSONL unless feature flag explicitly flipped",
+      "evidence": "feature_flag_read_path default 'jsonl'; gate emits ERROR_KIND_READ_PATH_FLIPPED when set to 'postgres'; second smoke test verifies."
+    }
+  ],
+  "smokeRunResult": {
+    "gate": {
+      "command": "python -B pipelines/sanguo-rag/dual_write_parity_gate_smoke_test.py",
+      "passCount": 22,
+      "failCount": 0
+    },
+    "backfill": {
+      "command": "python -B pipelines/sanguo-rag/backfill_evidence_to_postgres_smoke_test.py",
+      "passCount": 17,
+      "failCount": 0
+    },
+    "repository": {
+      "command": "python -B pipelines/sanguo-rag/evidence_repository_smoke_test.py",
+      "passCount": 13,
+      "failCount": 0
+    }
+  },
+  "nextActions": [
+    "SANGUO-RAGOPS-0401: integrate this gate into large-run rehearsal mode matrix (dual-write mode)",
+    "SANGUO-RAGOPS-0402: add gate to governance regression harness as required smoke",
+    "SANGUO-RAGOPS-0501: gate ok=true is precondition for cutover decision packet"
+  ]
+}

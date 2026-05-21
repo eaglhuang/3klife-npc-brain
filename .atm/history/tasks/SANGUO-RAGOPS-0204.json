@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-RAGOPS-0204",
+  "title": "Dual-write parity gate for PostgreSQL mirror",
+  "status": "closed",
+  "milestone": "RAGOPS-M2",
+  "priority": "P0",
+  "dependencies": [
+    "SANGUO-RAGOPS-0202",
+    "SANGUO-RAGOPS-0203"
+  ],
+  "scope": [
+    "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+    "pipelines/sanguo-rag/validate_sanguo_governance.py",
+    "pipelines/sanguo-rag/run_sanguo_governance_regression_harness.py"
+  ],
+  "acceptance": [
+    "dual-write 模式可在小型 fixture 與 smoke run 下同步寫 JSONL 與 PostgreSQL mirror。",
+    "產出 parity gate，檢查 row count、sha256、canonicalWrites、artifactUri、run/source coverage。",
+    "parity 失敗時不影響原 JSONL 輸出，並寫入 error ledger。",
+    "read path 預設仍走 JSONL，除非 feature flag 明確切換。"
+  ],
+  "deliverables": [
+    "dual-write smoke mode",
+    "PostgreSQL parity gate",
+    "governance regression evidence"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "postgres",
+    "dual-write",
+    "governance"
+  ],
+  "notes": "2026-05-21 | 狀態: closed | 驗證: gate-smoke-3-tests-22-pass | 變更: 加入 dual_write_parity_gate（row count/sha/canonicalWrites/artifactUri/run-source coverage + read-path feature flag gate）與 22 項 assertion；讀路徑預設 jsonl | 阻塞: none",
+  "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0204.json",
+  "source": {
+    "planPath": "文件/三國RAG證據資料產線PostgreSQL與向量化開發計畫.md",
+    "sectionTitle": "M2 PostgreSQL schema、adapter、backfill、dual-write"
+  },
+  "owner": "codex"
+}

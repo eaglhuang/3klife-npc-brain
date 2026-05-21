@@ -115,6 +115,7 @@ class WriteResult:
     skipped_duplicate: int = 0
     errors: list[dict[str, Any]] = field(default_factory=list)
     backend: str = ""
+    backend_count: int = 1
 
     def merge(self, other: "WriteResult") -> "WriteResult":
         return WriteResult(
@@ -124,6 +125,7 @@ class WriteResult:
             skipped_duplicate=self.skipped_duplicate + other.skipped_duplicate,
             errors=self.errors + other.errors,
             backend=";".join(part for part in (self.backend, other.backend) if part),
+            backend_count=self.backend_count + other.backend_count,
         )
 
 
