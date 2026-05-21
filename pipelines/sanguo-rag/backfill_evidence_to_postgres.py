@@ -100,9 +100,19 @@ def _coerce_evidence_seed(row: dict[str, Any], run_id: str, source_id: str, payl
 
 
 def _coerce_evidence_card(row: dict[str, Any], run_id: str, source_id: str, payload_uri: str) -> dict[str, Any] | None:
-    evidence_id = row.get("evidenceId") or row.get("id")
+    # Accept evidenceId, id, or eventId so that real extracted events.jsonl
+    # and external-evidence-cards.jsonl can both be backfilled without
+    # bespoke per-source mappers. Reviewers can still tighten this in policy
+    # by setting source_family / source_layer in the manifest entry.
+    evidence_id = row.get("evidenceId") or row.get("id") or row.get("eventId")
     if not evidence_id:
         return None
+    review_status = str(row.get("reviewStatus") or "candidate")
+    if review_status not in {"candidate", "accepted", "rejected", "staged-a", "staged-b"}:
+        # Map common alternative review-status vocabularies onto the schema
+        # enum without losing the original value (kept under payload).
+        review_status = "candidate"
+    quote_source = row.get("sourceQuote") or row.get("summary") or ""
     return {
         "evidence_id": str(evidence_id),
         "run_id": run_id,
@@ -110,11 +120,11 @@ def _coerce_evidence_card(row: dict[str, Any], run_id: str, source_id: str, payl
         "source_family": str(row.get("sourceFamily") or ""),
         "source_layer": str(row.get("sourceLayer") or ""),
         "general_ids": list(row.get("generalIds") or []),
-        "quote_hash": str(row.get("quoteHash") or hashlib.sha256(str(row.get("sourceQuote") or "").encode("utf-8")).hexdigest()),
-        "locator": str(row.get("locator") or ""),
+        "quote_hash": str(row.get("quoteHash") or hashlib.sha256(str(quote_source).encode("utf-8")).hexdigest()),
+        "locator": str(row.get("locator") or row.get("sourceRef") or ""),
         "anchor_evidence": row.get("anchorEvidence") or {},
         "trust_score": row.get("trustScore") or {},
-        "review_status": str(row.get("reviewStatus") or "candidate"),
+        "review_status": review_status,
         "payload": row,
         "payload_uri": payload_uri,
     }

@@ -118,6 +118,12 @@ class WriteResult:
     backend_count: int = 1
 
     def merge(self, other: "WriteResult") -> "WriteResult":
+        # backend_count is the number of distinct backends (jsonl + postgres),
+        # NOT the number of batches. Same-backend merges (e.g. iterating over
+        # multiple source_id batches within one backfill run) must keep
+        # backend_count at 1 so per-backend parity math stays correct.
+        # Cross-backend merges are performed explicitly in DualEvidenceRepository
+        # via merge_across_backends().
         return WriteResult(
             table=self.table,
             requested=self.requested + other.requested,
@@ -125,8 +131,13 @@ class WriteResult:
             skipped_duplicate=self.skipped_duplicate + other.skipped_duplicate,
             errors=self.errors + other.errors,
             backend=";".join(part for part in (self.backend, other.backend) if part),
-            backend_count=self.backend_count + other.backend_count,
+            backend_count=max(self.backend_count, other.backend_count),
         )
+
+    def merge_across_backends(self, other: "WriteResult") -> "WriteResult":
+        merged = self.merge(other)
+        merged.backend_count = self.backend_count + other.backend_count
+        return merged
 
 
 # =========================================================================
@@ -420,7 +431,7 @@ class DualEvidenceRepository(EvidenceRepository):
     def upsert(self, table: str, rows: Sequence[dict[str, Any]]) -> WriteResult:
         jsonl_result = self._jsonl.upsert(table, rows)
         pg_result = self._postgres.upsert(table, rows)
-        merged = jsonl_result.merge(pg_result)
+        merged = jsonl_result.merge_across_backends(pg_result)
         merged.backend = self.backend_name
         return merged
 
