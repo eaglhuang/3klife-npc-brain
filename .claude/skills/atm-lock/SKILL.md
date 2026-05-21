@@ -22,6 +22,13 @@ Use this ATM command only after the first command confirms it is the current gov
 node atm.mjs lock check --json
 ```
 
+Mutation safety checks should use ATM guard commands:
+
+```bash
+node atm.mjs guard mutation --task <task-id> --actor "$ATM_ACTOR_ID" --files <csv> --json
+node atm.mjs guard git --task <task-id> --actor "$ATM_ACTOR_ID" --json
+```
+
 ## Handoff
 
 ```bash

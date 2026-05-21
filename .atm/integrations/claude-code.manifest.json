@@ -9,13 +9,13 @@
   },
   "adapterId": "claude-code",
   "adapterVersion": "0.0.0",
-  "installedAt": "2026-05-19T12:45:29.883Z",
+  "installedAt": "2026-05-21T15:40:11.352Z",
   "targetDir": ".claude/skills",
   "files": [
     {
       "path": ".claude/skills/atm-next/SKILL.md",
-      "sha256": "sha256:cddbcbbac7c2778fbb371e3efc8151e335a45850a85151d89a116ff2d1e7ec53",
-      "sizeBytes": 2442,
+      "sha256": "sha256:1a6631a43bd4bde1eb95779993002e2a10c355ac788db994b86beb19024fd633",
+      "sizeBytes": 2698,
       "source": "template",
       "fileFormat": "skill"
     },
@@ -28,8 +28,8 @@
     },
     {
       "path": ".claude/skills/atm-governance-router/SKILL.md",
-      "sha256": "sha256:2fd68c2dc289d659d451141f2eea5b201241ed4bec762cbf66ced6fdad8ec681",
-      "sizeBytes": 4854,
+      "sha256": "sha256:d07e1468b5d8532eb5efd5683171287fe8d3ff217befd6c3c34ec7833594613e",
+      "sizeBytes": 7366,
       "source": "template",
       "fileFormat": "skill"
     },
@@ -42,8 +42,8 @@
     },
     {
       "path": ".claude/skills/atm-lock/SKILL.md",
-      "sha256": "sha256:7644ffa5cfc6c11210fa10abf176094eba2aad5c2658a8c85cebb0244fd4861d",
-      "sizeBytes": 2159,
+      "sha256": "sha256:79f16bda8122bd461cde8589e5460d00fe608245122bad843b983f36bf624cb0",
+      "sizeBytes": 2388,
       "source": "template",
       "fileFormat": "skill"
     },
@@ -67,9 +67,28 @@
       "sizeBytes": 2190,
       "source": "template",
       "fileFormat": "skill"
+    },
+    {
+      "path": ".claude/skills/atm-internal-build-sync/SKILL.md",
+      "sha256": "sha256:04c8d982d8d6efe3ca03947e7eb2964a1f8e832f72232b77c2b839714692d251",
+      "sizeBytes": 3129,
+      "source": "template",
+      "fileFormat": "skill"
     }
   ],
   "metadata": {
-    "sourceFileCount": 8
-  }
+    "sourceFileCount": 9
+  },
+  "hookContractVersion": "atm.integration-hooks/v1",
+  "hookProvider": "atm-framework-development-hooks/v1",
+  "supportedHookEvents": [
+    "UserPromptSubmit",
+    "PreToolUse",
+    "Stop"
+  ],
+  "installedHookFiles": [
+    ".claude/settings.json"
+  ],
+  "frameworkDevelopmentWakeMode": "auto",
+  "mandatoryForFrameworkRepo": true
 }

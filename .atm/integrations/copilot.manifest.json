@@ -9,27 +9,27 @@
   },
   "adapterId": "copilot",
   "adapterVersion": "0.0.0",
-  "installedAt": "2026-05-19T08:49:22.873Z",
+  "installedAt": "2026-05-21T15:40:30.907Z",
   "targetDir": ".github",
   "files": [
     {
       "path": ".github/copilot-instructions.md",
-      "sha256": "sha256:648b980e204f6844b6490d1207c8cfed9b29f3022b4256f3a462db45bd223489",
-      "sizeBytes": 2546,
+      "sha256": "sha256:be84c6bf1c5bee714fce5aafacb110580542a25edfc292ee7337c9a3bbb9429b",
+      "sizeBytes": 3039,
       "source": "template",
       "fileFormat": "instructions-md"
     },
     {
       "path": ".github/instructions/atm-next.instructions.md",
-      "sha256": "sha256:9166780d9ad7b522e3485ca20f8cab0d74dc45219ddacd606afc990514e2b423",
-      "sizeBytes": 2413,
+      "sha256": "sha256:f6fbc8967680b49fc5cbef1f0201bfb77083978a5e611b946b0c19adde5ce526",
+      "sizeBytes": 2669,
       "source": "template",
       "fileFormat": "instructions-md"
     },
     {
       "path": ".github/prompts/atm-next.prompt.md",
-      "sha256": "sha256:7afca99bb506040a4a01142a0b2ce519cd7297f5a76839d31f350674e857df46",
-      "sizeBytes": 2441,
+      "sha256": "sha256:64bb78aba2557438bed3e76de7a4129265ac41dc47dbbc91b371b6abf28e44f1",
+      "sizeBytes": 2697,
       "source": "template",
       "fileFormat": "prompt-md"
     },
@@ -49,15 +49,15 @@
     },
     {
       "path": ".github/instructions/atm-governance-router.instructions.md",
-      "sha256": "sha256:1742bafef62ccd5770735a34f3a26a018aaf729a3a2ca1f5682cf6ec358e2585",
-      "sizeBytes": 4764,
+      "sha256": "sha256:5f8860b5d129e684778876e93169273095a16860eb702f60b7b8a55e779c9ca3",
+      "sizeBytes": 7276,
       "source": "template",
       "fileFormat": "instructions-md"
     },
     {
       "path": ".github/prompts/atm-governance-router.prompt.md",
-      "sha256": "sha256:ab84eff3a161df7234975e74fc6bec7e20d9ff845e63f2498ba34e77870726c7",
-      "sizeBytes": 4840,
+      "sha256": "sha256:df787a1c411f5b1e7fb2127786f968e58e0955f7c33adc2c8d6a62dfb4ca2f5f",
+      "sizeBytes": 7352,
       "source": "template",
       "fileFormat": "prompt-md"
     },
@@ -77,15 +77,15 @@
     },
     {
       "path": ".github/instructions/atm-lock.instructions.md",
-      "sha256": "sha256:84d914e48096d1f6e8f8e0348690fe8bde83df01dba9bbc5dd697bf03e652115",
-      "sizeBytes": 2148,
+      "sha256": "sha256:6e06ee671ab7208cfe6732cc3ea2da6c13e10ff45b8a2ca767e4b0e15b64a7c4",
+      "sizeBytes": 2377,
       "source": "template",
       "fileFormat": "instructions-md"
     },
     {
       "path": ".github/prompts/atm-lock.prompt.md",
-      "sha256": "sha256:6c96ecd0cb8854784b43a1706b8b40b6960f6d39eaea9532b2173c0c02d35bb4",
-      "sizeBytes": 2158,
+      "sha256": "sha256:44343c4bdf7ac85bff0bd1b6f4ed0c0a2f868d3bd53153535f04cc7601f62e6e",
+      "sizeBytes": 2387,
       "source": "template",
       "fileFormat": "prompt-md"
     },
@@ -130,9 +130,35 @@
       "sizeBytes": 2186,
       "source": "template",
       "fileFormat": "prompt-md"
+    },
+    {
+      "path": ".github/instructions/atm-internal-build-sync.instructions.md",
+      "sha256": "sha256:f78f2fe1ec1d53015f9239a5a8fc44301fb1b50a3463dfcbfe7fdc6d6b940b8f",
+      "sizeBytes": 3040,
+      "source": "template",
+      "fileFormat": "instructions-md"
+    },
+    {
+      "path": ".github/prompts/atm-internal-build-sync.prompt.md",
+      "sha256": "sha256:c63d86ef1fda4de86f1e0669279d73bcdafc9683d6dc9722971d1f77e7714985",
+      "sizeBytes": 3113,
+      "source": "template",
+      "fileFormat": "prompt-md"
     }
   ],
   "metadata": {
-    "sourceFileCount": 17
-  }
+    "sourceFileCount": 19
+  },
+  "hookContractVersion": "atm.integration-hooks/v1",
+  "hookProvider": "atm-framework-development-hooks/v1",
+  "supportedHookEvents": [
+    "sessionStart",
+    "userPromptSubmitted",
+    "preToolUse"
+  ],
+  "installedHookFiles": [
+    ".github/hooks/atm-framework-development.json"
+  ],
+  "frameworkDevelopmentWakeMode": "auto",
+  "mandatoryForFrameworkRepo": true
 }

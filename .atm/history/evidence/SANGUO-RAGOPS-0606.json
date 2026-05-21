@@ -1,62 +1,82 @@
 {
-  "schemaVersion": "atm.evidence.v0.1",
-  "workItemId": "SANGUO-RAGOPS-0606",
-  "status": "closed",
-  "createdAt": "2026-05-21T00:00:00+08:00",
-  "closedAt": "2026-05-21T00:00:00+08:00",
-  "summary": "M6 runbook, handoff, and promotion checklist update delivered. evidence-backend-runbook.zh-TW.md updated with M6 convergence loop section (opt-in env vars, pre-flight gates, enable/disable SOP, rollback paths). cutover-promotion-checklist.json extended with C1-C6 items (C1-C2 pending operator runs; C3-C6 go). evidence-backend-smoke-commands.json extended with convergence-loop-integration group (4 commands, 21 smoke tests). Production cutover remains blocked; operator gates preserved.",
-  "expectedEvidence": [
-    "M6 runbook update",
-    "promotion checklist update",
-    "smoke command manifest update",
-    "handoff summary and evidence package"
-  ],
-  "artifacts": [
+  "taskId": "SANGUO-RAGOPS-0606",
+  "updatedAt": "2026-05-21T15:50:01.213Z",
+  "evidence": [
     {
-      "kind": "runbook-update",
-      "path": "pipelines/sanguo-rag/evidence-backend-runbook.zh-TW.md",
-      "description": "Added M6 section: opt-in env vars (SANGUO_RAG_CONVERGENCE_REPO_ENABLED/MODE/DRY_RUN), M6 pre-flight gate table, enable/disable SOP with command examples, rollback table, smoke command block, and updated env vars table + footer references."
+      "schemaVersion": "atm.evidence.v0.1",
+      "workItemId": "SANGUO-RAGOPS-0606",
+      "status": "closed",
+      "createdAt": "2026-05-21T00:00:00+08:00",
+      "closedAt": "2026-05-21T00:00:00+08:00",
+      "summary": "M6 runbook, handoff, and promotion checklist update delivered. evidence-backend-runbook.zh-TW.md updated with M6 convergence loop section (opt-in env vars, pre-flight gates, enable/disable SOP, rollback paths). cutover-promotion-checklist.json extended with C1-C6 items (C1-C2 pending operator runs; C3-C6 go). evidence-backend-smoke-commands.json extended with convergence-loop-integration group (4 commands, 21 smoke tests). Production cutover remains blocked; operator gates preserved.",
+      "expectedEvidence": [
+        "M6 runbook update",
+        "promotion checklist update",
+        "smoke command manifest update",
+        "handoff summary and evidence package"
+      ],
+      "artifacts": [
+        {
+          "kind": "runbook-update",
+          "path": "pipelines/sanguo-rag/evidence-backend-runbook.zh-TW.md",
+          "description": "Added M6 section: opt-in env vars (SANGUO_RAG_CONVERGENCE_REPO_ENABLED/MODE/DRY_RUN), M6 pre-flight gate table, enable/disable SOP with command examples, rollback table, smoke command block, and updated env vars table + footer references."
+        },
+        {
+          "kind": "checklist-update",
+          "path": "pipelines/sanguo-rag/cutover-promotion-checklist.json",
+          "description": "Added convergence-loop-integration section with C1-C6: C1 parity-rehearsal-x3 (pending), C2 vector-smoke-x2 (pending), C3 disabled-by-default (go), C4 manifest-write+resume (go), C5 budget-telemetry (go), C6 runbook-updated (go). Added C1/C2 to remainingPending. Added convergenceLoopIntegration rollback triggers."
+        },
+        {
+          "kind": "smoke-commands-update",
+          "path": "pipelines/sanguo-rag/evidence-backend-smoke-commands.json",
+          "description": "Added convergence-loop-integration group with 4 commands: convergence-repo-seam-smoke (6/6), convergence-manifest-smoke (6/6), convergence-parity-rehearsal-smoke (3/3), convergence-vector-smoke (6/6). Total M6 smoke coverage: 21 tests."
+        }
+      ],
+      "acceptanceMapping": [
+        {
+          "criterion": "Runbook updated with M6 opt-in mode, disable path, rollback path, and operator decision points",
+          "evidence": "evidence-backend-runbook.zh-TW.md §M6 收斂循環整合: env vars, pre-flight gate table, enable/disable SOP, rollback table; production seam remains disabled by default"
+        },
+        {
+          "criterion": "Exact commands documented for all rehearsal + smoke modes",
+          "evidence": "§M6 收斂循環整合 smoke 命令: 6 commands with full flags; evidence-backend-smoke-commands.json convergence-loop-integration group"
+        },
+        {
+          "criterion": "Production cutover left blocked until all gates satisfied",
+          "evidence": "cutover-promotion-checklist.json C1/C2 status=pending; remainingPending entries C1/C2; convergenceLoopIntegration rollback triggers added"
+        },
+        {
+          "criterion": "Evidence packages map every acceptance criterion to artifacts and smoke results",
+          "evidence": "SANGUO-RAGOPS-0601 through 0606 evidence JSONs closed; each has artifacts, acceptanceMapping, guards, smoke counts"
+        }
+      ],
+      "guards": [
+        "production-cutover-stays-blocked-until-all-gates-go",
+        "rollback-and-disable-path-documented",
+        "operator-actions-separated-from-agent-actions",
+        "every-acceptance-criterion-mapped-to-evidence",
+        "C1-C2-pending-require-operator-runs"
+      ],
+      "nextActions": [
+        "Operator: run run_convergence_repo_parity_rehearsal.py x3 against real baseline manifests to satisfy C1.",
+        "Operator: run run_convergence_vector_smoke.py x2 against real baseline manifests to satisfy C2.",
+        "After C1+C2 go: update cutover-promotion-checklist.json C1/C2 status=go and add evidence URIs.",
+        "RAGOPS-M6 is otherwise closed. All smoke tests pass. Production seam disabled by default."
+      ]
     },
     {
-      "kind": "checklist-update",
-      "path": "pipelines/sanguo-rag/cutover-promotion-checklist.json",
-      "description": "Added convergence-loop-integration section with C1-C6: C1 parity-rehearsal-x3 (pending), C2 vector-smoke-x2 (pending), C3 disabled-by-default (go), C4 manifest-write+resume (go), C5 budget-telemetry (go), C6 runbook-updated (go). Added C1/C2 to remainingPending. Added convergenceLoopIntegration rollback triggers."
-    },
-    {
-      "kind": "smoke-commands-update",
-      "path": "pipelines/sanguo-rag/evidence-backend-smoke-commands.json",
-      "description": "Added convergence-loop-integration group with 4 commands: convergence-repo-seam-smoke (6/6), convergence-manifest-smoke (6/6), convergence-parity-rehearsal-smoke (3/3), convergence-vector-smoke (6/6). Total M6 smoke coverage: 21 tests."
+      "evidenceKind": "validation",
+      "evidenceType": "commit",
+      "summary": "git HEAD evidence: c01c94429452f8b6d22f9e7dadda657c2547b35e; commit gate verification prepared from current npc-brain HEAD",
+      "artifactPaths": [
+        ".atm/history/evidence/SANGUO-RAGOPS-0606.json"
+      ],
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-21T15:50:01.213Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "commit"
+      }
     }
-  ],
-  "acceptanceMapping": [
-    {
-      "criterion": "Runbook updated with M6 opt-in mode, disable path, rollback path, and operator decision points",
-      "evidence": "evidence-backend-runbook.zh-TW.md §M6 收斂循環整合: env vars, pre-flight gate table, enable/disable SOP, rollback table; production seam remains disabled by default"
-    },
-    {
-      "criterion": "Exact commands documented for all rehearsal + smoke modes",
-      "evidence": "§M6 收斂循環整合 smoke 命令: 6 commands with full flags; evidence-backend-smoke-commands.json convergence-loop-integration group"
-    },
-    {
-      "criterion": "Production cutover left blocked until all gates satisfied",
-      "evidence": "cutover-promotion-checklist.json C1/C2 status=pending; remainingPending entries C1/C2; convergenceLoopIntegration rollback triggers added"
-    },
-    {
-      "criterion": "Evidence packages map every acceptance criterion to artifacts and smoke results",
-      "evidence": "SANGUO-RAGOPS-0601 through 0606 evidence JSONs closed; each has artifacts, acceptanceMapping, guards, smoke counts"
-    }
-  ],
-  "guards": [
-    "production-cutover-stays-blocked-until-all-gates-go",
-    "rollback-and-disable-path-documented",
-    "operator-actions-separated-from-agent-actions",
-    "every-acceptance-criterion-mapped-to-evidence",
-    "C1-C2-pending-require-operator-runs"
-  ],
-  "nextActions": [
-    "Operator: run run_convergence_repo_parity_rehearsal.py x3 against real baseline manifests to satisfy C1.",
-    "Operator: run run_convergence_vector_smoke.py x2 against real baseline manifests to satisfy C2.",
-    "After C1+C2 go: update cutover-promotion-checklist.json C1/C2 status=go and add evidence URIs.",
-    "RAGOPS-M6 is otherwise closed. All smoke tests pass. Production seam disabled by default."
   ]
 }

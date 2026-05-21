@@ -1,38 +1,60 @@
 ---
-applyTo: "**"
+mode: agent
+description: Build the ATM framework runner and sync it to explicit internal adopter repositories with skip/exclude controls.
 ---
 
 
-# ATM Lock
+# ATM Internal Build Sync
 
-First command:
+Use this skill when the user asks to build an ATM framework version and sync the
+fresh runner into internal repositories.
+
+## First Command
 
 ```bash
 node atm.mjs next --json
 ```
 
-## Route Command
-
-Use this ATM command only after the first command confirms it is the current governed route:
+Then inspect framework-development mode before release mutation:
 
 ```bash
-node atm.mjs lock check --json
+node atm.mjs framework-mode status --json
+node atm.mjs guard framework-development --json
 ```
 
-Mutation safety checks should use ATM guard commands:
+## Sync Command
+
+Pass every target repository explicitly. Do not bake adopter repository names
+into framework source.
 
 ```bash
-node atm.mjs guard mutation --task <task-id> --actor "$ATM_ACTOR_ID" --files <csv> --json
-node atm.mjs guard git --task <task-id> --actor "$ATM_ACTOR_ID" --json
+node atm.mjs internal-release sync --repo <repo-a> --repo <repo-b> --json
 ```
 
-## Handoff
+To intentionally skip one repository, match either its basename or full path:
 
 ```bash
-node atm.mjs handoff summarize --task "$ARGUMENTS" --json
+node atm.mjs internal-release sync --repo <repo-a> --repo <repo-b> --skip <repo-b-name> --json
 ```
 
-## Charter Invariants
+Useful switches:
+
+- `--dry-run`: show what would be copied without writing target repos.
+- `--no-build`: reuse the existing `release/atm-onefile/atm.mjs`.
+- `--no-verify`: copy without running target `doctor`, `framework-mode status`, and `tasks audit`.
+- `--allow-verify-failure`: copy and report verification failures without failing the command.
+
+## Required Evidence
+
+Capture the command JSON evidence, including:
+
+- `sourceSha256`
+- each target `previousSha256` and `newSha256`
+- skipped targets and skip reason
+- target verification command hashes and exit codes
+
+Do not manually copy `atm.mjs` to target repositories when this command is
+available.
 
 - `INV-ATM-001` — **No second registry** (enforcement: `gate`, breaking change: yes)
   Rule: A host project must not create a second AtomicRegistry implementation outside of packages/core or introduce a parallel ID allocation, version tracking, or registry promotion path.
@@ -45,10 +67,4 @@ node atm.mjs handoff summarize --task "$ARGUMENTS" --json
 - `INV-ATM-005` — **Host rule amendments require waiver flow** (enforcement: `waiver-required`, breaking change: no)
   Rule: When a host project rule conflicts with a charter invariant, the host must submit a behavior.evolve UpgradeProposal with a charterWaiver field and a linked HumanReviewDecision. Silent override is not permitted.
 
-## Guardrails
-
-- Stay inside ATM CLI routing and evidence contracts.
-- Do not create a parallel task model, registry, or approval flow.
-- Treat any planning hint as CLI output, not as template authority.
-
-Keep this flow inside ATM CLI routing. Preserve host edits and rely on install manifest hashes for uninstall safety.
+Do not introduce a second registry, task state, or approval path.

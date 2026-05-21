@@ -10,6 +10,8 @@ __pycache__/
 # Virtual environments
 .venv/
 venv/
+**/.venv/
+**/venv/
 
 # Environment secrets
 .env
@@ -38,3 +40,6 @@ release/atm-onefile/
 release/atm-root-drop/
 
 # ATM generated handoff summaries are local runtime outputs
+
+# Local experimental source fetchers and downloaded dependencies stay outside governed commits.
+tools/fetch-baihua-sanguo/

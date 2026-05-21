@@ -29,9 +29,12 @@ node atm.mjs next --json
 - atm-evidence: Explain missing evidence or blocked guidance before proceeding.
 - atm-upgrade-scan: Scan evidence reports and draft governed upgrade proposals.
 - atm-handoff: Write a continuation summary for governed work.
+- atm-internal-build-sync: Build the ATM framework runner and sync it to explicit internal adopter repositories with skip/exclude controls.
 
 ## Operating Rules
 
 - Route governed work through ATM before editing files.
+- Run `node atm.mjs framework-mode status --json` before implementation edits; if it reports `required` or `cross-repo-target-required`, use the framework-development guard and target-repo closure evidence.
 - Use the ATM prompt and instruction files for specific next, orient, governance-router, create, lock, evidence, upgrade-scan, and handoff flows.
+- Do not hand-edit task status to `done`, bulk-close task cards, or treat static `atomic_workbench/evidence/*.json` files as completion evidence.
 - Do not create a parallel task model, registry, or approval workflow.
