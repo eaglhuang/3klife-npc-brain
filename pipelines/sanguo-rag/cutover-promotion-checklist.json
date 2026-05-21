@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "cutover-promotion-checklist.v0.1",
+  "description": "Machine-readable go/no-go checklist for PostgreSQL read-path cutover and vector production promotion (SANGUO-RAGOPS-0501). Default status for every item is 'pending' until an operator promotes it to 'go' or 'no-go' with evidence.",
+  "generatedAt": "2026-05-21T00:00:00+08:00",
+  "fallback": {
+    "postgresMode": "jsonl",
+    "vectorIngestionMode": "vector-smoke",
+    "ciEnforcement": "fail-fast-on-cutover-pr-when-status-not-go"
+  },
+  "sections": [
+    {
+      "id": "postgres-cutover",
+      "label": "PostgreSQL read-path cutover",
+      "items": [
+        {"id": "A1", "label": "M0 baseline + gap report", "status": "go", "evidence": "SANGUO-RAGOPS-0001"},
+        {"id": "A2", "label": "Artifact lake layout + retention policy", "status": "go", "evidence": "SANGUO-RAGOPS-0101"},
+        {"id": "A3", "label": "Manifest schema + resume contract", "status": "go", "evidence": "SANGUO-RAGOPS-0102"},
+        {"id": "A4", "label": "Evidence-lake schema applied", "status": "pending", "evidence": "SANGUO-RAGOPS-0201 (apply mode requires operator + DSN)"},
+        {"id": "A5", "label": "Repository adapter smoke pass", "status": "go", "evidence": "SANGUO-RAGOPS-0202"},
+        {"id": "A6", "label": "Backfill parity ok=true x3 consecutive runs", "status": "pending", "evidence": "SANGUO-RAGOPS-0203 (requires operator runs)"},
+        {"id": "A7", "label": "Dual-write parity gate ok=true x3 consecutive runs", "status": "pending", "evidence": "SANGUO-RAGOPS-0204 (requires operator runs)"},
+        {"id": "A8", "label": "Governance regression 0 drift x3 consecutive runs", "status": "pending", "evidence": "run_sanguo_governance_regression_harness.py"},
+        {"id": "A9", "label": "Large-run rehearsal dual-write mode pass", "status": "pending", "evidence": "SANGUO-RAGOPS-0401"},
+        {"id": "A10", "label": "Runbook red-line audit clean for 14 days", "status": "pending", "evidence": "SANGUO-RAGOPS-0402"}
+      ]
+    },
+    {
+      "id": "vector-production-promotion",
+      "label": "Vector production namespace promotion",
+      "items": [
+        {"id": "B1", "label": "Evidence vector record schema stable", "status": "go", "evidence": "SANGUO-RAGOPS-0301"},
+        {"id": "B2", "label": "Smoke gate probeOk=true x5 consecutive runs", "status": "pending", "evidence": "SANGUO-RAGOPS-0302"},
+        {"id": "B3", "label": "Dedupe manifest stable on repeat upsert", "status": "pending", "evidence": "smoke gate report.recordCounts.dedupedManifestEntries"},
+        {"id": "B4", "label": "Resume probe correct on missing / hash mismatch", "status": "go", "evidence": "SANGUO-RAGOPS-0102 smoke"},
+        {"id": "B5", "label": "Rollback manifest exercised once", "status": "pending", "evidence": "operator rollback drill log"},
+        {"id": "B6", "label": "Provider quota / namespace approval signed", "status": "pending", "evidence": "operator sign-off (not in repo)"},
+        {"id": "B7", "label": "policy-vector-production-rollout-plan triggers all true", "status": "pending", "evidence": "data/sanguo/policies/policy-vector-production-rollout-plan.json"},
+        {"id": "B8", "label": "Large-run rehearsal vector-smoke mode pass x2", "status": "pending", "evidence": "SANGUO-RAGOPS-0401"}
+      ]
+    }
+  ],
+  "rollbackTriggers": {
+    "postgresCutover": [
+      "parity ok=false two times consecutive",
+      "postgres-upsert-exhausted errors",
+      "canonical-writes-drift signal",
+      "read-path-flipped signal",
+      "consecutive-low-yield two rehearsal runs"
+    ],
+    "vectorProduction": [
+      "production upsert failure rate > 1%",
+      "production probe matchCount < minRequiredMatchCount twice consecutive",
+      "production-vs-smoke sha256 drift",
+      "provider quota alarm"
+    ]
+  },
+  "operatorActions": {
+    "approve": "set status=go and attach evidence URI",
+    "block": "set status=no-go and link rollback ticket",
+    "defer": "leave status=pending with a deadline date in notes"
+  },
+  "guards": [
+    "fallback-defaults-to-jsonl-canonical",
+    "fallback-defaults-to-vector-smoke-only",
+    "ci-rejects-cutover-pr-when-any-item-not-go",
+    "rollback-instructions-must-be-executed-not-skipped"
+  ]
+}

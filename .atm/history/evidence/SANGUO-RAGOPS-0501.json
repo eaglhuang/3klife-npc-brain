@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0501",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M5 cutover + production promotion decision packet delivered. zh-TW packet documents PostgreSQL read-path cutover (A1–A10 entry conditions, rollback triggers, signoff checklist, observation window) and vector production promotion (B1–B8 entry conditions, dedupe/resume requirements, rollback manifest drill, signoff checklist). Fallback section explicitly retains JSONL canonical and vector smoke-only modes when conditions are not met. Machine-readable go/no-go checklist JSON enumerates current status per item with operator action protocol.",
+  "expectedEvidence": [
+    "PostgreSQL cutover packet",
+    "vector production promotion packet",
+    "go/no-go checklist"
+  ],
+  "artifacts": [
+    {
+      "kind": "decision-packet",
+      "path": "pipelines/sanguo-rag/cutover-promotion-decision-packet.zh-TW.md",
+      "description": "Section A (PostgreSQL cutover): A1–A10 entry conditions, rollback triggers, 4-bullet signoff checklist, 24h observation window. Section B (vector production promotion): B1–B8 entry conditions, requiredRolloutSteps mapping, rollback manifest playbook, 48h observation window. Section C (fallback) keeps JSONL canonical + vector smoke-only when blocked. Section D lists artifacts the next agent receives to claim/close next round."
+    },
+    {
+      "kind": "checklist",
+      "path": "pipelines/sanguo-rag/cutover-promotion-checklist.json",
+      "description": "Machine-readable status table. Items A1/A2/A3/A5/B1/B4 already 'go' from delivered tasks; remaining items 'pending' until operator runs production exercises. Includes rollbackTriggers, operatorActions enum, and CI guard set."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "PostgreSQL read-path cutover packet with conditions, rollback, signoff",
+      "evidence": "Section A.1 (10 entry conditions), A.2 (5 rollback triggers), A.3 (4-bullet signoff + 24h observation)."
+    },
+    {
+      "criterion": "vector production promotion packet with smoke probe, quota, dedupe/resume, rollback, namespace promotion",
+      "evidence": "Section B.1 (8 entry conditions), B.2 (rollout step mapping + namespace naming rule), B.3 (4 rollback triggers), B.4 (signoff + 48h observation)."
+    },
+    {
+      "criterion": "fallback retains JSONL canonical and vector smoke-only when conditions fail",
+      "evidence": "Section C table + checklist.fallback object (postgresMode=jsonl, vectorIngestionMode=vector-smoke, ciEnforcement=fail-fast-on-cutover-pr-when-status-not-go)."
+    },
+    {
+      "criterion": "packet directly consumable by next engineer/agent in ATM claim/close",
+      "evidence": "Section D enumerates 7 artifacts and gives 3-step entry commands; checklist JSON exposes per-item status for automated review."
+    }
+  ],
+  "currentChecklistSnapshot": {
+    "postgresCutoverGo": 4,
+    "postgresCutoverPending": 6,
+    "vectorPromotionGo": 2,
+    "vectorPromotionPending": 6
+  },
+  "guards": [
+    "fallback-defaults-to-jsonl-canonical",
+    "fallback-defaults-to-vector-smoke-only",
+    "ci-rejects-cutover-pr-when-any-item-not-go",
+    "rollback-instructions-must-be-executed-not-skipped",
+    "no-production-credentials-in-repo"
+  ],
+  "nextActions": [
+    "Operator runs production-grade backfill + parity + governance regression to flip A6/A7/A8 to go",
+    "Operator runs vector smoke gate × 5 consecutive runs and rollback drill to flip B2/B5 to go",
+    "Operator obtains provider quota signoff and policy trigger confirmation to flip B6/B7 to go",
+    "When all items go, next agent claims SANGUO-RAGOPS-cutover-execution work item under ATM start"
+  ]
+}

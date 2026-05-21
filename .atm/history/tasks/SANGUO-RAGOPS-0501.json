@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-RAGOPS-0501",
+  "title": "PostgreSQL read-path cutover and vector production promotion decision packet",
+  "status": "closed",
+  "milestone": "RAGOPS-M5",
+  "priority": "P1",
+  "dependencies": [
+    "SANGUO-RAGOPS-0402"
+  ],
+  "scope": [
+    "data/sanguo/policies/policy-postgres-state-migration-plan.json",
+    "data/sanguo/policies/policy-vector-production-rollout-plan.json",
+    "pipelines/sanguo-rag"
+  ],
+  "acceptance": [
+    "產出 cutover decision packet，列出 PostgreSQL read path 切換條件、rollback 條件與 signoff checklist。",
+    "產出 vector production promotion packet，列出 smoke probe、quota、dedupe/resume、rollback manifest 與 namespace promotion 條件。",
+    "若任一條件未達標，明確保留 JSONL canonical mode 與 vector smoke-only mode。",
+    "決策包可直接交給工程師或 agent 進入下一輪 ATM claim/close。"
+  ],
+  "deliverables": [
+    "PostgreSQL cutover packet",
+    "vector production promotion packet",
+    "go/no-go checklist"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "cutover",
+    "production-rollout",
+    "decision-packet"
+  ],
+  "notes": "2026-05-21 | 狀態: closed | 驗證: decision-packet + machine-readable checklist | 變更: 加入 PostgreSQL read-path cutover + vector production promotion 決策包與 go/no-go checklist；條件未達標時 fallback 至 jsonl + vector-smoke | 阻塞: none",
+  "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0501.json",
+  "source": {
+    "planPath": "文件/三國RAG證據資料產線PostgreSQL與向量化開發計畫.md",
+    "sectionTitle": "M5 cutover/promotion 決策包"
+  },
+  "owner": "codex"
+}
