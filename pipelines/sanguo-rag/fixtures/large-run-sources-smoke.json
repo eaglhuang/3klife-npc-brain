@@ -1,0 +1,56 @@
+{
+  "sources": [
+    {
+      "sourceId": "3kweb",
+      "sourceFamily": "external",
+      "sourceLayer": "browser",
+      "expectedFetchCount": 12,
+      "expectedHarvestedCount": 10,
+      "expectedSeedsPerRound": 80,
+      "expectedCardsPerRound": 18,
+      "expectedNewEvidence": 12,
+      "expectedTimeoutCount": 1,
+      "expectedRawBytesPerRound": 1572864,
+      "expectedResumeScanSeconds": 1.2
+    },
+    {
+      "sourceId": "baike-romance",
+      "sourceFamily": "external",
+      "sourceLayer": "browser",
+      "expectedFetchCount": 9,
+      "expectedHarvestedCount": 8,
+      "expectedSeedsPerRound": 64,
+      "expectedCardsPerRound": 12,
+      "expectedNewEvidence": 9,
+      "expectedTimeoutCount": 0,
+      "expectedRawBytesPerRound": 1310720,
+      "expectedResumeScanSeconds": 0.9
+    },
+    {
+      "sourceId": "novel-tang",
+      "sourceFamily": "anchor",
+      "sourceLayer": "romance",
+      "expectedFetchCount": 6,
+      "expectedHarvestedCount": 6,
+      "expectedSeedsPerRound": 32,
+      "expectedCardsPerRound": 8,
+      "expectedNewEvidence": 6,
+      "expectedTimeoutCount": 0,
+      "expectedRawBytesPerRound": 524288,
+      "expectedResumeScanSeconds": 0.5
+    },
+    {
+      "sourceId": "relationship-db-foo",
+      "sourceFamily": "external",
+      "sourceLayer": "structured",
+      "expectedFetchCount": 4,
+      "expectedHarvestedCount": 4,
+      "expectedSeedsPerRound": 20,
+      "expectedCardsPerRound": 5,
+      "expectedNewEvidence": 4,
+      "expectedTimeoutCount": 0,
+      "expectedRawBytesPerRound": 262144,
+      "expectedResumeScanSeconds": 0.3
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0401",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M4 large-run rehearsal profile delivered. policy-large-run-rehearsal.json declares budgets (maxRounds/maxSourcesPerRound/maxPagesPerSource/maxRaw/Seed/Card/VectorRecord/ArtifactBytes/ResumeScanSeconds/SourceTimeoutPerRound), backpressure thresholds (minNewEvidence/minRoi/consecutiveLowYieldRoundsStop), and four-mode matrix (no-write / jsonl-only / dual-write / vector-smoke). run_large_run_rehearsal.py drives the rehearsal entirely from policy, emits per-round backpressure telemetry ledger with all required fields, stops on artifact-budget-exhausted / consecutive-low-yield / timeout-saturation. 5 smoke tests (45+ assertions) cover all four modes and budget-triggered stop.",
+  "expectedEvidence": [
+    "large-run rehearsal profile",
+    "backpressure telemetry ledger",
+    "rehearsal report"
+  ],
+  "artifacts": [
+    {
+      "kind": "policy",
+      "path": "data/sanguo/policies/policy-large-run-rehearsal.json",
+      "description": "Rehearsal policy: 4 modes (no-write / jsonl-only / dual-write / vector-smoke), budgets, backpressure thresholds, required telemetry fields (17 keys), guards (no hardcoded general/source/cleanup strings)."
+    },
+    {
+      "kind": "runner",
+      "path": "pipelines/sanguo-rag/run_large_run_rehearsal.py",
+      "description": "Reads policy, picks mode from policy.modes (rejects unknown), runs budgeted simulation, emits rehearsal-report.json + backpressure-telemetry-ledger.json. Stop reasons: artifact-budget-exhausted, consecutive-low-yield, timeout-saturation, max-rounds-reached."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/run_large_run_rehearsal_smoke_test.py",
+      "description": "5 tests with 45+ assertions: all four modes run, telemetry ledger fields complete, artifact budget triggers stop under tight policy, low-yield triggers consecutive-low-yield stop, output files written to root."
+    },
+    {
+      "kind": "fixture",
+      "path": "pipelines/sanguo-rag/fixtures/large-run-sources-smoke.json",
+      "description": "Sample sources config: 4 sources (3kweb, baike-romance, novel-tang, relationship-db-foo) with per-round byte / seed / card / new-evidence / timeout / resume-scan expectations."
+    },
+    {
+      "kind": "fixture",
+      "path": "pipelines/sanguo-rag/fixtures/large-run-rehearsal-report.sample.json",
+      "description": "Sample rehearsal report in dual-write mode; rounds, stopReason, totals, modeDetails."
+    },
+    {
+      "kind": "fixture",
+      "path": "pipelines/sanguo-rag/fixtures/backpressure-telemetry-ledger.sample.json",
+      "description": "Sample backpressure-telemetry-ledger.v0.1 with rows covering all 17 telemetry fields."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "large-run rehearsal profile limits round/source/page/raw bytes/seed/card/vector record counts",
+      "evidence": "policy.budgets.{maxRounds, maxSourcesPerRound, maxPagesPerSource, maxRawBytesPerSource, maxRawBytesPerRound, maxSeedsPerRound, maxCardsPerRound, maxVectorRecordsPerRound, maxArtifactBytesPerRun, maxResumeScanSeconds, maxSourceTimeoutPerRound}."
+    },
+    {
+      "criterion": "backpressure driven by policy/telemetry, no hardcoded general/source/cleanup",
+      "evidence": "policy.backpressure thresholds + policy.guards (no-hardcoded-general-id-in-runner, no-hardcoded-source-id-in-runner, no-hardcoded-cleanup-string-in-runner). Runner reads everything from policy + sources-config."
+    },
+    {
+      "criterion": "each round emits ROI, timeout, new-evidence, resume seconds, PG row count, vector count, artifact bytes",
+      "evidence": "Telemetry row fields include roiScore, timeoutCount, newEvidenceCount, resumeScanSeconds, postgresRowCount, vectorRecordCount, artifactBytes, plus 10 more. Smoke test verifies required field set."
+    },
+    {
+      "criterion": "rehearsal runs in no-write / jsonl-only / dual-write / vector-smoke modes",
+      "evidence": "policy.modes lists all four; runner rejects modes not in policy.modes; smoke test runs all four."
+    }
+  ],
+  "smokeRunResult": {
+    "command": "python -B pipelines/sanguo-rag/run_large_run_rehearsal_smoke_test.py",
+    "passCount": 45,
+    "failCount": 0
+  },
+  "nextActions": [
+    "SANGUO-RAGOPS-0402: runbook documents how to interpret backpressure-telemetry ledger and which mode to escalate to",
+    "SANGUO-RAGOPS-0501: cutover decision requires successful dual-write + vector-smoke rehearsal across consecutive runs"
+  ]
+}

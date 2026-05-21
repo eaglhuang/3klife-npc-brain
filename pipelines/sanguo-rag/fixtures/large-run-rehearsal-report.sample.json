@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "large-run-rehearsal-report.v0.1",
+  "generatedAt": "2026-05-21T06:40:00+00:00",
+  "policyPath": "C:\\Users\\User\\3klife-npc-brain\\data\\sanguo\\policies\\policy-large-run-rehearsal.json",
+  "mode": "dual-write",
+  "modeDetails": {
+    "id": "dual-write",
+    "label": "JSONL + PostgreSQL mirror",
+    "writesJsonl": true,
+    "writesPostgres": true,
+    "writesVector": false
+  },
+  "budgets": {
+    "maxRounds": 8,
+    "maxSourcesPerRound": 6,
+    "maxPagesPerSource": 24,
+    "maxRawBytesPerSource": 6291456,
+    "maxRawBytesPerRound": 33554432,
+    "maxSeedsPerRound": 800,
+    "maxCardsPerRound": 240,
+    "maxVectorRecordsPerRound": 200,
+    "maxArtifactBytesPerRun": 209715200,
+    "maxResumeScanSeconds": 12.0,
+    "maxSourceTimeoutPerRound": 4
+  },
+  "backpressure": {
+    "stopWhen": {
+      "roundExceedsArtifactBytes": true,
+      "sourceExceedsRawBytes": true,
+      "sourceTimeoutCountExceeded": true,
+      "newEvidenceDeltaBelowMin": true,
+      "resumeScanExceedsSeconds": true
+    },
+    "minNewEvidencePerRound": 5,
+    "minRoiPerSource": 0.1,
+    "consecutiveLowYieldRoundsStop": 2
+  },
+  "rounds": [
+    {
+      "roundId": "round-01",
+      "rawBytes": 3670016,
+      "seedCount": 196,
+      "cardCount": 43,
+      "newEvidenceCount": 31,
+      "timeoutCount": 1,
+      "backpressureSignals": [],
+      "cumulativeArtifactBytes": 3670016,
+      "consecutiveLowYieldRounds": 0
+    },
+    {
+      "roundId": "round-02",
+      "rawBytes": 3670016,
+      "seedCount": 196,
+      "cardCount": 43,
+      "newEvidenceCount": 31,
+      "timeoutCount": 1,
+      "backpressureSignals": [],
+      "cumulativeArtifactBytes": 7340032,
+      "consecutiveLowYieldRounds": 0
+    },
+    {
+      "roundId": "round-03",
+      "rawBytes": 3670016,
+      "seedCount": 196,
+      "cardCount": 43,
+      "newEvidenceCount": 31,
+      "timeoutCount": 1,
+      "backpressureSignals": [],
+      "cumulativeArtifactBytes": 11010048,
+      "consecutiveLowYieldRounds": 0
+    },
+    {
+      "roundId": "round-04",
+      "rawBytes": 3670016,
+      "seedCount": 196,
+      "cardCount": 43,
+      "newEvidenceCount": 31,
+      "timeoutCount": 1,
+      "backpressureSignals": [],
+      "cumulativeArtifactBytes": 14680064,
+      "consecutiveLowYieldRounds": 0
+    },
+    {
+      "roundId": "round-05",
+      "rawBytes": 3670016,
+      "seedCount": 196,
+      "cardCount": 43,
+      "newEvidenceCount": 31,
+      "timeoutCount": 1,
+      "backpressureSignals": [],
+      "cumulativeArtifactBytes": 18350080,
+      "consecutiveLowYieldRounds": 0
+    },
+    {
+      "roundId": "round-06",
+      "rawBytes": 3670016,
+      "seedCount": 196,
+      "cardCount": 43,
+      "newEvidenceCount": 31,
+      "timeoutCount": 1,
+      "backpressureSignals": [],
+      "cumulativeArtifactBytes": 22020096,
+      "consecutiveLowYieldRounds": 0
+    },
+    {
+      "roundId": "round-07",
+      "rawBytes": 3670016,
+      "seedCount": 196,
+      "cardCount": 43,
+      "newEvidenceCount": 31,
+      "timeoutCount": 1,
+      "backpressureSignals": [],
+      "cumulativeArtifactBytes": 25690112,
+      "consecutiveLowYieldRounds": 0
+    },
+    {
+      "roundId": "round-08",
+      "rawBytes": 3670016,
+      "seedCount": 196,
+      "cardCount": 43,
+      "newEvidenceCount": 31,
+      "timeoutCount": 1,
+      "backpressureSignals": [],
+      "cumulativeArtifactBytes": 29360128,
+      "consecutiveLowYieldRounds": 0
+    }
+  ],
+  "stopReason": "max-rounds-reached",
+  "totals": {
+    "roundsExecuted": 8,
+    "totalSeeds": 1568,
+    "totalCards": 344,
+    "totalNewEvidence": 248,
+    "totalArtifactBytes": 29360128
+  },
+  "guards": [
+    "no-hardcoded-general-id-in-runner",
+    "no-hardcoded-source-id-in-runner",
+    "no-hardcoded-cleanup-string-in-runner",
+    "vector-production-namespace-disabled-by-default",
+    "modes-must-be-listed-here-to-be-runnable",
+    "telemetry-ledger-required-each-round"
+  ]
+}

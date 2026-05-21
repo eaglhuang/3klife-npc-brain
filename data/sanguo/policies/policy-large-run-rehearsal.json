@@ -1,0 +1,89 @@
+{
+  "id": "Policy_LargeRunRehearsal_P1",
+  "description": "Large-run rehearsal budgets, backpressure thresholds, and mode matrix for Sanguo-RAG evidence pipeline (SANGUO-RAGOPS-0401). All decisions must be driven by telemetry + policy values, not by hardcoded source / general / cleanup strings inside runners.",
+  "decisionMode": "rehearsal-only",
+  "enabledByDefault": false,
+  "modes": [
+    {
+      "id": "no-write",
+      "label": "no-write dry-run",
+      "writesJsonl": false,
+      "writesPostgres": false,
+      "writesVector": false
+    },
+    {
+      "id": "jsonl-only",
+      "label": "JSONL canonical only",
+      "writesJsonl": true,
+      "writesPostgres": false,
+      "writesVector": false
+    },
+    {
+      "id": "dual-write",
+      "label": "JSONL + PostgreSQL mirror",
+      "writesJsonl": true,
+      "writesPostgres": true,
+      "writesVector": false
+    },
+    {
+      "id": "vector-smoke",
+      "label": "JSONL + PostgreSQL mirror + evidence vector smoke namespace",
+      "writesJsonl": true,
+      "writesPostgres": true,
+      "writesVector": "smoke-namespace-only"
+    }
+  ],
+  "defaultMode": "no-write",
+  "budgets": {
+    "maxRounds": 8,
+    "maxSourcesPerRound": 6,
+    "maxPagesPerSource": 24,
+    "maxRawBytesPerSource": 6291456,
+    "maxRawBytesPerRound": 33554432,
+    "maxSeedsPerRound": 800,
+    "maxCardsPerRound": 240,
+    "maxVectorRecordsPerRound": 200,
+    "maxArtifactBytesPerRun": 209715200,
+    "maxResumeScanSeconds": 12.0,
+    "maxSourceTimeoutPerRound": 4
+  },
+  "backpressure": {
+    "stopWhen": {
+      "roundExceedsArtifactBytes": true,
+      "sourceExceedsRawBytes": true,
+      "sourceTimeoutCountExceeded": true,
+      "newEvidenceDeltaBelowMin": true,
+      "resumeScanExceedsSeconds": true
+    },
+    "minNewEvidencePerRound": 5,
+    "minRoiPerSource": 0.1,
+    "consecutiveLowYieldRoundsStop": 2
+  },
+  "telemetryFields": [
+    "roundId",
+    "sourceId",
+    "sourceFamily",
+    "sourceLayer",
+    "fetchCount",
+    "harvestedCount",
+    "seedCount",
+    "cardCount",
+    "newEvidenceCount",
+    "timeoutCount",
+    "rawBytes",
+    "artifactBytes",
+    "resumeScanSeconds",
+    "postgresRowCount",
+    "vectorRecordCount",
+    "roiScore",
+    "backpressureSignal"
+  ],
+  "guards": [
+    "no-hardcoded-general-id-in-runner",
+    "no-hardcoded-source-id-in-runner",
+    "no-hardcoded-cleanup-string-in-runner",
+    "vector-production-namespace-disabled-by-default",
+    "modes-must-be-listed-here-to-be-runnable",
+    "telemetry-ledger-required-each-round"
+  ]
+}

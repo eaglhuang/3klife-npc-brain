@@ -291,6 +291,21 @@ _PG_UPSERT_TEMPLATES: dict[str, dict[str, Any]] = {
     },
 }
 
+_JSONB_COLUMNS = frozenset(
+    (
+        "summary",
+        "policy_refs",
+        "raw_payload",
+        "score",
+        "anchor",
+        "payload",
+        "anchor_evidence",
+        "trust_score",
+        "body_boundary_summary",
+        "sandbox_outcome",
+    )
+)
+
 
 def _build_upsert_sql(schema: str, table: str) -> str:
     template = _PG_UPSERT_TEMPLATES.get(table)
@@ -373,18 +388,7 @@ class PostgresEvidenceRepository(EvidenceRepository):
     def _coerce(row: dict[str, Any]) -> dict[str, Any]:
         coerced: dict[str, Any] = {}
         for key, value in row.items():
-            if isinstance(value, (dict, list)) and key in {
-                "summary",
-                "policy_refs",
-                "raw_payload",
-                "score",
-                "anchor",
-                "payload",
-                "anchor_evidence",
-                "trust_score",
-                "body_boundary_summary",
-                "sandbox_outcome",
-            }:
+            if isinstance(value, (dict, list)) and key in _JSONB_COLUMNS:
                 coerced[key] = json.dumps(value, ensure_ascii=False)
             else:
                 coerced[key] = value
