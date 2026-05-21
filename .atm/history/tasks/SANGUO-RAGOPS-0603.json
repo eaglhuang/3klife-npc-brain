@@ -2,7 +2,7 @@
   "schemaVersion": "atm.workItem.v0.2",
   "workItemId": "SANGUO-RAGOPS-0603",
   "title": "Convergence loop evidence manifest and resume integration",
-  "status": "open",
+  "status": "closed",
   "milestone": "RAGOPS-M6",
   "priority": "P0",
   "dependencies": [
@@ -34,7 +34,7 @@
     "convergence-loop",
     "governance"
   ],
-  "notes": "2026-05-21 | 狀態: open | 驗證: pending | 變更: opened manifest/resume integration card for convergence-loop opt-in runs | 阻塞: SANGUO-RAGOPS-0602 writer seam",
+  "notes": "2026-05-21 | 狀態: closed | 驗證: smoke 6/6 pass | 變更: 新增 convergence_manifest_helper.py (build/write/scan)；在 run_full_roster_convergence_loop.py 注入 --check-manifest-resume 旗標、_check_manifest_resume() startup scan、_emit_convergence_manifest() 於 main() 末尾；evidenceManifestPath 回寫至 baseline manifest；convergence_manifest_smoke_test.py 6/6 pass | 阻塞: none",
   "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0603.json",
   "source": {
     "planPath": "文件/三國RAG證據資料產線PostgreSQL與向量化開發計畫.md",

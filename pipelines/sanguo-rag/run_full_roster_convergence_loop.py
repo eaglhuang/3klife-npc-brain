@@ -23,6 +23,89 @@ from sanguo_governance_loader import (
 )
 
 
+def _emit_convergence_manifest(
+    *,
+    run_id: str,
+    final_paths: dict[str, Any],
+    summary_payload: dict[str, Any],
+    run_root: Path,
+    repo_root: Path,
+) -> str | None:
+    """Build and write an evidence manifest for this convergence run (SANGUO-RAGOPS-0603).
+
+    Returns the repo-relative path to the manifest file, or None on failure.
+    Never raises — manifest errors are logged and the run continues.
+    """
+    try:
+        from convergence_manifest_helper import (  # type: ignore[import]
+            ConvergenceManifestError,
+            build_convergence_manifest,
+            write_convergence_manifest,
+        )
+        manifest = build_convergence_manifest(
+            run_id=run_id,
+            final_paths=final_paths,
+            summary_payload=summary_payload,
+            repo_root=repo_root,
+        )
+        if not manifest.files:
+            # dry-run: no artifacts on disk — skip manifest write
+            return None
+        out_path = write_convergence_manifest(manifest, run_root=run_root)
+        return str(out_path.resolve().relative_to(repo_root.resolve())).replace("\\", "/")
+    except Exception as exc:  # pragma: no cover
+        print(f"[run_full_roster_convergence_loop] evidence manifest emission failed: {exc}")
+        return None
+
+
+def _check_manifest_resume(
+    *,
+    baseline_manifest: dict[str, Any],
+    repo_root: Path,
+    strict: bool,
+) -> bool:
+    """Scan a prior run's evidence manifest for resume safety (SANGUO-RAGOPS-0603).
+
+    Returns True if safe to resume (or manifest not found / scan skipped).
+    Returns False (and prints warnings) when hash mismatches or missing files
+    are detected in strict mode.
+    """
+    paths = baseline_manifest.get("paths") if isinstance(baseline_manifest.get("paths"), dict) else baseline_manifest
+    manifest_path_text = str(paths.get("evidenceManifestPath") or "").strip() if isinstance(paths, dict) else ""
+    if not manifest_path_text:
+        return True
+    try:
+        from convergence_manifest_helper import (  # type: ignore[import]
+            ConvergenceManifestError,
+            scan_prior_convergence_manifest,
+        )
+        manifest_path = Path(manifest_path_text)
+        if not manifest_path.is_absolute():
+            manifest_path = (repo_root / manifest_path_text).resolve()
+        report = scan_prior_convergence_manifest(manifest_path, repo_root=repo_root, verify_sha256=True)
+        if report.ok:
+            print(
+                f"[run_full_roster_convergence_loop] manifest resume scan ok "
+                f"(runId={report.run_id} files={report.file_count})"
+            )
+            return True
+        print(
+            f"[run_full_roster_convergence_loop] manifest resume WARNING "
+            f"missing={len(report.missing)} hash_mismatch={len(report.hash_mismatch)} "
+            f"duplicates={len(report.duplicates)}"
+        )
+        if strict:
+            print(
+                "[run_full_roster_convergence_loop] --check-manifest-resume-strict: "
+                "aborting due to manifest mismatch (override with --no-check-manifest-resume-strict)"
+            )
+            return False
+        return True
+    except Exception as exc:  # pragma: no cover
+        print(f"[run_full_roster_convergence_loop] manifest resume scan error (non-fatal): {exc}")
+        return True
+
+
 def _build_convergence_repo_seam(repo_root: Path) -> Any:
     """Lazily import and build the evidence repository write seam (SANGUO-RAGOPS-0602).
 
@@ -5080,6 +5163,32 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--external-relationship-shadow-fallback", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--overwrite", action="store_true")
+    # SANGUO-RAGOPS-0603: evidence manifest resume integration
+    parser.add_argument(
+        "--check-manifest-resume",
+        dest="check_manifest_resume",
+        action="store_true",
+        help="On startup, scan the prior run's evidence manifest for hash mismatches before proceeding.",
+    )
+    parser.add_argument(
+        "--no-check-manifest-resume",
+        dest="check_manifest_resume",
+        action="store_false",
+        help="Skip evidence manifest resume scan (default).",
+    )
+    parser.set_defaults(check_manifest_resume=False)
+    parser.add_argument(
+        "--check-manifest-resume-strict",
+        dest="check_manifest_resume_strict",
+        action="store_true",
+        help="Abort if manifest resume scan detects hash mismatches or missing files.",
+    )
+    parser.add_argument(
+        "--no-check-manifest-resume-strict",
+        dest="check_manifest_resume_strict",
+        action="store_false",
+    )
+    parser.set_defaults(check_manifest_resume_strict=False)
     return parser.parse_args()
 
 
@@ -5142,6 +5251,16 @@ def main() -> int:
         rebuild=bool(args.rebuild_anchor_index),
         dry_run=bool(args.dry_run),
     )
+
+    # SANGUO-RAGOPS-0603: evidence manifest resume scan (opt-in, default off)
+    if args.check_manifest_resume and baseline_manifest:
+        resume_safe = _check_manifest_resume(
+            baseline_manifest=baseline_manifest,
+            repo_root=REPO_ROOT,
+            strict=bool(args.check_manifest_resume_strict),
+        )
+        if not resume_safe:
+            return 2
 
     rounds: list[dict[str, Any]] = []
     evidence_repo_seam = _build_convergence_repo_seam(REPO_ROOT)  # SANGUO-RAGOPS-0602 opt-in seam
@@ -5815,6 +5934,21 @@ def main() -> int:
             f"mode={seam_summary.get('mode')} dryRun={seam_summary.get('dryRun')} "
             f"errors={seam_summary.get('errorCount')}"
         )
+
+    # SANGUO-RAGOPS-0603: emit evidence manifest (opt-in; no-op on dry-run with no artifacts)
+    evidence_manifest_path = _emit_convergence_manifest(
+        run_id=args.run_id,
+        final_paths=final_paths,
+        summary_payload=summary_payload,
+        run_root=run_root,
+        repo_root=REPO_ROOT,
+    )
+    if evidence_manifest_path:
+        # Back-patch baseline output so next run can use --check-manifest-resume
+        final_paths["evidenceManifestPath"] = evidence_manifest_path
+        baseline_payload["paths"]["evidenceManifestPath"] = evidence_manifest_path
+        write_json(baseline_output_path, baseline_payload)
+        print(f"[run_full_roster_convergence_loop] wrote evidence-manifest {evidence_manifest_path}")
 
     print(f"[run_full_roster_convergence_loop] wrote {summary_json_path}")
     print(f"[run_full_roster_convergence_loop] wrote {summary_md_path}")

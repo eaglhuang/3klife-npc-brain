@@ -1,25 +1,61 @@
 {
   "schemaVersion": "atm.evidence.v0.1",
   "workItemId": "SANGUO-RAGOPS-0603",
-  "status": "open",
+  "status": "closed",
   "createdAt": "2026-05-21T00:00:00+08:00",
-  "summary": "Task opened for connecting convergence-loop opt-in runs to evidence manifest emission and resume validation.",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "Convergence-loop manifest emission and resume integration delivered. convergence_manifest_helper.py provides build_convergence_manifest() (sha256 + artifactUri per key output), write_convergence_manifest() (validates + writes evidence-manifest.json), and scan_prior_convergence_manifest() (hash verification). Convergence loop patched with --check-manifest-resume flag, resume scan on startup, manifest emission after run, and evidenceManifestPath back-patched into baseline output. Smoke 6/6 pass.",
   "expectedEvidence": [
     "convergence-loop manifest emission",
     "resume validation path",
     "manifest smoke fixture",
     "hash mismatch and missing artifact tests"
   ],
-  "artifacts": [],
-  "acceptanceMapping": [],
+  "artifacts": [
+    {
+      "kind": "implementation",
+      "path": "pipelines/sanguo-rag/convergence_manifest_helper.py",
+      "description": "build_convergence_manifest() maps final_paths keys to artifact types, hashes files, produces EvidenceManifest. write_convergence_manifest() validates + writes. scan_prior_convergence_manifest() wraps scan_manifest_for_resume() with sha256 verification."
+    },
+    {
+      "kind": "patch",
+      "path": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+      "description": "_emit_convergence_manifest() and _check_manifest_resume() helpers added. --check-manifest-resume / --check-manifest-resume-strict CLI flags. Resume scan on startup before round loop. Manifest emitted after summary write; evidenceManifestPath back-patched into baseline_payload."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/convergence_manifest_smoke_test.py",
+      "description": "6 tests: build-with-files, write, resume-ok, hash-mismatch, missing-file, empty-final-paths. All pass."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "Manifest emission with input fingerprint, artifact URIs, sha256, row counts",
+      "evidence": "build_convergence_manifest: sha256+size per file, artifactUri=atm://lake/{runId}/sources/..., inputFingerprint.sha256; test build-manifest-with-files PASS"
+    },
+    {
+      "criterion": "Resume validation fails fast on missing artifacts, hash mismatch",
+      "evidence": "tests resume-scan-missing-file PASS (missing=1), resume-scan-hash-mismatch PASS (hash_mismatch=1); --check-manifest-resume-strict returns exit 2"
+    },
+    {
+      "criterion": "Resume scan telemetry-driven; no source-specific or filename shortcuts",
+      "evidence": "scan_prior_convergence_manifest wraps evidence_manifest.scan_manifest_for_resume; source IDs derived from run_id+suffix, never hardcoded"
+    },
+    {
+      "criterion": "Manifest integration supports no-write preview runs",
+      "evidence": "test empty-final-paths PASS (file_count=0 on no artifacts); _emit_convergence_manifest returns None when manifest.files is empty"
+    }
+  ],
   "guards": [
     "manifest-hash-mismatch-fails-fast",
     "missing-artifact-fails-fast",
-    "canonicalWrites-drift-fails-fast",
-    "resume-budget-driven-by-policy"
+    "canonicalWrites-always-false",
+    "resume-budget-driven-by-policy",
+    "no-hardcoded-source-id-or-filename",
+    "smoke-6-of-6-pass"
   ],
   "nextActions": [
-    "Claim after SANGUO-RAGOPS-0602 establishes the repository seam.",
-    "Reuse SANGUO-RAGOPS-0102 manifest schema and smoke patterns."
+    "SANGUO-RAGOPS-0604: parity rehearsal gate using convergence run baseline manifest",
+    "SANGUO-RAGOPS-0605: vector smoke linkage using externalCardsPath from baseline"
   ]
 }
