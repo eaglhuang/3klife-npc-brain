@@ -1,0 +1,157 @@
+{
+  "id": "Policy_ArtifactLakeLayout_P1",
+  "description": "Partitioned artifact lake layout, artifactUri rules, compression and retention policy for Sanguo-RAG evidence production. JSONL canonical export remains the source of truth until cutover.",
+  "decisionMode": "layout-only",
+  "enabledByDefault": false,
+  "layoutVersion": "1.0.0",
+  "rootRelativePath": "artifacts/data-pipeline/sanguo-rag/lake",
+  "partition": {
+    "levels": ["runId", "sourceId", "artifactType"],
+    "optionalLevels": ["roundId", "shardId", "corpusId", "layerId"],
+    "maxFilesPerLeafDirectory": 5000,
+    "runIdPattern": "<lane>-<yyyymmdd>-<hhmm>-<shortHash>",
+    "runIdRequiresExternalInput": true
+  },
+  "artifactTypes": [
+    "raw-page",
+    "harvested-page",
+    "evidence-seed",
+    "evidence-card",
+    "anchor-passage",
+    "proposal",
+    "scoreboard",
+    "telemetry",
+    "manifest",
+    "run"
+  ],
+  "artifactUriScheme": "atm://lake/<runId>/sources/<sourceId>/<artifactType>/<relativePath>",
+  "compression": {
+    "raw-page": {
+      "format": "zstd",
+      "level": 5,
+      "default": false
+    },
+    "harvested-page": {
+      "format": "zstd",
+      "level": 5,
+      "default": true
+    },
+    "evidence-seed": {
+      "format": "zstd",
+      "level": 5,
+      "default": true
+    },
+    "evidence-card": {
+      "format": "zstd",
+      "level": 5,
+      "default": true
+    },
+    "anchor-passage": {
+      "format": "zstd",
+      "level": 5,
+      "default": true
+    },
+    "proposal": {
+      "format": "none",
+      "default": false
+    },
+    "scoreboard": {
+      "format": "zstd",
+      "level": 5,
+      "default": false,
+      "appliesTo": "snapshot-only"
+    },
+    "telemetry": {
+      "format": "none",
+      "default": false
+    },
+    "manifest": {
+      "format": "none",
+      "default": false
+    }
+  },
+  "retention": {
+    "raw-page": {
+      "hotDays": 30,
+      "coldDays": 60,
+      "expireDays": 90,
+      "expireAction": "delete-payload-keep-manifest-ref"
+    },
+    "harvested-page": {
+      "hotDays": 90,
+      "coldDays": 180,
+      "expireDays": null,
+      "expireAction": "archive"
+    },
+    "evidence-seed": {
+      "hotDays": 180,
+      "coldDays": 365,
+      "expireDays": null,
+      "expireAction": "compress"
+    },
+    "evidence-card": {
+      "hotDays": 365,
+      "coldDays": null,
+      "expireDays": null,
+      "expireAction": "compress"
+    },
+    "anchor-passage": {
+      "hotDays": 365,
+      "coldDays": null,
+      "expireDays": null,
+      "expireAction": "compress"
+    },
+    "proposal": {
+      "hotDays": null,
+      "coldDays": null,
+      "expireDays": null,
+      "expireAction": "keep"
+    },
+    "scoreboard": {
+      "hotDays": 90,
+      "coldDays": 180,
+      "expireDays": null,
+      "expireAction": "archive"
+    },
+    "telemetry": {
+      "hotDays": 60,
+      "coldDays": 120,
+      "expireDays": null,
+      "expireAction": "compress"
+    },
+    "manifest": {
+      "hotDays": null,
+      "coldDays": null,
+      "expireDays": null,
+      "expireAction": "keep"
+    }
+  },
+  "guards": [
+    "no-hardcoded-source-id-in-runner",
+    "no-hardcoded-general-name-in-runner",
+    "no-hardcoded-cleanup-string-in-runner",
+    "jsonl-canonical-export-remains-source-of-truth",
+    "artifact-uri-is-stable-after-write",
+    "sandbox-writes-must-be-tagged-canonicalWrites-false",
+    "lifecycle-action-must-be-recorded-in-manifest"
+  ],
+  "coexistencePaths": [
+    {
+      "label": "canonical-export-mirror",
+      "path": "artifacts/data-pipeline/sanguo-rag/extracted",
+      "owner": "M2-cutover",
+      "retainUntil": "post-cutover"
+    },
+    {
+      "label": "smoke-fixtures",
+      "path": "local/codex-smoke/knowledge-growth",
+      "owner": "M1-mirror-only",
+      "retainUntil": "manifest-stable"
+    }
+  ],
+  "nonGoals": [
+    "do-not-modify-existing-canonical-export-paths",
+    "do-not-rename-existing-artifacts-in-this-phase",
+    "do-not-enable-production-lake-writes-by-default"
+  ]
+}

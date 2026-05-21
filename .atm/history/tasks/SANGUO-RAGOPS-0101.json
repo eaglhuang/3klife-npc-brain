@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-RAGOPS-0101",
+  "title": "Partitioned compressed evidence artifact lake layout",
+  "status": "closed",
+  "milestone": "RAGOPS-M1",
+  "priority": "P0",
+  "dependencies": [
+    "SANGUO-RAGOPS-0001"
+  ],
+  "scope": [
+    "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+    "local/codex-smoke/knowledge-growth",
+    "artifacts/data-pipeline/sanguo-rag"
+  ],
+  "acceptance": [
+    "定義 runId/sourceId/artifactType 分區 layout，避免單一目錄累積大量小檔。",
+    "定義 raw page、harvested page、seed、card、anchor、proposal、scoreboard snapshot 的 artifactUri 規則。",
+    "支援壓縮輸出或壓縮封存策略，且保留 JSONL export mirror。",
+    "所有路徑與保留策略由設定或 policy 讀取，不在腳本硬寫死人物、來源或 cleanup 字串。"
+  ],
+  "deliverables": [
+    "artifact lake layout spec",
+    "retention/compression policy draft"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "artifact-lake",
+    "jsonl",
+    "retention"
+  ],
+  "notes": "2026-05-21 | 狀態: closed | 驗證: layout-spec + policy-json | 變更: 產出 runId/sourceId/artifactType 分區 layout、artifactUri 規則、壓縮與 retention 策略，policy-artifact-lake-layout.json enabledByDefault=false | 阻塞: none",
+  "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0101.json",
+  "source": {
+    "planPath": "文件/三國RAG證據資料產線PostgreSQL與向量化開發計畫.md",
+    "sectionTitle": "M1 Artifact lake 與 manifest/resume 契約"
+  },
+  "owner": "codex"
+}
