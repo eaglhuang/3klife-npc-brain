@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0102",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M1 evidence manifest schema, validator, and resume scan helper delivered. JSON Schema describes manifest with inputFingerprint, files (with sha256 + artifactUri + retentionTier + compression), telemetry (bodyBoundary + residualProposalRefs), lifecycle action log. Python helper validates payloads, runs round-trip dump/load, and scans manifest-listed files to detect missing, duplicate, and hash-mismatch states.",
+  "expectedEvidence": [
+    "manifest schema",
+    "resume validation fixture",
+    "fingerprint/hash mismatch test"
+  ],
+  "artifacts": [
+    {
+      "kind": "json-schema",
+      "path": "pipelines/sanguo-rag/fixtures/evidence-manifest.schema.json",
+      "description": "Manifest schema v0.1: required inputFingerprint, fileCount, files, artifactUri lake pattern, telemetry.bodyBoundary, telemetry.residualProposalRefs, lifecycle.actionLog."
+    },
+    {
+      "kind": "fixture",
+      "path": "pipelines/sanguo-rag/fixtures/evidence-manifest.sample.json",
+      "description": "Sample manifest with one harvested-page (zstd compressed), one evidence-seed, one body-boundary-residual proposal entry, lifecycle action log."
+    },
+    {
+      "kind": "module",
+      "path": "pipelines/sanguo-rag/evidence_manifest.py",
+      "description": "EvidenceManifest dataclass, validate_manifest(), load/dump round trip with atomic write, scan_manifest_for_resume() returning missing/duplicate/hash-mismatch report."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/evidence_manifest_smoke_test.py",
+      "description": "6 regression tests: fixture validation, missing required field, fileCount mismatch, artifactUri pattern, dump/load roundtrip, resume scan missing+hash-mismatch detection."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "manifest required fields (inputFingerprint, fileCount, files, sha256, artifactUri, updatedAt, schemaVersion)",
+      "evidence": "schema.required + per-file required keys + sample fixture; validator enforces presence."
+    },
+    {
+      "criterion": "manifest records bodyStart/bodyEnd telemetry and residual proposal refs",
+      "evidence": "telemetry.bodyBoundary[] and telemetry.residualProposalRefs[]; per-entry bodyStart/bodyEnd + linkedResidualProposalId."
+    },
+    {
+      "criterion": "resume scan does not require full tree walk; detects missing, duplicate, hash-mismatch",
+      "evidence": "scan_manifest_for_resume walks only manifest entries; smoke test passes with missing and hash-mismatch cases."
+    },
+    {
+      "criterion": "manifest schema has smoke fixture and regression check",
+      "evidence": "fixtures/evidence-manifest.sample.json + evidence_manifest_smoke_test.py (6 tests, all passing)."
+    }
+  ],
+  "smokeRunResult": {
+    "command": "python -B pipelines/sanguo-rag/evidence_manifest_smoke_test.py",
+    "passCount": 6,
+    "failCount": 0
+  },
+  "nextActions": [
+    "SANGUO-RAGOPS-0201: bind manifest artifactUri columns into PostgreSQL evidence-lake schema",
+    "SANGUO-RAGOPS-0202: repository adapter consumes manifest for resume + dual-write",
+    "SANGUO-RAGOPS-0204: parity gate diffs JSONL manifest sha256 against PG mirror"
+  ]
+}

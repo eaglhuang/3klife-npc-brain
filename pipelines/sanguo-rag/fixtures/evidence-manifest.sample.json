@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "evidence-manifest.v0.1",
+  "runId": "anchor-first-20260521-1030-ab12cd",
+  "lane": "anchor-first",
+  "generatedAt": "2026-05-21T02:30:00+00:00",
+  "updatedAt": "2026-05-21T02:35:00+00:00",
+  "canonicalWrites": false,
+  "policyRefs": [
+    "data/sanguo/policies/policy-artifact-lake-layout.json",
+    "data/sanguo/policies/policy-vector-ingestion-hardening.json"
+  ],
+  "inputFingerprint": {
+    "sha256": "c5d2469a8f1b2e3d4a5b6c7d8e9f0a1b2c3d4e5f6071829304a5b6c7d8e9f001",
+    "fileCount": 2,
+    "files": [
+      {
+        "path": "artifacts/data-pipeline/sanguo-rag/extracted/events/events.jsonl",
+        "sha256": "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+        "size": 7031
+      },
+      {
+        "path": "artifacts/data-pipeline/sanguo-rag/extracted/keyword-options/zhang-fei.keywords.json",
+        "sha256": "1111111122222222333333334444444455555555666666667777777788888888",
+        "size": 12345
+      }
+    ]
+  },
+  "fileCount": 3,
+  "files": [
+    {
+      "artifactType": "harvested-page",
+      "sourceId": "3kweb",
+      "shardId": "0001",
+      "roundId": null,
+      "corpusId": null,
+      "layerId": null,
+      "artifactUri": "atm://lake/anchor-first-20260521-1030-ab12cd/sources/3kweb/harvested-pages/0001/sha1-ef01.harvested.json.zst",
+      "path": "artifacts/data-pipeline/sanguo-rag/lake/anchor-first-20260521-1030-ab12cd/sources/3kweb/harvested-pages/0001/sha1-ef01.harvested.json.zst",
+      "sha256": "aaaaaaaa11111111bbbbbbbb22222222cccccccc33333333dddddddd44444444",
+      "size": 8421,
+      "createdAt": "2026-05-21T02:30:11+00:00",
+      "compression": { "format": "zstd", "level": 5, "uncompressedSize": 25812 },
+      "retentionTier": "hot",
+      "bodyStart": 412,
+      "bodyEnd": 14820,
+      "linkedResidualProposalId": null
+    },
+    {
+      "artifactType": "evidence-seed",
+      "sourceId": "3kweb",
+      "shardId": "0001",
+      "roundId": "r3",
+      "corpusId": null,
+      "layerId": null,
+      "artifactUri": "atm://lake/anchor-first-20260521-1030-ab12cd/sources/3kweb/evidence-seeds/0001/seeds-r3.jsonl.zst",
+      "path": "artifacts/data-pipeline/sanguo-rag/lake/anchor-first-20260521-1030-ab12cd/sources/3kweb/evidence-seeds/0001/seeds-r3.jsonl.zst",
+      "sha256": "5555555566666666777777778888888899999999aaaaaaaabbbbbbbbcccccccc",
+      "size": 1456,
+      "createdAt": "2026-05-21T02:31:02+00:00",
+      "compression": { "format": "zstd", "level": 5, "uncompressedSize": 4912 },
+      "retentionTier": "hot",
+      "bodyStart": null,
+      "bodyEnd": null,
+      "linkedResidualProposalId": null
+    },
+    {
+      "artifactType": "proposal",
+      "sourceId": "3kweb",
+      "shardId": null,
+      "roundId": "r3",
+      "corpusId": null,
+      "layerId": null,
+      "artifactUri": "atm://lake/anchor-first-20260521-1030-ab12cd/sources/3kweb/proposals/body-boundary-residual-r3.jsonl",
+      "path": "artifacts/data-pipeline/sanguo-rag/lake/anchor-first-20260521-1030-ab12cd/sources/3kweb/proposals/body-boundary-residual-r3.jsonl",
+      "sha256": "1212121212121212121212121212121212121212121212121212121212121212",
+      "size": 612,
+      "createdAt": "2026-05-21T02:32:18+00:00",
+      "compression": { "format": "none", "level": null, "uncompressedSize": null },
+      "retentionTier": "hot",
+      "bodyStart": null,
+      "bodyEnd": null,
+      "linkedResidualProposalId": "body-boundary-residual-r3-3kweb-0001"
+    }
+  ],
+  "telemetry": {
+    "bodyBoundary": [
+      {
+        "sourceId": "3kweb",
+        "url": "https://example.invalid/3kweb/p/0001",
+        "bodyStart": 412,
+        "bodyEnd": 14820,
+        "residualScore": 0.21
+      }
+    ],
+    "residualProposalRefs": [
+      {
+        "proposalId": "body-boundary-residual-r3-3kweb-0001",
+        "artifactUri": "atm://lake/anchor-first-20260521-1030-ab12cd/sources/3kweb/proposals/body-boundary-residual-r3.jsonl",
+        "sandboxOutcome": "queued"
+      }
+    ]
+  },
+  "lifecycle": {
+    "lastAction": "write",
+    "lastActionAt": "2026-05-21T02:35:00+00:00",
+    "actionLog": [
+      {
+        "action": "write",
+        "at": "2026-05-21T02:30:00+00:00",
+        "actor": "run_full_roster_convergence_loop",
+        "detail": "initial manifest emit"
+      },
+      {
+        "action": "write",
+        "at": "2026-05-21T02:35:00+00:00",
+        "actor": "extract_harvested_page_evidence_seeds",
+        "detail": "appended evidence-seed and proposal entries"
+      }
+    ]
+  },
+  "summary": {
+    "sourcesCovered": 1,
+    "harvestedPageBytes": 8421,
+    "seedRecordCount": 24,
+    "proposalCount": 1
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://3klife.local/sanguo-rag/evidence-manifest.schema.json",
+  "schemaVersion": "evidence-manifest.v0.1",
+  "title": "Sanguo-RAG Evidence Manifest",
+  "description": "Per-run manifest produced by Sanguo-RAG evidence pipelines under artifact lake layout (SANGUO-RAGOPS-0101). Carries input fingerprint, per-file sha256, artifact URI, body-boundary telemetry and references to body-boundary residual proposals. Consumed by resume scans, repository adapter (M2), vector exporter (M3), and parity gate (M2-0204).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "runId",
+    "generatedAt",
+    "updatedAt",
+    "canonicalWrites",
+    "inputFingerprint",
+    "fileCount",
+    "files"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "evidence-manifest.v0.1"
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Pipeline run identifier. Pattern: <lane>-<yyyymmdd>-<hhmm>-<shortHash>."
+    },
+    "lane": {
+      "type": "string",
+      "description": "Lane identifier (e.g. anchor-first, smoke, rehearsal)."
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "canonicalWrites": {
+      "type": "boolean",
+      "description": "Sandbox runs must set this to false; production runs set true."
+    },
+    "policyRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of policy file paths the manifest is bound to (e.g. policy-artifact-lake-layout.json)."
+    },
+    "inputFingerprint": {
+      "type": "object",
+      "required": ["sha256", "files", "fileCount"],
+      "additionalProperties": false,
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "fileCount": { "type": "integer", "minimum": 0 },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "sha256", "size"],
+            "additionalProperties": false,
+            "properties": {
+              "path": { "type": "string" },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "size": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "fileCount": { "type": "integer", "minimum": 0 },
+    "files": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/manifestEntry" }
+    },
+    "telemetry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bodyBoundary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["sourceId", "url", "bodyStart", "bodyEnd"],
+            "additionalProperties": false,
+            "properties": {
+              "sourceId": { "type": "string" },
+              "url": { "type": "string" },
+              "bodyStart": { "type": ["integer", "null"] },
+              "bodyEnd": { "type": ["integer", "null"] },
+              "residualScore": { "type": ["number", "null"] }
+            }
+          }
+        },
+        "residualProposalRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["proposalId", "artifactUri"],
+            "additionalProperties": false,
+            "properties": {
+              "proposalId": { "type": "string" },
+              "artifactUri": { "type": "string" },
+              "sandboxOutcome": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lastAction": { "type": "string", "enum": ["write", "compress", "archive", "rollback"] },
+        "lastActionAt": { "type": "string", "format": "date-time" },
+        "actionLog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["action", "at"],
+            "additionalProperties": false,
+            "properties": {
+              "action": { "type": "string" },
+              "at": { "type": "string", "format": "date-time" },
+              "actor": { "type": "string" },
+              "detail": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Optional run-level rollup (per-source ROI, seed/card counts, etc.)."
+    }
+  },
+  "$defs": {
+    "manifestEntry": {
+      "type": "object",
+      "required": [
+        "artifactType",
+        "sourceId",
+        "artifactUri",
+        "path",
+        "sha256",
+        "size",
+        "createdAt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "artifactType": {
+          "type": "string",
+          "enum": [
+            "raw-page",
+            "harvested-page",
+            "evidence-seed",
+            "evidence-card",
+            "anchor-passage",
+            "proposal",
+            "scoreboard",
+            "telemetry",
+            "manifest",
+            "run"
+          ]
+        },
+        "sourceId": { "type": "string" },
+        "shardId": { "type": ["string", "null"] },
+        "roundId": { "type": ["string", "null"] },
+        "corpusId": { "type": ["string", "null"] },
+        "layerId": { "type": ["string", "null"] },
+        "artifactUri": {
+          "type": "string",
+          "pattern": "^atm://lake/[^/]+/sources/[^/]+/[^/]+/.+"
+        },
+        "path": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "size": { "type": "integer", "minimum": 0 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "compression": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "format": { "type": "string", "enum": ["none", "zstd", "gzip"] },
+            "level": { "type": ["integer", "null"] },
+            "uncompressedSize": { "type": ["integer", "null"] }
+          }
+        },
+        "retentionTier": { "type": "string", "enum": ["hot", "cold", "archive", "expired"] },
+        "bodyStart": { "type": ["integer", "null"] },
+        "bodyEnd": { "type": ["integer", "null"] },
+        "linkedResidualProposalId": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
