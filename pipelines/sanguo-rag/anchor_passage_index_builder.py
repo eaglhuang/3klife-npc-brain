@@ -16,6 +16,7 @@ from typing import Any, Iterator
 from urllib.parse import quote, urlsplit
 
 from anchor_corpus_registry import load_anchor_corpus_registry
+from propose_body_boundary_residual_cleanup import build_body_boundary_residual_cleanup_proposals
 from repo_layout import resolve_repo_root
 
 REPO_ROOT = resolve_repo_root(__file__)
@@ -876,6 +877,12 @@ def build_anchor_index(
         total_passages += len(page_passages)
         print(f"[OK] harvested-pages: {len(page_passages)} passages -> {out_path}")
 
+    residual_cleanup_summary = build_body_boundary_residual_cleanup_proposals(
+        pages_paths=page_paths,
+        source_payload=source_payload,
+        output_root=out_root,
+    )
+
     summary = {
         "schemaVersion": PASSAGE_INDEX_SCHEMA,
         "generatedAt": utc_now(),
@@ -900,6 +907,7 @@ def build_anchor_index(
             "configuredFileNames": string_list(policy.get("bodyBoundaryTelemetryFileNames")),
             "matchFields": string_list(policy.get("bodyBoundaryTelemetryMatchFields")),
         },
+        "bodyBoundaryResidualProposals": residual_cleanup_summary,
     }
     write_json(out_root / "index-summary.json", summary)
     return summary

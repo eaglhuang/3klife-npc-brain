@@ -32,6 +32,36 @@
     "bodyBoundaryTelemetryMatchFields": ["pageId", "textHash", "url", "textPath"],
     "bodyBoundaryTelemetryRequireTextHash": true
   },
+  "bodyBoundaryResidualProposal": {
+    "enabled": true,
+    "outputSubdir": "body-boundary-residual-proposals",
+    "proposalFileName": "body-boundary-residual-cleanup-proposals.jsonl",
+    "observationFileName": "body-boundary-residual-observations.jsonl",
+    "summaryFileName": "body-boundary-residual-cleanup-summary.json",
+    "tailWindowChars": 900,
+    "minTailRelativeOffset": 0.55,
+    "minCandidateChars": 6,
+    "maxCandidateChars": 80,
+    "tokenNgramSizes": [2, 3, 4, 5, 6],
+    "minSupportPageCount": 2,
+    "minDistinctSourceCount": 1,
+    "maxProposals": 50,
+    "maxSampleContexts": 5,
+    "contextChars": 80,
+    "tailOffsetSort": "earliest",
+    "excludeExistingRuleMarkers": true,
+    "targetRulePath": "data/sanguo/rules/rule-page-text-cleanup.jsonl",
+    "suggestedTargets": [
+      {
+        "extractor": "harvestedPage",
+        "constantName": "BODY_TAIL_MARKERS"
+      },
+      {
+        "extractor": "genericPassage",
+        "constantName": "TAIL_TRIM_MARKERS"
+      }
+    ]
+  },
   "normalizationReplacements": [
     {
       "from": "　",
