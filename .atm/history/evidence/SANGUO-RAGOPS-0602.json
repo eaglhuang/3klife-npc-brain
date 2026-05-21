@@ -1,25 +1,61 @@
 {
   "schemaVersion": "atm.evidence.v0.1",
   "workItemId": "SANGUO-RAGOPS-0602",
-  "status": "open",
+  "status": "closed",
   "createdAt": "2026-05-21T00:00:00+08:00",
-  "summary": "Task opened for adding an opt-in repository writer seam to run_full_roster_convergence_loop.py while preserving canonical JSONL defaults and no-write semantics.",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "Opt-in evidence repository write seam delivered. convergence_evidence_seam.py implements ConvergenceRepoSeam.from_policy() (disabled unless SANGUO_RAG_CONVERGENCE_REPO_ENABLED=1). Seam writes evidence_cards + source_runs per round, pipeline_runs on run completion. All errors go to _convergence-repo-error-ledger.jsonl; loop never aborts. run_full_roster_convergence_loop.py patched at 3 injection points with 0 breaking changes to canonical defaults. Smoke 6/6 pass.",
   "expectedEvidence": [
     "repository writer seam implementation",
     "no-write preview ledger",
     "repository error ledger",
     "smoke fixture proving default canonical behavior is unchanged"
   ],
-  "artifacts": [],
-  "acceptanceMapping": [],
+  "artifacts": [
+    {
+      "kind": "implementation",
+      "path": "pipelines/sanguo-rag/convergence_evidence_seam.py",
+      "description": "ConvergenceRepoSeam class. from_policy() reads policy-convergence-evidence-repo.json + env vars. write_round() coerces evidence_cards + source_runs; write_run_summary() coerces pipeline_runs. All errors logged to error ledger, never abort. close() is idempotent."
+    },
+    {
+      "kind": "patch",
+      "path": "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+      "description": "3 injection points: (1) _build_convergence_repo_seam() helper after imports; (2) evidence_repo_seam instantiation after rounds=[]; (3) write_round() call before rounds.append(); (4) write_run_summary()+close() after summary JSON written."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/run_full_roster_convergence_loop_repository_smoke_test.py",
+      "description": "6 tests: disabled-by-default, enabled-dry-run, write-round-dry-run (card_written=3), write-run-summary-dry-run, no-jsonl-side-effects, close-idempotent. All pass."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "Writer seam sends rows to EvidenceRepository only when opt-in enabled",
+      "evidence": "ConvergenceRepoSeam.from_policy(): enabled=False when SANGUO_RAG_CONVERGENCE_REPO_ENABLED!=1; test disabled-by-default PASS"
+    },
+    {
+      "criterion": "Default execution JSONL canonical; zero PostgreSQL writes without opt-in",
+      "evidence": "test no-jsonl-side-effects PASS; _state/ dir not created in dry-run postgres mode"
+    },
+    {
+      "criterion": "All no-write / dry-run paths produce zero repository side effects",
+      "evidence": "test no-jsonl-side-effects PASS; SANGUO_RAG_CONVERGENCE_REPO_DRY_RUN default='1'"
+    },
+    {
+      "criterion": "Repository errors captured in error ledger, not abort",
+      "evidence": "_append_error_ledger() called on exception; continueOnError=true; loop write_round() wrapped in try/except"
+    }
+  ],
   "guards": [
     "no-write-produces-zero-repository-side-effects",
     "default-mode-remains-jsonl-canonical",
     "repository-errors-captured-not-swallowed",
-    "no-partial-canonical-mutation-on-repository-failure"
+    "no-partial-canonical-mutation-on-repository-failure",
+    "canonicalWrites-always-false",
+    "smoke-6-of-6-pass"
   ],
   "nextActions": [
-    "Wait for SANGUO-RAGOPS-0601 contract before patching the convergence runner.",
-    "Add smoke tests before enabling dual-write rehearsal."
+    "SANGUO-RAGOPS-0603: integrate EvidenceManifest writing and resume scan into convergence loop",
+    "SANGUO-RAGOPS-0604: parity rehearsal gate"
   ]
 }

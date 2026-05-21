@@ -23,6 +23,36 @@ from sanguo_governance_loader import (
 )
 
 
+def _build_convergence_repo_seam(repo_root: Path) -> Any:
+    """Lazily import and build the evidence repository write seam (SANGUO-RAGOPS-0602).
+
+    Returns a no-op seam object when SANGUO_RAG_CONVERGENCE_REPO_ENABLED is not '1'.
+    Never raises — import/build errors are caught and a disabled seam returned.
+    """
+    try:
+        from convergence_evidence_seam import ConvergenceRepoSeam  # type: ignore[import]
+        return ConvergenceRepoSeam.from_policy(repo_root=repo_root)
+    except Exception as exc:  # pragma: no cover
+        print(f"[run_full_roster_convergence_loop] evidence seam unavailable: {exc}")
+
+        class _NullSeam:
+            enabled = False
+
+            def write_round(self, **_: Any) -> list:
+                return []
+
+            def write_run_summary(self, **_: Any) -> None:
+                return None
+
+            def summary(self) -> dict:
+                return {"enabled": False}
+
+            def close(self) -> None:
+                pass
+
+        return _NullSeam()
+
+
 REPO_ROOT = resolve_repo_root(__file__)
 PIPELINE_ROOT = pipeline_root(REPO_ROOT)
 NPC_BRAIN_ROOT = resolve_npc_brain_root(REPO_ROOT)
@@ -5114,6 +5144,7 @@ def main() -> int:
     )
 
     rounds: list[dict[str, Any]] = []
+    evidence_repo_seam = _build_convergence_repo_seam(REPO_ROOT)  # SANGUO-RAGOPS-0602 opt-in seam
     command_count = 0
     command_failures = 0
     stop_reason: str | None = None
@@ -5364,6 +5395,15 @@ def main() -> int:
             round_snapshot["runtimeRefBlitzCarryReason"] = "precision-carry-has-priority"
 
         round_snapshot["eventsOutputPath"] = repo_relative(effective_events_path)
+
+        # SANGUO-RAGOPS-0602: opt-in evidence repository round write (no-op when disabled)
+        evidence_repo_seam.write_round(
+            round_info=round_info,
+            run_id=args.run_id,
+            run_root=run_root,
+            repo_root=REPO_ROOT,
+        )
+
         rounds.append(round_snapshot)
         baseline_manifest = {"paths": dict(round_info)}
         carry_forward_external_artifacts = merge_external_artifacts(
@@ -5764,6 +5804,17 @@ def main() -> int:
     }
     write_json(summary_json_path, summary_payload)
     summary_md_path.write_text(render_summary_md(summary_payload), encoding="utf-8")
+
+    # SANGUO-RAGOPS-0602: opt-in evidence repository run-level write + close
+    evidence_repo_seam.write_run_summary(summary_payload=summary_payload, run_root=run_root)
+    seam_summary = evidence_repo_seam.summary()
+    evidence_repo_seam.close()
+    if seam_summary.get("enabled"):
+        print(
+            "[run_full_roster_convergence_loop] evidence-repo-seam "
+            f"mode={seam_summary.get('mode')} dryRun={seam_summary.get('dryRun')} "
+            f"errors={seam_summary.get('errorCount')}"
+        )
 
     print(f"[run_full_roster_convergence_loop] wrote {summary_json_path}")
     print(f"[run_full_roster_convergence_loop] wrote {summary_md_path}")
