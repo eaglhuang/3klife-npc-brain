@@ -1,0 +1,122 @@
+{
+  "schemaId": "atm.atomCallsiteInventory",
+  "specVersion": "0.1.0",
+  "generatedAt": "2026-05-20T20:48:04.872Z",
+  "catalog": [
+    {
+      "kind": "atom",
+      "id": "ATM-NPCBRAIN-0001",
+      "refName": "fullRosterConvergenceEntryAdapterAtom",
+      "logicalName": "full-roster-convergence.atm-npcbrain-0001",
+      "purpose": "Member atom for full-roster-convergence: entrypoint.",
+      "sourcePaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "members": [],
+      "entrypoints": []
+    },
+    {
+      "kind": "atom",
+      "id": "ATM-NPCBRAIN-0002",
+      "refName": "fullRosterConvergenceSeedPipelineAtom",
+      "logicalName": "full-roster-convergence.atm-npcbrain-0002",
+      "purpose": "Member atom for full-roster-convergence: step 2.",
+      "sourcePaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "members": [],
+      "entrypoints": []
+    },
+    {
+      "kind": "atom",
+      "id": "ATM-NPCBRAIN-0003",
+      "refName": "fullRosterConvergenceExternalSummaryAtom",
+      "logicalName": "full-roster-convergence.atm-npcbrain-0003",
+      "purpose": "Member atom for full-roster-convergence: step 3.",
+      "sourcePaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "members": [],
+      "entrypoints": []
+    },
+    {
+      "kind": "atom",
+      "id": "ATM-NPCBRAIN-0004",
+      "refName": "fullRosterConvergencePrecisionLaneAtom",
+      "logicalName": "full-roster-convergence.atm-npcbrain-0004",
+      "purpose": "Member atom for full-roster-convergence: step 4.",
+      "sourcePaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "members": [],
+      "entrypoints": []
+    },
+    {
+      "kind": "atom",
+      "id": "ATM-NPCBRAIN-0005",
+      "refName": "fullRosterConvergenceRoundValidatorAtom",
+      "logicalName": "full-roster-convergence.atm-npcbrain-0005",
+      "purpose": "Member atom for full-roster-convergence: step 5.",
+      "sourcePaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "members": [],
+      "entrypoints": []
+    },
+    {
+      "kind": "atom",
+      "id": "ATM-NPCBRAIN-0006",
+      "refName": "fullRosterConvergenceArtifactWriterAtom",
+      "logicalName": "full-roster-convergence.atm-npcbrain-0006",
+      "purpose": "Member atom for full-roster-convergence: step 6.",
+      "sourcePaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "members": [],
+      "entrypoints": []
+    },
+    {
+      "kind": "atom",
+      "id": "ATM-NPCBRAIN-0007",
+      "refName": "fullRosterConvergenceRollbackAdapterAtom",
+      "logicalName": "full-roster-convergence.atm-npcbrain-0007",
+      "purpose": "Member atom for full-roster-convergence: final step.",
+      "sourcePaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "members": [],
+      "entrypoints": []
+    },
+    {
+      "kind": "map",
+      "id": "ATM-MAP-0001",
+      "refName": "fullRosterConvergenceGovernanceMap",
+      "logicalName": "full-roster-convergence",
+      "purpose": "Readable map ref for atomic_workbench/maps/ATM-MAP-0001/map.spec.json.",
+      "sourcePaths": [
+        "atomic_workbench/maps/ATM-MAP-0001/map.spec.json",
+        "atomic_workbench/maps/ATM-MAP-0001/map.test.report.json"
+      ],
+      "members": [
+        "ATM-NPCBRAIN-0001",
+        "ATM-NPCBRAIN-0002",
+        "ATM-NPCBRAIN-0003",
+        "ATM-NPCBRAIN-0004",
+        "ATM-NPCBRAIN-0005",
+        "ATM-NPCBRAIN-0006",
+        "ATM-NPCBRAIN-0007"
+      ],
+      "entrypoints": [
+        "ATM-NPCBRAIN-0001"
+      ]
+    }
+  ],
+  "callsites": []
+}
