@@ -133,6 +133,95 @@ parity 失敗?
 
 詳細命令見 `pipelines/sanguo-rag/backfill-rollback-instructions.zh-TW.md`。
 
+## M6 收斂循環整合（SANGUO-RAGOPS-060x）
+
+> 新增於 2026-05-21。涵蓋 SANGUO-RAGOPS-0601 至 0606。
+
+### Opt-in 開關
+
+收斂循環（`run_full_roster_convergence_loop.py`）的證據倉儲寫入**預設關閉**。  
+啟用方式：設定 env var `SANGUO_RAG_CONVERGENCE_REPO_ENABLED=1`。
+
+| 變數 | 用途 | 預設 |
+|---|---|---|
+| `SANGUO_RAG_CONVERGENCE_REPO_ENABLED` | 收斂循環倉儲寫入開關 | `0`（關閉） |
+| `SANGUO_RAG_CONVERGENCE_REPO_MODE` | 後端模式（`jsonl`/`postgres`/`dual`） | `postgres` |
+| `SANGUO_RAG_CONVERGENCE_REPO_DRY_RUN` | dry-run flag（`1`=不寫入） | `1` |
+
+**紅線**：`SANGUO_RAG_CONVERGENCE_REPO_ENABLED` 預設為 `0`；開啟前須滿足 C1–C4 checklist。
+
+### M6 pre-flight gate
+
+在啟用任何 convergence loop 倉儲寫入之前，先通過以下 gate：
+
+| Gate | 命令 | 通過條件 |
+|---|---|---|
+| 收斂倉儲 seam smoke | `python -B pipelines/sanguo-rag/run_full_roster_convergence_loop_repository_smoke_test.py` | 6/6 PASS |
+| 收斂 manifest smoke | `python -B pipelines/sanguo-rag/convergence_manifest_smoke_test.py` | 6/6 PASS |
+| 收斂 parity rehearsal smoke | `python -B pipelines/sanguo-rag/convergence_repo_parity_rehearsal_smoke_test.py` | 3/3 PASS |
+| 收斂 vector smoke | `python -B pipelines/sanguo-rag/convergence_vector_smoke_test.py` | 6/6 PASS |
+| 既有 evidence backend smoke | 見「Smoke command 清單」 | 全部 PASS |
+
+### 啟用流程
+
+1. 確認 M6 pre-flight gate 全部通過。
+2. 取得正式 `SANGUO_RAG_PG_DSN`（operator 注入，不入 repo）。
+3. 先以 dry-run 模式試跑：
+   ```bash
+   SANGUO_RAG_CONVERGENCE_REPO_ENABLED=1 \
+   SANGUO_RAG_CONVERGENCE_REPO_DRY_RUN=1 \
+   python -B pipelines/sanguo-rag/run_full_roster_convergence_loop.py \
+     --baseline-manifest <path> --dry-run
+   ```
+4. 確認 `_convergence-repo-error-ledger.jsonl` 為空或無 fatal error。
+5. 執行 parity rehearsal 確認 `parityOk=true`：
+   ```bash
+   python -B pipelines/sanguo-rag/run_convergence_repo_parity_rehearsal.py \
+     --baseline-manifest <path>
+   ```
+6. 執行 vector smoke linkage 確認 `ok=true`：
+   ```bash
+   python -B pipelines/sanguo-rag/run_convergence_vector_smoke.py \
+     --baseline-manifest <path>
+   ```
+7. 滿足 checklist C1–C4 後，移除 `SANGUO_RAG_CONVERGENCE_REPO_DRY_RUN=1` 執行正式寫入。
+
+### 停用與回滾
+
+| 情況 | 動作 |
+|---|---|
+| 立即停用 seam | 設 `SANGUO_RAG_CONVERGENCE_REPO_ENABLED=0`（或刪除 env var），重啟 loop |
+| 已寫入的 PG rows 要清除 | `psql -f pipelines/sanguo-rag/sql/postgres_evidence_lake_rollback.sql`（Mode 1：單一 run） |
+| `_convergence-repo-error-ledger.jsonl` 有錯誤 | 讀取錯誤 JSON，確認 `error` 字段，決定是否執行 PG rollback |
+| parity 失敗（`parityOk=false`） | 停用 seam → 走 Mode A rollback → 重新跑 parity rehearsal 確認 |
+| vector smoke 失敗 | 確認 namespace 後綴為 `*-smoke`；失敗不影響 JSONL canonical |
+
+JSONL canonical export 永遠是 source of truth；convergence loop 關閉倉儲 seam 後 JSONL 寫入仍持續。
+
+### M6 收斂循環 smoke 命令
+
+```bash
+# 收斂倉儲 seam smoke（6/6）
+python -B pipelines/sanguo-rag/run_full_roster_convergence_loop_repository_smoke_test.py
+
+# 收斂 manifest smoke（6/6）
+python -B pipelines/sanguo-rag/convergence_manifest_smoke_test.py
+
+# 收斂 parity rehearsal（3/3）
+python -B pipelines/sanguo-rag/convergence_repo_parity_rehearsal_smoke_test.py
+
+# 收斂 vector smoke linkage（6/6）
+python -B pipelines/sanguo-rag/convergence_vector_smoke_test.py
+
+# 收斂 parity rehearsal（帶 baseline，dry-run）
+python -B pipelines/sanguo-rag/run_convergence_repo_parity_rehearsal.py \
+  --baseline-manifest local/codex-smoke/knowledge-growth/<run-id>/baseline-manifest.output.json
+
+# 收斂 vector smoke linkage（帶 baseline）
+python -B pipelines/sanguo-rag/run_convergence_vector_smoke.py \
+  --baseline-manifest local/codex-smoke/knowledge-growth/<run-id>/baseline-manifest.output.json
+```
+
 ## 環境變數總表（無 secret）
 
 | 變數 | 用途 | 預設 |
@@ -143,6 +232,9 @@ parity 失敗?
 | `SANGUO_RAG_PG_SCHEMA` | schema 名稱 | `sanguo_rag` |
 | `SANGUO_RAG_LAKE_ROOT` | lake 根目錄 | `artifacts/data-pipeline/sanguo-rag/lake` |
 | `SANGUO_RAG_TEST_TMPDIR` | smoke 暫存根目錄 | `local/tmp/sanguo-rag-smoke` |
+| `SANGUO_RAG_CONVERGENCE_REPO_ENABLED` | 收斂循環倉儲寫入開關（M6） | `0` |
+| `SANGUO_RAG_CONVERGENCE_REPO_MODE` | 收斂循環後端模式（M6） | `postgres` |
+| `SANGUO_RAG_CONVERGENCE_REPO_DRY_RUN` | 收斂循環 dry-run（M6） | `1` |
 | Vector provider env（如 `PINECONE_API_KEY`） | 上線時 operator 注入 | 不入 repo |
 
 ## 不變式回顧
@@ -155,5 +247,5 @@ parity 失敗?
 ---
 
 **對應計畫**：`文件/三國RAG證據資料產線PostgreSQL與向量化開發計畫.md`  
-**對應 task**：`.atm/history/tasks/SANGUO-RAGOPS-0402.json`  
-**對應 evidence**：`.atm/history/evidence/SANGUO-RAGOPS-0402.json`
+**對應 task**：`.atm/history/tasks/SANGUO-RAGOPS-0402.json`（原版）、`.atm/history/tasks/SANGUO-RAGOPS-0606.json`（M6 更新）  
+**對應 evidence**：`.atm/history/evidence/SANGUO-RAGOPS-0402.json`、`.atm/history/evidence/SANGUO-RAGOPS-0606.json`

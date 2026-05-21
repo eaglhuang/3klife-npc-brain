@@ -2,7 +2,7 @@
   "schemaVersion": "cutover-promotion-checklist.v0.1",
   "description": "Machine-readable go/no-go checklist for PostgreSQL read-path cutover and vector production promotion (SANGUO-RAGOPS-0501). Initial state was 'pending' until local dev runs (3klife-postgres-dev + mock vector provider) produced evidence packets in local/cutover-evidence/. Remaining 'pending' items require operator action (production credentials, 14-day audit window, provider quota sign-off).",
   "generatedAt": "2026-05-21T00:00:00+08:00",
-  "lastUpdatedAt": "2026-05-21T07:05:00+08:00",
+  "lastUpdatedAt": "2026-05-21T08:00:00+08:00",
   "fallback": {
     "postgresMode": "jsonl",
     "vectorIngestionMode": "vector-smoke",
@@ -38,6 +38,48 @@
         {"id": "B7", "label": "policy-vector-production-rollout-plan triggers all true", "status": "pending", "evidence": "data/sanguo/policies/policy-vector-production-rollout-plan.json; requires operator + production consumer confirmation"},
         {"id": "B8", "label": "Large-run rehearsal vector-smoke mode pass x2", "status": "go", "evidence": "local/cutover-evidence/B8-rehearsal-vector-smoke/run-{1,2}/{rehearsal-report,backpressure-telemetry-ledger}.json; rounds=8 totalNewEvidence=248 each"}
       ]
+    },
+    {
+      "id": "convergence-loop-integration",
+      "label": "M6 convergence loop evidence repository opt-in integration",
+      "items": [
+        {
+          "id": "C1",
+          "label": "Convergence parity rehearsal ok=true x3 consecutive runs",
+          "status": "pending",
+          "evidence": "Run run_convergence_repo_parity_rehearsal.py x3 against real baseline manifests; evidence to local/cutover-evidence/C1-convergence-parity/run-{1,2,3}.json"
+        },
+        {
+          "id": "C2",
+          "label": "Convergence vector smoke linkage ok=true x2 runs",
+          "status": "pending",
+          "evidence": "Run run_convergence_vector_smoke.py x2 against real baseline manifests; evidence to local/cutover-evidence/C2-vector-smoke/run-{1,2}.json"
+        },
+        {
+          "id": "C3",
+          "label": "Convergence repo seam disabled-by-default verified",
+          "status": "go",
+          "evidence": "SANGUO-RAGOPS-0602; smoke test disabled-by-default PASS; SANGUO_RAG_CONVERGENCE_REPO_ENABLED default=0 confirmed"
+        },
+        {
+          "id": "C4",
+          "label": "Convergence manifest write + resume tested end-to-end",
+          "status": "go",
+          "evidence": "SANGUO-RAGOPS-0603; convergence_manifest_smoke_test.py 6/6 PASS; --check-manifest-resume flag integrated"
+        },
+        {
+          "id": "C5",
+          "label": "Budget telemetry rows validate as backpressure-telemetry-ledger.v0.1",
+          "status": "go",
+          "evidence": "SANGUO-RAGOPS-0605; convergence_vector_smoke_test.py budget-telemetry-format PASS; canonicalWrites=False confirmed"
+        },
+        {
+          "id": "C6",
+          "label": "M6 runbook updated; operator actions separated; production cutover still blocked",
+          "status": "go",
+          "evidence": "SANGUO-RAGOPS-0606; evidence-backend-runbook.zh-TW.md updated with M6 section; production seam remains off by default"
+        }
+      ]
     }
   ],
   "rollbackTriggers": {
@@ -53,6 +95,12 @@
       "production probe matchCount < minRequiredMatchCount twice consecutive",
       "production-vs-smoke sha256 drift",
       "provider quota alarm"
+    ],
+    "convergenceLoopIntegration": [
+      "convergence-repo-error-ledger.jsonl contains fatal errors",
+      "parity rehearsal parityOk=false twice consecutive",
+      "vector smoke ok=false",
+      "SANGUO_RAG_CONVERGENCE_REPO_ENABLED accidentally set to 1 in CI"
     ]
   },
   "operatorActions": {
@@ -78,6 +126,18 @@
       "reason": "policy-vector-production-rollout-plan trigger conditions require a confirmed production consumer + provider quota approval",
       "owner": "platform operator",
       "blockingFor": "Vector production namespace promotion sign-off"
+    },
+    {
+      "id": "C1",
+      "reason": "Requires 3 consecutive dry-run parity rehearsal passes against real convergence baseline manifests; needs operator to run against live pipeline output",
+      "owner": "evidence-backend operator",
+      "blockingFor": "Convergence loop repository seam production opt-in"
+    },
+    {
+      "id": "C2",
+      "reason": "Requires 2 vector smoke linkage runs against real convergence baseline manifests",
+      "owner": "evidence-backend operator",
+      "blockingFor": "Convergence loop vector smoke sign-off"
     }
   ],
   "guards": [

@@ -75,6 +75,44 @@
       ]
     },
     {
+      "id": "convergence-loop-integration",
+      "label": "M6 convergence loop evidence repository opt-in (SANGUO-RAGOPS-060x)",
+      "commands": [
+        {
+          "id": "convergence-repo-seam-smoke",
+          "command": "python -B pipelines/sanguo-rag/run_full_roster_convergence_loop_repository_smoke_test.py",
+          "expectExitCode": 0,
+          "expectedPassCount": "6/6",
+          "owners": ["evidence-backend"],
+          "note": "disabled-by-default, enabled-dry-run, write-round-dry-run, write-run-summary-dry-run, no-jsonl-side-effects, close-idempotent"
+        },
+        {
+          "id": "convergence-manifest-smoke",
+          "command": "python -B pipelines/sanguo-rag/convergence_manifest_smoke_test.py",
+          "expectExitCode": 0,
+          "expectedPassCount": "6/6",
+          "owners": ["evidence-backend"],
+          "note": "build-with-files, write-manifest, resume-scan-ok, resume-scan-hash-mismatch, resume-scan-missing-file, empty-final-paths"
+        },
+        {
+          "id": "convergence-parity-rehearsal-smoke",
+          "command": "python -B pipelines/sanguo-rag/convergence_repo_parity_rehearsal_smoke_test.py",
+          "expectExitCode": 0,
+          "expectedPassCount": "3/3",
+          "owners": ["evidence-backend"],
+          "note": "dry-run-parity-ok, empty-artifact-paths, report-schema"
+        },
+        {
+          "id": "convergence-vector-smoke",
+          "command": "python -B pipelines/sanguo-rag/convergence_vector_smoke_test.py",
+          "expectExitCode": 0,
+          "expectedPassCount": "6/6",
+          "owners": ["evidence-backend"],
+          "note": "dry-run-ok, production-namespace-blocked, prod-namespace-allowed-when-flag-set, report-schema, no-id-cards-rejected, budget-telemetry-format"
+        }
+      ]
+    },
+    {
       "id": "legacy-governance",
       "label": "Existing Sanguo governance harness",
       "commands": [
