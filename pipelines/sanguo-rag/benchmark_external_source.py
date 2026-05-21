@@ -9,9 +9,10 @@ import subprocess
 import sys
 from collections import Counter
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote, urlsplit, urlunsplit
+from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from repo_layout import pipeline_config_path, pipeline_root, resolve_npc_brain_root, resolve_repo_root
@@ -1242,6 +1243,137 @@ def normalize_request_url(url: str) -> str:
     )
 
 
+def normalize_crawl_url(url: str) -> str:
+    parts = urlsplit(url)
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, parts.query, ""))
+
+
+class LinkHrefExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.hrefs: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() != "a":
+            return
+        for name, value in attrs:
+            if name.lower() == "href" and value:
+                self.hrefs.append(str(value).strip())
+                return
+
+
+def extract_hrefs(raw_html: str) -> list[str]:
+    parser = LinkHrefExtractor()
+    try:
+        parser.feed(raw_html)
+    except Exception:
+        return list(parser.hrefs)
+    return list(parser.hrefs)
+
+
+def link_match_candidates(url: str) -> list[str]:
+    parts = urlsplit(url)
+    encoded_path = quote(parts.path, safe="/%")
+    encoded_query = quote(parts.query, safe="=&%")
+    path_query = urlunsplit(("", "", encoded_path, encoded_query, ""))
+    absolute = urlunsplit((parts.scheme, parts.netloc, encoded_path, encoded_query, ""))
+    raw_path_query = urlunsplit(("", "", parts.path, parts.query, ""))
+    return [
+        absolute,
+        normalize_crawl_url(url),
+        parts.path,
+        encoded_path,
+        path_query,
+        raw_path_query,
+        unquote(parts.path),
+        unquote(path_query),
+        unquote(raw_path_query),
+    ]
+
+
+def matches_link_patterns(url: str, patterns: list[str]) -> bool:
+    if not patterns:
+        return True
+    candidates = link_match_candidates(url)
+    for pattern in patterns:
+        try:
+            if any(re.search(pattern, candidate) for candidate in candidates):
+                return True
+        except re.error:
+            if any(pattern in candidate for candidate in candidates):
+                return True
+    return False
+
+
+def discover_policy_links(
+    *,
+    raw_html: str,
+    base_url: str,
+    link_include: list[str],
+    link_exclude: list[str],
+    same_origin: bool,
+) -> list[str]:
+    base_parts = urlsplit(base_url)
+    base_origin = (base_parts.scheme.lower(), base_parts.netloc.lower())
+    discovered: list[str] = []
+    seen: set[str] = set()
+    for href in extract_hrefs(raw_html):
+        if not href or href.startswith(("#", "javascript:", "mailto:")):
+            continue
+        absolute_url = normalize_crawl_url(urljoin(base_url, html.unescape(href)))
+        parts = urlsplit(absolute_url)
+        if parts.scheme not in {"http", "https"}:
+            continue
+        if same_origin and (parts.scheme.lower(), parts.netloc.lower()) != base_origin:
+            continue
+        if not matches_link_patterns(absolute_url, link_include):
+            continue
+        if link_exclude and matches_link_patterns(absolute_url, link_exclude):
+            continue
+        normalized = normalize_request_url(absolute_url)
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        discovered.append(normalized)
+    return discovered
+
+
+def fetch_html_document(
+    *,
+    url: str,
+    timeout_seconds: float,
+    user_agent: str,
+) -> dict[str, Any]:
+    request_url = normalize_request_url(url)
+    request = Request(
+        request_url,
+        headers={
+            "User-Agent": user_agent,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,text/plain;q=0.8,*/*;q=0.5",
+        },
+    )
+    with urlopen(request, timeout=max(timeout_seconds, 1.0)) as response:
+        content = response.read()
+        content_type = str(response.headers.get("Content-Type") or "")
+        charset = detect_charset_from_bytes(content_type, content)
+        raw_html = content.decode(charset, errors="ignore")
+        plain_text = strip_html_to_text(raw_html) if "<" in raw_html and ">" in raw_html else raw_html
+        status = int(getattr(response, "status", 0) or response.getcode() or 0)
+        final_url = normalize_crawl_url(str(getattr(response, "url", "") or request_url))
+        return {
+            "url": request_url,
+            "finalUrl": final_url,
+            "httpStatus": status,
+            "liveStatus": "ok" if status == 200 else "http-error",
+            "contentType": content_type,
+            "charset": charset,
+            "bytesRead": len(content),
+            "rawHtml": raw_html,
+            "plainText": plain_text,
+            "title": extract_title_from_html(raw_html),
+        }
+
+
 def harvest_single_page(
     *,
     source_id: str,
@@ -1356,6 +1488,185 @@ def harvest_single_page(
                 f"- URL: `{source_url}`",
                 f"- Title: {title}",
                 f"- Term Hit Count: `{page_row['termHitCount']}`",
+                f"- canonicalWrites: `{False}`",
+                "",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return summary
+
+
+def harvest_policy_via_python_fallback(
+    *,
+    source_id: str,
+    source_url: str,
+    source_row: dict[str, Any] | None,
+    harvest_policy: dict[str, Any],
+    run_root: Path,
+    timeout_seconds: float,
+    max_pages: int,
+    link_include: list[str],
+    link_exclude: list[str],
+    same_origin: bool,
+    term_hit_keywords: list[str],
+) -> dict[str, Any]:
+    harvest_root = run_root / "harvest"
+    harvest_root.mkdir(parents=True, exist_ok=True)
+    page_text_dir = harvest_root / "page-texts"
+    page_text_dir.mkdir(parents=True, exist_ok=True)
+    index_url = str(harvest_policy.get("indexUrl") or source_url)
+    index_doc = fetch_html_document(
+        url=index_url,
+        timeout_seconds=timeout_seconds,
+        user_agent="Mozilla/5.0 (3KLife Policy Benchmark Harvester)",
+    )
+    discovered_links = discover_policy_links(
+        raw_html=str(index_doc.get("rawHtml") or ""),
+        base_url=str(index_doc.get("finalUrl") or index_url),
+        link_include=link_include,
+        link_exclude=link_exclude,
+        same_origin=same_origin,
+    )
+    selected_urls = discovered_links[: max(1, max_pages)]
+    used_index_as_page = False
+    if not selected_urls:
+        selected_urls = [str(index_doc.get("finalUrl") or index_url)]
+        used_index_as_page = True
+
+    pages: list[dict[str, Any]] = []
+    errors: list[dict[str, Any]] = []
+    for page_index, page_url in enumerate(selected_urls, start=1):
+        try:
+            if used_index_as_page and page_index == 1:
+                doc = dict(index_doc)
+            else:
+                doc = fetch_html_document(
+                    url=page_url,
+                    timeout_seconds=timeout_seconds,
+                    user_agent="Mozilla/5.0 (3KLife Policy Benchmark Harvester)",
+                )
+            plain_text = str(doc.get("plainText") or "")
+            title = str(doc.get("title") or source_id)
+            text_hash = f"sha256:{stable_sha256_short(plain_text)}"
+            resolved_url = str(doc.get("finalUrl") or page_url)
+            page_text_path = page_text_dir / f"{page_index:04d}-{stable_sha256_short(resolved_url)}.txt"
+            page_text_path.write_text(
+                "\n".join(
+                    [
+                        f"sourceId: {source_id}",
+                        f"url: {resolved_url}",
+                        f"title: {title}",
+                        f"textHash: {text_hash}",
+                        "canonicalWrites: false",
+                        "",
+                        plain_text,
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            hit_count = count_term_hits(plain_text, term_hit_keywords)
+            pages.append(
+                {
+                    "pageId": f"page:{source_id}:{stable_sha256_short(resolved_url)}",
+                    "sourceId": source_id,
+                    "url": resolved_url,
+                    "discoveredFrom": index_url,
+                    "pageIndex": page_index,
+                    "httpStatus": int(doc.get("httpStatus") or 0),
+                    "liveStatus": str(doc.get("liveStatus") or "ok"),
+                    "contentType": str(doc.get("contentType") or ""),
+                    "charset": str(doc.get("charset") or ""),
+                    "bytesRead": int(doc.get("bytesRead") or 0),
+                    "title": title,
+                    "termHitCount": hit_count,
+                    "relevanceLevel": "likely-relevant" if hit_count >= 3 else "possible-relevant",
+                    "textHash": text_hash,
+                    "textPath": str(page_text_path.resolve()),
+                    "snippet": plain_text[:800],
+                    "textLength": len(plain_text),
+                    "canonicalWrites": False,
+                }
+            )
+        except Exception as exc:
+            errors.append(
+                {
+                    "sourceId": source_id,
+                    "url": page_url,
+                    "pageIndex": page_index,
+                    "errorType": type(exc).__name__,
+                    "message": str(exc),
+                    "canonicalWrites": False,
+                }
+            )
+
+    pages_jsonl = harvest_root / "pages.jsonl"
+    pages_jsonl.write_text(
+        "".join(json.dumps(page, ensure_ascii=False) + "\n" for page in pages),
+        encoding="utf-8",
+    )
+    errors_jsonl = harvest_root / "fetch-errors.jsonl"
+    errors_jsonl.write_text(
+        "".join(json.dumps(error, ensure_ascii=False) + "\n" for error in errors),
+        encoding="utf-8",
+    )
+    boundary_summary = materialize_body_boundary_telemetry(
+        harvest_root=harvest_root,
+        source_row=source_row,
+        term_hit_keywords=term_hit_keywords,
+    )
+    summary = {
+        "version": "1.1.0",
+        "generatedAt": utc_now(),
+        "mode": "policy-harvest-python-fallback",
+        "sourceId": source_id,
+        "canonicalWrites": False,
+        "metrics": {
+            "discoveredLinkCount": len(discovered_links),
+            "selectedLinkCount": len(selected_urls),
+            "fetchedPageCount": len(pages),
+            "relevantPageCount": sum(1 for page in pages if int(page.get("termHitCount") or 0) > 0),
+            "errorCount": len(errors),
+        },
+        "outputs": {
+            "pagesJsonl": str(pages_jsonl.resolve()),
+            "errorsJsonl": str(errors_jsonl.resolve()),
+            "summaryJson": str((harvest_root / "harvest-summary.json").resolve()),
+            "summaryMarkdown": str((harvest_root / "harvest-summary.zh-TW.md").resolve()),
+            "pageTextDir": str(page_text_dir.resolve()),
+        },
+        "discovery": {
+            "indexUrl": index_url,
+            "finalIndexUrl": str(index_doc.get("finalUrl") or index_url),
+            "linkInclude": list(link_include),
+            "linkExclude": list(link_exclude),
+            "sameOrigin": same_origin,
+            "usedIndexAsFallbackPage": used_index_as_page,
+        },
+        "samplePages": [
+            {
+                "title": page.get("title"),
+                "url": page.get("url"),
+                "termHitCount": page.get("termHitCount"),
+            }
+            for page in pages[:10]
+        ],
+    }
+    attach_body_boundary_summary(summary, boundary_summary)
+    write_json(harvest_root / "harvest-summary.json", summary)
+    (harvest_root / "harvest-summary.zh-TW.md").write_text(
+        "\n".join(
+            [
+                "# Policy Harvest Python Fallback Summary",
+                "",
+                f"- Source: `{source_id}`",
+                f"- Index URL: `{index_url}`",
+                f"- Discovered Links: `{len(discovered_links)}`",
+                f"- Selected Pages: `{len(selected_urls)}`",
+                f"- Fetched Pages: `{len(pages)}`",
+                f"- Error Count: `{len(errors)}`",
                 f"- canonicalWrites: `{False}`",
                 "",
             ]
@@ -1557,21 +1868,27 @@ def harvest_source(
         return attach_body_boundary_summary(harvest_summary, boundary_summary), []
     except Exception as exc:
         try:
-            fallback = harvest_single_page(
+            term_keywords = normalize_term_hit_keywords((source_row or {}).get("termHitKeywords"))
+            fallback = harvest_policy_via_python_fallback(
                 source_id=source_id,
-                source_url=str(harvest_policy.get("indexUrl") or source_url),
+                source_url=source_url,
+                source_row=source_row,
+                harvest_policy=harvest_policy,
                 run_root=run_root,
                 timeout_seconds=args.timeout_seconds,
-                source_row=source_row,
-                term_hit_keywords=normalize_term_hit_keywords((source_row or {}).get("termHitKeywords")),
+                max_pages=max_pages,
+                link_include=link_include,
+                link_exclude=link_exclude,
+                same_origin=same_origin,
+                term_hit_keywords=term_keywords,
             )
-            fallback["harvestBackend"] = "python-single-page-fallback"
+            fallback["harvestBackend"] = "python-policy-fallback"
             fallback["fallbackReason"] = f"{type(exc).__name__}: {exc}"
             return fallback, []
         except Exception as fallback_exc:
             return None, [
                 f"harvester-failed:{type(exc).__name__}",
-                f"python-single-page-fallback-failed:{type(fallback_exc).__name__}",
+                f"python-policy-fallback-failed:{type(fallback_exc).__name__}",
             ]
 
 

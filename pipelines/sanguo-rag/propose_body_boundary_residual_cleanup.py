@@ -39,6 +39,13 @@ DEFAULT_POLICY: dict[str, Any] = {
     "contextChars": 80,
     "tailOffsetSort": "earliest",
     "excludeExistingRuleMarkers": True,
+    "suppressContainedMarkers": True,
+    "containedMarkerMinLengthRatio": 0.45,
+    "suppressOverlappingMarkers": True,
+    "overlapMarkerSimilarityMin": 0.65,
+    "overlapMarkerNgramSize": 2,
+    "suppressSupportTailBucketDuplicates": True,
+    "supportTailBucketSize": 0.004,
     "targetRulePath": "",
     "suggestedTargets": [],
 }
@@ -267,6 +274,56 @@ def normalize_marker_text(raw_text: str) -> str:
     return re.sub(r"\s+", " ", raw_text).strip(" \t\r\n:;,.!?|/-_")
 
 
+def marker_overlap_key(text: str) -> str:
+    return re.sub(r"\s+", "", normalize_marker_text(text))
+
+
+def marker_ngram_set(text: str, ngram_size: int) -> set[str]:
+    key = marker_overlap_key(text)
+    if not key:
+        return set()
+    n = max(int(ngram_size or 1), 1)
+    if len(key) <= n:
+        return {key}
+    return {key[idx : idx + n] for idx in range(0, len(key) - n + 1)}
+
+
+def marker_overlap_similarity(left: str, right: str, *, ngram_size: int) -> float:
+    left_set = marker_ngram_set(left, ngram_size)
+    right_set = marker_ngram_set(right, ngram_size)
+    if not left_set or not right_set:
+        return 0.0
+    return len(left_set & right_set) / max(min(len(left_set), len(right_set)), 1)
+
+
+def is_redundant_marker(
+    marker: str,
+    selected_markers: list[str],
+    *,
+    min_length_ratio: float,
+    suppress_overlap: bool,
+    overlap_similarity_min: float,
+    overlap_ngram_size: int,
+) -> bool:
+    marker_key = marker_overlap_key(marker)
+    if not marker_key:
+        return False
+    for selected in selected_markers:
+        selected_key = marker_overlap_key(selected)
+        if not selected_key:
+            continue
+        if marker_key in selected_key or selected_key in marker_key:
+            shorter = min(len(marker_key), len(selected_key))
+            longer = max(len(marker_key), len(selected_key), 1)
+            if shorter / longer >= min_length_ratio:
+                return True
+        if suppress_overlap:
+            similarity = marker_overlap_similarity(marker, selected, ngram_size=overlap_ngram_size)
+            if similarity >= overlap_similarity_min:
+                return True
+    return False
+
+
 def token_offsets(text: str) -> list[tuple[str, int, int]]:
     return [(match.group(0), match.start(), match.end()) for match in TOKEN_RE.finditer(text)]
 
@@ -382,13 +439,35 @@ def build_proposals_from_observations(
     *,
     source_payload: dict[str, Any],
     policy: dict[str, Any],
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     existing_markers = existing_cleanup_markers(source_payload, policy) if bool(policy.get("excludeExistingRuleMarkers", True)) else set()
     min_support = max(int(policy.get("minSupportPageCount") or 1), 1)
     min_sources = max(int(policy.get("minDistinctSourceCount") or 1), 1)
     max_samples = max(int(policy.get("maxSampleContexts") or 1), 1)
     max_proposals = max(int(policy.get("maxProposals") or 0), 0)
     prefer_latest_tail = str(policy.get("tailOffsetSort") or "earliest").strip().lower() == "latest"
+    suppress_contained = bool(policy.get("suppressContainedMarkers", True))
+    try:
+        contained_min_ratio = float(policy.get("containedMarkerMinLengthRatio") or 0.45)
+    except (TypeError, ValueError):
+        contained_min_ratio = 0.45
+    contained_min_ratio = min(max(contained_min_ratio, 0.0), 1.0)
+    suppress_overlap = bool(policy.get("suppressOverlappingMarkers", True))
+    try:
+        overlap_similarity_min = float(policy.get("overlapMarkerSimilarityMin") or 0.65)
+    except (TypeError, ValueError):
+        overlap_similarity_min = 0.65
+    overlap_similarity_min = min(max(overlap_similarity_min, 0.0), 1.0)
+    try:
+        overlap_ngram_size = max(int(policy.get("overlapMarkerNgramSize") or 2), 1)
+    except (TypeError, ValueError):
+        overlap_ngram_size = 2
+    suppress_support_tail_bucket = bool(policy.get("suppressSupportTailBucketDuplicates", True))
+    try:
+        support_tail_bucket_size = float(policy.get("supportTailBucketSize") or 0.004)
+    except (TypeError, ValueError):
+        support_tail_bucket_size = 0.004
+    support_tail_bucket_size = max(support_tail_bucket_size, 0.0001)
     buckets: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in observations:
         marker = str(row.get("candidateMarker") or "").strip()
@@ -446,6 +525,38 @@ def build_proposals_from_observations(
             str(row.get("suggestedMarker") or ""),
         )
     )
+    pre_filter_proposal_count = len(proposals)
+    suppressed_contained_count = 0
+    suppressed_support_tail_bucket_count = 0
+    if suppress_contained:
+        filtered: list[dict[str, Any]] = []
+        selected_markers: list[str] = []
+        selected_support_tail_buckets: set[tuple[tuple[str, ...], int, int]] = set()
+        for proposal in proposals:
+            marker = str(proposal.get("suggestedMarker") or "").strip()
+            support_tail_bucket = (
+                tuple(str(item) for item in proposal.get("sourceIds") or []),
+                int(proposal.get("supportPageCount") or 0),
+                int(round(float(proposal.get("avgTailRelativeOffset") or 0.0) / support_tail_bucket_size)),
+            )
+            if suppress_support_tail_bucket and support_tail_bucket in selected_support_tail_buckets:
+                suppressed_support_tail_bucket_count += 1
+                suppressed_contained_count += 1
+                continue
+            if is_redundant_marker(
+                marker,
+                selected_markers,
+                min_length_ratio=contained_min_ratio,
+                suppress_overlap=suppress_overlap,
+                overlap_similarity_min=overlap_similarity_min,
+                overlap_ngram_size=overlap_ngram_size,
+            ):
+                suppressed_contained_count += 1
+                continue
+            filtered.append(proposal)
+            selected_markers.append(marker)
+            selected_support_tail_buckets.add(support_tail_bucket)
+        proposals = filtered
     if max_proposals:
         proposals = proposals[:max_proposals]
     bucket_rows.sort(
@@ -457,7 +568,21 @@ def build_proposals_from_observations(
             str(row.get("candidateMarker") or ""),
         )
     )
-    return proposals, bucket_rows
+    proposal_filter_summary = {
+        "preFilterProposalCount": pre_filter_proposal_count,
+        "suppressedContainedMarkerCount": suppressed_contained_count,
+        "suppressedRedundantMarkerCount": suppressed_contained_count,
+        "suppressedSupportTailBucketDuplicateCount": suppressed_support_tail_bucket_count,
+        "postFilterProposalCount": len(proposals),
+        "suppressContainedMarkers": suppress_contained,
+        "containedMarkerMinLengthRatio": contained_min_ratio,
+        "suppressOverlappingMarkers": suppress_overlap,
+        "overlapMarkerSimilarityMin": overlap_similarity_min,
+        "overlapMarkerNgramSize": overlap_ngram_size,
+        "suppressSupportTailBucketDuplicates": suppress_support_tail_bucket,
+        "supportTailBucketSize": support_tail_bucket_size,
+    }
+    return proposals, bucket_rows, proposal_filter_summary
 
 
 def build_body_boundary_residual_cleanup_proposals(
@@ -531,7 +656,11 @@ def build_body_boundary_residual_cleanup_proposals(
             }
         )
 
-    proposals, candidate_buckets = build_proposals_from_observations(observations, source_payload=payload, policy=policy)
+    proposals, candidate_buckets, proposal_filter_summary = build_proposals_from_observations(
+        observations,
+        source_payload=payload,
+        policy=policy,
+    )
     write_jsonl(proposal_path, proposals)
     write_jsonl(observation_path, candidate_buckets)
     summary = {
@@ -543,6 +672,7 @@ def build_body_boundary_residual_cleanup_proposals(
         "rawObservationCount": len(observations),
         "candidateBucketCount": len(candidate_buckets),
         "proposalCount": len(proposals),
+        "proposalFilterSummary": proposal_filter_summary,
         "proposalPath": str(proposal_path.resolve()),
         "observationPath": str(observation_path.resolve()),
         "policy": {
@@ -555,6 +685,13 @@ def build_body_boundary_residual_cleanup_proposals(
             "minDistinctSourceCount": policy.get("minDistinctSourceCount"),
             "tailOffsetSort": policy.get("tailOffsetSort"),
             "excludeExistingRuleMarkers": policy.get("excludeExistingRuleMarkers"),
+            "suppressContainedMarkers": policy.get("suppressContainedMarkers"),
+            "containedMarkerMinLengthRatio": policy.get("containedMarkerMinLengthRatio"),
+            "suppressOverlappingMarkers": policy.get("suppressOverlappingMarkers"),
+            "overlapMarkerSimilarityMin": policy.get("overlapMarkerSimilarityMin"),
+            "overlapMarkerNgramSize": policy.get("overlapMarkerNgramSize"),
+            "suppressSupportTailBucketDuplicates": policy.get("suppressSupportTailBucketDuplicates"),
+            "supportTailBucketSize": policy.get("supportTailBucketSize"),
         },
         "canonicalWrites": False,
     }

@@ -50,6 +50,13 @@
     "contextChars": 80,
     "tailOffsetSort": "earliest",
     "excludeExistingRuleMarkers": true,
+    "suppressContainedMarkers": true,
+    "containedMarkerMinLengthRatio": 0.45,
+    "suppressOverlappingMarkers": true,
+    "overlapMarkerSimilarityMin": 0.65,
+    "overlapMarkerNgramSize": 2,
+    "suppressSupportTailBucketDuplicates": true,
+    "supportTailBucketSize": 0.004,
     "targetRulePath": "data/sanguo/rules/rule-page-text-cleanup.jsonl",
     "suggestedTargets": [
       {
