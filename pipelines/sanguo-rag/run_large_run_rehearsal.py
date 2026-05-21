@@ -64,6 +64,52 @@ def _mode_id_or_die(policy: dict[str, Any], mode: str | None) -> dict[str, Any]:
     return modes[resolved]
 
 
+def _required_list(policy: dict[str, Any], key: str) -> list[str]:
+    contract = policy.get("contract") if isinstance(policy.get("contract"), dict) else {}
+    values = contract.get(key)
+    if not isinstance(values, list) or not values:
+        raise SystemExit(f"[large_run_rehearsal] policy.contract.{key} must be a non-empty list")
+    return [str(item).strip() for item in values if str(item).strip()]
+
+
+def _require_policy_fields(policy: dict[str, Any]) -> None:
+    budgets = policy.get("budgets") if isinstance(policy.get("budgets"), dict) else {}
+    backpressure = policy.get("backpressure") if isinstance(policy.get("backpressure"), dict) else {}
+    signals = policy.get("signalIds") if isinstance(policy.get("signalIds"), dict) else {}
+    missing_budget = [key for key in _required_list(policy, "requiredBudgetFields") if key not in budgets]
+    missing_backpressure = [key for key in _required_list(policy, "requiredBackpressureFields") if key not in backpressure]
+    missing_signals = [key for key in _required_list(policy, "requiredSignalFields") if key not in signals]
+    if missing_budget or missing_backpressure or missing_signals:
+        raise SystemExit(
+            "[large_run_rehearsal] policy contract missing fields "
+            f"budgets={missing_budget} backpressure={missing_backpressure} signalIds={missing_signals}"
+        )
+
+
+def _require_source_fields(policy: dict[str, Any], sources: list[dict[str, Any]]) -> None:
+    required = _required_list(policy, "requiredSourceFields")
+    missing_rows: list[str] = []
+    for index, source in enumerate(sources):
+        missing = [key for key in required if key not in source]
+        if missing:
+            source_id = str(source.get("sourceId") or f"index-{index}")
+            missing_rows.append(f"{source_id}:{','.join(missing)}")
+    if missing_rows:
+        raise SystemExit("[large_run_rehearsal] sources-config missing required fields " + "; ".join(missing_rows))
+
+
+def _signal(signal_ids: dict[str, Any], key: str) -> str:
+    value = str(signal_ids[key]).strip()
+    if not value:
+        raise SystemExit(f"[large_run_rehearsal] policy.signalIds.{key} cannot be blank")
+    return value
+
+
+def _append_once(rows: list[str], value: str) -> None:
+    if value and value not in rows:
+        rows.append(value)
+
+
 # =========================================================================
 # Simulation primitives
 # =========================================================================
@@ -74,6 +120,7 @@ def _simulate_round(
     sources: list[dict[str, Any]],
     budgets: dict[str, Any],
     backpressure: dict[str, Any],
+    signal_ids: dict[str, Any],
     cumulative_artifact_bytes: int,
     previous_low_yield_streak: int,
 ) -> tuple[list[dict[str, Any]], dict[str, Any], int, int]:
@@ -83,37 +130,54 @@ def _simulate_round(
     round_bytes = 0
     round_seeds = 0
     round_cards = 0
+    round_vector_records = 0
     round_new_evidence = 0
     round_timeouts = 0
     backpressure_signals: list[str] = []
-    for source_index, source in enumerate(sources):
+    for source in sources:
         source_id = source["sourceId"]
-        family = source.get("sourceFamily") or "external"
-        layer = source.get("sourceLayer") or "browser"
-        raw_bytes = min(int(source.get("expectedRawBytesPerRound", 524288)), int(budgets.get("maxRawBytesPerSource", 1024 * 1024)))
-        if cumulative_artifact_bytes + raw_bytes > int(budgets.get("maxArtifactBytesPerRun", 1)):
-            backpressure_signals.append("artifact-budget-exhausted")
+        family = source["sourceFamily"]
+        layer = source["sourceLayer"]
+        source_signals: list[str] = []
+        requested_raw_bytes = int(source["expectedRawBytesPerRound"])
+        raw_bytes = requested_raw_bytes
+        if raw_bytes > int(budgets["maxRawBytesPerSource"]):
+            _append_once(source_signals, _signal(signal_ids, "sourceRawBytesBudget"))
+            raw_bytes = int(budgets["maxRawBytesPerSource"])
+        if cumulative_artifact_bytes + raw_bytes > int(budgets["maxArtifactBytesPerRun"]):
+            _append_once(source_signals, _signal(signal_ids, "artifactBudgetExhausted"))
             raw_bytes = 0
-        if round_bytes + raw_bytes > int(budgets.get("maxRawBytesPerRound", 1)):
-            backpressure_signals.append("round-raw-bytes-budget")
-            raw_bytes = max(0, int(budgets.get("maxRawBytesPerRound", 1)) - round_bytes)
-        timeout_count = int(source.get("expectedTimeoutCount", 0))
-        if timeout_count > int(budgets.get("maxSourceTimeoutPerRound", 4)):
-            backpressure_signals.append(f"source-timeout-exceeded:{source_id}")
-            timeout_count = int(budgets.get("maxSourceTimeoutPerRound", 4))
-        seed_yield = int(source.get("expectedSeedsPerRound", 30))
-        card_yield = int(source.get("expectedCardsPerRound", 6))
-        new_evidence = int(source.get("expectedNewEvidence", seed_yield // 4))
+        if round_bytes + raw_bytes > int(budgets["maxRawBytesPerRound"]):
+            _append_once(source_signals, _signal(signal_ids, "roundRawBytesBudget"))
+            raw_bytes = max(0, int(budgets["maxRawBytesPerRound"]) - round_bytes)
+        timeout_count = int(source["expectedTimeoutCount"])
+        if timeout_count > int(budgets["maxSourceTimeoutPerRound"]):
+            _append_once(source_signals, _signal(signal_ids, "sourceTimeoutExceeded"))
+            timeout_count = int(budgets["maxSourceTimeoutPerRound"])
+        seed_yield = int(source["expectedSeedsPerRound"])
+        card_yield = int(source["expectedCardsPerRound"])
+        vector_records = card_yield
+        new_evidence = int(source["expectedNewEvidence"])
+        resume_scan_seconds = float(source["expectedResumeScanSeconds"])
+        if resume_scan_seconds > float(budgets["maxResumeScanSeconds"]):
+            _append_once(source_signals, _signal(signal_ids, "resumeScanBudget"))
         round_bytes += raw_bytes
         round_seeds += seed_yield
         round_cards += card_yield
+        round_vector_records += vector_records
         round_new_evidence += new_evidence
         round_timeouts += timeout_count
-        if round_seeds > int(budgets.get("maxSeedsPerRound", 1)):
-            backpressure_signals.append("round-seed-budget")
-        if round_cards > int(budgets.get("maxCardsPerRound", 1)):
-            backpressure_signals.append("round-card-budget")
+        if round_seeds > int(budgets["maxSeedsPerRound"]):
+            _append_once(source_signals, _signal(signal_ids, "roundSeedBudget"))
+        if round_cards > int(budgets["maxCardsPerRound"]):
+            _append_once(source_signals, _signal(signal_ids, "roundCardBudget"))
+        if round_vector_records > int(budgets["maxVectorRecordsPerRound"]):
+            _append_once(source_signals, _signal(signal_ids, "roundVectorRecordBudget"))
         roi = (new_evidence / max(1, raw_bytes / 1024.0)) if raw_bytes else 0.0
+        if roi < float(backpressure["minRoiPerSource"]):
+            _append_once(source_signals, _signal(signal_ids, "sourceLowRoi"))
+        for signal in source_signals:
+            _append_once(backpressure_signals, signal)
         telemetry.append({
             "roundId": f"round-{round_index:02d}",
             "sourceId": source_id,
@@ -127,17 +191,17 @@ def _simulate_round(
             "timeoutCount": timeout_count,
             "rawBytes": raw_bytes,
             "artifactBytes": raw_bytes,
-            "resumeScanSeconds": float(source.get("expectedResumeScanSeconds", 0.5)),
+            "resumeScanSeconds": resume_scan_seconds,
             "postgresRowCount": seed_yield + card_yield,
-            "vectorRecordCount": card_yield,
+            "vectorRecordCount": vector_records,
             "roiScore": roi,
-            "backpressureSignal": ",".join(backpressure_signals) or "",
+            "backpressureSignal": ",".join(source_signals) or "",
         })
 
     low_yield_streak = previous_low_yield_streak
-    if round_new_evidence < int(backpressure.get("minNewEvidencePerRound", 5)):
+    if round_new_evidence < int(backpressure["minNewEvidencePerRound"]):
         low_yield_streak += 1
-        backpressure_signals.append("low-new-evidence")
+        _append_once(backpressure_signals, _signal(signal_ids, "lowNewEvidence"))
     else:
         low_yield_streak = 0
 
@@ -160,16 +224,18 @@ def _should_stop(
     round_summary: dict[str, Any],
     budgets: dict[str, Any],
     backpressure: dict[str, Any],
+    signal_ids: dict[str, Any],
 ) -> tuple[bool, str]:
     signals = round_summary.get("backpressureSignals") or []
-    if "artifact-budget-exhausted" in signals:
-        return True, "artifact-budget-exhausted"
-    if round_summary["cumulativeArtifactBytes"] >= int(budgets.get("maxArtifactBytesPerRun", float("inf"))):
-        return True, "artifact-budget-exhausted"
-    if round_summary["consecutiveLowYieldRounds"] >= int(backpressure.get("consecutiveLowYieldRoundsStop", 2)):
-        return True, "consecutive-low-yield"
-    if round_summary["timeoutCount"] > int(budgets.get("maxSourceTimeoutPerRound", 1)) * max(1, len(signals)):
-        return True, "timeout-saturation"
+    artifact_budget_exhausted = _signal(signal_ids, "artifactBudgetExhausted")
+    if artifact_budget_exhausted in signals:
+        return True, artifact_budget_exhausted
+    if round_summary["cumulativeArtifactBytes"] >= int(budgets["maxArtifactBytesPerRun"]):
+        return True, artifact_budget_exhausted
+    if round_summary["consecutiveLowYieldRounds"] >= int(backpressure["consecutiveLowYieldRoundsStop"]):
+        return True, _signal(signal_ids, "consecutiveLowYield")
+    if round_summary["timeoutCount"] >= int(budgets["maxTimeoutsPerRound"]):
+        return True, _signal(signal_ids, "timeoutSaturation")
     return False, ""
 
 
@@ -181,11 +247,14 @@ def run_rehearsal(
     output_root: Path | None,
 ) -> dict[str, Any]:
     policy = _load_policy(policy_path)
+    _require_policy_fields(policy)
+    _require_source_fields(policy, sources)
     mode = _mode_id_or_die(policy, mode_id)
     budgets = policy.get("budgets") or {}
     backpressure = policy.get("backpressure") or {}
-    max_rounds = int(budgets.get("maxRounds", 1))
-    max_sources_per_round = int(budgets.get("maxSourcesPerRound", len(sources)))
+    signal_ids = policy.get("signalIds") or {}
+    max_rounds = int(budgets["maxRounds"])
+    max_sources_per_round = int(budgets["maxSourcesPerRound"])
 
     rounds: list[dict[str, Any]] = []
     ledger: list[dict[str, Any]] = []
@@ -200,12 +269,13 @@ def run_rehearsal(
             sources=round_sources,
             budgets=budgets,
             backpressure=backpressure,
+            signal_ids=signal_ids,
             cumulative_artifact_bytes=cumulative_artifact_bytes,
             previous_low_yield_streak=low_yield_streak,
         )
         ledger.extend(telemetry)
         rounds.append(round_summary)
-        stop, reason = _should_stop(round_summary, budgets, backpressure)
+        stop, reason = _should_stop(round_summary, budgets, backpressure, signal_ids)
         if stop:
             stop_reason = reason
             break
@@ -216,8 +286,10 @@ def run_rehearsal(
         "policyPath": str(policy_path),
         "mode": mode["id"],
         "modeDetails": mode,
+        "contract": policy.get("contract") or {},
         "budgets": budgets,
         "backpressure": backpressure,
+        "signalIds": signal_ids,
         "rounds": rounds,
         "stopReason": stop_reason or "max-rounds-reached",
         "totals": {
@@ -228,6 +300,7 @@ def run_rehearsal(
             "totalArtifactBytes": cumulative_artifact_bytes,
         },
         "guards": policy.get("guards") or [],
+        "outputWriteAllowed": bool(output_root is not None and mode.get("writesJsonl") is not False),
     }
     ledger_envelope = {
         "schemaVersion": LEDGER_SCHEMA_VERSION,
@@ -236,7 +309,7 @@ def run_rehearsal(
         "rows": ledger,
     }
 
-    if output_root is not None:
+    if output_root is not None and mode.get("writesJsonl") is not False:
         output_root.mkdir(parents=True, exist_ok=True)
         (output_root / "rehearsal-report.json").write_text(
             json.dumps(report, ensure_ascii=False, indent=2) + "\n",
@@ -253,7 +326,7 @@ def run_rehearsal(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Large-run rehearsal driver (SANGUO-RAGOPS-0401).")
     parser.add_argument("--policy", default=str(DEFAULT_POLICY), help="policy-large-run-rehearsal.json path")
-    parser.add_argument("--mode", default=None, choices=[None, "no-write", "jsonl-only", "dual-write", "vector-smoke"], help="rehearsal mode")
+    parser.add_argument("--mode", default=None, help="rehearsal mode; validated against policy.modes")
     parser.add_argument("--sources-config", required=True, help="JSON file describing source budgets / expected yields")
     parser.add_argument("--output-root", default="", help="optional root for rehearsal-report.json + backpressure-telemetry-ledger.json")
     return parser.parse_args()

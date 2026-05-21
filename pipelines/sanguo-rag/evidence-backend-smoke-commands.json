@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "evidence-backend-smoke-commands.v0.1",
+  "description": "Machine-readable list of smoke commands required by SANGUO-RAGOPS-0402 governance runbook. Includes both the new evidence-backend smoke tests and the existing Sanguo governance harnesses. No production credentials required.",
+  "groups": [
+    {
+      "id": "manifest",
+      "label": "Evidence manifest schema + resume",
+      "commands": [
+        {
+          "id": "manifest-smoke",
+          "command": "python -B pipelines/sanguo-rag/evidence_manifest_smoke_test.py",
+          "expectExitCode": 0,
+          "owners": ["evidence-backend"]
+        }
+      ]
+    },
+    {
+      "id": "repository",
+      "label": "Repository adapter (jsonl/postgres/dual)",
+      "commands": [
+        {
+          "id": "repository-smoke",
+          "command": "python -B pipelines/sanguo-rag/evidence_repository_smoke_test.py",
+          "expectExitCode": 0,
+          "owners": ["evidence-backend"]
+        }
+      ]
+    },
+    {
+      "id": "backfill-parity",
+      "label": "Backfill + parity gate",
+      "commands": [
+        {
+          "id": "backfill-smoke",
+          "command": "python -B pipelines/sanguo-rag/backfill_evidence_to_postgres_smoke_test.py",
+          "expectExitCode": 0,
+          "owners": ["evidence-backend"]
+        },
+        {
+          "id": "dual-write-parity-smoke",
+          "command": "python -B pipelines/sanguo-rag/dual_write_parity_gate_smoke_test.py",
+          "expectExitCode": 0,
+          "owners": ["evidence-backend"]
+        }
+      ]
+    },
+    {
+      "id": "vector",
+      "label": "Evidence vector exporter + smoke namespace gate",
+      "commands": [
+        {
+          "id": "export-vector-smoke",
+          "command": "python -B pipelines/sanguo-rag/export_evidence_vector_records_smoke_test.py",
+          "expectExitCode": 0,
+          "owners": ["evidence-backend"]
+        },
+        {
+          "id": "smoke-gate",
+          "command": "python -B pipelines/sanguo-rag/run_evidence_vector_smoke_gate_smoke_test.py",
+          "expectExitCode": 0,
+          "owners": ["evidence-backend"]
+        }
+      ]
+    },
+    {
+      "id": "rehearsal",
+      "label": "Large-run rehearsal",
+      "commands": [
+        {
+          "id": "rehearsal-smoke",
+          "command": "python -B pipelines/sanguo-rag/run_large_run_rehearsal_smoke_test.py",
+          "expectExitCode": 0,
+          "owners": ["evidence-backend"]
+        }
+      ]
+    },
+    {
+      "id": "legacy-governance",
+      "label": "Existing Sanguo governance harness",
+      "commands": [
+        {
+          "id": "governance-regression",
+          "command": "docker exec 3klife-npc-brain-dev python -B pipelines/sanguo-rag/run_sanguo_governance_regression_harness.py --run-profile strict-local --no-write",
+          "expectExitCode": 0,
+          "owners": ["sanguo-rag-governance"]
+        },
+        {
+          "id": "postgres-readiness",
+          "command": "docker exec 3klife-npc-brain-dev python -B pipelines/sanguo-rag/evaluate_postgres_state_store_readiness.py",
+          "expectExitCode": 0,
+          "owners": ["sanguo-rag-governance"]
+        },
+        {
+          "id": "vector-ingestion-gate",
+          "command": "docker exec 3klife-npc-brain-dev python -B pipelines/sanguo-rag/run_vector_ingestion_gate.py --providers qdrant,pinecone --embedding-provider mock",
+          "expectExitCode": 0,
+          "owners": ["sanguo-rag-governance"]
+        }
+      ]
+    }
+  ],
+  "guards": [
+    "no-production-credentials-in-repo",
+    "all-commands-must-be-idempotent",
+    "all-commands-default-dry-run",
+    "exit-non-zero-blocks-cutover"
+  ]
+}

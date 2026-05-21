@@ -34,6 +34,69 @@
     }
   ],
   "defaultMode": "no-write",
+  "contract": {
+    "requiredBudgetFields": [
+      "maxRounds",
+      "maxSourcesPerRound",
+      "maxPagesPerSource",
+      "maxRawBytesPerSource",
+      "maxRawBytesPerRound",
+      "maxSeedsPerRound",
+      "maxCardsPerRound",
+      "maxVectorRecordsPerRound",
+      "maxArtifactBytesPerRun",
+      "maxResumeScanSeconds",
+      "maxSourceTimeoutPerRound",
+      "maxTimeoutsPerRound"
+    ],
+    "requiredBackpressureFields": [
+      "minNewEvidencePerRound",
+      "minRoiPerSource",
+      "consecutiveLowYieldRoundsStop"
+    ],
+    "requiredSignalFields": [
+      "artifactBudgetExhausted",
+      "roundRawBytesBudget",
+      "sourceRawBytesBudget",
+      "sourceTimeoutExceeded",
+      "roundSeedBudget",
+      "roundCardBudget",
+      "roundVectorRecordBudget",
+      "resumeScanBudget",
+      "sourceLowRoi",
+      "lowNewEvidence",
+      "consecutiveLowYield",
+      "timeoutSaturation"
+    ],
+    "requiredSourceFields": [
+      "sourceId",
+      "sourceFamily",
+      "sourceLayer",
+      "expectedFetchCount",
+      "expectedHarvestedCount",
+      "expectedSeedsPerRound",
+      "expectedCardsPerRound",
+      "expectedNewEvidence",
+      "expectedTimeoutCount",
+      "expectedRawBytesPerRound",
+      "expectedResumeScanSeconds"
+    ],
+    "missingFieldBehavior": "fail-fast"
+  },
+  "signalIds": {
+    "artifactBudgetExhausted": "artifact-budget-exhausted",
+    "roundRawBytesBudget": "round-raw-bytes-budget",
+    "sourceRawBytesBudget": "source-raw-bytes-budget",
+    "sourceTimeoutExceeded": "source-timeout-exceeded",
+    "roundSeedBudget": "round-seed-budget",
+    "roundCardBudget": "round-card-budget",
+    "roundVectorRecordBudget": "round-vector-record-budget",
+    "resumeScanBudget": "resume-scan-budget",
+    "sourceLowRoi": "source-low-roi",
+    "lowNewEvidence": "low-new-evidence",
+    "consecutiveLowYield": "consecutive-low-yield",
+    "timeoutSaturation": "timeout-saturation"
+  },
   "budgets": {
     "maxRounds": 8,
     "maxSourcesPerRound": 6,
@@ -45,7 +108,8 @@
     "maxVectorRecordsPerRound": 200,
     "maxArtifactBytesPerRun": 209715200,
     "maxResumeScanSeconds": 12.0,
-    "maxSourceTimeoutPerRound": 4
+    "maxSourceTimeoutPerRound": 4,
+    "maxTimeoutsPerRound": 18
   },
   "backpressure": {
     "stopWhen": {

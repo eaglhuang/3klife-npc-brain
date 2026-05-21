@@ -114,11 +114,20 @@ def test_low_yield_triggers_stop() -> None:
     )
 
 
-def test_output_root_writes_files() -> None:
+def test_no_write_mode_does_not_write_even_with_output_root() -> None:
     sources = _load_sources()
     with tempfile.TemporaryDirectory(dir=_temp_parent()) as tmp:
         out_root = Path(tmp)
         run_rehearsal(policy_path=DEFAULT_POLICY, mode_id="no-write", sources=sources, output_root=out_root)
+        _expect("no-write mode skips rehearsal-report.json", not (out_root / "rehearsal-report.json").exists())
+        _expect("no-write mode skips backpressure telemetry ledger", not (out_root / "backpressure-telemetry-ledger.json").exists())
+
+
+def test_output_root_writes_files_in_write_mode() -> None:
+    sources = _load_sources()
+    with tempfile.TemporaryDirectory(dir=_temp_parent()) as tmp:
+        out_root = Path(tmp)
+        run_rehearsal(policy_path=DEFAULT_POLICY, mode_id="jsonl-only", sources=sources, output_root=out_root)
         _expect("rehearsal-report.json written", (out_root / "rehearsal-report.json").exists())
         _expect("backpressure-telemetry-ledger.json written", (out_root / "backpressure-telemetry-ledger.json").exists())
 
@@ -129,7 +138,8 @@ def main() -> int:
         test_telemetry_ledger_fields,
         test_artifact_budget_stops_run,
         test_low_yield_triggers_stop,
-        test_output_root_writes_files,
+        test_no_write_mode_does_not_write_even_with_output_root,
+        test_output_root_writes_files_in_write_mode,
     ]
     for test in tests:
         test()

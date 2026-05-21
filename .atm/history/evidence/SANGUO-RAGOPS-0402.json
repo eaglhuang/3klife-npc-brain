@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0402",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M4 evidence backend governance + rollback + retention runbook delivered. Documents red lines, pre-flight / in-flight / post-flight gates (both automated and human), retention SOP per artifact type, full smoke command list (machine-readable JSON + markdown table), rollback decision tree, and environment-variable table without any secret. Aligns with policy-artifact-lake-layout / policy-postgres-state-migration-plan / policy-vector-ingestion-hardening / policy-vector-production-rollout-plan / policy-large-run-rehearsal.",
+  "expectedEvidence": [
+    "governance runbook",
+    "rollback instructions",
+    "retention policy"
+  ],
+  "artifacts": [
+    {
+      "kind": "runbook",
+      "path": "pipelines/sanguo-rag/evidence-backend-runbook.zh-TW.md",
+      "description": "Chinese-language runbook covering scope, red lines, pre/in/post-flight gates (with command + expected outcome columns), retention SOP per artifact type (compress / archive / delete-payload / keep + PG truncate/drop tables/drop schema modes + vector smoke namespace rollback), governance smoke coverage matrix, rollback decision tree, env-var table."
+    },
+    {
+      "kind": "machine-readable",
+      "path": "pipelines/sanguo-rag/evidence-backend-smoke-commands.json",
+      "description": "Smoke command list grouped by manifest / repository / backfill-parity / vector / rehearsal / legacy-governance. Each entry carries command, expectExitCode, owners. Used as input for CI / governance regression."
+    },
+    {
+      "kind": "rollback-spec",
+      "path": "pipelines/sanguo-rag/backfill-rollback-instructions.zh-TW.md",
+      "description": "Three-mode PostgreSQL rollback plan (already delivered with SANGUO-RAGOPS-0203, cross-referenced here). All transactions default to ROLLBACK; operator promotes to COMMIT only after parity sanity check."
+    },
+    {
+      "kind": "retention-policy",
+      "path": "data/sanguo/policies/policy-artifact-lake-layout.json",
+      "description": "Already delivered with SANGUO-RAGOPS-0101; runbook references the retention block per artifact type."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "runbook covers PostgreSQL mirror, artifact retention, vector smoke/prod namespace, rollback, quota, cleanup",
+      "evidence": "Sections: 適用範圍 (three layers), 紅線, pre/in/post-flight gates, Retention 操作 SOP, Rollback decision tree, 環境變數總表."
+    },
+    {
+      "criterion": "governance smoke covers canonicalWrites, anchor provenance isolation, DB parity, vector namespace isolation",
+      "evidence": "Governance smoke coverage 對照 table mapping each subject to a specific smoke command."
+    },
+    {
+      "criterion": "explicit pre / in / post run gates with manual + automated split",
+      "evidence": "Three Gate sections (pre-flight, in-flight, post-flight) listing automated commands plus human checklists."
+    },
+    {
+      "criterion": "runbook does not require production credentials, no cloud provider secrets",
+      "evidence": "Environment-variable table calls out 'Vector provider env: operator 注入，不入 repo'; runbook only describes variable names."
+    }
+  ],
+  "smokeCommandSummary": {
+    "evidenceBackend": [
+      "python -B pipelines/sanguo-rag/evidence_manifest_smoke_test.py",
+      "python -B pipelines/sanguo-rag/evidence_repository_smoke_test.py",
+      "python -B pipelines/sanguo-rag/backfill_evidence_to_postgres_smoke_test.py",
+      "python -B pipelines/sanguo-rag/dual_write_parity_gate_smoke_test.py",
+      "python -B pipelines/sanguo-rag/export_evidence_vector_records_smoke_test.py",
+      "python -B pipelines/sanguo-rag/run_evidence_vector_smoke_gate_smoke_test.py",
+      "python -B pipelines/sanguo-rag/run_large_run_rehearsal_smoke_test.py"
+    ],
+    "legacyGovernance": [
+      "docker exec 3klife-npc-brain-dev python -B pipelines/sanguo-rag/run_sanguo_governance_regression_harness.py --run-profile strict-local --no-write",
+      "docker exec 3klife-npc-brain-dev python -B pipelines/sanguo-rag/evaluate_postgres_state_store_readiness.py",
+      "docker exec 3klife-npc-brain-dev python -B pipelines/sanguo-rag/run_vector_ingestion_gate.py"
+    ]
+  },
+  "guards": [
+    "no-production-credentials-in-repo",
+    "jsonl-canonical-export-not-modified",
+    "vector-production-namespace-disabled-by-default",
+    "rollback-defaults-to-rollback-not-commit",
+    "all-budgets-and-thresholds-policy-driven"
+  ],
+  "nextActions": [
+    "SANGUO-RAGOPS-0501: cutover decision packet consumes this runbook's gate outputs as preconditions"
+  ]
+}
