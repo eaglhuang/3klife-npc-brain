@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-RAGOPS-0001",
+  "title": "RAG evidence volume baseline and backend gap report",
+  "status": "closed",
+  "milestone": "RAGOPS-M0",
+  "priority": "P0",
+  "dependencies": [],
+  "scope": [
+    "pipelines/sanguo-rag/evaluate_postgres_state_store_readiness.py",
+    "pipelines/sanguo-rag/run_vector_ingestion_gate.py",
+    "data/sanguo/policies/policy-postgres-state-store-evaluation.json",
+    "data/sanguo/policies/policy-vector-production-rollout-plan.json"
+  ],
+  "acceptance": [
+    "產出目前 artifacts、JSONL fanout、row-count estimate、resume scan seconds、vector-ready record count 的容量基線報告。",
+    "明確列出 PostgreSQL 現有 coverage 與缺口，包含 harvested pages、seeds、cards、anchor passages、proposal ledger。",
+    "明確列出 vector pipeline 現有 coverage 與缺口，且確認 raw seeds 不直接進 vector DB。",
+    "不修改 runtime 行為，不新增 production DB/vector writes。"
+  ],
+  "deliverables": [
+    "RAG evidence backend gap report",
+    "容量門檻與下一階段 go/no-go 建議"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "evidence-backend",
+    "postgres",
+    "vector",
+    "baseline"
+  ],
+  "notes": "2026-05-21 | 狀態: closed | 驗證: gap-report-deliverable | 變更: 產出 RAG evidence backend capacity 基線與落差報告，建立各 milestone go/no-go 建議 | 阻塞: none",
+  "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0001.json",
+  "source": {
+    "planPath": "文件/三國RAG證據資料產線PostgreSQL與向量化開發計畫.md",
+    "sectionTitle": "M0 建立容量基線與落差報告"
+  },
+  "owner": "codex"
+}

@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0001",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M0 baseline + gap report delivered. Captured artifact / JSONL fanout volume, listed PostgreSQL evidence-lake gaps (pipeline_runs, source_runs, harvested_pages, evidence_seeds, evidence_cards, anchor_passages, proposal_ledger, vector_ingestion_records), confirmed vector pipeline currently outputs only event/keyword/persona records and excludes raw seeds, and produced go/no-go recommendation per milestone.",
+  "expectedEvidence": [
+    "capacity baseline report",
+    "PostgreSQL/vector coverage gap analysis",
+    "go/no-go recommendation"
+  ],
+  "artifacts": [
+    {
+      "kind": "report",
+      "path": "pipelines/sanguo-rag/rag-evidence-backend-gap-report.zh-TW.md",
+      "description": "Capacity baseline (4.2 GB smoke / 505 MB canonical, 8,507 + 1,479 files, 752 + 5,573 JSONL files), per-table PG coverage gap, per-record-type vector gap, milestone-level go/no-go recommendation."
+    }
+  ],
+  "metrics": {
+    "artifactLake": {
+      "canonicalSizeBytes": "505 MB",
+      "smokeSizeBytes": "4.2 GB",
+      "canonicalFileCount": 1479,
+      "smokeFileCount": 8507,
+      "canonicalJsonlFileCount": 752,
+      "canonicalJsonFileCount": 4152,
+      "smokeJsonlFileCount": 5573,
+      "smokeTopLevelDirCount": 67,
+      "seedJsonlFileCount": 846,
+      "personaCardCount": 237
+    },
+    "postgresCoverage": {
+      "tablesPresent": [
+        "observed_mentions",
+        "alias_map_entries",
+        "triage_label_decisions"
+      ],
+      "tablesMissing": [
+        "pipeline_runs",
+        "source_runs",
+        "harvested_pages",
+        "evidence_seeds",
+        "evidence_cards",
+        "anchor_passages",
+        "proposal_ledger",
+        "vector_ingestion_records"
+      ]
+    },
+    "vectorCoverage": {
+      "recordTypesPresent": ["event", "keyword", "persona"],
+      "recordTypesMissing": ["anchor_passage", "evidence_card"],
+      "productionWritesEnabled": false
+    }
+  },
+  "guards": [
+    "no-runtime-schema-change-before-adapter",
+    "jsonl-export-remains-canonical-until-cutover",
+    "regression-harness-required-before-migration",
+    "vector-production-namespace-disabled-by-default"
+  ],
+  "nextActions": [
+    "SANGUO-RAGOPS-0101: Partition artifact lake by runId/sourceId/artifactType, define retention/compression policy",
+    "SANGUO-RAGOPS-0102: Define evidence manifest + resumable scan contract",
+    "SANGUO-RAGOPS-0201: Add PostgreSQL evidence-lake schema migration"
+  ]
+}
