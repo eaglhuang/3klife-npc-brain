@@ -43,5 +43,22 @@
   "startedByActor": "claude-code",
   "closedAt": "2026-05-20T09:12:57.238Z",
   "closedByActor": "claude-code",
-  "closeReason": "M1 deliverable created: baseline fixtures and gap report"
+  "closeReason": "M1 deliverable created: baseline fixtures and gap report",
+  "ledgerContractVersion": "task-ledger/v1",
+  "ledgerBaselineKind": "legacy-transition-backfill",
+  "ledgerBaselineByActor": "codex-main",
+  "ledgerBaselineReason": "Backfilled task-ledger/v1 baseline transition for legacy task state that predates CLI-controlled task transitions.",
+  "ledgerBaselineSourceSha256": "sha256:abe4f3178f2e7ea0c494f29afacf875712796c40f16b763b45d2bd0932a51b4b",
+  "lastTransitionId": "2026-05-21T10-29-42-373Z-migrate-legacy-ledger-d6937b304033",
+  "lastTransitionAt": "2026-05-21T10:29:42.373Z",
+  "ledgerBaselineAt": "2026-05-21T10:29:42.373Z",
+  "legacyLedgerBaseline": {
+    "schemaId": "atm.legacyTaskLedgerBaseline.v1",
+    "migratedAt": "2026-05-21T10:29:42.373Z",
+    "migratedByActor": "codex-main",
+    "previousStatus": "done",
+    "reason": "Backfilled task-ledger/v1 baseline transition for legacy task state that predates CLI-controlled task transitions.",
+    "sourceTaskSha256": "sha256:abe4f3178f2e7ea0c494f29afacf875712796c40f16b763b45d2bd0932a51b4b",
+    "transitionId": "2026-05-21T10-29-42-373Z-migrate-legacy-ledger-d6937b304033"
+  }
 }

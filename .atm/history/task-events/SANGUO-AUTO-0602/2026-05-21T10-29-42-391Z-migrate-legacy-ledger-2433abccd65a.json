@@ -1,0 +1,14 @@
+{
+  "schemaId": "atm.taskTransition.v1",
+  "specVersion": "0.1.0",
+  "transitionId": "2026-05-21T10-29-42-391Z-migrate-legacy-ledger-2433abccd65a",
+  "taskId": "SANGUO-AUTO-0602",
+  "action": "migrate-legacy-ledger",
+  "actorId": "codex-main",
+  "fromStatus": "done",
+  "toStatus": "done",
+  "taskPath": ".atm/history/tasks/SANGUO-AUTO-0602.json",
+  "taskSha256": "sha256:aa5f4e48c44fa16c1f369b4e43310e78875cef00bf261e26c33e08daca47b2e2",
+  "createdAt": "2026-05-21T10:29:42.391Z",
+  "command": "node atm.mjs tasks migrate-legacy-ledger"
+}

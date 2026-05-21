@@ -40,5 +40,22 @@
   "startedByActor": "claude-code",
   "closedAt": "2026-05-20T09:01:43.038Z",
   "closedByActor": "claude-code",
-  "closeReason": "計畫書文件已建立完成，包含現況分析、目標架構、里程碑、26張任務卡"
+  "closeReason": "計畫書文件已建立完成，包含現況分析、目標架構、里程碑、26張任務卡",
+  "ledgerContractVersion": "task-ledger/v1",
+  "ledgerBaselineKind": "legacy-transition-backfill",
+  "ledgerBaselineByActor": "codex-main",
+  "ledgerBaselineReason": "Backfilled task-ledger/v1 baseline transition for legacy task state that predates CLI-controlled task transitions.",
+  "ledgerBaselineSourceSha256": "sha256:a545de244a605adba5a0435097c423633ec24786c24d58de6bcdcf79a870fbf6",
+  "lastTransitionId": "2026-05-21T10-29-42-368Z-migrate-legacy-ledger-13d3e02e5d44",
+  "lastTransitionAt": "2026-05-21T10:29:42.368Z",
+  "ledgerBaselineAt": "2026-05-21T10:29:42.368Z",
+  "legacyLedgerBaseline": {
+    "schemaId": "atm.legacyTaskLedgerBaseline.v1",
+    "migratedAt": "2026-05-21T10:29:42.368Z",
+    "migratedByActor": "codex-main",
+    "previousStatus": "done",
+    "reason": "Backfilled task-ledger/v1 baseline transition for legacy task state that predates CLI-controlled task transitions.",
+    "sourceTaskSha256": "sha256:a545de244a605adba5a0435097c423633ec24786c24d58de6bcdcf79a870fbf6",
+    "transitionId": "2026-05-21T10-29-42-368Z-migrate-legacy-ledger-13d3e02e5d44"
+  }
 }

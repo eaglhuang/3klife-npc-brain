@@ -42,5 +42,22 @@
   "startedByActor": "claude-code",
   "closedAt": "2026-05-20T09:10:12.551Z",
   "closedByActor": "claude-code",
-  "closeReason": "26張任務卡已匯入 ATM，格式符合 atm.workItem.v0.2 schema，evidencePath、reserve/promote/claim lifecycle 均已驗證"
+  "closeReason": "26張任務卡已匯入 ATM，格式符合 atm.workItem.v0.2 schema，evidencePath、reserve/promote/claim lifecycle 均已驗證",
+  "ledgerContractVersion": "task-ledger/v1",
+  "ledgerBaselineKind": "legacy-transition-backfill",
+  "ledgerBaselineByActor": "codex-main",
+  "ledgerBaselineReason": "Backfilled task-ledger/v1 baseline transition for legacy task state that predates CLI-controlled task transitions.",
+  "ledgerBaselineSourceSha256": "sha256:df78f1835473540382588b927287f10621a28336d6bdae9eae363a492f820735",
+  "lastTransitionId": "2026-05-21T10-29-42-370Z-migrate-legacy-ledger-d7a45471c0df",
+  "lastTransitionAt": "2026-05-21T10:29:42.370Z",
+  "ledgerBaselineAt": "2026-05-21T10:29:42.370Z",
+  "legacyLedgerBaseline": {
+    "schemaId": "atm.legacyTaskLedgerBaseline.v1",
+    "migratedAt": "2026-05-21T10:29:42.370Z",
+    "migratedByActor": "codex-main",
+    "previousStatus": "done",
+    "reason": "Backfilled task-ledger/v1 baseline transition for legacy task state that predates CLI-controlled task transitions.",
+    "sourceTaskSha256": "sha256:df78f1835473540382588b927287f10621a28336d6bdae9eae363a492f820735",
+    "transitionId": "2026-05-21T10-29-42-370Z-migrate-legacy-ledger-d7a45471c0df"
+  }
 }

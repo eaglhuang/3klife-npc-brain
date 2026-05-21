@@ -42,5 +42,22 @@
   "startedByActor": "claude-code",
   "closedAt": "2026-05-20T09:13:10.599Z",
   "closedByActor": "claude-code",
-  "closeReason": "M2 anchor corpus deliverable created"
+  "closeReason": "M2 anchor corpus deliverable created",
+  "ledgerContractVersion": "task-ledger/v1",
+  "ledgerBaselineKind": "legacy-transition-backfill",
+  "ledgerBaselineByActor": "codex-main",
+  "ledgerBaselineReason": "Backfilled task-ledger/v1 baseline transition for legacy task state that predates CLI-controlled task transitions.",
+  "ledgerBaselineSourceSha256": "sha256:71367bb37934e5fa884327345a0c59a84024a5c858159e654232184215979523",
+  "lastTransitionId": "2026-05-21T10-29-42-376Z-migrate-legacy-ledger-af2d9afec803",
+  "lastTransitionAt": "2026-05-21T10:29:42.376Z",
+  "ledgerBaselineAt": "2026-05-21T10:29:42.376Z",
+  "legacyLedgerBaseline": {
+    "schemaId": "atm.legacyTaskLedgerBaseline.v1",
+    "migratedAt": "2026-05-21T10:29:42.376Z",
+    "migratedByActor": "codex-main",
+    "previousStatus": "done",
+    "reason": "Backfilled task-ledger/v1 baseline transition for legacy task state that predates CLI-controlled task transitions.",
+    "sourceTaskSha256": "sha256:71367bb37934e5fa884327345a0c59a84024a5c858159e654232184215979523",
+    "transitionId": "2026-05-21T10-29-42-376Z-migrate-legacy-ledger-af2d9afec803"
+  }
 }
