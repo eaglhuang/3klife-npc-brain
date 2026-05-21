@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0301",
+  "status": "closed",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "M3 evidence vector record schema + exporter delivered. Schema fixture defines required metadata (recordType, runId, sourceId, sourceFamily, sourceLayer, generalIds, locator, textHash, anchorVerdict, canonicalWrites, payloadUri). Exporter reads JSONL manifest, emits anchor_passage and evidence_card records (hardened review statuses only by default), drops raw seed / harvested page / proposal artifacts, and produces a deterministic sha256 over sorted-by-recordId output. 6 smoke tests (13 assertions) pass.",
+  "expectedEvidence": [
+    "vector record schema fixture",
+    "deterministic export report",
+    "raw seed exclusion proof"
+  ],
+  "artifacts": [
+    {
+      "kind": "json-schema",
+      "path": "pipelines/sanguo-rag/fixtures/evidence-vector-record.schema.json",
+      "description": "Vector record schema v0.1: required metadata, anchorVerdict enum (anchored/candidate/unanchored/not-applicable), recordType enum (anchor_passage/evidence_card/event/persona/keyword), textHash sha256 pattern."
+    },
+    {
+      "kind": "implementation",
+      "path": "pipelines/sanguo-rag/export_evidence_vector_records.py",
+      "description": "export_from_manifest() builds anchor_passage and evidence_card vector records. Drops raw seeds, harvested pages, and proposals. Default skip rule: evidence-card reviewStatus must be in {accepted, staged-a} (override with --allow-candidate-evidence). Records sorted by recordId; deterministic sha256 for anchor + evidence + combined outputs."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/export_evidence_vector_records_smoke_test.py",
+      "description": "6 tests covering: allowed record types, candidate evidence dropped by default, required metadata fields present, deterministic sha256 across two runs, namespace defaults to -smoke when canonicalWrites=False, anchor records sorted by recordId."
+    },
+    {
+      "kind": "deterministic-export-report",
+      "path": "pipelines/sanguo-rag/fixtures/evidence-vector-export-report.sample.json",
+      "description": "Sample export report with recordCounts {anchor_passage:2, evidence_card:1, total:3}, namespace=sanguo-rag-evidence-smoke, deterministicSha256.combined captured. Generated from the smoke fixture with evidence-card review status promoted to accepted."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "evidence vector record schema supports anchor_passage and evidence_card",
+      "evidence": "schema.recordType enum + builder _build_anchor_passage_record / _build_evidence_card_record."
+    },
+    {
+      "criterion": "raw seed not exported by default; only hardened retrieval-ready chunks",
+      "evidence": "Exporter loop only handles entry.artifact_type in {anchor-passage, evidence-card}; evidence-card requires reviewStatus in {accepted, staged-a}."
+    },
+    {
+      "criterion": "metadata covers required fields",
+      "evidence": "_ensure_metadata_fields() asserts required set; smoke test verifies each record has all 11 required keys."
+    },
+    {
+      "criterion": "exporter reads JSONL manifest or PostgreSQL mirror, deterministic sha256",
+      "evidence": "export_from_manifest() walks manifest.files; records sorted by recordId; _stable_dump() emits sort_keys=True JSON and sha256s the bytes. Smoke test asserts identical sha256 across two runs."
+    }
+  ],
+  "smokeRunResult": {
+    "command": "python -B pipelines/sanguo-rag/export_evidence_vector_records_smoke_test.py",
+    "passCount": 13,
+    "failCount": 0
+  },
+  "guards": [
+    "raw-seed-not-exported",
+    "harvested-page-not-exported",
+    "proposal-not-exported",
+    "production-namespace-disabled-by-default",
+    "deterministic-sort-by-record-id"
+  ],
+  "nextActions": [
+    "SANGUO-RAGOPS-0302: vector smoke namespace ingestion gate consumes this exporter output",
+    "SANGUO-RAGOPS-0401: large-run rehearsal includes this exporter in vector-smoke mode"
+  ]
+}

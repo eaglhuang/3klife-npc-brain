@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "evidence-vector-record.v0.1",
+  "runId": "smoke-run",
+  "namespace": "sanguo-rag-evidence-smoke",
+  "canonicalWrites": false,
+  "generatedAt": "2026-05-21T06:32:26+00:00",
+  "recordCounts": {
+    "anchor_passage": 2,
+    "evidence_card": 1,
+    "total": 3
+  },
+  "deterministicSha256": {
+    "anchor_passage": "44ad54c2810929b8535f027bfe53a5666ecfaa589afbb8f6af625196b3a6f4c7",
+    "evidence_card": "7da7efcff2d913626e91858f3601f0e280258d8422a1df9d6def4def0152ac12",
+    "combined": "bf9e1c340248a4b7e769804f75d8c2198083859aa2b4ccc62c46259da511082c"
+  },
+  "anchorRecords": [
+    {
+      "schemaVersion": "evidence-vector-record.v0.1",
+      "recordId": "anchor::anchor-001",
+      "recordType": "anchor_passage",
+      "text": "桃園結義",
+      "namespace": "sanguo-rag-evidence-smoke",
+      "metadata": {
+        "recordType": "anchor_passage",
+        "runId": "smoke-run",
+        "sourceId": "novel-tang",
+        "sourceFamily": "anchor",
+        "sourceLayer": "romance",
+        "generalIds": [],
+        "locator": "chapter-080#para-12",
+        "textHash": "73f8f8dde6b36c57cc953bc087fc72cce83cb9e4481cefcd44d7c3b498f2da39",
+        "anchorVerdict": "anchored",
+        "canonicalWrites": false,
+        "payloadUri": "atm://lake/smoke-run/sources/novel-tang/anchor-passages/romance/c-080/passages-r1.jsonl",
+        "corpusId": "novel-tang"
+      }
+    },
+    {
+      "schemaVersion": "evidence-vector-record.v0.1",
+      "recordId": "anchor::anchor-002",
+      "recordType": "anchor_passage",
+      "text": "三顧茅廬",
+      "namespace": "sanguo-rag-evidence-smoke",
+      "metadata": {
+        "recordType": "anchor_passage",
+        "runId": "smoke-run",
+        "sourceId": "novel-tang",
+        "sourceFamily": "anchor",
+        "sourceLayer": "romance",
+        "generalIds": [],
+        "locator": "chapter-080#para-13",
+        "textHash": "3cb2360221b995d138ae750a3ab6aa53c63addddc4fc5857ee03224fb546136f",
+        "anchorVerdict": "anchored",
+        "canonicalWrites": false,
+        "payloadUri": "atm://lake/smoke-run/sources/novel-tang/anchor-passages/romance/c-080/passages-r1.jsonl",
+        "corpusId": "novel-tang"
+      }
+    }
+  ],
+  "evidenceRecords": [
+    {
+      "schemaVersion": "evidence-vector-record.v0.1",
+      "recordId": "evidence::ev-001",
+      "recordType": "evidence_card",
+      "text": "出處：...",
+      "namespace": "sanguo-rag-evidence-smoke",
+      "metadata": {
+        "recordType": "evidence_card",
+        "runId": "smoke-run",
+        "sourceId": "3kweb",
+        "sourceFamily": "external",
+        "sourceLayer": "browser",
+        "generalIds": [
+          "guan-yu"
+        ],
+        "locator": "p/1#sec-1",
+        "textHash": "45be54194b6e4e2e8474a3eefed8a53418347a4561496bb110fc66af58a83d39",
+        "anchorVerdict": "candidate",
+        "canonicalWrites": false,
+        "payloadUri": "atm://lake/smoke-run/sources/3kweb/evidence-cards/0001/cards-r1.jsonl",
+        "reviewStatus": "accepted"
+      }
+    }
+  ],
+  "guards": [
+    "raw-seed-not-exported",
+    "harvested-page-not-exported",
+    "proposal-not-exported",
+    "production-namespace-disabled-by-default",
+    "deterministic-sort-by-record-id"
+  ]
+}

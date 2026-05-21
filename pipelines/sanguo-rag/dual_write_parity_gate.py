@@ -12,10 +12,10 @@ on:
 * run/source coverage (every (run_id, source_id) pair appears in
   ``source_runs``)
 
-The gate writes any failures into an error ledger and is wired through
-``run_sanguo_governance_regression_harness`` (M2-0204 governance
-regression evidence). It honors the feature flag rule by defaulting to
-``mode=dual`` and never promoting read path to PostgreSQL.
+The CLI can write failures into an error ledger via ``--error-ledger`` and
+is intended to be wired through ``run_sanguo_governance_regression_harness``
+(M2-0204 governance regression evidence). It honors the feature flag rule
+by defaulting to ``mode=dual`` and never promoting read path to PostgreSQL.
 """
 
 from __future__ import annotations
@@ -79,19 +79,18 @@ def run_parity_gate(
             "detail": f"read path is {feature_flag_read_path!r}, parity gate requires 'jsonl'",
         })
 
-    jsonl_settings = RepositorySettings(
+    jsonl_settings = RepositorySettings.from_env(
         mode="jsonl",
-        jsonl_root=lake_root,
         dry_run=dry_run,
-        retry=RetryPolicy(max_attempts=1, backoff_seconds=0.0),
+        jsonl_root=lake_root,
     )
-    dual_settings = RepositorySettings(
+    jsonl_settings.retry = RetryPolicy(max_attempts=1, backoff_seconds=0.0)
+    dual_settings = RepositorySettings.from_env(
         mode="dual",
-        jsonl_root=lake_root,
-        postgres_dsn="postgresql://example.invalid/sanguo_rag",
         dry_run=dry_run,
-        retry=RetryPolicy(max_attempts=1, backoff_seconds=0.0),
+        jsonl_root=lake_root,
     )
+    dual_settings.retry = RetryPolicy(max_attempts=1, backoff_seconds=0.0)
 
     jsonl_report = backfill(manifest, jsonl_settings, lake_root=lake_root)
     dual_report = backfill(manifest, dual_settings, lake_root=lake_root)
@@ -244,7 +243,27 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--apply", action="store_true", help="run against live PostgreSQL; default dry-run")
     parser.add_argument("--output", default="", help="optional output JSON path")
+    parser.add_argument("--error-ledger", default="", help="optional JSONL path for parity errors")
     return parser.parse_args()
+
+
+def write_error_ledger(path: Path, report: dict[str, Any]) -> int:
+    errors = report.get("errors") or []
+    if not errors:
+        return 0
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        for error in errors:
+            row = {
+                "schemaVersion": "dual-write-parity-error-ledger.v0.1",
+                "generatedAt": report.get("generatedAt"),
+                "runId": report.get("runId"),
+                "featureFlagReadPath": report.get("featureFlagReadPath"),
+                "dryRun": report.get("dryRun"),
+                "error": error,
+            }
+            handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+    return len(errors)
 
 
 def main() -> int:
@@ -260,6 +279,11 @@ def main() -> int:
         feature_flag_read_path=args.feature_flag_read_path,
         dry_run=not args.apply,
     )
+    if args.error_ledger:
+        ledger_path = Path(args.error_ledger)
+        written = write_error_ledger(ledger_path, report)
+        report["errorLedgerPath"] = str(ledger_path)
+        report["errorLedgerWritten"] = written
     text = json.dumps(report, ensure_ascii=False, indent=2) + "\n"
     if args.output:
         out = Path(args.output)

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://3klife.local/sanguo-rag/evidence-vector-record.schema.json",
+  "schemaVersion": "evidence-vector-record.v0.1",
+  "title": "Sanguo-RAG Evidence Vector Record",
+  "description": "Retrieval-ready record emitted to Pinecone / Qdrant by export_evidence_vector_records.py (SANGUO-RAGOPS-0301). Default exporter emits only anchor_passage and evidence_card records. raw seeds and unhardened pages are never exported.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "recordId",
+    "recordType",
+    "text",
+    "namespace",
+    "metadata"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "evidence-vector-record.v0.1" },
+    "recordId": { "type": "string", "minLength": 1 },
+    "recordType": {
+      "type": "string",
+      "enum": ["anchor_passage", "evidence_card", "event", "persona", "keyword"]
+    },
+    "text": { "type": "string", "minLength": 1 },
+    "namespace": { "type": "string", "minLength": 1 },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "recordType",
+        "runId",
+        "sourceId",
+        "sourceFamily",
+        "sourceLayer",
+        "generalIds",
+        "locator",
+        "textHash",
+        "anchorVerdict",
+        "canonicalWrites",
+        "payloadUri"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "recordType": { "type": "string" },
+        "runId": { "type": "string" },
+        "sourceId": { "type": "string" },
+        "sourceFamily": { "type": "string" },
+        "sourceLayer": { "type": "string" },
+        "generalIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "locator": { "type": "string" },
+        "textHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "anchorVerdict": {
+          "type": "string",
+          "enum": ["anchored", "candidate", "unanchored", "not-applicable"]
+        },
+        "canonicalWrites": { "type": "boolean" },
+        "payloadUri": { "type": "string" }
+      }
+    }
+  }
+}
