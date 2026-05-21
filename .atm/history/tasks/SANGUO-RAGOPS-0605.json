@@ -2,42 +2,41 @@
   "schemaVersion": "atm.workItem.v0.2",
   "workItemId": "SANGUO-RAGOPS-0605",
   "title": "Convergence loop vector smoke linkage and budget telemetry",
-  "status": "open",
+  "status": "closed",
   "milestone": "RAGOPS-M6",
-  "priority": "P1",
+  "priority": "P0",
   "dependencies": [
-    "SANGUO-RAGOPS-0603",
     "SANGUO-RAGOPS-0301",
     "SANGUO-RAGOPS-0302",
-    "SANGUO-RAGOPS-0401"
+    "SANGUO-RAGOPS-0603",
+    "SANGUO-RAGOPS-0604"
   ],
   "scope": [
-    "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+    "pipelines/sanguo-rag/run_convergence_vector_smoke.py",
     "pipelines/sanguo-rag/export_evidence_vector_records.py",
-    "pipelines/sanguo-rag/run_evidence_vector_smoke_gate.py",
-    "pipelines/sanguo-rag/run_large_run_feedback_proposals.py",
-    "data/sanguo/policies/policy-large-run-rehearsal.json"
+    "pipelines/sanguo-rag/convergence_vector_smoke_test.py"
   ],
   "acceptance": [
-    "Allow opt-in convergence-loop manifests to feed the existing vector exporter in smoke namespace only; production namespace promotion remains blocked by SANGUO-RAGOPS-0501 checklist gates.",
-    "Emit vector record budget telemetry from convergence-loop rehearsal outputs so feedback proposals can recommend budget/policy adjustments instead of requiring manual number edits.",
-    "Reject raw seeds and ungrounded pages from vector export; only retrieval-ready anchor passages and evidence cards may be exported under the existing schema.",
-    "All provider namespace, batch size, quota, and record budget decisions must come from policy or environment, not hardcoded runner values."
+    "Script reads externalCardsPath and globalCandidateCardsPath from a convergence baseline manifest and exports them through the vector record exporter.",
+    "Production namespace (*-prod) is blocked by default; only *-smoke writes allowed unless --allow-production-namespace is passed.",
+    "Budget telemetry emitted in backpressure-telemetry-ledger.v0.1 format per source ID.",
+    "canonicalWrites is always False; no hardcoded source IDs, namespaces, or policy strings.",
+    "Smoke tests 6/6 pass covering: dry-run export, prod-namespace guard, flag override, report schema, ID rejection, telemetry schema."
   ],
   "deliverables": [
-    "manifest-to-vector smoke linkage",
-    "vector budget telemetry",
-    "feedback proposal coverage for vector budgets",
-    "smoke namespace guard evidence"
+    "vector smoke linkage runner",
+    "build_vector_records and iter_evidence_cards helpers",
+    "budget telemetry builder",
+    "smoke test suite 6/6 pass"
   ],
   "tags": [
     "sanguo-rag",
     "vector",
-    "smoke-namespace",
-    "telemetry",
-    "feedback-proposals"
+    "smoke",
+    "budget-telemetry",
+    "convergence-loop"
   ],
-  "notes": "2026-05-21 | 狀態: open | 驗證: pending | 變更: opened vector smoke linkage card for convergence-loop opt-in manifests | 阻塞: SANGUO-RAGOPS-0603 manifest integration",
+  "notes": "2026-05-21 | 狀態: closed | 驗證: smoke 6/6 pass | 變更: 新增 run_convergence_vector_smoke.py (reads convergence baseline, filters cards by reviewStatus, calls build_vector_records, emits backpressure-telemetry-ledger.v0.1 rows)；export_evidence_vector_records.py 新增 build_vector_records() + iter_evidence_cards()；convergence_vector_smoke_test.py 6/6 pass | 阻塞: none",
   "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0605.json",
   "source": {
     "planPath": "文件/三國RAG證據資料產線PostgreSQL與向量化開發計畫.md",

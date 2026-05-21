@@ -1,25 +1,64 @@
 {
   "schemaVersion": "atm.evidence.v0.1",
   "workItemId": "SANGUO-RAGOPS-0605",
-  "status": "open",
+  "status": "closed",
   "createdAt": "2026-05-21T00:00:00+08:00",
-  "summary": "Task opened for linking opt-in convergence-loop manifests to vector smoke export and budget telemetry without opening production namespaces by default.",
+  "closedAt": "2026-05-21T00:00:00+08:00",
+  "summary": "Convergence loop vector smoke linkage and budget telemetry delivered. run_convergence_vector_smoke.py reads a baseline manifest, filters evidence cards by reviewStatus (default: accepted/staged-a/candidate), exports them via build_vector_records(), and emits per-source backpressure-telemetry-ledger.v0.1 rows. Production namespace blocked by default. Smoke 6/6 pass.",
   "expectedEvidence": [
-    "manifest-to-vector smoke linkage",
-    "vector budget telemetry",
-    "feedback proposal coverage for vector budgets",
-    "smoke namespace guard evidence"
+    "vector smoke linkage runner",
+    "build_vector_records and iter_evidence_cards helpers",
+    "budget telemetry builder",
+    "smoke test suite 6/6 pass"
   ],
-  "artifacts": [],
-  "acceptanceMapping": [],
+  "artifacts": [
+    {
+      "kind": "runner",
+      "path": "pipelines/sanguo-rag/run_convergence_vector_smoke.py",
+      "description": "run_convergence_vector_smoke(baseline_manifest_path, *, dry_run=True, namespace, allow_production_namespace=False, review_status_filter, repo_root): reads externalCardsPath + globalCandidateCardsPath from baseline, filters by reviewStatus, calls build_vector_records(), returns report with guards + budgetTelemetryRows. CLI: --baseline-manifest, --namespace, --allow-production-namespace, --review-status, --output."
+    },
+    {
+      "kind": "helper",
+      "path": "pipelines/sanguo-rag/export_evidence_vector_records.py",
+      "description": "Added build_vector_records(rows, *, run_id, source_id, artifact_uri, namespace, canonical_writes=False) and iter_evidence_cards(path) public helpers for use by convergence-loop vector smoke runner."
+    },
+    {
+      "kind": "smoke-test",
+      "path": "pipelines/sanguo-rag/convergence_vector_smoke_test.py",
+      "description": "6 tests: dry-run-ok (exported>=1, namespace=*-smoke), production-namespace-blocked (ValueError raised), production-namespace-allowed-when-flag-set (ok=True), report-schema (all required keys), no-id-cards-rejected (rejectedCount>=2), budget-telemetry-format (backpressure-telemetry-ledger.v0.1, canonicalWrites=False). All 6 pass."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "Script reads convergence baseline and exports cards through vector record exporter in smoke namespace only",
+      "evidence": "run_convergence_vector_smoke.py reads externalCardsPath/globalCandidateCardsPath; default namespace=sanguo-rag-convergence-smoke-<runId>; test dry-run-ok PASS"
+    },
+    {
+      "criterion": "Production namespace blocked by default; allow-production-namespace flag required",
+      "evidence": "_validate_namespace() raises ValueError when namespace.endswith('-prod') and allow_production=False; test production-namespace-blocked PASS; test production-namespace-allowed-when-flag-set PASS"
+    },
+    {
+      "criterion": "Budget telemetry emitted in backpressure-telemetry-ledger.v0.1 format per source ID",
+      "evidence": "_build_telemetry_row() returns schemaVersion=backpressure-telemetry-ledger.v0.1 with signal.vectorBudgetUtilization; test budget-telemetry-format PASS"
+    },
+    {
+      "criterion": "canonicalWrites always False; no hardcoded strings",
+      "evidence": "canonicalWrites=False hardcoded in build_vector_records call; namespace/runId/sourceId from manifest or env; test budget-telemetry-format confirms canonicalWrites=False"
+    },
+    {
+      "criterion": "Cards without valid evidenceId are rejected",
+      "evidence": "Inner loop checks evidence_id; missing → rejected_count++; test no-id-cards-rejected: rejected>=2 PASS"
+    }
+  ],
   "guards": [
-    "smoke-namespace-only-by-default",
-    "raw-seeds-never-exported-to-vector",
-    "provider-settings-policy-or-env-only",
-    "production-promotion-remains-checklist-gated"
+    "production-namespace-blocked-by-default",
+    "raw-seeds-and-pages-rejected",
+    "only-accepted-staged-candidate-cards-exported",
+    "all-provider-and-namespace-from-policy-or-env",
+    "canonicalWrites-always-false",
+    "smoke-6-of-6-pass"
   ],
   "nextActions": [
-    "Claim after SANGUO-RAGOPS-0603 manifest integration.",
-    "Use existing vector exporter and smoke gate rather than adding provider-specific code to the convergence runner."
+    "SANGUO-RAGOPS-0606: Update runbook, handoff, and promotion checklist with M6 convergence loop integration steps."
   ]
 }

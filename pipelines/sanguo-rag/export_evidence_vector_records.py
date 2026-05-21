@@ -192,6 +192,50 @@ def _stable_dump(records: Iterable[dict[str, Any]]) -> tuple[str, str]:
     return text, digest
 
 
+# ---------------------------------------------------------------------------
+# Low-level helpers for convergence-loop vector smoke (SANGUO-RAGOPS-0605)
+# ---------------------------------------------------------------------------
+
+def iter_evidence_cards(path: Path) -> list[dict[str, Any]]:
+    """Read evidence card rows from a JSONL file.
+
+    Returns an empty list if the file does not exist or is unreadable.
+    Used by the convergence vector smoke runner to load card batches.
+    """
+    return _read_jsonl(path)
+
+
+def build_vector_records(
+    rows: list[dict[str, Any]],
+    *,
+    run_id: str,
+    source_id: str,
+    artifact_uri: str,
+    namespace: str,
+    canonical_writes: bool = False,
+) -> list[dict[str, Any]]:
+    """Build evidence-card vector records from a pre-filtered list of rows.
+
+    Unlike ``export_from_manifest()``, this function does **not** filter by
+    ``reviewStatus`` — that filtering must be done by the caller before passing
+    rows here.  Returns only records that have non-empty text content.
+    """
+    records: list[dict[str, Any]] = []
+    for row in rows:
+        record = _build_evidence_card_record(
+            row,
+            run_id=run_id,
+            source_id=source_id,
+            canonical_writes=canonical_writes,
+            artifact_uri=artifact_uri,
+            namespace=namespace,
+            allow_candidate=True,  # caller already applied reviewStatus filter
+        )
+        if record is not None:
+            records.append(record)
+    return records
+
+
 def export_from_manifest(
     manifest: EvidenceManifest,
     *,
