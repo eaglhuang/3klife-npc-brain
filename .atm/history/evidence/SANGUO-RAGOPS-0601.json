@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0601",
+  "status": "open",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "summary": "Task opened for defining the M6 opt-in contract that lets run_full_roster_convergence_loop.py route evidence artifacts through EvidenceRepository and EvidenceManifest without changing default canonical JSONL behavior.",
+  "expectedEvidence": [
+    "opt-in contract document or policy",
+    "flag and environment variable matrix",
+    "repository seam boundary definition",
+    "rollback and disable semantics"
+  ],
+  "artifacts": [],
+  "acceptanceMapping": [],
+  "guards": [
+    "default-canonical-jsonl-behavior-unchanged",
+    "repository-mode-explicit-opt-in-only",
+    "postgres-and-vector-provider-code-hidden-behind-adapters",
+    "no-hardcoded-thresholds-or-provider-settings"
+  ],
+  "nextActions": [
+    "Claim SANGUO-RAGOPS-0601 before implementing any convergence-loop repository behavior.",
+    "Use SANGUO-RAGOPS-0601 output as the contract for SANGUO-RAGOPS-0602 through SANGUO-RAGOPS-0606."
+  ]
+}

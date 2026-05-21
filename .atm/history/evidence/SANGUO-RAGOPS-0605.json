@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0605",
+  "status": "open",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "summary": "Task opened for linking opt-in convergence-loop manifests to vector smoke export and budget telemetry without opening production namespaces by default.",
+  "expectedEvidence": [
+    "manifest-to-vector smoke linkage",
+    "vector budget telemetry",
+    "feedback proposal coverage for vector budgets",
+    "smoke namespace guard evidence"
+  ],
+  "artifacts": [],
+  "acceptanceMapping": [],
+  "guards": [
+    "smoke-namespace-only-by-default",
+    "raw-seeds-never-exported-to-vector",
+    "provider-settings-policy-or-env-only",
+    "production-promotion-remains-checklist-gated"
+  ],
+  "nextActions": [
+    "Claim after SANGUO-RAGOPS-0603 manifest integration.",
+    "Use existing vector exporter and smoke gate rather than adding provider-specific code to the convergence runner."
+  ]
+}

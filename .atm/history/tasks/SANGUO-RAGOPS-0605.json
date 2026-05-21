@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-RAGOPS-0605",
+  "title": "Convergence loop vector smoke linkage and budget telemetry",
+  "status": "open",
+  "milestone": "RAGOPS-M6",
+  "priority": "P1",
+  "dependencies": [
+    "SANGUO-RAGOPS-0603",
+    "SANGUO-RAGOPS-0301",
+    "SANGUO-RAGOPS-0302",
+    "SANGUO-RAGOPS-0401"
+  ],
+  "scope": [
+    "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+    "pipelines/sanguo-rag/export_evidence_vector_records.py",
+    "pipelines/sanguo-rag/run_evidence_vector_smoke_gate.py",
+    "pipelines/sanguo-rag/run_large_run_feedback_proposals.py",
+    "data/sanguo/policies/policy-large-run-rehearsal.json"
+  ],
+  "acceptance": [
+    "Allow opt-in convergence-loop manifests to feed the existing vector exporter in smoke namespace only; production namespace promotion remains blocked by SANGUO-RAGOPS-0501 checklist gates.",
+    "Emit vector record budget telemetry from convergence-loop rehearsal outputs so feedback proposals can recommend budget/policy adjustments instead of requiring manual number edits.",
+    "Reject raw seeds and ungrounded pages from vector export; only retrieval-ready anchor passages and evidence cards may be exported under the existing schema.",
+    "All provider namespace, batch size, quota, and record budget decisions must come from policy or environment, not hardcoded runner values."
+  ],
+  "deliverables": [
+    "manifest-to-vector smoke linkage",
+    "vector budget telemetry",
+    "feedback proposal coverage for vector budgets",
+    "smoke namespace guard evidence"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "vector",
+    "smoke-namespace",
+    "telemetry",
+    "feedback-proposals"
+  ],
+  "notes": "2026-05-21 | 狀態: open | 驗證: pending | 變更: opened vector smoke linkage card for convergence-loop opt-in manifests | 阻塞: SANGUO-RAGOPS-0603 manifest integration",
+  "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0605.json",
+  "source": {
+    "planPath": "文件/三國RAG證據資料產線PostgreSQL與向量化開發計畫.md",
+    "sectionTitle": "M6 convergence loop evidence repository opt-in integration"
+  },
+  "owner": "codex"
+}

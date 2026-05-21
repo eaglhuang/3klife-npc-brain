@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0604",
+  "status": "open",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "summary": "Task opened for adding a convergence-loop repository parity rehearsal gate across no-write, jsonl-only, and dual-write opt-in modes.",
+  "expectedEvidence": [
+    "convergence-loop parity rehearsal runner or mode",
+    "parity fixture set",
+    "governance assertions",
+    "error ledger schema"
+  ],
+  "artifacts": [],
+  "acceptanceMapping": [],
+  "guards": [
+    "jsonl-canonical-fallback-preserved",
+    "parity-count-and-sha-required",
+    "production-credentials-not-required",
+    "governance-regression-covers-opt-in-isolation"
+  ],
+  "nextActions": [
+    "Run only deterministic fixtures before live source or production backend exercises.",
+    "Feed failures into machine-readable ledgers for feedback/proposal review."
+  ]
+}

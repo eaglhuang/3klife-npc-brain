@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0602",
+  "status": "open",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "summary": "Task opened for adding an opt-in repository writer seam to run_full_roster_convergence_loop.py while preserving canonical JSONL defaults and no-write semantics.",
+  "expectedEvidence": [
+    "repository writer seam implementation",
+    "no-write preview ledger",
+    "repository error ledger",
+    "smoke fixture proving default canonical behavior is unchanged"
+  ],
+  "artifacts": [],
+  "acceptanceMapping": [],
+  "guards": [
+    "no-write-produces-zero-repository-side-effects",
+    "default-mode-remains-jsonl-canonical",
+    "repository-errors-captured-not-swallowed",
+    "no-partial-canonical-mutation-on-repository-failure"
+  ],
+  "nextActions": [
+    "Wait for SANGUO-RAGOPS-0601 contract before patching the convergence runner.",
+    "Add smoke tests before enabling dual-write rehearsal."
+  ]
+}

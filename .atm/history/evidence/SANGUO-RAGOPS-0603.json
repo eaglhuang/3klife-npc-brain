@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0603",
+  "status": "open",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "summary": "Task opened for connecting convergence-loop opt-in runs to evidence manifest emission and resume validation.",
+  "expectedEvidence": [
+    "convergence-loop manifest emission",
+    "resume validation path",
+    "manifest smoke fixture",
+    "hash mismatch and missing artifact tests"
+  ],
+  "artifacts": [],
+  "acceptanceMapping": [],
+  "guards": [
+    "manifest-hash-mismatch-fails-fast",
+    "missing-artifact-fails-fast",
+    "canonicalWrites-drift-fails-fast",
+    "resume-budget-driven-by-policy"
+  ],
+  "nextActions": [
+    "Claim after SANGUO-RAGOPS-0602 establishes the repository seam.",
+    "Reuse SANGUO-RAGOPS-0102 manifest schema and smoke patterns."
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "workItemId": "SANGUO-RAGOPS-0606",
+  "status": "open",
+  "createdAt": "2026-05-21T00:00:00+08:00",
+  "summary": "Task opened for closing M6 with runbook, checklist, smoke command, handoff, and evidence package updates.",
+  "expectedEvidence": [
+    "M6 runbook update",
+    "promotion checklist update",
+    "smoke command manifest update",
+    "handoff summary and evidence package"
+  ],
+  "artifacts": [],
+  "acceptanceMapping": [],
+  "guards": [
+    "production-cutover-stays-blocked-until-all-gates-go",
+    "rollback-and-disable-path-documented",
+    "operator-actions-separated-from-agent-actions",
+    "every-acceptance-criterion-mapped-to-evidence"
+  ],
+  "nextActions": [
+    "Claim after SANGUO-RAGOPS-0604 and SANGUO-RAGOPS-0605 close.",
+    "Update cutover and runbook docs without weakening the existing pending operator gates."
+  ]
+}
