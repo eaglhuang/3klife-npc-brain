@@ -123,6 +123,92 @@
     "minRoiPerSource": 0.1,
     "consecutiveLowYieldRoundsStop": 2
   },
+  "feedbackProposal": {
+    "schemaVersion": "large-run-feedback-proposals.v0.1",
+    "proposalStatus": "sandbox-proposed",
+    "reviewGate": "human-review-required-before-policy-change",
+    "minObservation": {
+      "roundCount": 2,
+      "sourceObservationCount": 2
+    },
+    "adjustment": {
+      "headroomRatio": 0.15,
+      "maxIncreaseRatio": 0.25,
+      "maxDecreaseRatio": 0.15,
+      "lowUtilizationRatio": 0.35,
+      "minProposedValue": 1
+    },
+    "budgetMetricMap": {
+      "maxRawBytesPerRound": "rawBytes",
+      "maxSeedsPerRound": "seedCount",
+      "maxCardsPerRound": "cardCount",
+      "maxVectorRecordsPerRound": "vectorRecordCount",
+      "maxArtifactBytesPerRun": "cumulativeArtifactBytes",
+      "maxTimeoutsPerRound": "timeoutCount"
+    },
+    "signalToBudget": {
+      "roundRawBytesBudget": {
+        "budgetField": "maxRawBytesPerRound",
+        "metricField": "rawBytes",
+        "proposalKind": "large-run-budget-increase",
+        "reason": "round raw bytes hit the configured budget"
+      },
+      "roundSeedBudget": {
+        "budgetField": "maxSeedsPerRound",
+        "metricField": "seedCount",
+        "proposalKind": "large-run-budget-increase",
+        "reason": "round seed count hit the configured budget"
+      },
+      "roundCardBudget": {
+        "budgetField": "maxCardsPerRound",
+        "metricField": "cardCount",
+        "proposalKind": "large-run-budget-increase",
+        "reason": "round card count hit the configured budget"
+      },
+      "roundVectorRecordBudget": {
+        "budgetField": "maxVectorRecordsPerRound",
+        "metricField": "vectorRecordCount",
+        "proposalKind": "large-run-budget-increase",
+        "reason": "round vector record count hit the configured budget"
+      },
+      "artifactBudgetExhausted": {
+        "budgetField": "maxArtifactBytesPerRun",
+        "metricField": "cumulativeArtifactBytes",
+        "proposalKind": "large-run-budget-increase",
+        "reason": "run artifact budget was exhausted"
+      },
+      "timeoutSaturation": {
+        "budgetField": "maxTimeoutsPerRound",
+        "metricField": "timeoutCount",
+        "proposalKind": "large-run-timeout-budget-review",
+        "reason": "round timeout count saturated the configured budget"
+      }
+    },
+    "sourceSignalProposals": {
+      "sourceLowRoi": {
+        "proposalKind": "large-run-source-roi-review",
+        "reason": "source ROI stayed below the configured minimum"
+      },
+      "sourceTimeoutExceeded": {
+        "proposalKind": "large-run-source-timeout-review",
+        "reason": "source timeout count exceeded per-source budget"
+      },
+      "resumeScanBudget": {
+        "proposalKind": "large-run-resume-scan-review",
+        "reason": "source resume scan seconds exceeded budget"
+      }
+    },
+    "defaultBudgetDecreaseProposal": {
+      "proposalKind": "large-run-budget-decrease",
+      "reason": "observed utilization stayed below the configured low-utilization ratio"
+    },
+    "guards": [
+      "proposal-only-no-policy-mutation",
+      "canonicalWrites=false",
+      "requires-human-review-before-apply",
+      "budget-adjustment-capped-by-policy"
+    ]
+  },
   "telemetryFields": [
     "roundId",
     "sourceId",

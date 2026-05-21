@@ -290,8 +290,12 @@ def backfill(manifest: EvidenceManifest, settings: RepositorySettings, lake_root
     for table, write_result in pg_results.items():
         backend_count = max(1, write_result.backend_count)
         logical_row_count = jsonl_counts.get(table, write_result.requested // backend_count)
-        per_backend_written = write_result.written // backend_count
-        per_backend_skipped = write_result.skipped_duplicate // backend_count
+        # Sum first, divide later: backends may differ on which row they
+        # consider "written" vs "skipped_duplicate" (the JSONL backend may
+        # see prior rows as duplicates while PG ON CONFLICT counts them as
+        # writes, and vice versa). Floor-dividing each tally separately
+        # under-counts mismatched cases.
+        per_backend_total = (write_result.written + write_result.skipped_duplicate) // backend_count
         parity.append({
             "table": table,
             "jsonlRowCount": logical_row_count,
@@ -301,8 +305,9 @@ def backfill(manifest: EvidenceManifest, settings: RepositorySettings, lake_root
             "pgSkippedDuplicate": write_result.skipped_duplicate,
             "pgErrors": write_result.errors,
             "backendCount": backend_count,
+            "perBackendTotal": per_backend_total,
             "parityOk": (
-                logical_row_count == (per_backend_written + per_backend_skipped)
+                logical_row_count == per_backend_total
                 and not write_result.errors
             ),
         })
