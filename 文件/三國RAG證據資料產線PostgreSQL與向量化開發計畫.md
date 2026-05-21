@@ -69,6 +69,18 @@ Vector record 目標 metadata：
 | M3 | Evidence vector export 與 smoke namespace ingestion | `SANGUO-RAGOPS-0301`、`SANGUO-RAGOPS-0302` |
 | M4 | 大量試跑 profile、backpressure、治理 runbook | `SANGUO-RAGOPS-0401`、`SANGUO-RAGOPS-0402` |
 | M5 | cutover/promotion 決策包 | `SANGUO-RAGOPS-0501` |
+| M6 | convergence loop repository 接軌（opt-in） | `SANGUO-RAGOPS-0601` ~ `SANGUO-RAGOPS-0606` |
+
+## M6 任務卡回寫
+
+- `SANGUO-RAGOPS-0601`：定義 convergence loop 走 repository 的 opt-in 合約與資料契約（預設不會改變 JSONL 行為）。
+- `SANGUO-RAGOPS-0602`：在 `run_full_roster_convergence_loop.py` 新增 repository 寫入 seam，預設 canonical-only。
+- `SANGUO-RAGOPS-0603`：加入 evidence manifest 與 resume 機制（含 body-boundary telemetry 參考與 hash 驗證）。
+- `SANGUO-RAGOPS-0604`：加入 convergence dual-write/JSONL parity rehearsal gate，保證 no-write 與 jsonl-only 行為可回放。
+- `SANGUO-RAGOPS-0605`：建立 vector smoke linkage 與預算 telemetry，讓回饋走 proposal（非手工數值）。
+- `SANGUO-RAGOPS-0606`：更新 runbook、handoff、cutover 決策包，定義禁寫、回滾、觀察窗口與人工放行條件。
+
+目前 0601–0606 皆為 `open`，屬於下一輪實作入口；本計畫文件更新後將作為這批卡片的對應依據與回填據點。後續若這批卡進入 `claim/close`，請在本節補上每張卡的完成證據路徑與驗收結果。
 
 ## 驗收門檻
 
