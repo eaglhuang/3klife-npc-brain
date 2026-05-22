@@ -1,23 +1,26 @@
 {
-  "schemaVersion": "atm.evidence.v0.1",
-  "evidenceKind": "validation",
-  "evidenceType": "git-head",
-  "summary": "ATM git HEAD evidence for the pending npc-brain governed commit.",
-  "producedBy": "codex",
-  "createdAt": "2026-05-21T16:02:01.308Z",
-  "details": {
-    "git": {
-      "commitSha": null,
-      "treeSha": "15096a920aec660597436029fc87ed1f0b1e8a86",
-      "governedTreeSha": "15096a920aec660597436029fc87ed1f0b1e8a86",
-      "parentCommitShas": [
-        "c01c94429452f8b6d22f9e7dadda657c2547b35e"
-      ]
-    },
-    "source": {
-      "doctorCheck": "git-head-evidence",
-      "expectedEvidencePath": ".atm/history/evidence/git-head.json",
-      "workTreeRoot": "C:/Users/User/3klife-npc-brain"
+  "schemaVersion": "atm.gitHeadEvidence.v0.1",
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "summary": "Git commit tree is covered by ATM Integration Hook Contract v1.",
+      "artifactPaths": [],
+      "createdAt": "2026-05-22T00:57:19.637Z",
+      "producedBy": "atm-framework-development-hooks/v1",
+      "commandRuns": [],
+      "details": {
+        "git": {
+          "treeSha": "6216b9142939f6464126f32b1a99997be08927a6",
+          "parentCommitShas": [
+            "4ba4194006137265b1bc528b6e7a6daa3da9857a"
+          ],
+          "stagedPathCount": 2,
+          "evidencePath": ".atm/history/evidence/git-head.json",
+          "generatedAt": "2026-05-22T00:57:19.637Z"
+        },
+        "hookContractVersion": "atm.integration-hooks/v1",
+        "runnerVersion": "0.0.0"
+      }
     }
-  }
+  ]
 }
