@@ -2086,7 +2086,11 @@ class NpcDialogueService:
                     continue
                 related_target = target_by_id.get(related_id)
                 related_label = related_target.label if related_target else self._roster_name_for(related_id, self._load_roster_index())
-                if not any(alias and alias in source_text for alias in self._target_label_aliases(related_label)):
+                allow_family_titles = bool(
+                    (related_target and (related_target.femaleFocus or self._is_female_gender(related_target.gender)))
+                    or self._is_female_gender(self._roster_gender_for(related_id, self._load_roster_index()))
+                )
+                if not any(alias and alias in source_text for alias in self._target_label_aliases(related_label, allow_family_titles=allow_family_titles)):
                     continue
                 people.append(
                     {
@@ -2431,7 +2435,7 @@ class NpcDialogueService:
                 seeds.append(str(value))
         aliases: list[str] = []
         for seed in seeds:
-            for alias in self._target_label_aliases(seed):
+            for alias in self._target_label_aliases(seed, allow_family_titles=False):
                 if alias and alias not in aliases:
                     aliases.append(alias)
         return sorted(aliases, key=len, reverse=True)
@@ -3215,18 +3219,26 @@ class NpcDialogueService:
             story_text=story_text,
         )
         if generation.fallbackUsed:
-            regenerated = self._rewrite_scene_chorus_from_fallback(
-                request=request,
-                profile=profile,
-                target=target,
-                main_target=main_target,
-                beats=beats,
-                story_text=story_text,
-                speaker_context=speaker_context,
-                selected_keywords=selected_keywords,
-                evidence_refs=evidence_refs,
-                fallback_text=fallback_text,
-            )
+            try:
+                regenerated = self._rewrite_scene_chorus_from_fallback(
+                    request=request,
+                    profile=profile,
+                    target=target,
+                    main_target=main_target,
+                    beats=beats,
+                    story_text=story_text,
+                    speaker_context=speaker_context,
+                    selected_keywords=selected_keywords,
+                    evidence_refs=evidence_refs,
+                    fallback_text=fallback_text,
+                )
+            except Exception as exc:  # pragma: no cover - rewrite is best-effort
+                log_debug_event(
+                    "scene_director.chorus.rewrite_error",
+                    targetId=target.targetId,
+                    error=str(exc)[:240],
+                )
+                regenerated = None
             if regenerated is not None:
                 generation = regenerated
         self._record_scene_chorus_history(
@@ -3417,13 +3429,15 @@ class NpcDialogueService:
         story_text: str,
     ) -> str:
         payload = {
-            "version": 6,
+            "version": 7,
             "mainActor": profile.generalId,
             "speaker": target.targetId,
             "relationship": target.role,
             "activeTarget": main_target.targetId if main_target else None,
             "activeTargetRole": main_target.role if main_target else None,
+            "activeTargetAliases": self._target_aliases_for_interaction(main_target)[:6] if main_target else [],
             "sceneSeeds": beats.sceneSeeds or {},
+            "sceneGrounding": self._scene_chorus_grounding_terms(main_target, beats, story_text)[:8],
             "storyText": self._clean_seed_text(story_text, max_chars=320),
             "sourceRefs": beats.sourceRefs,
         }
@@ -3723,11 +3737,6 @@ class NpcDialogueService:
         story_text: str,
     ) -> list[str]:
         values: list[str] = []
-        if main_target:
-            for alias in self._target_aliases_for_interaction(main_target):
-                alias = str(alias or "").strip()
-                if alias and alias not in values:
-                    values.append(alias)
         scene_seeds = beats.sceneSeeds or {}
         place = str(scene_seeds.get("place") or "").strip()
         if place and place not in values:
@@ -3745,6 +3754,11 @@ class NpcDialogueService:
             for phrase in self._scene_phrase_candidates(raw_text):
                 if phrase and phrase not in values:
                     values.append(phrase)
+        if main_target:
+            for alias in self._target_aliases_for_interaction(main_target):
+                alias = str(alias or "").strip()
+                if alias and alias not in values:
+                    values.append(alias)
         return values[:10]
 
     def _scene_phrase_candidates(self, text: Any, max_terms: int = 6) -> list[str]:
@@ -4132,98 +4146,6 @@ class NpcDialogueService:
             qualityWarnings=warnings,
         )
 
-    def _render_seeded_chorus_fallback(
-        self,
-        profile: NarrativeProfileResponse,
-        target: NarrativeInteractionTarget,
-        main_target: NarrativeInteractionTarget | None,
-        beats: SceneDirectorBeats,
-    ) -> str:
-        seed_text = " ".join([beats.memoryText, beats.emotionText, beats.dialogueText, beats.intentText])
-        if re.search(r"追兵|喊聲|逼近", seed_text):
-            if main_target and main_target.femaleFocus:
-                return self._pick_chorus_fallback_variant(
-                    target.targetId,
-                    [
-                        "這不是單純進退，家室與去留都被追兵逼到眼前了。",
-                        "若連同行的人都未安，這一步就不能只按兵勢來算。",
-                        "追兵壓上來時，最怕情分與軍務一起亂成一團。",
-                    ],
-                )
-            if target.femaleFocus:
-                return self._pick_chorus_fallback_variant(
-                    target.targetId,
-                    [
-                        "先讓人離開險處，情分與話語都可稍後再理。",
-                        "這時候先保住同行的人，比急著分說更要緊。",
-                        "路若還不穩，心裡的話就先放輕一些。",
-                    ],
-                )
-            if target.relationshipType in {"sworn_sibling", "battle_ally", "loyal_oath"}:
-                return self._pick_chorus_fallback_variant(
-                    target.targetId,
-                    [
-                        "若他要護住同行的人，我便替他把後路守穩。",
-                        "先把追兵擋遠，才輪得到心裡那些難處。",
-                        "他要顧全身邊的人，我先替他看住亂局。",
-                    ],
-                )
-            if target.relationshipType in {"enemy_rival", "battlefield_opponent"}:
-                return self._pick_chorus_fallback_variant(
-                    target.targetId,
-                    [
-                        "這一退若露出破綻，後面的局勢便會被人咬住。",
-                        "越是倉促，越容易讓旁人看出可趁之處。",
-                    ],
-                )
-            return self._pick_chorus_fallback_variant(
-                target.targetId,
-                [
-                    "追兵一近，話裡的分寸比刀兵還容易失手。",
-                    "這一刻若只看退路，反而會漏掉人的去留。",
-                ],
-            )
-        if re.search(r"垂淚|憂懼|牽掛|煩惱", seed_text):
-            if main_target and main_target.femaleFocus:
-                return self._pick_chorus_fallback_variant(
-                    target.targetId,
-                    [
-                        "這份憂色牽著家室，也牽著兩邊日後的去路。",
-                        "話還沒說透，人的心已經先被這場局勢牽住了。",
-                        "此刻最難的不是開口，而是開口後仍能把人安住。",
-                    ],
-                )
-            if target.femaleFocus:
-                return self._pick_chorus_fallback_variant(
-                    target.targetId,
-                    [
-                        "這話若壓在心裡，只會讓人更難安定。",
-                        "心事牽著家室，就不能只藏在心裡。",
-                        "心事已到眼前，別再只用沉默撐著。",
-                    ],
-                )
-            if target.relationshipType in {"sworn_sibling", "battle_ally", "loyal_oath"}:
-                return self._pick_chorus_fallback_variant(
-                    target.targetId,
-                    [
-                        "他若心中有事，我先替他把局面撐住。",
-                        "先讓他把難處說出口，我再看該往哪裡補位。",
-                        "人心不穩時，身邊總得有人先站住。",
-                    ],
-                )
-            return self._pick_chorus_fallback_variant(target.targetId, ["先聽完這份憂慮，再看局勢如何轉圜。", "話說開之前，局勢還不能急著下斷。"])
-        if main_target and target.relationshipType in {"sworn_sibling", "battle_ally", "loyal_oath"}:
-            return "他若一時難決，我先替他穩住身邊的人。"
-        if target.relationshipType in {"enemy_rival", "battlefield_opponent"}:
-            return "這一步若慢了，便會露出可趁之機。"
-        return "先把話說清，局勢才不會繼續散開。"
-
-    def _pick_chorus_fallback_variant(self, key: str, variants: list[str]) -> str:
-        if not variants:
-            return ""
-        digest = hashlib.sha1(str(key or "").encode("utf-8")).hexdigest()
-        return variants[int(digest[:4], 16) % len(variants)]
-
     def _generate_scene_director_text(
         self,
         general_id: str,
@@ -4599,8 +4521,12 @@ class NpcDialogueService:
                 if value
             )
         aliases: list[str] = []
+        is_female = self._is_female_gender(str((target_persona or {}).get("gender") or "").strip()) or any(
+            token in str(target_name or "")
+            for token in ("夫人", "氏", "太后", "太妃", "公主")
+        )
         for seed in seeds:
-            for alias in self._target_label_aliases(seed):
+            for alias in self._target_label_aliases(seed, allow_family_titles=is_female):
                 if alias and alias not in aliases:
                     aliases.append(alias)
             if seed and len(seed) >= 2:
@@ -4925,7 +4851,8 @@ class NpcDialogueService:
                 label = str(row.get("name") or target_key).strip()
                 if not label:
                     continue
-                if not any(alias and alias in text for alias in self._target_label_aliases(label)):
+                allow_family_titles = self._is_female_gender(self._roster_gender_for(target_key, roster_index))
+                if not any(alias and alias in text for alias in self._target_label_aliases(label, allow_family_titles=allow_family_titles)):
                     continue
                 bucket = ensure_bucket(target_key)
                 is_female = bucket["femaleFocus"] or self._is_female_gender(self._roster_gender_for(target_key, roster_index))
@@ -5281,7 +5208,7 @@ class NpcDialogueService:
         text = str(source_text or "")
         if not self._text_mentions_runtime_actor(runtime_persona, text):
             return False
-        if not any(alias and alias in text for alias in self._target_label_aliases(target.label)):
+        if not any(alias and alias in text for alias in self._target_label_aliases(target.label, allow_family_titles=target.femaleFocus or self._is_female_gender(target.gender))):
             return False
         emotion_terms = ("夫人", "家眷", "妻", "母", "女", "嫁", "婚", "去留", "煩惱", "垂淚", "思親", "情")
         return any(term in text for term in emotion_terms)
@@ -5341,7 +5268,7 @@ class NpcDialogueService:
             return "people"
         return "people"
 
-    def _target_label_aliases(self, label: str) -> list[str]:
+    def _target_label_aliases(self, label: str, allow_family_titles: bool = False) -> list[str]:
         normalized = str(label or "").strip()
         if not normalized:
             return []
@@ -5349,20 +5276,21 @@ class NpcDialogueService:
         compact = normalized.replace(" ", "")
         if compact and compact not in aliases:
             aliases.append(compact)
-        surname = compact[:1]
-        if surname:
-            spouse_form = f"{surname}夫人"
-            if spouse_form not in aliases:
-                aliases.append(spouse_form)
-            clan_form = f"{surname}氏"
-            if clan_form not in aliases:
-                aliases.append(clan_form)
-        if compact.endswith("氏"):
-            bare = compact[:-1]
-            if bare:
-                bare_spouse = f"{bare}夫人"
-                if bare_spouse not in aliases:
-                    aliases.append(bare_spouse)
+        if allow_family_titles or compact.endswith(("氏", "夫人")):
+            surname = compact[:1]
+            if surname:
+                spouse_form = f"{surname}夫人"
+                if spouse_form not in aliases:
+                    aliases.append(spouse_form)
+                clan_form = f"{surname}氏"
+                if clan_form not in aliases:
+                    aliases.append(clan_form)
+            if compact.endswith("氏"):
+                bare = compact[:-1]
+                if bare:
+                    bare_spouse = f"{bare}夫人"
+                    if bare_spouse not in aliases:
+                        aliases.append(bare_spouse)
         return aliases
 
     def _target_aliases_for_interaction(self, target: NarrativeInteractionTarget) -> list[str]:
@@ -5391,8 +5319,9 @@ class NpcDialogueService:
                 if alias not in seeds:
                     seeds.append(alias)
         aliases: list[str] = []
+        allow_family_titles = bool(target.femaleFocus or self._is_female_gender(target.gender))
         for seed in seeds:
-            for alias in self._target_label_aliases(seed):
+            for alias in self._target_label_aliases(seed, allow_family_titles=allow_family_titles):
                 if alias and alias not in aliases:
                     aliases.append(alias)
         return sorted(aliases, key=len, reverse=True)
@@ -5408,7 +5337,7 @@ class NpcDialogueService:
         female_ids = list(dict.fromkeys(female_target_ids or []))
         hits: list[str] = []
         for target_id, label in target_labels.items():
-            aliases = self._target_label_aliases(label)
+            aliases = self._target_label_aliases(label, allow_family_titles=target_id in female_ids)
             if any(alias and alias in text for alias in aliases):
                 hits.append(target_id)
         if female_ids and any(token in text for token in ("夫人", "二夫人", "二嫂嫂", "家眷", "嫂嫂", "妻")):

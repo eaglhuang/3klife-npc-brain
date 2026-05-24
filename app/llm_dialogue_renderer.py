@@ -19,6 +19,8 @@ DEFAULT_GEMINI_THINKING_BUDGET = 128
 DEFAULT_GEMINI_FLASH_LITE_THINKING_BUDGET = 512
 DEFAULT_GEMINI_MAX_OUTPUT_TOKENS = 512
 DEFAULT_GEMINI_RETRY_COUNT = 2
+DEFAULT_GEMINI_REPAIR_RETRY_COUNT = 1
+DEFAULT_GEMINI_REPAIR_TIMEOUT_MS = 2500
 DEFAULT_LOCAL_LLAMA_MODEL = "qwen2.5:7b"
 DEFAULT_DEEPSEEK_REASONER_MODEL = "deepseek-r1:7b"
 DEFAULT_LOCAL_LLAMA_TIMEOUT_MS = 6000
@@ -240,6 +242,14 @@ class GeminiDialogueProvider:
         self.thinking_budget = int(os.environ.get("NPC_LLM_GEMINI_THINKING_BUDGET") or DEFAULT_GEMINI_THINKING_BUDGET)
         self.max_output_tokens = int(os.environ.get("NPC_LLM_GEMINI_MAX_OUTPUT_TOKENS") or DEFAULT_GEMINI_MAX_OUTPUT_TOKENS)
         self.retry_count = max(1, retry_count or int(os.environ.get("NPC_LLM_GEMINI_RETRY_COUNT") or DEFAULT_GEMINI_RETRY_COUNT))
+        self.repair_retry_count = max(0, int(os.environ.get("NPC_LLM_GEMINI_REPAIR_RETRY_COUNT") or DEFAULT_GEMINI_REPAIR_RETRY_COUNT))
+        self.repair_timeout_ms = max(
+            500,
+            min(
+                self.timeout_ms,
+                int(os.environ.get("NPC_LLM_GEMINI_REPAIR_TIMEOUT_MS") or DEFAULT_GEMINI_REPAIR_TIMEOUT_MS),
+            ),
+        )
         self.disable_proxy = _env_flag("NPC_LLM_DISABLE_PROXY", default=True)
 
     def generate(self, package: DialoguePromptPackage) -> DialogueGenerationResult:
@@ -247,12 +257,57 @@ class GeminiDialogueProvider:
             raise ProviderUnavailableError("gemini:no-api-key")
         tone_mode = str(package.toneMode or "").strip().lower()
         selected_task = str((package.selectedContext or {}).get("task") or "").strip()
-        allow_memory_only = tone_mode == "narrative_fusion" or selected_task == "chorus-line"
+        allow_memory_only = tone_mode == "narrative_fusion" or selected_task in {"chorus-line", "chorus-line-rewrite"}
         if not package.resolvedEvidence and not allow_memory_only:
             raise ProviderUnavailableError("gemini:no-resolved-evidence")
 
         prompt = self._build_prompt(package)
-        request_body = {
+        request_body = self._build_gemini_request_body(package, prompt)
+        payload = self._request_gemini_payload(request_body, package, prompt, repair=False)
+        text = self._extract_text(payload)
+        original_warnings: list[str] = []
+        repair_used = False
+        try:
+            parsed, dialogue_text, used_keyword_keys, used_refs = self._parse_and_validate_gemini_response(text, package)
+        except ProviderOutputError as exc:
+            original_warnings = [str(exc)]
+            if self.repair_retry_count <= 0:
+                raise
+            repair_used = True
+            repair_prompt = self._build_gemini_repair_prompt(package, text, original_warnings)
+            repair_body = self._build_gemini_request_body(package, repair_prompt, temperature=0.2)
+            repair_payload = self._request_gemini_payload(repair_body, package, repair_prompt, repair=True)
+            repair_text = self._extract_text(repair_payload)
+            try:
+                parsed, dialogue_text, used_keyword_keys, used_refs = self._parse_and_validate_gemini_response(repair_text, package)
+            except ProviderOutputError as repair_exc:
+                raise ProviderOutputError(f"{self.name}:repair-failed:{repair_exc}") from repair_exc
+
+        log_debug_event(
+            "provider.response.parsed",
+            provider=self.name,
+            model=self.model,
+            usedEvidenceRefs=used_refs,
+            usedKeywordKeys=used_keyword_keys,
+            repairUsed=repair_used,
+            textPreview=_preview_text(dialogue_text),
+        )
+        quality_warnings = [f"repaired:{warning}" for warning in original_warnings[:4]] if repair_used else []
+
+        return DialogueGenerationResult(
+            text=self._compact_dialogue_text(dialogue_text, package.maxChars),
+            provider=self.name,
+            model=self.model,
+            generationMode="gemini-json-v2+persona-card+repair-guard",
+            fallbackUsed=False,
+            usedEvidenceRefs=used_refs,
+            qualityWarnings=quality_warnings,
+            repairUsed=repair_used,
+        )
+
+    def _build_gemini_request_body(self, package: DialoguePromptPackage, prompt: str, temperature: float = 0.75) -> dict:
+        max_output_tokens = max(self.max_output_tokens, min(1200, package.maxChars * 2 + 220))
+        return {
             "contents": [
                 {
                     "role": "user",
@@ -260,18 +315,21 @@ class GeminiDialogueProvider:
                 }
             ],
             "generationConfig": {
-                "temperature": 0.75,
-                "maxOutputTokens": self.max_output_tokens,
+                "temperature": temperature,
+                "maxOutputTokens": max_output_tokens,
                 "responseMimeType": "application/json",
                 "thinkingConfig": {
                     "thinkingBudget": self.thinking_budget,
                 },
             },
         }
+
+    def _request_gemini_payload(self, request_body: dict, package: DialoguePromptPackage, prompt: str, repair: bool) -> dict:
         log_debug_event(
             "provider.request",
             provider=self.name,
             model=self.model,
+            repair=repair,
             generalId=package.generalId,
             selectedKeywordKeys=[str(keyword.get("keywordKey") or "") for keyword in package.selectedKeywords],
             selectedKeywordLabels=[str(keyword.get("label") or "") for keyword in package.selectedKeywords],
@@ -289,20 +347,36 @@ class GeminiDialogueProvider:
         )
         payload: dict | None = None
         last_error: ProviderUnavailableError | None = None
-        for attempt_index in range(self.retry_count):
+        attempt_limit = 1 if repair else self.retry_count
+        timeout_seconds = (self.repair_timeout_ms if repair else self.timeout_ms) / 1000
+        for attempt_index in range(attempt_limit):
             try:
-                with _open_url(request, self.timeout_ms / 1000, disable_proxy=self.disable_proxy) as response:
+                with _open_url(request, timeout_seconds, disable_proxy=self.disable_proxy) as response:
                     payload = json.loads(response.read().decode("utf-8"))
                 break
             except urllib.error.HTTPError as exc:
                 detail = exc.read().decode("utf-8", errors="replace")[:300]
                 last_error = ProviderUnavailableError(f"{self.name}:http-{exc.code}:{detail}")
-                log_debug_event("provider.retry", provider=self.name, model=self.model, attempt=attempt_index + 1, error=str(last_error))
+                log_debug_event(
+                    "provider.retry",
+                    provider=self.name,
+                    model=self.model,
+                    repair=repair,
+                    attempt=attempt_index + 1,
+                    error=str(last_error),
+                )
                 if exc.code not in {429, 500, 502, 503, 504}:
                     raise last_error from exc
             except (urllib.error.URLError, TimeoutError) as exc:
                 last_error = ProviderUnavailableError(f"{self.name}:network:{exc}")
-                log_debug_event("provider.retry", provider=self.name, model=self.model, attempt=attempt_index + 1, error=str(last_error))
+                log_debug_event(
+                    "provider.retry",
+                    provider=self.name,
+                    model=self.model,
+                    repair=repair,
+                    attempt=attempt_index + 1,
+                    error=str(last_error),
+                )
         if payload is None:
             raise last_error or ProviderUnavailableError(f"{self.name}:no-response")
 
@@ -310,41 +384,51 @@ class GeminiDialogueProvider:
             "provider.response.raw",
             provider=self.name,
             model=self.model,
+            repair=repair,
             payloadSummary=self._summarize_gemini_payload(payload),
         )
-        text = self._extract_text(payload)
-        parsed = self._parse_json_text(text)
+        return payload
+
+    def _parse_and_validate_gemini_response(
+        self,
+        response_text: str,
+        package: DialoguePromptPackage,
+    ) -> tuple[dict, str, list[str], list[str]]:
+        parsed = self._parse_json_text(response_text)
         dialogue_text = self._extract_dialogue_text(parsed)
         if not dialogue_text:
-            raise ProviderOutputError("gemini:empty-text")
+            raise ProviderOutputError(f"{self.name}:empty-text")
         used_keyword_keys = self._extract_used_keyword_keys(parsed, package)
         if not self._matches_selected_keyword_focus(dialogue_text, package, used_keyword_keys):
-            raise ProviderOutputError("gemini:missing-keyword-focus")
+            raise ProviderOutputError(f"{self.name}:missing-keyword-focus")
         if self._violates_taboos(dialogue_text, package):
-            raise ProviderOutputError("gemini:taboo-violation")
+            raise ProviderOutputError(f"{self.name}:taboo-violation")
 
         allowed_refs = {evidence.evidenceRef for evidence in package.resolvedEvidence}
         used_refs = [ref for ref in parsed.get("usedEvidenceRefs", []) if ref in allowed_refs]
         if not used_refs and package.resolvedEvidence:
             used_refs = [package.resolvedEvidence[0].evidenceRef]
+        return parsed, dialogue_text, used_keyword_keys, used_refs
 
-        log_debug_event(
-            "provider.response.parsed",
-            provider=self.name,
-            model=self.model,
-            usedEvidenceRefs=used_refs,
-            usedKeywordKeys=used_keyword_keys,
-            textPreview=_preview_text(dialogue_text),
-        )
-
-        return DialogueGenerationResult(
-            text=self._compact_dialogue_text(dialogue_text, package.maxChars),
-            provider=self.name,
-            model=self.model,
-            generationMode="gemini-json-v1+persona-card",
-            fallbackUsed=False,
-            usedEvidenceRefs=used_refs,
-        )
+    def _build_gemini_repair_prompt(self, package: DialoguePromptPackage, raw_text: str, warnings: list[str]) -> str:
+        try:
+            original_prompt: dict | str = json.loads(self._build_prompt(package))
+        except json.JSONDecodeError:
+            original_prompt = self._build_prompt(package)[:6000]
+        payload = {
+            "task": "Repair or regenerate the previous Gemini output into a valid NPC dialogue JSON object.",
+            "blockingIssues": warnings,
+            "previousOutput": raw_text[:1600],
+            "repairRules": [
+                "Return exactly one JSON object and no markdown.",
+                "The JSON object must contain top-level text, usedKeywordKeys, usedEvidenceRefs, usedPersonaAnchors, safetyFallbackUsed, and violations.",
+                "If previousOutput is partial or invalid, regenerate from originalPrompt instead of copying the broken format.",
+                "Keep the same speakerGeneralId, locale, speechContextMode, selectedKeywords, and resolvedEvidence intent.",
+                "Do not add unsupported historical facts.",
+            ],
+            "originalPrompt": original_prompt,
+        }
+        return json.dumps(payload, ensure_ascii=False)
 
     def _extract_dialogue_text(self, parsed: dict) -> str:
         direct_text = str(parsed.get("text") or "").strip()
@@ -387,6 +471,8 @@ class GeminiDialogueProvider:
                     "If draftFragments.intentDraft contains 場景導演 Beats, treat those beats as the authoritative story outline.",
                     "If selectedContext.task is scene-director-script, treat draftFragments as seed material and rewrite it as a short directed scene, not a field-by-field summary.",
                     "If selectedContext.sceneFacts is present, use its people/event/time/locations/objects as the first source of scene grounding before writing the scene.",
+                    "If selectedContext.storyRoleGuard is present, it is binding: mainActor is the narrative center, activeTarget is the counterpart, and you must not swap their actions, emotions, or quoted speech ownership.",
+                    "If selectedContext.task is scene-director-script, any crying, hesitation, speech, or decision in draftFragments belongs to mainActor unless selectedContext explicitly marks another speaker.",
                     "Do not invent major historical facts not supported by resolvedEvidence/draftFragments.",
                     "Do not mention being an AI or model.",
                     "Narrative must be fluent and cinematic, not bullet-style concatenation.",
@@ -524,11 +610,11 @@ class GeminiDialogueProvider:
     def _extract_text(self, payload: dict) -> str:
         candidates = payload.get("candidates") or []
         if not candidates:
-            raise ProviderOutputError("gemini:no-candidates")
+            raise ProviderOutputError(f"{self.name}:no-candidates")
         parts = ((candidates[0].get("content") or {}).get("parts") or [])
         text_parts = [str(part.get("text") or "") for part in parts if part.get("text")]
         if not text_parts:
-            raise ProviderOutputError("gemini:no-text-part")
+            raise ProviderOutputError(f"{self.name}:no-text-part")
         return "".join(text_parts).strip()
 
     def _parse_json_text(self, text: str) -> dict:
@@ -540,7 +626,7 @@ class GeminiDialogueProvider:
         except json.JSONDecodeError as exc:
             repaired = self._repair_json_contract(cleaned)
             if repaired is None:
-                raise ProviderOutputError(f"gemini:json-parse:{exc}") from exc
+                raise ProviderOutputError(f"{self.name}:json-parse:{exc}") from exc
             log_debug_event(
                 "provider.response.repaired",
                 provider=self.name,
@@ -577,10 +663,14 @@ class GeminiDialogueProvider:
         text_value = self._extract_string_field(cleaned, "text")
         if not text_value:
             text_value = self._extract_nested_format_text(cleaned)
+        if not text_value:
+            text_value = self._extract_relaxed_string_field(cleaned, "text")
         used_keyword_keys = self._extract_string_array_field(cleaned, "usedKeywordKeys")
         used_evidence_refs = self._extract_string_array_field(cleaned, "usedEvidenceRefs")
         used_persona_anchors = self._extract_string_array_field(cleaned, "usedPersonaAnchors")
         violations = self._extract_string_array_field(cleaned, "violations")
+        if not any([text_value, used_keyword_keys, used_evidence_refs, used_persona_anchors]):
+            text_value = self._extract_plain_text_candidate(cleaned)
         if not any([text_value, used_keyword_keys, used_evidence_refs, used_persona_anchors]):
             return None
         return {
@@ -610,6 +700,51 @@ class GeminiDialogueProvider:
             return None
         value, _end_index, _closed = self._scan_json_string(text, string_start)
         return value or None
+
+    def _extract_relaxed_string_field(self, text: str, field_name: str) -> str | None:
+        match = re.search(rf'(?<![\w])["\']?{re.escape(field_name)}["\']?\s*:\s*(["\'])', text)
+        if not match:
+            return None
+        quote_index = match.end() - 1
+        if text[quote_index] == '"':
+            value, _end_index, _closed = self._scan_json_string(text, quote_index)
+            return value or None
+        value, _end_index, _closed = self._scan_single_quoted_string(text, quote_index)
+        return value or None
+
+    def _scan_single_quoted_string(self, text: str, quote_index: int) -> tuple[str, int, bool]:
+        cursor = quote_index + 1
+        chars: list[str] = []
+        escaped = False
+        while cursor < len(text):
+            char = text[cursor]
+            if escaped:
+                chars.append(char)
+                escaped = False
+                cursor += 1
+                continue
+            if char == '\\':
+                escaped = True
+                cursor += 1
+                continue
+            if char == "'":
+                return ''.join(chars).strip(), cursor + 1, True
+            chars.append(char)
+            cursor += 1
+        return ''.join(chars).strip(), cursor, False
+
+    def _extract_plain_text_candidate(self, text: str) -> str | None:
+        candidate = self._strip_reasoning_tags(text.strip())
+        candidate = re.sub(r"^```(?:json|text)?\s*", "", candidate)
+        candidate = re.sub(r"\s*```$", "", candidate).strip()
+        if not candidate or candidate.startswith("{") or candidate.startswith("["):
+            return None
+        lowered = candidate.lower()
+        if any(marker in lowered for marker in ["traceback", "<html", "exception", "error:"]):
+            return None
+        if len(re.findall(r"[\u4e00-\u9fff]", candidate)) < 2:
+            return None
+        return re.sub(r"\s+", " ", candidate).strip()
 
     def _extract_string_array_field(self, text: str, field_name: str) -> list[str]:
         field_index = text.find(f'"{field_name}"')
@@ -1100,6 +1235,7 @@ class DialogueHistoryCacheProvider:
         selected_keyword_labels = {str(keyword.get("label") or "") for keyword in package.selectedKeywords if keyword.get("label")}
         evidence_refs = {evidence.evidenceRef for evidence in package.resolvedEvidence}
         selected_context_key = str((package.selectedContext or {}).get("contextKey") or "")
+        selected_task = str((package.selectedContext or {}).get("task") or "")
         best_entry: dict | None = None
         best_score = 0
         for entry in self._iter_entries():
@@ -1109,6 +1245,9 @@ class DialogueHistoryCacheProvider:
                 continue
             if str(entry.get("speechContextMode") or DEFAULT_SPEECH_CONTEXT_MODE) != package.speechContextMode:
                 continue
+            if selected_context_key and selected_task in {"scene-director-script", "chorus-line"}:
+                if str(entry.get("contextKey") or "") != selected_context_key:
+                    continue
             score = 0
             entry_keyword_keys = {str(key) for key in entry.get("keywordKeys", [])}
             entry_keyword_labels = {str(label) for label in entry.get("keywordLabels", [])}
@@ -1167,7 +1306,7 @@ class DialogueProviderRouter:
                     provider=result.provider,
                     model=result.model,
                     generationMode=result.generationMode,
-                    fallbackUsed=result.fallbackUsed or bool(trace),
+                    fallbackUsed=result.fallbackUsed,
                     providerTrace=[*trace, f"{provider.name}:ok"],
                     usedEvidenceRefs=result.usedEvidenceRefs,
                     qualityWarnings=result.qualityWarnings,
