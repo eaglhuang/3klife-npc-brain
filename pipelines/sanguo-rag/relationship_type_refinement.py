@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+import relationship_claim_pair_cues as pair_cues
 from sanguo_governance_loader import SanguoGovernanceError, load_relationship_type_refinement_rules
 
 
@@ -26,6 +27,7 @@ SPOUSE_TERMS: list[str] = []
 SPOUSE_PARENT_CHILD_CONTEXT_TERMS: list[str] = []
 SPOUSE_DIRECT_BINDING_TERMS: list[str] = []
 PARENT_CHILD_TERMS: list[str] = []
+ADOPTIVE_PARENT_CHILD_TERMS: list[str] = []
 SIBLING_TERMS: list[str] = []
 SWORN_SIBLING_TERMS: list[str] = []
 
@@ -78,7 +80,7 @@ def apply_relationship_type_refinement_rules(
     global RELATIONSHIP_TYPE_FAMILIES, TYPE_LABELS
     global BETRAYAL_TERMS, MENTOR_TERMS, PATRON_TERMS, ALLIANCE_TERMS, ENEMY_TERMS, COMMAND_TERMS
     global SPOUSE_TERMS, SPOUSE_PARENT_CHILD_CONTEXT_TERMS, SPOUSE_DIRECT_BINDING_TERMS
-    global PARENT_CHILD_TERMS, SIBLING_TERMS, SWORN_SIBLING_TERMS
+    global PARENT_CHILD_TERMS, ADOPTIVE_PARENT_CHILD_TERMS, SIBLING_TERMS, SWORN_SIBLING_TERMS
 
     rows = load_relationship_type_refinement_rules(
         governance_root,
@@ -103,6 +105,7 @@ def apply_relationship_type_refinement_rules(
     )
     SPOUSE_DIRECT_BINDING_TERMS = _string_list(_optional_rule_value(by_name, "SPOUSE_DIRECT_BINDING_TERMS", []))
     PARENT_CHILD_TERMS = _string_list(_required_rule_value(by_name, "PARENT_CHILD_TERMS"))
+    ADOPTIVE_PARENT_CHILD_TERMS = _string_list(_optional_rule_value(by_name, "ADOPTIVE_PARENT_CHILD_TERMS", []))
     SIBLING_TERMS = _string_list(_required_rule_value(by_name, "SIBLING_TERMS"))
     SWORN_SIBLING_TERMS = _string_list(_required_rule_value(by_name, "SWORN_SIBLING_TERMS"))
     _RELATIONSHIP_TYPE_REFINEMENT_RULES_LOADED = True
@@ -129,6 +132,11 @@ def edge_text(edge: dict[str, Any], fallback_text: str = "") -> str:
 
 def contains_any(text: str, terms: list[str]) -> bool:
     return any(term in text for term in terms)
+
+
+def ruler_subject_authority_terms() -> list[str]:
+    pair_cues.ensure_relationship_claim_pair_cue_rules_loaded()
+    return list(pair_cues.PAIR_CUE_AUTHORITY_DIRECT_TERMS)
 
 
 def input_type_is_pre_refined(edge: dict[str, Any], original_type: str) -> bool:
@@ -176,6 +184,9 @@ def refine_relationship_type(edge: dict[str, Any], fallback_text: str = "") -> t
     if contains_any(text, SPOUSE_TERMS):
         reasons.append("spouse_terms")
         return "spouse", reasons
+    if contains_any(text, ADOPTIVE_PARENT_CHILD_TERMS):
+        reasons.append("adoptive_parent_child_terms")
+        return "adoptive_parent_child", reasons
     if contains_any(text, PARENT_CHILD_TERMS):
         reasons.append("parent_child_terms")
         return "parent_child", reasons
@@ -196,8 +207,8 @@ def refine_relationship_type(edge: dict[str, Any], fallback_text: str = "") -> t
         reasons.append("alliance_or_oath_terms")
         return "alliance_oath", reasons
 
-    if contains_any(text, COMMAND_TERMS):
-        reasons.append("command_hierarchy_terms")
+    if contains_any(text, ruler_subject_authority_terms()):
+        reasons.append("authority_hierarchy_terms")
         return "ruler_subject", reasons
     if contains_any(text, ENEMY_TERMS):
         reasons.append("enemy_or_rival_terms")

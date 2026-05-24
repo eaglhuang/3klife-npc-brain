@@ -38,12 +38,15 @@ from evidence_repository import (  # noqa: E402
     WriteResult,
     build_repository,
 )
+from repo_layout import resolve_repo_root  # noqa: E402
 
 
 # =========================================================================
 # JSONL row interpreters
 # =========================================================================
 
+DEFAULT_POLICY_PATH = Path("data/sanguo/policies/policy-convergence-evidence-repo.json")
+REPO_ROOT = resolve_repo_root(__file__)
 ARTIFACT_TYPE_TO_TABLE = {
     "evidence-seed": "evidence_seeds",
     "evidence-card": "evidence_cards",
@@ -51,6 +54,24 @@ ARTIFACT_TYPE_TO_TABLE = {
     "harvested-page": "harvested_pages",
     "proposal": "proposal_ledger",
 }
+
+
+def _read_policy(path: Path = DEFAULT_POLICY_PATH) -> dict[str, Any]:
+    candidate = path if path.is_absolute() else REPO_ROOT / path
+    if not candidate.exists():
+        return {}
+    payload = json.loads(candidate.read_text(encoding="utf-8-sig"))
+    return payload if isinstance(payload, dict) else {}
+
+
+def _review_status_contract(policy: dict[str, Any]) -> tuple[set[str], str]:
+    values = policy.get("evidenceCardReviewStatuses")
+    statuses = {str(item).strip() for item in values if str(item).strip()} if isinstance(values, list) else set()
+    round_policy = policy.get("roundWritePolicy") if isinstance(policy.get("roundWritePolicy"), dict) else {}
+    fallback = str(round_policy.get("reviewStatusCoercion") or "").strip()
+    if fallback:
+        statuses.add(fallback)
+    return statuses, fallback
 
 
 def _row_count_and_hash(path: Path) -> tuple[int, str]:
@@ -99,7 +120,14 @@ def _coerce_evidence_seed(row: dict[str, Any], run_id: str, source_id: str, payl
     }
 
 
-def _coerce_evidence_card(row: dict[str, Any], run_id: str, source_id: str, payload_uri: str) -> dict[str, Any] | None:
+def _coerce_evidence_card(
+    row: dict[str, Any],
+    run_id: str,
+    source_id: str,
+    payload_uri: str,
+    review_statuses: set[str],
+    review_status_fallback: str,
+) -> dict[str, Any] | None:
     # Accept evidenceId, id, or eventId so that real extracted events.jsonl
     # and external-evidence-cards.jsonl can both be backfilled without
     # bespoke per-source mappers. Reviewers can still tighten this in policy
@@ -107,11 +135,11 @@ def _coerce_evidence_card(row: dict[str, Any], run_id: str, source_id: str, payl
     evidence_id = row.get("evidenceId") or row.get("id") or row.get("eventId")
     if not evidence_id:
         return None
-    review_status = str(row.get("reviewStatus") or "candidate")
-    if review_status not in {"candidate", "accepted", "rejected", "staged-a", "staged-b"}:
+    review_status = str(row.get("reviewStatus") or review_status_fallback)
+    if review_statuses and review_status not in review_statuses:
         # Map common alternative review-status vocabularies onto the schema
         # enum without losing the original value (kept under payload).
-        review_status = "candidate"
+        review_status = review_status_fallback
     quote_source = row.get("sourceQuote") or row.get("summary") or ""
     return {
         "evidence_id": str(evidence_id),
@@ -187,14 +215,21 @@ def _coerce_proposal(row: dict[str, Any], run_id: str, source_id: str, artifact_
     }
 
 
-def _coerce(table: str, row: dict[str, Any], context: dict[str, str]) -> dict[str, Any] | None:
+def _coerce(table: str, row: dict[str, Any], context: dict[str, Any]) -> dict[str, Any] | None:
     run_id = context["run_id"]
     source_id = context.get("source_id", "")
     artifact_uri = context.get("artifact_uri", "")
     if table == "evidence_seeds":
         return _coerce_evidence_seed(row, run_id, source_id, artifact_uri)
     if table == "evidence_cards":
-        return _coerce_evidence_card(row, run_id, source_id, artifact_uri)
+        return _coerce_evidence_card(
+            row,
+            run_id,
+            source_id,
+            artifact_uri,
+            context.get("review_statuses") or set(),
+            str(context.get("review_status_fallback") or ""),
+        )
     if table == "anchor_passages":
         return _coerce_anchor_passage(row, run_id, artifact_uri)
     if table == "harvested_pages":
@@ -210,6 +245,7 @@ def _coerce(table: str, row: dict[str, Any], context: dict[str, str]) -> dict[st
 
 def backfill(manifest: EvidenceManifest, settings: RepositorySettings, lake_root: Path) -> dict[str, Any]:
     repo = build_repository(settings)
+    review_statuses, review_status_fallback = _review_status_contract(_read_policy())
     jsonl_counts: Counter[str] = Counter()
     jsonl_hashes: dict[str, str] = {}
     pg_results: dict[str, WriteResult] = {}
@@ -261,6 +297,8 @@ def backfill(manifest: EvidenceManifest, settings: RepositorySettings, lake_root
                     "run_id": manifest.run_id,
                     "source_id": source_id,
                     "artifact_uri": artifact_uri,
+                    "review_statuses": review_statuses,
+                    "review_status_fallback": review_status_fallback,
                 })
                 if coerced is None:
                     skipped.append({"table": table, "sourceId": source_id, "path": str(path)})

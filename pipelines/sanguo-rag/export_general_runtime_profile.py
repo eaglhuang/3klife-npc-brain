@@ -256,21 +256,28 @@ def text_mentions_general(text: str, general_id: str, alias_index: dict[str, lis
     return any(alias and alias in compact for alias in alias_index.get(general_id, []))
 
 
+def edge_text_segments(edge: dict[str, Any], *, include_summary: bool = True) -> list[str]:
+    values: list[Any] = [
+        edge.get("sourceQuote"),
+        edge.get("evidenceText"),
+    ]
+    if include_summary:
+        values.append(edge.get("summary"))
+    values.extend(list(edge.get("sourceQuotes") or []))
+    result: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        text = str(value or "").strip()
+        compact = re.sub(r"\s+", "", text)
+        if not compact or compact in seen:
+            continue
+        seen.add(compact)
+        result.append(compact)
+    return result
+
+
 def edge_compact_text(edge: dict[str, Any]) -> str:
-    return re.sub(
-        r"\s+",
-        "",
-        " ".join(
-            str(value)
-            for value in [
-                edge.get("sourceQuote"),
-                edge.get("evidenceText"),
-                edge.get("summary"),
-                *list(edge.get("sourceQuotes") or []),
-            ]
-            if value
-        ),
-    )
+    return "。".join(edge_text_segments(edge, include_summary=True))
 
 
 def is_stable_relationship_edge(edge: dict[str, Any]) -> bool:
@@ -289,8 +296,16 @@ def edge_has_direct_pair_signal(
     target_id: str,
     alias_index: dict[str, list[str]],
 ) -> bool:
-    text = edge_compact_text(edge)
-    return text_mentions_general(text, general_id, alias_index) and text_mentions_general(text, target_id, alias_index)
+    if edge.get("directPairSignal") is not None:
+        return bool(edge.get("directPairSignal"))
+    for text in edge_text_segments(edge, include_summary=False):
+        if text_mentions_general(text, general_id, alias_index) and text_mentions_general(text, target_id, alias_index):
+            return True
+    return False
+
+
+def edge_has_pair_relation_signal(edge: dict[str, Any]) -> bool:
+    return bool(edge.get("pairRelationSignal"))
 
 
 def stable_relationship_edges_for_general(stable: dict[str, Any], general_id: str) -> list[dict[str, Any]]:
@@ -536,12 +551,15 @@ def build_relationships(
         refined_type, reasons = refine_relationship_type(edge, general_id)
         is_stable = is_stable_relationship_edge(edge)
         direct_pair_signal = edge_has_direct_pair_signal(edge, general_id, target, alias_index)
+        pair_relation_signal = edge_has_pair_relation_signal(edge)
         stable_types = stable_types_by_target.get(target) or set()
         reject_reasons: list[str] = []
         if not is_stable and stable_types and refined_type not in stable_types and not direct_pair_signal:
             reject_reasons.append("conflicts_with_stable_relationship_without_direct_pair_evidence")
         if not is_stable and refined_type in SEMANTIC_RELATIONSHIP_TYPES and not direct_pair_signal:
             reject_reasons.append("semantic_relationship_without_direct_pair_evidence")
+        if not is_stable and refined_type == "enemy_rival" and not pair_relation_signal:
+            reject_reasons.append("enemy_rival_without_pair_conflict_signal")
         if reject_reasons:
             rejected.append(
                 {

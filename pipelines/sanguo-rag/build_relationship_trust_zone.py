@@ -250,10 +250,17 @@ def source_quote_previews(record: dict[str, Any], policy: dict[str, Any]) -> lis
     supports = record.get("supportingEvidence")
     if not isinstance(supports, list):
         return []
+    ranked_supports = sorted(
+        [support for support in supports if isinstance(support, dict)],
+        key=lambda support: (
+            -source_quote_preview_priority(support, fact_policy),
+            -number_value(support.get("evidenceScore")),
+            str(support.get("sourceLayer") or ""),
+            str(support.get("sourceId") or ""),
+        ),
+    )
     previews: list[dict[str, Any]] = []
-    for support in supports:
-        if not isinstance(support, dict):
-            continue
+    for support in ranked_supports:
         quote = trim_text(support.get("quote"), max_chars)
         if not quote:
             continue
@@ -263,9 +270,11 @@ def source_quote_previews(record: dict[str, Any], policy: dict[str, Any]) -> lis
                 "sourceId": support.get("sourceId"),
                 "sourceFamily": support.get("sourceFamily"),
                 "sourceLayer": support.get("sourceLayer"),
+                "confidenceSignals": string_list(support.get("confidenceSignals")),
                 "locator": support.get("locator"),
                 "url": support.get("url"),
                 "evidenceRefs": support.get("evidenceRefs") or [],
+                "previewPriorityScore": source_quote_preview_priority(support, fact_policy),
             }
         )
         if len(previews) >= max_items:
@@ -681,6 +690,64 @@ def record_supports_any_requirement(record: dict[str, Any], requirements: list[A
         isinstance(support, dict) and any(support_has_requirement(support, requirement) for requirement in typed_requirements)
         for support in supports
     )
+
+
+def source_quote_preview_priority(support: dict[str, Any], fact_policy: dict[str, Any]) -> float:
+    ordering = object_map(fact_policy.get("sourceQuotePreviewOrdering"))
+    if not bool(ordering.get("enabled")):
+        return 0.0
+    source_layer_bonuses = object_map(ordering.get("sourceLayerBonuses"))
+    confidence_signal_bonuses = object_map(ordering.get("confidenceSignalBonuses"))
+    boolean_field_bonuses = object_map(ordering.get("booleanFieldBonuses"))
+    quote_length_cap = max(int(number_value(ordering.get("quoteLengthCap"), 220.0)), 1)
+    score = 0.0
+    source_layer = str(support.get("sourceLayer") or "").strip()
+    if source_layer:
+        score += number_value(source_layer_bonuses.get(source_layer))
+    for signal in string_list(support.get("confidenceSignals")):
+        score += number_value(confidence_signal_bonuses.get(signal))
+    for field, bonus in boolean_field_bonuses.items():
+        if bool(support.get(field)):
+            score += number_value(bonus)
+    quote = trim_text(support.get("quote"), quote_length_cap)
+    score += min(len(quote), quote_length_cap) / quote_length_cap
+    score += min(number_value(support.get("evidenceScore")), 100.0) / 1000.0
+    return round(score, 4)
+
+
+def normalize_source_quote_previews(previews: Any, fact_policy: dict[str, Any]) -> list[dict[str, Any]]:
+    if not isinstance(previews, list):
+        return []
+    max_items = int(number_value(fact_policy.get("sourceQuotePreviewMaxItems"), 3.0))
+    max_chars = int(number_value(fact_policy.get("sourceQuotePreviewMaxChars"), 180.0))
+    normalized: list[dict[str, Any]] = []
+    for item in previews:
+        if not isinstance(item, dict):
+            continue
+        quote = trim_text(item.get("quote"), max_chars)
+        if not quote:
+            continue
+        normalized.append(
+            {
+                "quote": quote,
+                "sourceId": item.get("sourceId"),
+                "sourceFamily": item.get("sourceFamily"),
+                "sourceLayer": item.get("sourceLayer"),
+                "confidenceSignals": string_list(item.get("confidenceSignals")),
+                "locator": item.get("locator"),
+                "url": item.get("url"),
+                "evidenceRefs": item.get("evidenceRefs") or [],
+                "previewPriorityScore": source_quote_preview_priority(item, fact_policy),
+            }
+        )
+    normalized.sort(
+        key=lambda item: (
+            -number_value(item.get("previewPriorityScore")),
+            str(item.get("sourceLayer") or ""),
+            str(item.get("sourceId") or ""),
+        )
+    )
+    return normalized[:max_items]
 
 
 def fact_check_record(
@@ -1109,7 +1176,8 @@ def build_human_decision_template(records: list[dict[str, Any]], policy: dict[st
     }
 
 
-def build_fact_check_rows(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def build_fact_check_rows(records: list[dict[str, Any]], policy: dict[str, Any]) -> list[dict[str, Any]]:
+    fact_policy = object_map(object_map(policy.get("skillReview")).get("factCheck"))
     rows: list[dict[str, Any]] = []
     for record in records:
         skill_review = object_map(record.get("skillReview"))
@@ -1130,7 +1198,8 @@ def build_fact_check_rows(records: list[dict[str, Any]]) -> list[dict[str, Any]]
                 "controllerId": record.get("controllerId"),
                 "claimSentenceZhTw": record.get("claimSentenceZhTw") or fact_check.get("claimSentenceZhTw"),
                 "factCheck": fact_check,
-                "sourceQuotePreviews": fact_check.get("sourceQuotePreviews") or source_quote_previews(record, {}),
+                "sourceQuotePreviews": normalize_source_quote_previews(fact_check.get("sourceQuotePreviews"), fact_policy)
+                or source_quote_previews(record, {"skillReview": {"factCheck": fact_policy}}),
                 "queries": fact_check.get("queries") or record.get("factCheckQueries") or [],
                 "canonicalWrites": False,
             }
@@ -1652,7 +1721,7 @@ def build_relationship_trust_zone(
     accumulating_rows = [row for row in records if row.get("zone") == accumulating_stage]
     conflict_rows: list[dict[str, Any]] = []
     human_review_records = candidate_review_records(records, policy)
-    fact_check_rows = build_fact_check_rows(records)
+    fact_check_rows = build_fact_check_rows(records, policy)
     relationship_table_rows = review_table_records(records, policy, "relationship")
     faction_table_rows = review_table_records(records, policy, "faction")
 

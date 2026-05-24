@@ -14,6 +14,9 @@
     "locatorField": "full-text",
     "textFields": ["plainText", "text", "content", "body", "snippet"],
     "evidenceTextFields": ["quote", "sourceQuote", "evidenceText", "seedText", "translatedTraditionalText"],
+    "corpusFilePatterns": ["*.txt", "*.md"],
+    "stripHtmlComments": true,
+    "stripHtmlTags": true,
     "aliasStatuses": ["high-confidence", "accepted"],
     "minAliasChars": 2,
     "maxPersonIdsPerPassage": 12,
@@ -75,6 +78,51 @@
       "to": " "
     }
   ],
+  "corpusDirectorySources": [
+    {
+      "corpusId": "sanguoyanyi-baihua-zh-tw",
+      "root": "local/sanguo-baihua",
+      "filePatterns": ["chapter-*.md"],
+      "recursive": false,
+      "kind": "local-baihua-traditional-translation",
+      "enabled": true,
+      "canonicalWrites": false
+    }
+  ],
+  "anchorPassageRelationshipExtraction": {
+    "enabled": true,
+    "corpusIds": ["sanguoyanyi-baihua-zh-tw"],
+    "minPersonIds": 2,
+    "maxPersonIdsPerPassage": 8,
+    "maxEdgesPerPassage": 12,
+    "includeShadowPeople": false,
+    "bidirectionalRelationshipTypes": ["alliance_oath", "enemy_rival", "sibling", "spouse", "sworn_sibling"],
+    "knownOrientationRequiredTypes": ["parent_child", "adoptive_parent_child"],
+    "proposalOnlyRelationshipTypes": ["ruler_subject"],
+    "maxPairCueEndpointDistance": 48,
+    "windowedExtraction": {
+      "enabled": true,
+      "boundarySource": "relationshipClaimPairCues",
+      "includeClauseBoundaries": false,
+      "minWindowChars": 12,
+      "maxWindowChars": 260,
+      "windowBefore": 0,
+      "windowAfter": 1,
+      "maxPersonIdsPerWindow": 5
+    },
+    "residualWindowTelemetry": {
+      "enabled": true,
+      "maxRows": 500,
+      "maxQuoteChars": 180,
+      "includeNoCandidateWindows": false
+    },
+    "sourceLayer": "baihua-anchor-passages",
+    "sourceLayerRaw": "romance",
+    "sourceClass": "internal-primary-text",
+    "sourceClaimScopes": ["relationship", "faction_timeline"],
+    "confidenceSignals": ["anchor-passage-pair-cue", "baihua-translation-anchor"],
+    "canonicalWrites": false
+  },
   "sources": [
     {
       "path": "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone/primary-canon-relationship-backbone.jsonl",

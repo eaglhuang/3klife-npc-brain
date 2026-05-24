@@ -99,6 +99,16 @@ def _resolve_policy_path(repo_root: Path) -> Path:
     return repo_root / _DEFAULT_POLICY_REL
 
 
+def _review_status_contract(policy: dict[str, Any]) -> tuple[set[str], str]:
+    values = policy.get("evidenceCardReviewStatuses")
+    statuses = {str(item).strip() for item in values if str(item).strip()} if isinstance(values, list) else set()
+    round_policy = policy.get("roundWritePolicy") if isinstance(policy.get("roundWritePolicy"), dict) else {}
+    fallback = str(round_policy.get("reviewStatusCoercion") or "").strip()
+    if fallback:
+        statuses.add(fallback)
+    return statuses, fallback
+
+
 # =========================================================================
 # Row coercers (convergence-loop specific)
 # =========================================================================
@@ -114,6 +124,8 @@ def _coerce_evidence_card_from_loop(
     run_id: str,
     source_id: str,
     artifact_uri: str,
+    review_statuses: set[str],
+    review_status_fallback: str,
 ) -> dict[str, Any] | None:
     """Coerce a convergence-loop evidence card dict into the evidence_cards schema."""
     evidence_id = (
@@ -123,9 +135,9 @@ def _coerce_evidence_card_from_loop(
     )
     if not evidence_id:
         return None
-    review_status = str(row.get("reviewStatus") or "candidate")
-    if review_status not in {"candidate", "accepted", "rejected", "staged-a", "staged-b"}:
-        review_status = "candidate"
+    review_status = str(row.get("reviewStatus") or review_status_fallback)
+    if review_statuses and review_status not in review_statuses:
+        review_status = review_status_fallback
     quote_source = row.get("sourceQuote") or row.get("summary") or ""
     return {
         "evidence_id": str(evidence_id),
@@ -235,12 +247,15 @@ class ConvergenceRepoSeam:
     _repo: Any = field(default=None, repr=False)
     _error_count: int = field(default=0, repr=False)
     _write_results: list[dict[str, Any]] = field(default_factory=list, repr=False)
+    _review_statuses: set[str] = field(default_factory=set, repr=False)
+    _review_status_fallback: str = field(default="", repr=False)
 
     @classmethod
     def from_policy(cls, repo_root: Path) -> "ConvergenceRepoSeam":
         """Build seam from policy file + environment variables."""
         policy_path = _resolve_policy_path(repo_root)
         policy = _load_policy(policy_path)
+        review_statuses, review_status_fallback = _review_status_contract(policy)
 
         # Check opt-in flag (SANGUO_RAG_CONVERGENCE_REPO_ENABLED=1)
         opt_in_env = os.environ.get(_ENABLED_ENV, "0").strip()
@@ -275,6 +290,8 @@ class ConvergenceRepoSeam:
             mode=mode_env,
             _settings=settings,
             _repo=repo,
+            _review_statuses=review_statuses,
+            _review_status_fallback=review_status_fallback,
         )
 
     # ------------------------------------------------------------------ #
@@ -331,6 +348,8 @@ class ConvergenceRepoSeam:
                     run_id=run_id,
                     source_id=source_id,
                     artifact_uri=artifact_uri,
+                    review_statuses=self._review_statuses,
+                    review_status_fallback=self._review_status_fallback,
                 )
                 if coerced is None:
                     continue

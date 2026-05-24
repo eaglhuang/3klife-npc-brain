@@ -3,7 +3,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import ipaddress
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 
@@ -35,6 +37,8 @@ class OllamaReasoningError(RuntimeError):
 def resolve_ollama_api_url(explicit_url: str | None = None) -> str:
     return (
         explicit_url
+        or os.environ.get("SANGUO_REVIEWER_API_URL")
+        or os.environ.get("NPC_LLM_REVIEWER_API_URL")
         or os.environ.get("NPC_LLM_DEEPSEEK_API_URL")
         or os.environ.get("NPC_LLM_LOCAL_LLAMA_API_URL")
         or DEFAULT_OLLAMA_API_URL
@@ -43,6 +47,29 @@ def resolve_ollama_api_url(explicit_url: str | None = None) -> str:
 
 def resolve_deepseek_model(explicit_model: str | None = None) -> str:
     return explicit_model or os.environ.get("NPC_LLM_MODEL_DEEPSEEK_REASONER") or DEFAULT_DEEPSEEK_REASONER_MODEL
+
+
+def api_host(api_url: str) -> str:
+    return str(urllib.parse.urlparse(str(api_url or "")).hostname or "").strip()
+
+
+def should_bypass_proxy(api_url: str) -> bool:
+    host = api_host(api_url)
+    if not host:
+        return False
+    if host in {"localhost", "127.0.0.1", "::1"}:
+        return True
+    try:
+        parsed = ipaddress.ip_address(host)
+    except ValueError:
+        return False
+    return parsed.is_private or parsed.is_loopback or parsed.is_link_local
+
+
+def build_url_opener(api_url: str) -> urllib.request.OpenerDirector:
+    if should_bypass_proxy(api_url):
+        return urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    return urllib.request.build_opener()
 
 
 def strip_reasoning_tags(text: str, max_reasoning_chars: int = 1200) -> tuple[str, str]:
@@ -68,8 +95,9 @@ def extract_json_object(text: str) -> dict:
         end = cleaned.rfind("}")
         if start < 0 or end <= start:
             raise OllamaReasoningError(f"reasoner-json-parse:{first_error}") from first_error
+        repaired = re.sub(r",(\s*[}\]])", r"\1", cleaned[start:end + 1])
         try:
-            parsed = json.loads(cleaned[start:end + 1])
+            parsed = json.loads(repaired)
         except json.JSONDecodeError as second_error:
             raise OllamaReasoningError(f"reasoner-json-parse:{second_error}") from second_error
     if not isinstance(parsed, dict):
@@ -124,8 +152,9 @@ def request_ollama_reasoning_json(
         headers={"Content-Type": "application/json"},
         method="POST",
     )
+    opener = build_url_opener(api_url)
     try:
-        with urllib.request.urlopen(request, timeout=timeout_ms / 1000) as response:
+        with opener.open(request, timeout=timeout_ms / 1000) as response:
             response_payload = json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")[:300]

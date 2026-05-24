@@ -37,6 +37,9 @@ DEFAULT_SEGMENTATION_POLICY = {
     "locatorField": "full-text",
     "textFields": ["plainText", "text", "content", "body", "snippet"],
     "evidenceTextFields": ["quote", "sourceQuote", "evidenceText", "seedText", "translatedTraditionalText"],
+    "corpusFilePatterns": ["*.txt"],
+    "stripHtmlComments": False,
+    "stripHtmlTags": False,
     "aliasStatuses": ["high-confidence", "accepted"],
     "minAliasChars": 2,
     "maxPersonIdsPerPassage": 12,
@@ -167,6 +170,15 @@ def split_into_passages(text: str, policy: dict[str, Any] | None = None) -> list
     return [p for p in passages if len(p) >= min_chars]
 
 
+def clean_corpus_text(raw_text: str, policy: dict[str, Any]) -> str:
+    text = raw_text
+    if bool(policy.get("stripHtmlComments", False)):
+        text = re.sub(r"<!--.*?-->", " ", text, flags=re.DOTALL)
+    if bool(policy.get("stripHtmlTags", False)):
+        text = re.sub(r"<[^>\n]{1,200}>", " ", text)
+    return text
+
+
 def build_passage_record(
     corpus: dict[str, Any],
     chapter_id: str,
@@ -193,16 +205,41 @@ def index_corpus_directory(
     corpus_dir: Path,
     policy: dict[str, Any],
     replacements: list[dict[str, str]] | None = None,
+    *,
+    file_patterns: list[str] | None = None,
+    recursive: bool = False,
+    alias_entries: list[dict[str, Any]] | None = None,
+    source_kind: str | None = None,
 ) -> Iterator[dict[str, Any]]:
     """讀取 corpus 目錄下的文本文件，產生 passage records。"""
     if not corpus_dir.exists():
         return
-    for text_file in sorted(corpus_dir.glob("*.txt")):
+    patterns = file_patterns or string_list(policy.get("corpusFilePatterns")) or ["*.txt"]
+    seen_files: set[Path] = set()
+    text_files: list[Path] = []
+    for pattern in patterns:
+        iterator = corpus_dir.rglob(pattern) if recursive else corpus_dir.glob(pattern)
+        for candidate in iterator:
+            if not candidate.is_file():
+                continue
+            resolved = candidate.resolve()
+            if resolved in seen_files:
+                continue
+            seen_files.add(resolved)
+            text_files.append(candidate)
+    for text_file in sorted(text_files, key=lambda item: str(item).lower()):
         chapter_id = text_file.stem
-        raw_text = text_file.read_text(encoding="utf-8")
+        raw_text = clean_corpus_text(text_file.read_text(encoding="utf-8-sig", errors="ignore"), policy)
         passages = split_into_passages(raw_text, policy)
         for para_idx, passage in enumerate(passages):
-            yield build_passage_record(corpus, chapter_id, para_idx, passage, replacements)
+            record = build_passage_record(corpus, chapter_id, para_idx, passage, replacements)
+            record["sourcePath"] = str(text_file.resolve())
+            if source_kind:
+                record["sourceKind"] = source_kind
+            person_ids = person_ids_for_text(record["normalizedText"], alias_entries or [], policy)
+            if person_ids:
+                record["personIds"] = person_ids
+            yield record
 
 
 def normalize_layer(value: Any) -> str:
@@ -353,6 +390,29 @@ def configured_paths(payload: dict[str, Any], direct_key: str, glob_key: str) ->
         seen.add(resolved)
         unique.append(resolved)
     return unique
+
+
+def configured_corpus_directory_sources(payload: dict[str, Any], policy: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for row in payload.get("corpusDirectorySources") or []:
+        if not isinstance(row, dict) or row.get("enabled") is False:
+            continue
+        corpus_id = str(row.get("corpusId") or "").strip()
+        root_text = str(row.get("root") or "").strip()
+        if not corpus_id or not root_text:
+            continue
+        file_patterns = string_list(row.get("filePatterns")) or string_list(policy.get("corpusFilePatterns")) or ["*.txt"]
+        rows.append(
+            {
+                "corpusId": corpus_id,
+                "root": root_text,
+                "filePatterns": file_patterns,
+                "recursive": bool(row.get("recursive", False)),
+                "kind": str(row.get("kind") or "configured-corpus-directory"),
+                "canonicalWrites": False,
+            }
+        )
+    return rows
 
 
 def source_config_paths(source_config: str | Path | None) -> list[Path]:
@@ -805,24 +865,85 @@ def build_anchor_index(
     out_root = resolve_path(output_root)
     corpus_roots = corpus_roots or {}
     corpora = registry.get("corpora", [])
+    configured_corpus_sources = configured_corpus_directory_sources(source_payload, policy)
 
     stats: list[dict[str, Any]] = []
     total_passages = 0
 
     for corpus in corpora:
         corpus_id = corpus["corpusId"]
+        corpus_sources: list[dict[str, Any]] = []
         corpus_dir_str = corpus_roots.get(corpus_id)
-        if not corpus_dir_str:
+        if corpus_dir_str:
+            corpus_sources.append(
+                {
+                    "corpusId": corpus_id,
+                    "root": corpus_dir_str,
+                    "filePatterns": string_list(policy.get("corpusFilePatterns")) or ["*.txt"],
+                    "recursive": False,
+                    "kind": "cli-corpus-root",
+                    "canonicalWrites": False,
+                }
+            )
+        corpus_sources.extend(row for row in configured_corpus_sources if row.get("corpusId") == corpus_id)
+        if not corpus_sources:
             print(f"[SKIP] {corpus_id}: no corpus_root provided, skipping.")
             stats.append({"corpusId": corpus_id, "passageCount": 0, "status": "skipped"})
             continue
 
-        corpus_dir = resolve_path(corpus_dir_str)
-        passages = list(index_corpus_directory(corpus, corpus_dir, policy, replacements))
+        passages: list[dict[str, Any]] = []
+        source_stats: list[dict[str, Any]] = []
+        for source in corpus_sources:
+            corpus_dir = resolve_path(str(source.get("root") or ""))
+            if not corpus_dir.exists():
+                source_stats.append(
+                    {
+                        "root": str(corpus_dir),
+                        "kind": source.get("kind"),
+                        "filePatterns": list(source.get("filePatterns") or []),
+                        "passageCount": 0,
+                        "status": "missing",
+                    }
+                )
+                continue
+            rows = list(
+                index_corpus_directory(
+                    corpus,
+                    corpus_dir,
+                    policy,
+                    replacements,
+                    file_patterns=list(source.get("filePatterns") or []),
+                    recursive=bool(source.get("recursive", False)),
+                    alias_entries=alias_entries,
+                    source_kind=str(source.get("kind") or ""),
+                )
+            )
+            passages.extend(rows)
+            source_stats.append(
+                {
+                    "root": str(corpus_dir),
+                    "kind": source.get("kind"),
+                    "filePatterns": list(source.get("filePatterns") or []),
+                    "passageCount": len(rows),
+                    "status": "ok",
+                }
+            )
+        passages = dedupe_passages(passages)
         out_path = out_root / f"{corpus_id}-passages.jsonl"
         write_jsonl(out_path, passages)
         total_passages += len(passages)
-        stats.append({"corpusId": corpus_id, "passageCount": len(passages), "outputPath": str(out_path), "status": "ok"})
+        status = "ok" if passages else "no-passages"
+        if not passages and all(row.get("status") == "missing" for row in source_stats):
+            status = "missing"
+        stats.append(
+            {
+                "corpusId": corpus_id,
+                "passageCount": len(passages),
+                "outputPath": str(out_path),
+                "status": status,
+                "sources": source_stats,
+            }
+        )
         print(f"[OK] {corpus_id}: {len(passages)} passages -> {out_path}")
 
     evidence_paths = [resolve_path(path) for path in (evidence_jsonl_paths or [])]

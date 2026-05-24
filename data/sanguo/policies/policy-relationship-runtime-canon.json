@@ -14,6 +14,7 @@
     "betrayal_surrender",
     "enemy_rival",
     "mentor_student",
+    "adoptive_parent_child",
     "parent_child",
     "patron_client",
     "ruler_subject",
@@ -77,6 +78,19 @@
     "summary": "relationship-claim-summary.json",
     "audit": "relationship-claim-audit.md"
   },
+  "relationshipEdgePatterns": [
+    "artifacts/data-pipeline/sanguo-rag/extracted/relationship-evidence/source-grounded-relationship-edges.jsonl",
+    "artifacts/data-pipeline/sanguo-rag/extracted/core-person-progress/*staged-relationship-evidence.jsonl",
+    "artifacts/data-pipeline/sanguo-rag/extracted/external-relationship-overlay/source-grounded-relationship-edges.external.jsonl",
+    "artifacts/data-pipeline/sanguo-rag/extracted/anchor-passage-relationship-evidence/source-grounded-relationship-edges.anchor-passages.jsonl",
+    "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone/*/relationship-overlay/source-grounded-relationship-edges.external.jsonl",
+    "local/codex-smoke/knowledge-growth/external-relationship-overlay/source-grounded-relationship-edges.external.jsonl"
+  ],
+  "externalEvidenceCardPatterns": [
+    "artifacts/data-pipeline/sanguo-rag/extracted/external-evidence/**/external-evidence-cards.jsonl",
+    "artifacts/data-pipeline/sanguo-rag/extracted/primary-canon-relationship-backbone/*/cards/**/candidate-evidence-cards.jsonl",
+    "local/codex-smoke/knowledge-growth/**/external-evidence/external-evidence-cards.jsonl"
+  ],
   "gradeRank": {
     "A-history": 90,
     "A-history-cross-source": 90,

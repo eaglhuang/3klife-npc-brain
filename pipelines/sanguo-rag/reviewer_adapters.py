@@ -33,7 +33,7 @@ class ReviewerAdapter:
 
     @property
     def uses_llm(self) -> bool:
-        return self.provider == "ollama"
+        return self.provider in {"ollama", "ollama-compatible", "remote-ollama"}
 
     def describe(self) -> dict[str, Any]:
         return {
@@ -81,6 +81,8 @@ def resolve_reviewer_adapter(
 ) -> ReviewerAdapter:
     selected_preset = (preset or os.environ.get("SANGUO_REVIEWER_PRESET") or "fast").strip().lower()
     selected_provider = (provider or os.environ.get("SANGUO_REVIEWER_PROVIDER") or "").strip().lower()
+    if selected_provider in {"remote", "remote-ollama", "ollama-http", "ollama-compatible-http"}:
+        selected_provider = "ollama-compatible"
     if selected_preset in {"none", "hints", "hints-only", "deterministic"}:
         selected_provider = "hints-only"
         selected_preset = "hints-only"
@@ -146,7 +148,7 @@ def resolve_reviewer_adapter(
         provider=selected_provider,
         preset=selected_preset,
         model=model or default_model,
-        apiUrl=resolve_ollama_api_url(api_url) if selected_provider == "ollama" else None,
+        apiUrl=resolve_ollama_api_url(api_url) if selected_provider in {"ollama", "ollama-compatible", "remote-ollama"} else None,
         timeoutMs=int(timeout_ms if timeout_ms is not None else defaults["timeoutMs"]),
         numCtx=int(num_ctx if num_ctx is not None else defaults["numCtx"]),
         numPredict=int(num_predict if num_predict is not None else defaults["numPredict"]),

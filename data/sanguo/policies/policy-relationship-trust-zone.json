@@ -148,6 +148,92 @@
     "scoreScale": "0-100",
     "scoreSemantics": "semanticTrustScore is sentence-level LLM confidence that a preserved source sentence supports the pair-key relationship. It may guide ranking and cache reuse, but it does not directly mutate the final trust-zone score.",
     "cacheKeyFields": ["promptVersion", "normalizedSourceSentence"],
+    "structureGate": {
+      "enabled": true,
+      "defaultWindowLimit": 24,
+      "maxWindowLimit": 64,
+      "relationshipTypeWindowLimits": {
+        "ruler_subject": 24,
+        "spouse": 18,
+        "parent_child": 16,
+        "adoptive_parent_child": 18,
+        "sibling": 16,
+        "sworn_sibling": 18,
+        "faction_membership": 18
+      },
+      "sourceLayerWindowLimits": {
+        "baihua-anchor-passages": 44
+      },
+      "confidenceSignalWindowBonuses": {
+        "anchor-passage-pair-cue": 4,
+        "baihua-translation-anchor": 8,
+        "strict-ruler-subject": 4
+      },
+      "reasonLabels": {
+        "pairCueWindowTooWide": "pair-cue-window-too-wide"
+      },
+      "canonicalWrites": false
+    },
+    "pageShapeTelemetry": {
+      "enabled": true,
+      "excludeSuppressedFromQueue": true,
+      "structuralThresholds": {
+        "shortSegmentMaxLength": 12,
+        "digitRatioWarn": 0.12,
+        "digitRatioStrong": 0.18,
+        "punctuationRatioWarn": 0.08,
+        "punctuationRatioStrong": 0.14,
+        "fullwidthParenWarnCount": 4,
+        "fullwidthParenStrongCount": 8,
+        "yearLikeWarnCount": 2,
+        "yearLikeStrongCount": 4,
+        "shortSegmentWarnCount": 5,
+        "shortSegmentStrongCount": 8,
+        "numberTokenWarnCount": 4,
+        "numberTokenStrongCount": 8
+      },
+      "penalties": {
+        "digitRatioWarn": 1.5,
+        "digitRatioStrong": 3.0,
+        "punctuationRatioWarn": 1.0,
+        "punctuationRatioStrong": 2.0,
+        "fullwidthParenWarn": 2.0,
+        "fullwidthParenStrong": 4.0,
+        "yearLikeWarn": 2.5,
+        "yearLikeStrong": 5.0,
+        "shortSegmentWarn": 2.5,
+        "shortSegmentStrong": 5.0,
+        "numberTokenWarn": 2.0,
+        "numberTokenStrong": 4.0,
+        "negativeKeywordHit": 2.0,
+        "narrativeKeywordHitBoost": 1.5,
+        "pairCueKeywordHitBoost": 2.5
+      },
+      "keywordsZhTw": {
+        "negativePageType": ["統計", "對比", "總計", "生卒", "生年", "卒年", "資料", "數據", "電子辭典", "年表", "一覽", "列表", "排行", "合作次數", "勝率"],
+        "narrativePositive": ["率軍", "引兵", "攻", "守", "娶", "嫁", "之子", "兒子", "其子", "其父", "其母", "兄弟", "姊妹", "從之", "歸附", "歸降", "麾下"],
+        "pairCuePositive": ["命", "令", "遣", "使", "拜為", "授為", "封為", "以為", "為將", "為相", "為太守", "為都督"]
+      },
+      "suppression": {
+        "minPenaltyScore": 8.0,
+        "minStructuralTriggerCount": 2,
+        "maxNarrativeKeywordHits": 0,
+        "maxPairCueKeywordHits": 0
+      },
+      "canonicalWrites": false
+    },
+    "queueRanking": {
+      "sortFields": [
+        {"field": "pageShapePriorityScore", "direction": "desc"},
+        {"field": "sourcePreviewPriorityMax", "direction": "desc"},
+        {"field": "focusQueuePriority", "direction": "desc"},
+        {"field": "candidateMaxScoreBeforeSemanticReview", "direction": "desc"},
+        {"field": "candidateCount", "direction": "asc"},
+        {"field": "sentenceQualityScore", "direction": "desc"},
+        {"field": "semanticReviewUnitId", "direction": "asc"}
+      ],
+      "canonicalWrites": false
+    },
     "consensus": {
       "enabled": true,
       "supportedStatuses": ["preferred-for-skill-review", "supported-for-review"],
@@ -309,6 +395,25 @@
       "negativeQueryTemplateZhTw": "{fromName} 不是 {toName} {relationshipLabel} 證據",
       "sourceQuotePreviewMaxChars": 180,
       "sourceQuotePreviewMaxItems": 3,
+      "sourceQuotePreviewOrdering": {
+        "enabled": true,
+        "sourceLayerBonuses": {
+          "baihua-anchor-passages": 120,
+          "stable-bootstrap-seed": 80
+        },
+        "confidenceSignalBonuses": {
+          "baihua-translation-anchor": 80,
+          "anchor-passage-pair-cue": 40,
+          "strict-ruler-subject": 30,
+          "faction-timeline": 30
+        },
+        "booleanFieldBonuses": {
+          "pairRelationSignal": 20,
+          "directPairSignal": 12
+        },
+        "quoteLengthCap": 220,
+        "canonicalWrites": false
+      },
       "reviewInstructionsZhTw": [
         "技能查證必須審查一個明確命題句，而不是只看欄位是否完整。",
         "技能查證必須同時看原文句或證據摘錄與命題句，判斷原文是否真的支持該兩人關係鍵。",

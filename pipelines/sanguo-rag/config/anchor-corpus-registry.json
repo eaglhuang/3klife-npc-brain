@@ -51,6 +51,18 @@
       "hashAlgorithm": "sha256",
       "equivalentSites": ["zh.wikisource.org/三國演義"],
       "notes": "演義正文。注意：演義世界觀補強不得污染 historicalTrustScore。"
+    },
+    {
+      "corpusId": "sanguoyanyi-baihua-zh-tw",
+      "displayName": "三國演義白話繁體譯本（120回）",
+      "layer": "romance",
+      "trustTier": "A-romance",
+      "sourceFamily": "sanguoyanyi",
+      "locatorPrefix": "sgyy-baihua",
+      "locatorFormat": "sgyy-baihua#chapter-<chapter>#p<para>",
+      "hashAlgorithm": "sha256",
+      "equivalentSites": [],
+      "notes": "白話繁體譯本作為同一《三國演義》sourceFamily 的可讀性 anchor；可升 A-romance runtime canon，但不得被當成獨立 sourceFamily 推高 A-history 或跨家族互證。"
     }
   ]
 }

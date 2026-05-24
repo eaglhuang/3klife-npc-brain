@@ -50,7 +50,7 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
     rows: list[dict[str, Any]] = []
-    for line_no, line in enumerate(path.read_text(encoding="utf-8-sig").splitlines(), 1):
+    for line_no, line in enumerate(path.read_text(encoding="utf-8-sig").split("\n"), 1):
         text = line.strip()
         if not text:
             continue
@@ -77,7 +77,7 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as handle:
         for row in rows:
-            handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            handle.write(json.dumps(row, ensure_ascii=True, sort_keys=True) + "\n")
     return len(rows)
 
 
@@ -209,6 +209,171 @@ def sentence_quality_score(value: Any) -> float:
         length_penalty += min(35.0, (total - 360) / 20.0)
     score = cjk_ratio * 100.0 - digit_ratio * 35.0 - ascii_ratio * 20.0 - punctuation_ratio * 15.0 - length_penalty
     return round(clamp(score, 0.0, 100.0), 3)
+
+
+def semantic_page_shape_policy(policy: dict[str, Any]) -> dict[str, Any]:
+    semantic_policy = object_map(policy.get("semanticReview"))
+    return object_map(semantic_policy.get("pageShapeTelemetry"))
+
+
+def text_keyword_hits(text: str, keywords: list[str]) -> list[str]:
+    hits: list[str] = []
+    for keyword in keywords:
+        token = compact_text(keyword)
+        if token and token in text and token not in hits:
+            hits.append(token)
+    return hits
+
+
+def numeric_threshold_trigger(value: float, warn_threshold: float, strong_threshold: float) -> str:
+    if strong_threshold > 0.0 and value >= strong_threshold:
+        return "strong"
+    if warn_threshold > 0.0 and value >= warn_threshold:
+        return "warn"
+    return ""
+
+
+def integer_threshold_trigger(value: int, warn_threshold: int, strong_threshold: int) -> str:
+    if strong_threshold > 0 and value >= strong_threshold:
+        return "strong"
+    if warn_threshold > 0 and value >= warn_threshold:
+        return "warn"
+    return ""
+
+
+def sentence_page_shape_metrics(sentence: str, policy: dict[str, Any]) -> dict[str, Any]:
+    page_policy = semantic_page_shape_policy(policy)
+    thresholds = object_map(page_policy.get("structuralThresholds"))
+    penalties = object_map(page_policy.get("penalties"))
+    keywords_policy = object_map(page_policy.get("keywordsZhTw"))
+    text = compact_text(sentence)
+    compact = normalized_sentence(text)
+    total = len(compact)
+    digits = len(re.findall(r"\d", compact))
+    punctuation = len(re.findall(r"[^\w\u3400-\u9fff]", compact))
+    segments = [segment for segment in re.split(r"\s+", text) if segment]
+    short_segment_max_length = int(number_value(thresholds.get("shortSegmentMaxLength"), 12.0))
+    short_segment_count = len(
+        [
+            segment
+            for segment in segments
+            if contains_cjk_char(segment) and 2 <= len(normalized_sentence(segment)) <= short_segment_max_length
+        ]
+    )
+    fullwidth_paren_count = sum(text.count(char) for char in ("（", "）", "(", ")"))
+    year_like_count = len(re.findall(r"\d{2,4}\s*[—－\-~～]\s*\d{1,4}", text))
+    number_token_count = len(re.findall(r"\d+", text))
+    digit_ratio = digits / total if total else 0.0
+    punctuation_ratio = punctuation / total if total else 0.0
+    negative_keyword_hits = text_keyword_hits(text, string_list(keywords_policy.get("negativePageType")))
+    narrative_keyword_hits = text_keyword_hits(text, string_list(keywords_policy.get("narrativePositive")))
+    pair_cue_keyword_hits = text_keyword_hits(text, string_list(keywords_policy.get("pairCuePositive")))
+
+    structural_signals: list[str] = []
+    penalty_score = 0.0
+    boost_score = 0.0
+
+    digit_ratio_trigger = numeric_threshold_trigger(
+        digit_ratio,
+        number_value(thresholds.get("digitRatioWarn"), 0.12),
+        number_value(thresholds.get("digitRatioStrong"), 0.18),
+    )
+    if digit_ratio_trigger:
+        structural_signals.append(f"digit-ratio-{digit_ratio_trigger}")
+        penalty_score += number_value(penalties.get(f"digitRatio{digit_ratio_trigger.title()}"), 0.0)
+
+    punctuation_ratio_trigger = numeric_threshold_trigger(
+        punctuation_ratio,
+        number_value(thresholds.get("punctuationRatioWarn"), 0.08),
+        number_value(thresholds.get("punctuationRatioStrong"), 0.14),
+    )
+    if punctuation_ratio_trigger:
+        structural_signals.append(f"punctuation-ratio-{punctuation_ratio_trigger}")
+        penalty_score += number_value(penalties.get(f"punctuationRatio{punctuation_ratio_trigger.title()}"), 0.0)
+
+    fullwidth_paren_trigger = integer_threshold_trigger(
+        fullwidth_paren_count,
+        int(number_value(thresholds.get("fullwidthParenWarnCount"), 4.0)),
+        int(number_value(thresholds.get("fullwidthParenStrongCount"), 8.0)),
+    )
+    if fullwidth_paren_trigger:
+        structural_signals.append(f"fullwidth-paren-{fullwidth_paren_trigger}")
+        penalty_score += number_value(penalties.get(f"fullwidthParen{fullwidth_paren_trigger.title()}"), 0.0)
+
+    year_like_trigger = integer_threshold_trigger(
+        year_like_count,
+        int(number_value(thresholds.get("yearLikeWarnCount"), 2.0)),
+        int(number_value(thresholds.get("yearLikeStrongCount"), 4.0)),
+    )
+    if year_like_trigger:
+        structural_signals.append(f"year-like-{year_like_trigger}")
+        penalty_score += number_value(penalties.get(f"yearLike{year_like_trigger.title()}"), 0.0)
+
+    short_segment_trigger = integer_threshold_trigger(
+        short_segment_count,
+        int(number_value(thresholds.get("shortSegmentWarnCount"), 5.0)),
+        int(number_value(thresholds.get("shortSegmentStrongCount"), 8.0)),
+    )
+    if short_segment_trigger:
+        structural_signals.append(f"short-segment-{short_segment_trigger}")
+        penalty_score += number_value(penalties.get(f"shortSegment{short_segment_trigger.title()}"), 0.0)
+
+    number_token_trigger = integer_threshold_trigger(
+        number_token_count,
+        int(number_value(thresholds.get("numberTokenWarnCount"), 4.0)),
+        int(number_value(thresholds.get("numberTokenStrongCount"), 8.0)),
+    )
+    if number_token_trigger:
+        structural_signals.append(f"number-token-{number_token_trigger}")
+        penalty_score += number_value(penalties.get(f"numberToken{number_token_trigger.title()}"), 0.0)
+
+    penalty_score += len(negative_keyword_hits) * number_value(penalties.get("negativeKeywordHit"), 0.0)
+    boost_score += len(narrative_keyword_hits) * number_value(penalties.get("narrativeKeywordHitBoost"), 0.0)
+    boost_score += len(pair_cue_keyword_hits) * number_value(penalties.get("pairCueKeywordHitBoost"), 0.0)
+
+    suppression_policy = object_map(page_policy.get("suppression"))
+    min_penalty = number_value(suppression_policy.get("minPenaltyScore"), 0.0)
+    min_structural_triggers = int(number_value(suppression_policy.get("minStructuralTriggerCount"), 0.0))
+    max_narrative_hits = int(number_value(suppression_policy.get("maxNarrativeKeywordHits"), 0.0))
+    max_pair_cue_hits = int(number_value(suppression_policy.get("maxPairCueKeywordHits"), 0.0))
+    suppressed = (
+        penalty_score >= min_penalty
+        and len(structural_signals) >= min_structural_triggers
+        and len(narrative_keyword_hits) <= max_narrative_hits
+        and len(pair_cue_keyword_hits) <= max_pair_cue_hits
+    )
+
+    if year_like_count >= 2 and fullwidth_paren_count >= 4 and short_segment_count >= 5:
+        category = "dense-bio-list"
+    elif digit_ratio >= number_value(thresholds.get("digitRatioWarn"), 0.12) and short_segment_count >= 5:
+        category = "numeric-table-like"
+    elif boost_score > penalty_score:
+        category = "narrative-like"
+    else:
+        category = "mixed"
+
+    adjusted_priority = round(max(0.0, number_value(page_policy.get("basePriority"), 0.0) - penalty_score + boost_score), 4)
+    return {
+        "category": category,
+        "suppressed": suppressed,
+        "penaltyScore": round(penalty_score, 4),
+        "boostScore": round(boost_score, 4),
+        "adjustedPriorityOffset": adjusted_priority,
+        "structuralSignals": structural_signals,
+        "negativeKeywordHits": negative_keyword_hits,
+        "narrativeKeywordHits": narrative_keyword_hits,
+        "pairCueKeywordHits": pair_cue_keyword_hits,
+        "metrics": {
+            "digitRatio": round(digit_ratio, 4),
+            "punctuationRatio": round(punctuation_ratio, 4),
+            "fullwidthParenCount": fullwidth_paren_count,
+            "yearLikeCount": year_like_count,
+            "shortSegmentCount": short_segment_count,
+            "numberTokenCount": number_token_count,
+            "segmentCount": len(segments),
+            "compactLength": total,
+        },
+    }
 
 
 def row_stage(row: dict[str, Any]) -> str:
@@ -672,6 +837,40 @@ def load_cache(path: Path) -> dict[str, dict[str, Any]]:
     return cache
 
 
+def semantic_queue_ranking_fields(policy: dict[str, Any]) -> list[dict[str, str]]:
+    semantic_policy = object_map(policy.get("semanticReview"))
+    ranking_policy = object_map(semantic_policy.get("queueRanking"))
+    typed_fields = [item for item in ranking_policy.get("sortFields") or [] if isinstance(item, dict)]
+    if typed_fields:
+        return typed_fields
+    return [
+        {"field": "focusQueuePriority", "direction": "desc"},
+        {"field": "sourcePreviewPriorityMax", "direction": "desc"},
+        {"field": "candidateMaxScoreBeforeSemanticReview", "direction": "desc"},
+        {"field": "candidateCount", "direction": "asc"},
+        {"field": "sentenceQualityScore", "direction": "desc"},
+        {"field": "semanticReviewUnitId", "direction": "asc"},
+    ]
+
+
+def semantic_queue_sort_key(unit: dict[str, Any], policy: dict[str, Any]) -> tuple[Any, ...]:
+    key: list[Any] = []
+    for item in semantic_queue_ranking_fields(policy):
+        field = str(item.get("field") or "").strip()
+        direction = str(item.get("direction") or "asc").strip().lower()
+        value = unit.get(field)
+        if isinstance(value, (int, float)) or value is None:
+            numeric = number_value(value)
+            key.append(-numeric if direction == "desc" else numeric)
+            continue
+        text = str(value or "")
+        if direction == "desc":
+            key.append("".join(chr(0x10FFFF - ord(char)) for char in text))
+        else:
+            key.append(text)
+    return tuple(key)
+
+
 def support_previews(row: dict[str, Any]) -> list[dict[str, Any]]:
     previews = row.get("sourceQuotePreviews")
     if not isinstance(previews, list):
@@ -763,6 +962,40 @@ def allowed_entities_from_candidates(
     return sorted(entities.values(), key=lambda item: (str(item.get("nameZhTw") or ""), str(item.get("entityId") or "")))
 
 
+def annotate_page_shape(unit: dict[str, Any], policy: dict[str, Any]) -> dict[str, Any]:
+    page_policy = semantic_page_shape_policy(policy)
+    if not bool_value(page_policy.get("enabled"), False):
+        unit["pageShapeCategory"] = "disabled"
+        unit["pageShapeSuppressed"] = False
+        unit["pageShapePenaltyScore"] = 0.0
+        unit["pageShapeNarrativeBoostScore"] = 0.0
+        unit["pageShapePriorityScore"] = round(number_value(unit.get("sourcePreviewPriorityMax")), 4)
+        return unit
+    telemetry = sentence_page_shape_metrics(compact_text(unit.get("sourceSentence")), policy)
+    unit["pageShapeCategory"] = telemetry.get("category")
+    unit["pageShapeSuppressed"] = bool(telemetry.get("suppressed"))
+    unit["pageShapePenaltyScore"] = number_value(telemetry.get("penaltyScore"))
+    unit["pageShapeNarrativeBoostScore"] = number_value(telemetry.get("boostScore"))
+    unit["pageShapePriorityScore"] = round(
+        max(
+            0.0,
+            number_value(unit.get("sourcePreviewPriorityMax"))
+            - number_value(telemetry.get("penaltyScore"))
+            + number_value(telemetry.get("boostScore")),
+        ),
+        4,
+    )
+    unit["pageShapeTelemetry"] = {
+        "structuralSignals": telemetry.get("structuralSignals") or [],
+        "negativeKeywordHits": telemetry.get("negativeKeywordHits") or [],
+        "narrativeKeywordHits": telemetry.get("narrativeKeywordHits") or [],
+        "pairCueKeywordHits": telemetry.get("pairCueKeywordHits") or [],
+        "metrics": object_map(telemetry.get("metrics")),
+        "canonicalWrites": False,
+    }
+    return unit
+
+
 def build_review_units(
     rows: list[dict[str, Any]],
     policy: dict[str, Any],
@@ -804,6 +1037,7 @@ def build_review_units(
                         "sourceSentence": sentence,
                         "sentenceQualityScore": quality_score,
                         "sourceRefs": [],
+                        "sourcePreviewPriorityMax": 0.0,
                         "candidates": [],
                         "reviewMode": review_mode,
                         "canonicalWrites": False,
@@ -816,6 +1050,7 @@ def build_review_units(
                 "sourceId": preview.get("sourceId"),
                 "sourceFamily": preview.get("sourceFamily"),
                 "sourceLayer": preview.get("sourceLayer"),
+                "confidenceSignals": string_list(preview.get("confidenceSignals")),
                 "locator": preview.get("locator"),
                 "url": preview.get("url"),
                 "evidenceRefs": preview.get("evidenceRefs") or [],
@@ -823,6 +1058,10 @@ def build_review_units(
             }
             if source_ref not in unit["sourceRefs"]:
                 unit["sourceRefs"].append(source_ref)
+            unit["sourcePreviewPriorityMax"] = round(
+                max(number_value(unit.get("sourcePreviewPriorityMax")), number_value(preview.get("previewPriorityScore"))),
+                4,
+            )
             unit["candidates"].append(candidate_payload(row, name_map))
             candidate_seen_by_sentence[base_unit_id].add(trust_key)
     for unit in units_by_id.values():
@@ -851,16 +1090,8 @@ def build_review_units(
                 if isinstance(candidate, dict) and str(candidate.get("relationshipType") or "").strip()
             }
         )
-    return sorted(
-        units_by_id.values(),
-        key=lambda item: (
-            -number_value(item.get("focusQueuePriority")),
-            -number_value(item.get("candidateMaxScoreBeforeSemanticReview")),
-            len(item.get("candidates") or []),
-            -number_value(item.get("sentenceQualityScore")),
-            str(item.get("semanticReviewUnitId") or ""),
-        ),
-    )
+        annotate_page_shape(unit, policy)
+    return sorted(units_by_id.values(), key=lambda item: semantic_queue_sort_key(item, policy))
 
 
 def cached_candidate_keys(cache_row: dict[str, Any]) -> set[str]:
@@ -1107,17 +1338,48 @@ def stable_cue_categories_for_relationship(relationship_type: str) -> set[str]:
     return mapping.get(relationship_type, set())
 
 
-def semantic_structure_window_limit(relationship_type: str) -> int:
-    limits = {
-        "ruler_subject": 24,
-        "spouse": 18,
-        "parent_child": 16,
-        "adoptive_parent_child": 18,
-        "sibling": 16,
-        "sworn_sibling": 18,
-        "faction_membership": 18,
+def semantic_structure_gate_policy(policy: dict[str, Any]) -> dict[str, Any]:
+    semantic_policy = object_map(policy.get("semanticReview"))
+    return object_map(semantic_policy.get("structureGate"))
+
+
+def source_ref_layers(source_refs: list[dict[str, Any]]) -> set[str]:
+    return {
+        str(item.get("sourceLayer") or "").strip()
+        for item in source_refs
+        if isinstance(item, dict) and str(item.get("sourceLayer") or "").strip()
     }
-    return limits.get(relationship_type, 24)
+
+
+def source_ref_confidence_signals(source_refs: list[dict[str, Any]]) -> set[str]:
+    signals: set[str] = set()
+    for item in source_refs:
+        if not isinstance(item, dict):
+            continue
+        for signal in string_list(item.get("confidenceSignals")):
+            if signal:
+                signals.add(signal)
+    return signals
+
+
+def semantic_structure_window_limit(
+    relationship_type: str,
+    source_refs: list[dict[str, Any]],
+    policy: dict[str, Any],
+) -> int:
+    structure_policy = semantic_structure_gate_policy(policy)
+    default_limit = int(number_value(structure_policy.get("defaultWindowLimit"), 24.0))
+    max_window_limit = int(number_value(structure_policy.get("maxWindowLimit"), max(default_limit, 24)))
+    type_limits = object_map(structure_policy.get("relationshipTypeWindowLimits"))
+    source_layer_limits = object_map(structure_policy.get("sourceLayerWindowLimits"))
+    confidence_signal_bonuses = object_map(structure_policy.get("confidenceSignalWindowBonuses"))
+    limit = int(number_value(type_limits.get(relationship_type), default_limit))
+    for source_layer in source_ref_layers(source_refs):
+        limit = max(limit, int(number_value(source_layer_limits.get(source_layer), limit)))
+    for signal in source_ref_confidence_signals(source_refs):
+        limit += int(number_value(confidence_signal_bonuses.get(signal), 0.0))
+    limit = max(limit, default_limit)
+    return min(limit, max_window_limit)
 
 
 def relationship_entity_span_mode(relationship_type: str, endpoint: str) -> str:
@@ -1158,6 +1420,8 @@ def relation_structure_gate(
     relation: dict[str, Any],
     source_sentence: str,
     allowed_entities: list[dict[str, Any]],
+    source_refs: list[dict[str, Any]],
+    policy: dict[str, Any],
 ) -> tuple[bool, str]:
     relationship_type = str(relation.get("relationshipType") or "").strip()
     from_id = str(relation.get("fromId") or "").strip()
@@ -1183,8 +1447,11 @@ def relation_structure_gate(
             return False, "span-not-found-in-source-sentence"
         cover_start = min(from_start, to_start, cue_start)
         cover_end = max(from_start + len(from_anchor), to_start + len(to_anchor), cue_start + len(cue_span))
-        if cover_end - cover_start > semantic_structure_window_limit(relationship_type):
-            return False, "pair-cue-window-too-wide"
+        structure_policy = semantic_structure_gate_policy(policy)
+        reason_labels = object_map(structure_policy.get("reasonLabels"))
+        max_window = semantic_structure_window_limit(relationship_type, source_refs, policy)
+        if cover_end - cover_start > max_window:
+            return False, str(reason_labels.get("pairCueWindowTooWide") or "pair-cue-window-too-wide")
     return True, ""
 
 
@@ -1192,6 +1459,8 @@ def extracted_relation_is_grounded(
     extracted: dict[str, Any],
     source_sentence: str,
     allowed_entities: list[dict[str, Any]],
+    source_refs: list[dict[str, Any]],
+    policy: dict[str, Any],
 ) -> bool:
     relationship_type = str(extracted.get("relationshipType") or "").strip()
     cue_category = str(extracted.get("cueCategory") or "").strip().lower()
@@ -1215,7 +1484,7 @@ def extracted_relation_is_grounded(
     allowed_categories = stable_cue_categories_for_relationship(relationship_type)
     if allowed_categories and cue_category not in allowed_categories:
         return False
-    structure_passed, _ = relation_structure_gate(extracted, source_sentence, allowed_entities)
+    structure_passed, _ = relation_structure_gate(extracted, source_sentence, allowed_entities, source_refs, policy)
     if not structure_passed:
         return False
     return True
@@ -1249,6 +1518,7 @@ def extraction_result_to_relationships(
     policy: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     allowed_entities = object_list(unit.get("allowedEntities"))
+    source_refs = object_list(unit.get("sourceRefs"))
     raw_rows = parsed.get("extractedRelationships")
     if not isinstance(raw_rows, list):
         raw_rows = []
@@ -1285,6 +1555,8 @@ def extraction_result_to_relationships(
             extracted_row,
             compact_text(unit.get("sourceSentence")),
             allowed_entities,
+            source_refs,
+            policy,
         ):
             continue
         extracted_rows.append(extracted_row)
@@ -1540,6 +1812,7 @@ def evidence_packets_from_cache(cache_rows: list[dict[str, Any]], policy: dict[s
             continue
         first_source_ref = first_object(cache_row.get("sourceRefs"))
         allowed_entities = object_list(cache_row.get("allowedEntities"))
+        source_refs = object_list(cache_row.get("sourceRefs"))
         source_sentence = compact_text(cache_row.get("sourceSentence"))
         for relation in cache_row.get("relationships") or []:
             if not isinstance(relation, dict):
@@ -1547,7 +1820,13 @@ def evidence_packets_from_cache(cache_rows: list[dict[str, Any]], policy: dict[s
             trust_key = str(relation.get("trustKey") or "").strip()
             verdict = str(relation.get("verdict") or "").strip()
             semantic_score, confidence = semantic_score_pair(relation)
-            structure_passed, structure_reason = relation_structure_gate(relation, source_sentence, allowed_entities)
+            structure_passed, structure_reason = relation_structure_gate(
+                relation,
+                source_sentence,
+                allowed_entities,
+                source_refs,
+                policy,
+            )
             supported = (
                 verdict in supported_verdicts
                 and confidence >= min_confidence
@@ -1681,12 +1960,15 @@ def main() -> int:
     fact_check_path = resolve_path(args.fact_check or str(output_root / str(outputs.get("factCheckFileName") or "")))
     cache_path = resolve_path(args.cache or str(output_root / str(semantic_policy.get("cacheFileName") or "relationship-trust-zone.semantic-review-cache.jsonl")))
     queue_path = resolve_path(args.queue_out or str(output_root / str(semantic_policy.get("queueFileName") or "relationship-trust-zone.semantic-review-queue.jsonl")))
+    default_evidence_path = output_root / str(semantic_policy.get("evidenceFileName") or "relationship-trust-zone.semantic-review-evidence.jsonl")
+    input_evidence_path_text = str(inputs.get("semanticReviewEvidencePath") or "").strip()
     if str(args.evidence_out or "").strip():
         evidence_path = resolve_path(args.evidence_out)
     elif output_root_overridden:
-        evidence_path = resolve_path(output_root / str(semantic_policy.get("evidenceFileName") or "relationship-trust-zone.semantic-review-evidence.jsonl"))
+        evidence_path = resolve_path(default_evidence_path)
     else:
-        evidence_path = resolve_path(str(inputs.get("semanticReviewEvidencePath") or output_root / str(semantic_policy.get("evidenceFileName") or "relationship-trust-zone.semantic-review-evidence.jsonl")))
+        use_input_evidence_path = str(semantic_policy.get("runnerName") or "primary").strip().lower() != "secondary" and bool(input_evidence_path_text)
+        evidence_path = resolve_path(input_evidence_path_text) if use_input_evidence_path else resolve_path(default_evidence_path)
     summary_path = resolve_path(args.summary_out or str(output_root / str(semantic_policy.get("summaryFileName") or "relationship-trust-zone.semantic-review-summary.json")))
     summary_md_path = summary_path.with_suffix(".md")
     stable_bootstrap_path_text = str(inputs.get("stableBootstrapPath") or "").strip()
@@ -1724,6 +2006,10 @@ def main() -> int:
     )
     cache = load_cache(cache_path)
     queued = [unit for unit in units if unit_needs_review(unit, cache)]
+    page_shape_policy = semantic_page_shape_policy(policy)
+    suppressed_units = [unit for unit in queued if bool_value(unit.get("pageShapeSuppressed"))]
+    if bool_value(page_shape_policy.get("excludeSuppressedFromQueue"), False):
+        queued = [unit for unit in queued if not bool_value(unit.get("pageShapeSuppressed"))]
     if args.limit > 0:
         queued = queued[: args.limit]
 
@@ -1768,6 +2054,8 @@ def main() -> int:
     semantic_score_band_counts = Counter()
     for packet in evidence_packets:
         semantic_score_band_counts[semantic_score_band(number_value(packet.get("semanticTrustScore")))] += 1
+    page_shape_category_counts = Counter(str(unit.get("pageShapeCategory") or "") for unit in units)
+    queued_page_shape_category_counts = Counter(str(unit.get("pageShapeCategory") or "") for unit in queue_rows)
     queued_quality_scores = [number_value(unit.get("sentenceQualityScore")) for unit in queue_rows]
     summary = {
         "mode": "execute-local-llm" if args.execute else "queue-only",
@@ -1793,6 +2081,10 @@ def main() -> int:
         "newCacheRowCount": len(new_cache_rows),
         "evidencePacketCount": len(evidence_packets),
         "candidateRelationshipTypeCounts": dict(sorted(candidate_type_counts.items())),
+        "pageShapeCategoryCounts": dict(sorted(page_shape_category_counts.items())),
+        "queuedPageShapeCategoryCounts": dict(sorted(queued_page_shape_category_counts.items())),
+        "pageShapeSuppressedCandidateCount": len([unit for unit in units if bool_value(unit.get("pageShapeSuppressed"))]),
+        "pageShapeSuppressedQueuedCount": len(suppressed_units),
         "semanticScoreBandCounts": dict(sorted(semantic_score_band_counts.items())),
         "queuedSentenceQualityMin": round(min(queued_quality_scores), 3) if queued_quality_scores else None,
         "queuedSentenceQualityMax": round(max(queued_quality_scores), 3) if queued_quality_scores else None,

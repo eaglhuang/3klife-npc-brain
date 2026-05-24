@@ -4186,6 +4186,26 @@ def run_round(
     relationship_result = run_command(relationship_command, dry_run=dry_run)
     relationship_json_path = relationship_root / "source-grounded-relationship-edges.jsonl"
 
+    anchor_relationship_root = round_root / "anchor-passage-relationship-evidence"
+    anchor_relationship_json_path = anchor_relationship_root / "source-grounded-relationship-edges.anchor-passages.jsonl"
+    anchor_relationship_result: dict[str, Any] | None = None
+    if bool(args.anchor_first_verification) and not bool(args.no_anchor_passage_relationship_evidence):
+        anchor_relationship_command = [
+            sys.executable,
+            str((REPO_ROOT / PIPELINE_ROOT / "extract_anchor_passage_relationship_edges.py").resolve()),
+            "--anchor-index-root",
+            repo_relative(resolve_existing_path(args.anchor_index_root)),
+            "--source-config",
+            repo_relative(resolve_existing_path(args.anchor_index_source_config)),
+            "--stable-knowledge",
+            repo_relative(stable_json_path),
+            "--output-root",
+            repo_relative(anchor_relationship_root),
+        ]
+        if args.overwrite:
+            anchor_relationship_command.append("--overwrite")
+        anchor_relationship_result = run_command(anchor_relationship_command, dry_run=dry_run)
+
     external_relationship_root = round_root / "external-relationship-overlay"
     external_relationship_command = [
         sys.executable,
@@ -4213,16 +4233,22 @@ def run_round(
     def write_relationship_merge_summary(*, item_path: Path | None = None) -> dict[str, Any]:
         base_relationship_rows = read_jsonl(relationship_json_path)
         external_relationship_rows = read_jsonl(external_relationship_json_path)
+        anchor_relationship_rows = read_jsonl(anchor_relationship_json_path) if anchor_relationship_json_path.exists() else []
         item_relationship_rows = read_jsonl(item_path) if item_path and item_path.exists() else []
         merged_relationship_rows = merge_relationship_edges(
             [
                 path
-                for path in [relationship_json_path, external_relationship_json_path, item_path]
+                for path in [relationship_json_path, external_relationship_json_path, anchor_relationship_json_path, item_path]
                 if isinstance(path, Path) and path.exists()
             ]
         )
         write_jsonl(merged_relationship_json_path, merged_relationship_rows)
-        input_row_count = len(base_relationship_rows) + len(external_relationship_rows) + len(item_relationship_rows)
+        input_row_count = (
+            len(base_relationship_rows)
+            + len(external_relationship_rows)
+            + len(anchor_relationship_rows)
+            + len(item_relationship_rows)
+        )
         summary = {
             "version": "1.0.0",
             "generatedAt": utc_now(),
@@ -4230,6 +4256,9 @@ def run_round(
             "inputs": {
                 "baseRelationshipPath": repo_relative(relationship_json_path),
                 "externalRelationshipPath": repo_relative(external_relationship_json_path),
+                "anchorPassageRelationshipPath": (
+                    repo_relative(anchor_relationship_json_path) if anchor_relationship_json_path.exists() else None
+                ),
                 "itemRelationshipPath": repo_relative(item_path) if item_path and item_path.exists() else None,
             },
             "outputs": {
@@ -4239,6 +4268,7 @@ def run_round(
             "metrics": {
                 "baseEdgeCount": len(base_relationship_rows),
                 "externalEdgeCount": len(external_relationship_rows),
+                "anchorPassageEdgeCount": len(anchor_relationship_rows),
                 "itemEdgeCount": len(item_relationship_rows),
                 "mergedEdgeCount": len(merged_relationship_rows),
                 "dedupRemovedCount": input_row_count - len(merged_relationship_rows),
@@ -4656,6 +4686,9 @@ def run_round(
         "relationshipEvidencePath": repo_relative(effective_relationship_json_path),
         "baseRelationshipEvidencePath": repo_relative(relationship_json_path),
         "externalRelationshipEvidencePath": repo_relative(external_relationship_json_path),
+        "anchorPassageRelationshipEvidencePath": (
+            repo_relative(anchor_relationship_json_path) if anchor_relationship_json_path.exists() else None
+        ),
         "itemRelationshipEvidencePath": repo_relative(item_relationship_json_path) if item_relationship_json_path else None,
         "relationshipMergeSummaryPath": repo_relative(merged_relationship_summary_path),
         "eventQuestionSeedsPath": repo_relative(event_seed_json_path),
@@ -4719,6 +4752,7 @@ def run_round(
             "stableKnowledge": stable_result,
             "relationshipEvidence": relationship_result,
             "externalRelationshipOverlay": external_relationship_result,
+            "anchorPassageRelationshipEvidence": anchor_relationship_result,
             "itemRelationshipOverlay": item_relationship_result,
             "eventQuestionSeeds": event_seed_result,
             "sourceEventPackets": packet_result,
@@ -4985,6 +5019,11 @@ def parse_args() -> argparse.Namespace:
         "--rebuild-anchor-index",
         action="store_true",
         help="Rebuild the anchor passage index before the convergence loop.",
+    )
+    parser.add_argument(
+        "--no-anchor-passage-relationship-evidence",
+        action="store_true",
+        help="Skip relationship evidence extraction from local anchor passages.",
     )
     parser.add_argument(
         "--anchor-verification-topk",
