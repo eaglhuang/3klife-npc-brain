@@ -46,7 +46,7 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
     rows: list[dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8-sig").splitlines():
+    for line in path.read_text(encoding="utf-8-sig").split("\n"):
         text = line.strip()
         if not text:
             continue
@@ -60,7 +60,8 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as handle:
         for row in rows:
-            handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            # Escape Unicode line separators so JSONL remains one physical line per row.
+            handle.write(json.dumps(row, ensure_ascii=True, sort_keys=True) + "\n")
     return len(rows)
 
 
