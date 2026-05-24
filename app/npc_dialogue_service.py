@@ -1083,6 +1083,7 @@ class NpcDialogueService:
                 evidence_refs=evidence_refs,
                 generation=story_generation,
             )
+            beats = self._enrich_scene_director_beats_from_story(profile, beats, story_generation.text)
             chorus_targets = self._select_chorus_targets(profile.interactionTargets, request.chorusTargetIds, target.targetId if target else None)
             chorus_story_text = (
                 str(story_generation.text or "").strip()
@@ -1267,6 +1268,13 @@ class NpcDialogueService:
             return False
         target_aliases = self._target_aliases_for_interaction(target) if target else []
         actor_aliases = actor_aliases or []
+        if (
+            card.sourceType == "runtime-relationship-edge"
+            and self._coerce_float(card.confidence, default=0.0) >= 0.9
+            and target is not None
+            and target.targetId in set(card.relatedTargetIds or [])
+        ):
+            return True
         units = self._card_match_text_units(card)
         if target_aliases and actor_aliases:
             return self._card_pair_grounded_in_source(card, target_aliases, actor_aliases)
@@ -1568,6 +1576,7 @@ class NpcDialogueService:
         target_aliases = self._target_aliases_for_interaction(target)
         requested_angle = angle or (card.angle if card else None)
         primary_refs = set(card.sourceRefs or []) if card else set()
+        allow_target_context_expansion = bool(card and card.sourceType == "runtime-relationship-edge")
 
         def score(candidate: NarrativeEvidenceCard) -> tuple[float, str]:
             candidate_refs = set(candidate.sourceRefs)
@@ -1611,7 +1620,14 @@ class NpcDialogueService:
                 and not (candidate_refs & primary_refs)
                 and not near_primary
             ):
-                continue
+                if not (
+                    allow_target_context_expansion
+                    and target.targetId in candidate.relatedTargetIds
+                    and bool(candidate_refs & target_refs)
+                    and mentions_target
+                    and candidate.sourceType != "runtime-relationship-edge"
+                ):
+                    continue
             is_related = (
                 candidate.evidenceId == (card.evidenceId if card else None)
                 or (target.targetId in candidate.relatedTargetIds and mentions_target)
@@ -2227,9 +2243,119 @@ class NpcDialogueService:
             self._seed_display_sentence(profile, intent_text, 88),
         )
 
+    def _enrich_scene_director_beats_from_story(
+        self,
+        profile: NarrativeProfileResponse,
+        beats: SceneDirectorBeats,
+        story_text: str,
+    ) -> SceneDirectorBeats:
+        story = str(story_text or "").strip()
+        if not story:
+            return beats
+        emotion_text = str(beats.emotionText or "").strip() or self._story_derived_emotion_text(story)
+        dialogue_text = str(beats.dialogueText or "").strip() or self._story_derived_dialogue_text(story)
+        intent_text = str(beats.intentText or "").strip() or self._story_derived_intent_text(story)
+        scene_seeds = dict(beats.sceneSeeds or {})
+        if emotion_text and not str(scene_seeds.get("emotion") or "").strip():
+            scene_seeds["emotion"] = self._clean_seed_text(emotion_text, max_chars=90)
+        updates = {
+            "emotionText": self._seed_display_sentence(profile, emotion_text, 96) if emotion_text else str(beats.emotionText or ""),
+            "dialogueText": self._seed_display_sentence(profile, dialogue_text, 80) if dialogue_text else str(beats.dialogueText or ""),
+            "intentText": self._seed_display_sentence(profile, intent_text, 88) if intent_text else str(beats.intentText or ""),
+            "sceneSeeds": scene_seeds,
+        }
+        return beats.model_copy(update=updates)
+
     def _seed_display_sentence(self, profile: NarrativeProfileResponse, text: str, max_chars: int) -> str:
         value = self._replace_actor_aliases_in_seed(profile, text)
         return self._sentence_or_default(value, "", max_chars=max_chars)
+
+    def _story_derived_dialogue_text(self, story_text: str) -> str:
+        quote = self._extract_quoted_dialogue(story_text)
+        return self._clean_seed_text(quote, max_chars=80) if quote else ""
+
+    def _story_derived_emotion_text(self, story_text: str) -> str:
+        emotion_terms = (
+            "心急",
+            "焦急",
+            "牽掛",
+            "擔憂",
+            "憂",
+            "不安",
+            "煩惱",
+            "悲",
+            "懼",
+            "慌",
+            "慰藉",
+            "沉著",
+            "堅定",
+            "放不下",
+            "掛念",
+            "憂慮",
+        )
+        best = ""
+        best_score = -1.0
+        for clause in self._story_seed_clauses(story_text, max_chars=96):
+            score = 0.0
+            for term in emotion_terms:
+                if term in clause:
+                    score += 12.0
+            if "心" in clause:
+                score += 4.0
+            if len(clause) <= 28:
+                score += 2.0
+            if score > best_score:
+                best = clause
+                best_score = score
+        return best if best_score > 0 else ""
+
+    def _story_derived_intent_text(self, story_text: str) -> str:
+        intent_terms = (
+            "必須",
+            "要",
+            "先",
+            "設法",
+            "盡快",
+            "商議",
+            "安排",
+            "收攏",
+            "保護",
+            "接應",
+            "找到",
+            "尋回",
+            "守住",
+            "撤",
+            "退",
+        )
+        best = ""
+        best_score = -1.0
+        for clause in self._story_seed_clauses(story_text, max_chars=88):
+            score = 0.0
+            for term in intent_terms:
+                if term in clause:
+                    score += 10.0
+            if clause.startswith(("先", "必須", "要")):
+                score += 6.0
+            if "如何" in clause:
+                score += 4.0
+            if len(clause) <= 30:
+                score += 2.0
+            if score > best_score:
+                best = clause
+                best_score = score
+        return best if best_score > 0 else ""
+
+    def _story_seed_clauses(self, story_text: str, max_chars: int) -> list[str]:
+        values: list[str] = []
+        for sentence in self._split_source_sentences(story_text):
+            for raw_clause in re.split(r"[，；;、]", sentence):
+                clause = self._clean_seed_text(raw_clause, max_chars=max_chars)
+                clause = clause.strip("。！？!? ，、；：")
+                if len(clause) < 4 or self._contains_internal_symbolic_token(clause):
+                    continue
+                if clause not in values:
+                    values.append(clause)
+        return values
 
     def _is_weak_scene_seed_text(self, text: str) -> bool:
         value = str(text or "").strip("。！？!? ，、；：")
@@ -2915,14 +3041,14 @@ class NpcDialogueService:
         preset_config = LLM_MODEL_PRESETS.get(llm_model_preset, LLM_MODEL_PRESETS[DEFAULT_LLM_MODEL_PRESET])
         base_order = list(preset_config.get("providerOrder") or self.provider_router.provider_order or [])
         provider_order = ["history_cache"]
-        preferred = ["gemini_flash_lite", "gemini_flash", "gemini"] if render_mode == "data_first" else ["gemini_flash", "gemini", "gemini_flash_lite"]
+        preferred = ["gemini_flash", "gemini_flash_lite", "gemini"] if render_mode == "data_first" else ["gemini_flash", "gemini", "gemini_flash_lite"]
         for provider_name in [*preferred, *base_order]:
             if provider_name in {"history_cache", "deterministic"}:
                 continue
             if provider_name not in provider_order:
                 provider_order.append(provider_name)
         model_overrides = dict(preset_config.get("modelOverrides") or {})
-        model_overrides["__timeoutMs"] = "3200" if render_mode == "data_first" else "4500"
+        model_overrides["__timeoutMs"] = "5000" if render_mode == "data_first" else "4500"
         model_overrides.setdefault("__retryCount", "1")
         return {
             "providerOrder": provider_order,
@@ -4433,6 +4559,16 @@ class NpcDialogueService:
         )
         return source_layer in stable_source_layers or str(edge.get("claimGrade") or "") in a_canon_grades
 
+    def _relationship_edge_card_type(self, edge: dict[str, Any], resolved_type: str | None) -> str | None:
+        raw_type = str(edge.get("type") or "").strip() or None
+        if not raw_type:
+            return resolved_type
+        if raw_type == str(resolved_type or "").strip():
+            return resolved_type
+        if self._runtime_edge_is_stable_relationship(edge):
+            return resolved_type
+        return raw_type
+
     def _runtime_actor_aliases(self, runtime_persona: dict[str, Any]) -> list[str]:
         display_name = str(runtime_persona.get("displayName") or "").strip()
         aliases = [display_name, *(runtime_persona.get("aliases") or [])]
@@ -5009,10 +5145,14 @@ class NpcDialogueService:
             target_id = str(edge.get("targetId") or "").strip()
             target = target_by_id.get(target_id)
             resolved_type = self._resolve_runtime_relationship_type(edge, runtime_persona, preferred_non_conflict)
+            card_type = self._relationship_edge_card_type(edge, resolved_type)
             return (
                 0 if target else 1,
                 target_order.get(target_id, 999),
-                0 if target and target.relationshipType == resolved_type else 1,
+                0 if target and target.relationshipType == card_type else 1,
+                0 if self._runtime_edge_is_stable_relationship(edge) else 1,
+                -self._coerce_float(edge.get("edgeConfidence"), default=0.7),
+                str(card_type or ""),
                 str(edge.get("type") or ""),
             )
 
@@ -5023,10 +5163,11 @@ class NpcDialogueService:
             target_id = str(edge.get("targetId") or "").strip()
             if not target_id or target_id not in target_by_id:
                 continue
-            relationship_type = self._resolve_runtime_relationship_type(edge, runtime_persona, preferred_non_conflict)
+            resolved_type = self._resolve_runtime_relationship_type(edge, runtime_persona, preferred_non_conflict)
+            relationship_type = self._relationship_edge_card_type(edge, resolved_type)
+            if not relationship_type:
+                continue
             target = target_by_id.get(target_id)
-            if target and target.relationshipType and relationship_type != target.relationshipType:
-                relationship_type = target.relationshipType
             evidence_id = f"relationship:{target_id}:{relationship_type or edge.get('type') or len(cards)}"
             if evidence_id in seen:
                 continue
@@ -5168,8 +5309,10 @@ class NpcDialogueService:
         family_set = {str(family).strip() for family in families if str(family).strip()}
         text = str(source_text or "")
         bond_markers = r"stableKnowledgeBootstrap:sworn_sibling|結義|盟誓|桃園|兄弟|付託|託付|二夫人|嫂|三罪|故人舊日之情"
-        if relation in {"sworn_sibling", "alliance_oath", "battle_ally", "protects_family"}:
+        if relation in {"sworn_sibling", "alliance_oath", "protects_family"}:
             return "bond"
+        if relation == "battle_ally":
+            return "bond" if re.search(bond_markers, text) else "people"
         if relation in {"enemy_rival", "battlefield_opponent", "betrayal_surrender"}:
             return "rival"
         if relation in {"battlefield_contact", "political_contact"}:
