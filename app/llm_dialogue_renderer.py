@@ -1248,6 +1248,15 @@ class DialogueHistoryCacheProvider:
                 continue
             if str(entry.get("speechContextMode") or DEFAULT_SPEECH_CONTEXT_MODE) != package.speechContextMode:
                 continue
+            if selected_task == "chorus-line":
+                if str(entry.get("task") or "") != "chorus-line":
+                    continue
+                if int(entry.get("cacheSchemaVersion") or 0) < 2:
+                    continue
+                if bool(entry.get("fallbackUsed")):
+                    continue
+                if any(str(code or "").endswith("_rejected") for code in entry.get("qualityWarnings", [])):
+                    continue
             if selected_context_key and selected_task in {"scene-director-script", "chorus-line"}:
                 if str(entry.get("contextKey") or "") != selected_context_key:
                     continue

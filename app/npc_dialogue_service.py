@@ -3022,7 +3022,7 @@ class NpcDialogueService:
             "targetRole": target.role if target else None,
             "angle": card.angle if card else None,
             "renderMode": render_mode,
-            "sceneSeeds": beats.sceneSeeds or {},
+            "sceneSeeds": self._scene_chorus_sanitized_seeds(beats),
             "beats": {
                 "sceneText": beats.sceneText,
                 "memoryText": beats.memoryText,
@@ -3145,7 +3145,7 @@ class NpcDialogueService:
         evidence_refs = sorted(set((card.sourceRefs if card else []) + target.evidenceRefs))
         selected_keywords = self._scene_chorus_keywords(profile, target, main_target, beats, speaker_context)
         grounding_terms = self._scene_chorus_grounding_terms(main_target, beats, story_text)
-        fallback_text = self._compose_scene_grounded_chorus_fallback(
+        fallback_text = self._compose_scene_grounded_chorus_fallback_v3(
             target=target,
             main_target=main_target,
             beats=beats,
@@ -3162,6 +3162,8 @@ class NpcDialogueService:
             grounding_terms,
         )
         provider_config = self._scene_chorus_provider_config(request.llmModelPreset)
+        if not draft_line and fallback_text:
+            prompt_player_profile = prompt_player_profile.replace(fallback_text, "請直接依本幕重寫一句反應")
         generation = self._generate_scene_director_text(
             general_id=target.targetId,
             persona_card=persona_card,
@@ -3292,7 +3294,7 @@ class NpcDialogueService:
                 targetId=target.targetId,
                 label=target.label,
                 role=target.role,
-                text=self._compose_scene_grounded_chorus_fallback(
+                text=self._compose_scene_grounded_chorus_fallback_v3(
                     target=target,
                     main_target=main_target,
                     beats=beats,
@@ -3308,7 +3310,7 @@ class NpcDialogueService:
         if timeout_seconds is not None and timeout_seconds <= 0.05:
             return [fallback_line(target, "deadline-before-submit") for target in targets]
         results: list[SceneChorusLine | None] = [None] * len(targets)
-        max_workers = min(4, len(targets))
+        max_workers = min(2, len(targets))
         executor = ThreadPoolExecutor(max_workers=max_workers)
         try:
             future_map = {
@@ -3354,7 +3356,7 @@ class NpcDialogueService:
                     results[index] = fallback_line(targets[index], "deadline-timeout")
         finally:
             executor.shutdown(wait=False, cancel_futures=True)
-        return [line for line in results if line is not None]
+        return [line for line in results if line is not None and str(line.text or "").strip()]
 
     def _scene_chorus_cache_key(
         self,
@@ -3403,6 +3405,7 @@ class NpcDialogueService:
         grounding_terms: list[str],
     ) -> dict[str, Any]:
         context_key = self._scene_chorus_context_key(profile, target, main_target, beats, story_text)
+        sanitized_seeds = self._scene_chorus_sanitized_seeds(beats)
         return {
             "contextKey": context_key,
             "speaker": {
@@ -3418,7 +3421,7 @@ class NpcDialogueService:
                 "label": main_target.label if main_target else None,
                 "role": main_target.role if main_target else None,
             },
-            "sceneSeeds": beats.sceneSeeds,
+            "sceneSeeds": sanitized_seeds,
             "sceneGrounding": grounding_terms[:8],
             "sceneScript": story_text,
         }
@@ -3461,8 +3464,8 @@ class NpcDialogueService:
             if provider_name not in provider_order:
                 provider_order.append(provider_name)
         model_overrides = dict(preset_config.get("modelOverrides") or {})
-        model_overrides.setdefault("__timeoutMs", "3200")
-        model_overrides.setdefault("__retryCount", "0")
+        model_overrides.setdefault("__timeoutMs", "4500")
+        model_overrides.setdefault("__retryCount", "1")
         return {
             "providerOrder": provider_order,
             "modelOverrides": model_overrides,
@@ -3515,7 +3518,7 @@ class NpcDialogueService:
             )
         scene_seeds = beats.sceneSeeds or {}
         for key, raw_value in [
-            ("event", scene_seeds.get("event")),
+            ("event", self._sanitize_chorus_event_text(scene_seeds.get("event"))),
             ("time", scene_seeds.get("time")),
             ("place", scene_seeds.get("place")),
             ("emotion", scene_seeds.get("emotion")),
@@ -3749,12 +3752,12 @@ class NpcDialogueService:
             if label and label not in values:
                 values.append(label)
         for raw_text in [
-            scene_seeds.get("event"),
+            self._sanitize_chorus_event_text(scene_seeds.get("event")),
             beats.sceneText,
             beats.memoryText,
             story_text,
         ]:
-            for phrase in self._scene_phrase_candidates(raw_text):
+            for phrase in self._scene_phrase_candidates_for_chorus(raw_text):
                 if phrase and phrase not in values:
                     values.append(phrase)
         if main_target:
@@ -3763,6 +3766,37 @@ class NpcDialogueService:
                 if alias and alias not in values:
                     values.append(alias)
         return values[:10]
+
+    def _scene_chorus_sanitized_seeds(self, beats: SceneDirectorBeats) -> dict[str, Any]:
+        scene_seeds = dict(beats.sceneSeeds or {})
+        scene_seeds["event"] = self._sanitize_chorus_event_text(scene_seeds.get("event"))
+        return scene_seeds
+
+    def _sanitize_chorus_event_text(self, text: Any, max_chars: int = 80) -> str:
+        cleaned = " ".join(str(text or "").split()).strip()
+        if not cleaned:
+            return ""
+        cleaned = re.sub(r"^(卻說|且說|只見|忽見|此時|這時|正行間|忽然|原來|再看)", "", cleaned).strip()
+        cleaned = cleaned.lstrip("，。；：、")
+        cleaned = re.split(r"[「『\"]", cleaned, maxsplit=1)[0].strip()
+        if len(cleaned) > max_chars:
+            cleaned = cleaned[:max_chars].rstrip("，。；：、 ")
+        return cleaned
+
+    def _scene_phrase_candidates_for_chorus(self, text: Any, max_terms: int = 6) -> list[str]:
+        normalized = self._sanitize_chorus_event_text(text, max_chars=160)
+        values: list[str] = []
+        for phrase in self._scene_phrase_candidates(normalized, max_terms=max_terms * 2):
+            cleaned = str(phrase or "").strip()
+            if not cleaned:
+                continue
+            if re.match(r"^(卻說|且說|只見|忽見|此時|這時|正行間|忽然|原來|再看)", cleaned):
+                continue
+            if cleaned not in values:
+                values.append(cleaned)
+            if len(values) >= max_terms:
+                break
+        return values
 
     def _scene_phrase_candidates(self, text: Any, max_terms: int = 6) -> list[str]:
         raw = " ".join(str(text or "").split()).strip()
@@ -3902,8 +3936,23 @@ class NpcDialogueService:
         ]
         if any(re.search(pattern, cleaned) for pattern in generic_patterns):
             return True
+        if self._matches_banned_chorus_phrasing(cleaned):
+            return True
         cues = self._scene_chorus_voice_cues(target, speaker_context, main_target, beats, story_text)
         return not any(cue and cue in cleaned for cue in cues)
+
+    def _matches_banned_chorus_phrasing(self, text: str) -> bool:
+        cleaned = str(text or "").strip()
+        if not cleaned:
+            return True
+        banned_patterns = [
+            r"重義要落在動作上",
+            r"後面的銜接就不能慢",
+            r"這份情義，亂軍之中也難得",
+            r"不知(?:他們|去向)何方",
+            r"護住家人，方為根本",
+        ]
+        return any(re.search(pattern, cleaned) for pattern in banned_patterns)
 
     def _scene_chorus_voice_cues(
         self,
@@ -4070,6 +4119,87 @@ class NpcDialogueService:
             return self._ensure_sentence(lead)
         return self._ensure_sentence("眼前這一幕，不能只當作一時熱血。")
 
+    def _compose_scene_grounded_chorus_fallback_v2(
+        self,
+        target: NarrativeInteractionTarget,
+        main_target: NarrativeInteractionTarget | None,
+        beats: SceneDirectorBeats,
+        story_text: str,
+        speaker_context: dict[str, Any],
+    ) -> str:
+        del story_text
+        scene_seeds = beats.sceneSeeds or {}
+        focus_terms = self._scene_chorus_focus_terms(speaker_context, target)
+        focus = focus_terms[0] if focus_terms else "心事"
+        archetype = str(speaker_context.get("archetype") or "")
+        target_name = str(main_target.label if main_target else "此人").strip() or "此人"
+        place = (
+            str(scene_seeds.get("place") or "").strip()
+            or str(scene_seeds.get("time") or "").strip()
+            or "亂軍裡"
+        )
+        object_values = [
+            str(item or "").strip()
+            for item in (scene_seeds.get("objects") or [])
+            if str(item or "").strip()
+        ]
+        object_values = [item for item in object_values if item not in {"喊聲", "後軍", "車駕"}]
+        stake = "、".join(object_values[:2]) or target_name
+        if archetype == "oath_guardian":
+            return self._ensure_sentence(f"{target_name}若還在{place}死戰，多半正為{stake}撐著；這等{focus}，不是說放就放。")
+        if archetype == "martial_direct":
+            return self._ensure_sentence(f"{target_name}若還在{place}廝殺，先得把{stake}帶出來，後話才談得上。")
+        if archetype in {"marriage_mediator", "family_witness"}:
+            return self._ensure_sentence(f"{target_name}若還陷在{place}，多半正為{stake}撐著；這口{focus}放不下，旁人也看得出來。")
+        if archetype in {"family_line", "family_sacrifice"}:
+            return self._ensure_sentence(f"{target_name}若還在{place}，多半正把{stake}護在心上；只要人還未歸，這份牽掛就落不下。")
+        if archetype == "rival_observer":
+            return self._ensure_sentence(f"{target_name}若還困在{place}，局勢就還沒穩；{stake}一日未定，誰都不能鬆手。")
+        return self._ensure_sentence(f"{target_name}若還困在{place}，眼前最要緊的還是{stake}；這一步不能只憑一時情緒。")
+
+    def _compose_scene_grounded_chorus_fallback_v3(
+        self,
+        target: NarrativeInteractionTarget,
+        main_target: NarrativeInteractionTarget | None,
+        beats: SceneDirectorBeats,
+        story_text: str,
+        speaker_context: dict[str, Any],
+    ) -> str:
+        del story_text
+        scene_seeds = beats.sceneSeeds or {}
+        focus_terms = self._scene_chorus_focus_terms(speaker_context, target)
+        focus = focus_terms[0] if focus_terms else "心事"
+        secondary_focus = focus_terms[1] if len(focus_terms) > 1 else focus
+        archetype = str(speaker_context.get("archetype") or "")
+        target_name = str(main_target.label if main_target else "此人").strip() or "此人"
+        place = (
+            str(scene_seeds.get("place") or "").strip()
+            or str(scene_seeds.get("time") or "").strip()
+            or "亂軍裡"
+        )
+        object_values = [
+            str(item or "").strip()
+            for item in (scene_seeds.get("objects") or [])
+            if str(item or "").strip()
+        ]
+        object_values = [item for item in object_values if item not in {"喊聲", "後軍", "車駕"}]
+        stake = "、".join(object_values[:2]) or target_name
+        if {"豪烈", "直率", "勇猛"}.intersection(focus_terms):
+            return self._ensure_sentence(f"{target_name}若還在{place}廝殺，多半正為{stake}硬頂著；這種仗，再晚一步都不行。")
+        if {"沉穩", "少言", "威嚴"}.intersection(focus_terms):
+            return self._ensure_sentence(f"{target_name}若還困在{place}，多半正把{stake}護在前頭；眼下先把人接回來，才談得上後話。")
+        if {"家室", "去留", "情分", "身邊的人"}.intersection(focus_terms):
+            return self._ensure_sentence(f"{target_name}若還陷在{place}，多半正為{stake}撐著；這口{secondary_focus}放不下，旁人也看得出來。")
+        if archetype in {"family_line", "family_sacrifice"}:
+            return self._ensure_sentence(f"{target_name}若還在{place}，多半正把{stake}護在心上；只要人還未歸，這份牽掛就落不下。")
+        if archetype == "rival_observer":
+            return self._ensure_sentence(f"{target_name}若還困在{place}，局勢就還沒穩；{stake}一日未定，誰都不能鬆手。")
+        if archetype == "oath_guardian":
+            return self._ensure_sentence(f"{target_name}若還在{place}死戰，多半正為{stake}撐著；這等{focus}，不是說放就放。")
+        if archetype == "martial_direct":
+            return self._ensure_sentence(f"{target_name}若還在{place}廝殺，先得把{stake}帶出來，後話才談得上。")
+        return self._ensure_sentence(f"{target_name}若還困在{place}，眼前最要緊的還是{stake}；這一步不能只憑一時情緒。")
+
     def _scene_chorus_lead_clause(
         self,
         main_target: NarrativeInteractionTarget | None,
@@ -4161,9 +4291,9 @@ class NpcDialogueService:
         story_text: str,
     ) -> str:
         target_aliases = self._target_aliases_for_interaction(main_target) if main_target else []
-        candidates = self._scene_phrase_candidates((beats.sceneSeeds or {}).get("event"))
-        candidates.extend(self._scene_phrase_candidates(beats.sceneText))
-        candidates.extend(self._scene_phrase_candidates(beats.memoryText, max_terms=4))
+        candidates = self._scene_phrase_candidates_for_chorus((beats.sceneSeeds or {}).get("event"))
+        candidates.extend(self._scene_phrase_candidates_for_chorus(beats.sceneText))
+        candidates.extend(self._scene_phrase_candidates_for_chorus(beats.memoryText, max_terms=4))
         seen: list[str] = []
         for item in candidates:
             phrase = str(item or "").strip()
@@ -4228,6 +4358,19 @@ class NpcDialogueService:
         persona_card = self.get_persona_card(target.targetId)
         grounding_terms = self._scene_chorus_grounding_terms(main_target, beats, story_text)
         draft_line = str(draft_text or "").strip()
+        if (
+            self._is_narrative_exposition_chorus_line(draft_line, beats)
+            or self._is_generic_chorus_line(draft_line, speaker_context)
+            or self._lacks_persona_specificity_in_chorus(
+                draft_line,
+                target=target,
+                speaker_context=speaker_context,
+                main_target=main_target,
+                beats=beats,
+                story_text=story_text,
+            )
+        ):
+            draft_line = ""
         issue_labels = [str(item or "").strip() for item in (quality_issues or []) if str(item or "").strip()]
         prompt_player_profile = (
             f"發話者人格資料：{self._speaker_persona_summary(speaker_context)}。"
@@ -4265,9 +4408,9 @@ class NpcDialogueService:
                     "label": main_target.label if main_target else None,
                     "role": main_target.role if main_target else None,
                 },
-                "sceneSeeds": beats.sceneSeeds,
+                "sceneSeeds": self._scene_chorus_sanitized_seeds(beats),
                 "sceneScript": story_text,
-                "fallbackDraft": fallback_text,
+                "fallbackDraft": draft_line or "",
                 "draftLine": draft_line,
                 "qualityIssues": issue_labels,
             },
@@ -4281,7 +4424,7 @@ class NpcDialogueService:
             selected_keywords=selected_keywords,
             include_resolved_evidence=False,
             provider_order=["gemini_flash", "gemini_flash_lite", "gemini"],
-            model_overrides={"__timeoutMs": "3200", "__retryCount": "0"},
+            model_overrides={"__timeoutMs": "4500", "__retryCount": "1"},
             allow_deterministic_fallback=False,
         )
         cleaned = self._strip_speaker_self_mentions(generation.text, target, persona_card)
@@ -5737,12 +5880,18 @@ class NpcDialogueService:
     ) -> None:
         if generation.provider not in LLM_HISTORY_PROVIDERS:
             return
+        if generation.fallbackUsed:
+            return
+        if any(str(code or "").endswith("_rejected") for code in generation.qualityWarnings):
+            return
         text = str(generation.text or "").strip()
         if not text:
             return
         entry = {
             "createdAt": datetime.now(UTC).isoformat(),
             "generalId": target.targetId,
+            "task": "chorus-line",
+            "cacheSchemaVersion": 2,
             "contextKey": context_key,
             "locale": request.locale,
             "speechContextMode": "inner_monologue",
@@ -5754,6 +5903,7 @@ class NpcDialogueService:
             "provider": generation.provider,
             "model": generation.model,
             "generationMode": generation.generationMode,
+            "fallbackUsed": generation.fallbackUsed,
             "qualityWarnings": generation.qualityWarnings,
             "repairUsed": generation.repairUsed,
             "text": text,
