@@ -3202,6 +3202,7 @@ class NpcDialogueService:
             model_overrides=provider_config["modelOverrides"],
             allow_deterministic_fallback=provider_config["allowDeterministicFallback"],
         )
+        raw_generation = generation
         generation = self._repair_complete_generation(
             generation,
             fallback_text=fallback_text,
@@ -3231,6 +3232,8 @@ class NpcDialogueService:
                     selected_keywords=selected_keywords,
                     evidence_refs=evidence_refs,
                     fallback_text=fallback_text,
+                    draft_text=str(raw_generation.text or "").strip(),
+                    quality_issues=list(generation.qualityWarnings),
                 )
             except Exception as exc:  # pragma: no cover - rewrite is best-effort
                 log_debug_event(
@@ -3429,7 +3432,7 @@ class NpcDialogueService:
         story_text: str,
     ) -> str:
         payload = {
-            "version": 7,
+            "version": 8,
             "mainActor": profile.generalId,
             "speaker": target.targetId,
             "relationship": target.role,
@@ -3806,8 +3809,33 @@ class NpcDialogueService:
                 qualityWarnings=warnings,
                 repairUsed=True,
             )
+        if self._is_narrative_exposition_chorus_line(repaired, beats):
+            warnings.append("scene_chorus_narrative_exposition_rejected")
+            return replace(
+                generation,
+                text=fallback_text,
+                fallbackUsed=True,
+                qualityWarnings=warnings,
+                repairUsed=True,
+            )
         if self._is_generic_chorus_line(repaired, speaker_context):
             warnings.append("scene_chorus_generic_rejected")
+            return replace(
+                generation,
+                text=fallback_text,
+                fallbackUsed=True,
+                qualityWarnings=warnings,
+                repairUsed=True,
+            )
+        if self._lacks_persona_specificity_in_chorus(
+            repaired,
+            target=target,
+            speaker_context=speaker_context,
+            main_target=main_target,
+            beats=beats,
+            story_text=story_text,
+        ):
+            warnings.append("scene_chorus_persona_thin_rejected")
             return replace(
                 generation,
                 text=fallback_text,
@@ -3830,6 +3858,95 @@ class NpcDialogueService:
             qualityWarnings=warnings,
             repairUsed=repair_used,
         )
+
+    def _is_narrative_exposition_chorus_line(self, text: str, beats: SceneDirectorBeats) -> bool:
+        cleaned = str(text or "").strip()
+        if not cleaned:
+            return True
+        if re.match(r"^(卻說|且說|只見|忽見|此時|這時|正行間|忽然|原來|再看)", cleaned):
+            return True
+        prefix_candidates: list[str] = []
+        scene_seeds = beats.sceneSeeds or {}
+        for raw in [
+            scene_seeds.get("event"),
+            beats.sceneText,
+            beats.memoryText,
+        ]:
+            normalized = re.sub(r"\s+", " ", str(raw or "").strip()).strip("「」『』\"'")
+            if not normalized:
+                continue
+            head = re.split(r"[，。！？；]", normalized, maxsplit=1)[0].strip()
+            if len(head) >= 6:
+                prefix_candidates.append(head[:12])
+        return any(prefix and cleaned.startswith(prefix) for prefix in prefix_candidates)
+
+    def _lacks_persona_specificity_in_chorus(
+        self,
+        text: str,
+        target: NarrativeInteractionTarget,
+        speaker_context: dict[str, Any],
+        main_target: NarrativeInteractionTarget | None,
+        beats: SceneDirectorBeats,
+        story_text: str,
+    ) -> bool:
+        cleaned = str(text or "").strip()
+        if not cleaned:
+            return True
+        generic_patterns = [
+            r"該護的人",
+            r"人心先亂",
+            r"情分一牽進來",
+            r"先把[^，。！？]{0,12}(接住|安排穩)",
+            r"免得[^，。！？]{0,10}先亂",
+            r"越要把[^，。！？]{0,10}安排穩",
+        ]
+        if any(re.search(pattern, cleaned) for pattern in generic_patterns):
+            return True
+        cues = self._scene_chorus_voice_cues(target, speaker_context, main_target, beats, story_text)
+        return not any(cue and cue in cleaned for cue in cues)
+
+    def _scene_chorus_voice_cues(
+        self,
+        target: NarrativeInteractionTarget,
+        speaker_context: dict[str, Any],
+        main_target: NarrativeInteractionTarget | None,
+        beats: SceneDirectorBeats,
+        story_text: str,
+    ) -> list[str]:
+        values: list[str] = []
+        for raw in self._speaker_persona_anchor_terms(speaker_context):
+            cue = str(raw or "").strip()
+            if cue and cue not in values and len(cue) >= 2:
+                values.append(cue)
+        humanized_role = self._humanize_tag_list(
+            [target.role, target.relationshipType, target.gender],
+            fallback="",
+        )
+        for raw in re.split(r"[、／/，,\s]+", humanized_role):
+            cue = str(raw or "").strip()
+            if cue and cue not in values and len(cue) >= 2:
+                values.append(cue)
+        title_like_terms = ["主公", "兄長", "二嫂", "叔父", "夫人", "家眷", "幼主", "父親", "母親"]
+        cleaned_scene = " ".join(
+            str(item or "").strip()
+            for item in [
+                story_text,
+                beats.sceneText,
+                beats.memoryText,
+                (beats.sceneSeeds or {}).get("event"),
+            ]
+            if str(item or "").strip()
+        )
+        for cue in title_like_terms:
+            if cue in cleaned_scene:
+                if cue not in values:
+                    values.append(cue)
+        if main_target:
+            for alias in self._target_aliases_for_interaction(main_target):
+                cue = str(alias or "").strip()
+                if cue and cue not in values and len(cue) >= 2:
+                    values.append(cue)
+        return values[:12]
 
     def _strip_speaker_self_mentions(
         self,
@@ -3887,7 +4004,36 @@ class NpcDialogueService:
         grounding_terms = self._scene_chorus_grounding_terms(main_target, beats, story_text)
         if not grounding_terms:
             return True
-        return any(term and term in cleaned for term in grounding_terms)
+        normalized_text = self._normalize_grounding_match_text(cleaned)
+        for term in grounding_terms:
+            raw_term = str(term or "").strip()
+            if not raw_term:
+                continue
+            if raw_term in cleaned:
+                return True
+            normalized_term = self._normalize_grounding_match_text(raw_term)
+            if normalized_term and normalized_term in normalized_text:
+                return True
+        family_markers = ["家小", "家眷", "主母", "幼主", "二嫂", "嫂嫂", "母親", "父親"]
+        source_text = " ".join(
+            str(item or "").strip()
+            for item in [
+                (beats.sceneSeeds or {}).get("event"),
+                beats.sceneText,
+                beats.memoryText,
+                story_text,
+            ]
+            if str(item or "").strip()
+        )
+        if any(marker in cleaned for marker in family_markers) and any(marker in source_text for marker in family_markers):
+            return True
+        return False
+
+    def _normalize_grounding_match_text(self, text: str) -> str:
+        cleaned = re.sub(r"\s+", "", str(text or "").strip())
+        cleaned = re.sub(r"[「」『』、，。！？；：]", "", cleaned)
+        cleaned = cleaned.replace("之", "")
+        return cleaned
 
     def _contains_internal_symbolic_token(self, text: str) -> bool:
         cleaned = str(text or "").strip()
@@ -4076,25 +4222,34 @@ class NpcDialogueService:
         selected_keywords: list[dict[str, Any]],
         evidence_refs: list[str],
         fallback_text: str,
+        draft_text: str = "",
+        quality_issues: list[str] | None = None,
     ) -> DialogueGenerationResult | None:
         persona_card = self.get_persona_card(target.targetId)
         grounding_terms = self._scene_chorus_grounding_terms(main_target, beats, story_text)
+        draft_line = str(draft_text or "").strip()
+        issue_labels = [str(item or "").strip() for item in (quality_issues or []) if str(item or "").strip()]
+        prompt_player_profile = (
+            f"發話者人格資料：{self._speaker_persona_summary(speaker_context)}。"
+            f"發話時應著重：{self._speaker_persona_guidance(speaker_context, target)}。"
+            f"本幕場景錨點：{'、'.join(grounding_terms[:6]) or '互動對象與當下動作'}。"
+            f"請把這句 draft 改寫得更像此人親眼看完這一幕後的反應：{draft_line or fallback_text}。"
+        )
+        if issue_labels:
+            prompt_player_profile += f"目前問題：{'、'.join(issue_labels)}。"
         generation = self._generate_scene_director_text(
             general_id=target.targetId,
             persona_card=persona_card,
             memory_context={
                 "saveId": f"demo-chorus-rewrite-{request.generalId}",
-                "shortTerm": story_text or beats.sceneText,
+                "shortTerm": draft_line or story_text or beats.sceneText,
                 "longTerm": self._scene_seed_text(beats),
-                "playerProfile": (
-                    f"發話者人格資料：{self._speaker_persona_summary(speaker_context)}。"
-                    f"發話時應著重：{self._speaker_persona_guidance(speaker_context, target)}。"
-                    f"本幕場景錨點：{'、'.join(grounding_terms[:6]) or '互動對象與當下動作'}。"
-                    f"請把這句 draft 改寫得更像此人親眼看完這一幕後的反應：{fallback_text}"
-                ),
+                "playerProfile": prompt_player_profile,
                 "promises": (
                     "請只回一句自然短對白；語氣要像這個人真的看完本幕後脫口而出。"
                     "必須直接扣住互動對象或當下動作，不要解釋資料，不要照抄人格標籤。"
+                    "不要用『卻說』『且說』『只見』『此時』『正行間』『忽然』『原來』這種說書旁白起手。"
+                    "不要直接照抄 scene seed 的句首；請改成帶有說話者立場的反應。"
                 ),
             },
             selected_context={
@@ -4113,6 +4268,8 @@ class NpcDialogueService:
                 "sceneSeeds": beats.sceneSeeds,
                 "sceneScript": story_text,
                 "fallbackDraft": fallback_text,
+                "draftLine": draft_line,
+                "qualityIssues": issue_labels,
             },
             evidence_refs=evidence_refs,
             deterministic_text="",
@@ -4123,8 +4280,8 @@ class NpcDialogueService:
             tone_mode="in-character",
             selected_keywords=selected_keywords,
             include_resolved_evidence=False,
-            provider_order=["gemini_flash_lite", "gemini_flash", "gemini"],
-            model_overrides={"__timeoutMs": "1800", "__retryCount": "0"},
+            provider_order=["gemini_flash", "gemini_flash_lite", "gemini"],
+            model_overrides={"__timeoutMs": "3200", "__retryCount": "0"},
             allow_deterministic_fallback=False,
         )
         cleaned = self._strip_speaker_self_mentions(generation.text, target, persona_card)
@@ -4132,7 +4289,16 @@ class NpcDialogueService:
         if (
             not repaired
             or self._contains_internal_symbolic_token(repaired)
+            or self._is_narrative_exposition_chorus_line(repaired, beats)
             or self._is_generic_chorus_line(repaired, speaker_context)
+            or self._lacks_persona_specificity_in_chorus(
+                repaired,
+                target=target,
+                speaker_context=speaker_context,
+                main_target=main_target,
+                beats=beats,
+                story_text=story_text,
+            )
             or not self._line_has_scene_grounding(repaired, main_target, beats, story_text)
         ):
             return None
