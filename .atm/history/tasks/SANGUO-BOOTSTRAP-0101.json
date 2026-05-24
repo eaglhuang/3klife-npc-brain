@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-BOOTSTRAP-0101",
+  "title": "Top50 bootstrap job builder",
+  "status": "reserved",
+  "milestone": "M1",
+  "dependencies": [
+    "SANGUO-BOOTSTRAP-0001"
+  ],
+  "acceptance": [
+    "能根據 top50 名單建立每人一張的人物中心 bootstrap job manifest。",
+    "每個 job 都含 focusGeneralId、candidateCounterpartIds、allowedRelationshipTypes、sourceCorpusId、passageRefs、canonicalWrites=false。",
+    "wave-001 的 job manifest 可重跑、可續跑、可回放。"
+  ],
+  "deliverables": [
+    "top50 bootstrap job manifest",
+    "wave-001 job builder runner"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "bootstrap",
+    "jobs",
+    "top50"
+  ],
+  "notes": [
+    "2026-05-24 | 狀態: open | 驗證: pending | 說明: 先把 top50 變成固定 job 單位，後續 skill 與 merge 才能資料驅動接上。 | 風險: top50 ranking 輸出若變動，需同時保證 job manifest 有版本化追蹤。"
+  ],
+  "evidencePath": ".atm/history/evidence/SANGUO-BOOTSTRAP-0101.json",
+  "source": {
+    "planPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
+    "sectionTitle": "建議開立的任務卡",
+    "headingLine": 462,
+    "hash": "doc_sanguo_bootstrap_0001:0101"
+  },
+  "importedAt": "2026-05-24T23:48:52.4795862+08:00",
+  "owner": "codex-main",
+  "reservedAt": "2026-05-24T16:11:00.580Z",
+  "lastTransitionId": "2026-05-24T16-11-00-581Z-reserve-c149bd2f28f7",
+  "lastTransitionAt": "2026-05-24T16:11:00.581Z",
+  "ledgerContractVersion": "task-ledger/v1"
+}

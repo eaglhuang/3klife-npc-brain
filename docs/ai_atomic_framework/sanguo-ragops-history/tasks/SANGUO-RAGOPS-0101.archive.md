@@ -1,0 +1,68 @@
+﻿---
+task_id: 
+SANGUO-RAGOPS-0101
+task_kind: archive-only
+ledger_status: removed_from_atm_ledger
+original_status: 
+closed
+owner: codex
+milestone: RAGOPS-M1
+priority: P0
+archive_json: archive-json/SANGUO-RAGOPS-0101.json
+original_evidence_path: .atm/history/evidence/SANGUO-RAGOPS-0101.json
+---
+
+# Partitioned compressed evidence artifact lake layout
+
+## 說明
+
+這是一張歷史 SANGUO-RAGOPS 任務卡。它已從 `.atm/history/tasks/` 正式 ledger 移出，改存為 docs archive task card，避免繼續干擾目前 ATM 治理流程。
+
+## 原始 JSON 檔
+
+- archive-json/SANGUO-RAGOPS-0101.json
+
+## 原始內容快照
+
+```json
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-RAGOPS-0101",
+  "title": "Partitioned compressed evidence artifact lake layout",
+  "status": "closed",
+  "milestone": "RAGOPS-M1",
+  "priority": "P0",
+  "dependencies": [
+    "SANGUO-RAGOPS-0001"
+  ],
+  "scope": [
+    "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+    "local/codex-smoke/knowledge-growth",
+    "artifacts/data-pipeline/sanguo-rag"
+  ],
+  "acceptance": [
+    "摰儔 runId/sourceId/artifactType ?? layout嚗?銝?桅?蝝舐?憭折?撠???,
+    "摰儔 raw page?arvested page?eed?ard?nchor?roposal?coreboard snapshot ??artifactUri 閬???,
+    "?舀憯葬頛詨??蝮桀?摮??伐?銝???JSONL export mirror??,
+    "??楝敺?靽?蝑?梯身摰? policy 霈??銝?單蝖砍神甇颱犖?押?皞? cleanup 摮葡??
+  ],
+  "deliverables": [
+    "artifact lake layout spec",
+    "retention/compression policy draft"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "artifact-lake",
+    "jsonl",
+    "retention"
+  ],
+  "notes": "2026-05-21 | ??? closed | 撽?: layout-spec + policy-json | 霈: ?Ｗ runId/sourceId/artifactType ?? layout?rtifactUri 閬???蝮株? retention 蝑嚗olicy-artifact-lake-layout.json enabledByDefault=false | ?餃?: none",
+  "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0101.json",
+  "source": {
+    "planPath": "?辣/銝?RAG霅?鞈??Ｙ?PostgreSQL?????閮.md",
+    "sectionTitle": "M1 Artifact lake ??manifest/resume 憟?"
+  },
+  "owner": "codex"
+}
+```
+

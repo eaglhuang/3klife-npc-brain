@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-BOOTSTRAP-0401",
+  "title": "top50 pilot rehearsal",
+  "status": "open",
+  "milestone": "M4",
+  "dependencies": [
+    "SANGUO-BOOTSTRAP-0302"
+  ],
+  "acceptance": [
+    "wave-001 能完整跑出 top50 bootstrap candidate、conflict report、coverage report 與繁中審核表。",
+    "可自動抓出重複與互斥關係，並把高信任候選送進 reviewer / human queue。",
+    "pilot 結果可回放並留下 wave summary，作為是否擴到 next50 的依據。"
+  ],
+  "deliverables": [
+    "wave-001 summary",
+    "top50 bootstrap rehearsal package"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "bootstrap",
+    "pilot",
+    "top50"
+  ],
+  "notes": [
+    "2026-05-24 | 狀態: open | 驗證: pending | 說明: 這是 top50 人物中心 lane 的第一輪實跑驗收卡。 | 風險: 若 pilot 無法產出可審核的硬關係白名單，需先回頭收斂 skill 與 bundle。"
+  ],
+  "evidencePath": ".atm/history/evidence/SANGUO-BOOTSTRAP-0401.json",
+  "source": {
+    "planPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
+    "sectionTitle": "建議開立的任務卡",
+    "headingLine": 469,
+    "hash": "doc_sanguo_bootstrap_0001:0401"
+  },
+  "importedAt": "2026-05-24T23:48:52.4795862+08:00",
+  "owner": "codex"
+}

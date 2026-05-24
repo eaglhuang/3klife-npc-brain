@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-BOOTSTRAP-0302",
+  "title": "reviewer / human 繁中審核表",
+  "status": "open",
+  "milestone": "M3",
+  "dependencies": [
+    "SANGUO-BOOTSTRAP-0301"
+  ],
+  "acceptance": [
+    "可輸出全繁體中文的人工審核表，不暴露生硬英文欄位名。",
+    "每筆候選都附關係名稱、原文句子、章回、來源片段、信心分數與理由。",
+    "審核結果可對接既有 whitelist / blacklist 決策格式。"
+  ],
+  "deliverables": [
+    "繁中人工審核 markdown",
+    "review decision mapping"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "bootstrap",
+    "review",
+    "zh-TW"
+  ],
+  "notes": [
+    "2026-05-24 | 狀態: open | 驗證: pending | 說明: 人工看不懂就無法快速鎖定白黑名單，這張卡確保審核語言與欄位可讀。 | 風險: 若仍混雜英文欄位，實際審核效率會很差。"
+  ],
+  "evidencePath": ".atm/history/evidence/SANGUO-BOOTSTRAP-0302.json",
+  "source": {
+    "planPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
+    "sectionTitle": "建議開立的任務卡",
+    "headingLine": 468,
+    "hash": "doc_sanguo_bootstrap_0001:0302"
+  },
+  "importedAt": "2026-05-24T23:48:52.4795862+08:00",
+  "owner": "codex"
+}

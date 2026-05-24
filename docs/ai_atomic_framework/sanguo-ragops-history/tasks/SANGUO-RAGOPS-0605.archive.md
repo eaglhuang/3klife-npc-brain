@@ -1,0 +1,75 @@
+﻿---
+task_id: 
+SANGUO-RAGOPS-0605
+task_kind: archive-only
+ledger_status: removed_from_atm_ledger
+original_status: 
+closed
+owner: codex
+milestone: RAGOPS-M6
+priority: P0
+archive_json: archive-json/SANGUO-RAGOPS-0605.json
+original_evidence_path: .atm/history/evidence/SANGUO-RAGOPS-0605.json
+---
+
+# Convergence loop vector smoke linkage and budget telemetry
+
+## 說明
+
+這是一張歷史 SANGUO-RAGOPS 任務卡。它已從 `.atm/history/tasks/` 正式 ledger 移出，改存為 docs archive task card，避免繼續干擾目前 ATM 治理流程。
+
+## 原始 JSON 檔
+
+- archive-json/SANGUO-RAGOPS-0605.json
+
+## 原始內容快照
+
+```json
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-RAGOPS-0605",
+  "title": "Convergence loop vector smoke linkage and budget telemetry",
+  "status": "closed",
+  "milestone": "RAGOPS-M6",
+  "priority": "P0",
+  "dependencies": [
+    "SANGUO-RAGOPS-0301",
+    "SANGUO-RAGOPS-0302",
+    "SANGUO-RAGOPS-0603",
+    "SANGUO-RAGOPS-0604"
+  ],
+  "scope": [
+    "pipelines/sanguo-rag/run_convergence_vector_smoke.py",
+    "pipelines/sanguo-rag/export_evidence_vector_records.py",
+    "pipelines/sanguo-rag/convergence_vector_smoke_test.py"
+  ],
+  "acceptance": [
+    "Script reads externalCardsPath and globalCandidateCardsPath from a convergence baseline manifest and exports them through the vector record exporter.",
+    "Production namespace (*-prod) is blocked by default; only *-smoke writes allowed unless --allow-production-namespace is passed.",
+    "Budget telemetry emitted in backpressure-telemetry-ledger.v0.1 format per source ID.",
+    "canonicalWrites is always False; no hardcoded source IDs, namespaces, or policy strings.",
+    "Smoke tests 6/6 pass covering: dry-run export, prod-namespace guard, flag override, report schema, ID rejection, telemetry schema."
+  ],
+  "deliverables": [
+    "vector smoke linkage runner",
+    "build_vector_records and iter_evidence_cards helpers",
+    "budget telemetry builder",
+    "smoke test suite 6/6 pass"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "vector",
+    "smoke",
+    "budget-telemetry",
+    "convergence-loop"
+  ],
+  "notes": "2026-05-21 | ??? closed | 撽?: smoke 6/6 pass | 霈: ?啣? run_convergence_vector_smoke.py (reads convergence baseline, filters cards by reviewStatus, calls build_vector_records, emits backpressure-telemetry-ledger.v0.1 rows)嚗xport_evidence_vector_records.py ?啣? build_vector_records() + iter_evidence_cards()嚗onvergence_vector_smoke_test.py 6/6 pass | ?餃?: none",
+  "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0605.json",
+  "source": {
+    "planPath": "?辣/銝?RAG霅?鞈??Ｙ?PostgreSQL?????閮.md",
+    "sectionTitle": "M6 convergence loop evidence repository opt-in integration"
+  },
+  "owner": "codex"
+}
+```
+

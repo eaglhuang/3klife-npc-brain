@@ -1,0 +1,68 @@
+﻿---
+task_id: 
+SANGUO-RAGOPS-0202
+task_kind: archive-only
+ledger_status: removed_from_atm_ledger
+original_status: 
+closed
+owner: codex
+milestone: RAGOPS-M2
+priority: P0
+archive_json: archive-json/SANGUO-RAGOPS-0202.json
+original_evidence_path: .atm/history/evidence/SANGUO-RAGOPS-0202.json
+---
+
+# State and evidence repository adapter with jsonl/postgres/dual modes
+
+## 說明
+
+這是一張歷史 SANGUO-RAGOPS 任務卡。它已從 `.atm/history/tasks/` 正式 ledger 移出，改存為 docs archive task card，避免繼續干擾目前 ATM 治理流程。
+
+## 原始 JSON 檔
+
+- archive-json/SANGUO-RAGOPS-0202.json
+
+## 原始內容快照
+
+```json
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-RAGOPS-0202",
+  "title": "State and evidence repository adapter with jsonl/postgres/dual modes",
+  "status": "closed",
+  "milestone": "RAGOPS-M2",
+  "priority": "P0",
+  "dependencies": [
+    "SANGUO-RAGOPS-0102",
+    "SANGUO-RAGOPS-0201"
+  ],
+  "scope": [
+    "pipelines/sanguo-rag",
+    "data/sanguo/policies/policy-postgres-state-migration-plan.json"
+  ],
+  "acceptance": [
+    "?啣? state/evidence repository ?質情嚗??jsonl?ostgres?ual 銝車璅∪???,
+    "?身璅∪?蝬剜? jsonl嚗ual 璅∪???mirror嚗??寡? canonical JSONL 銵??,
+    "???鞈??芾??啣?霈?身摰?銝? DSN?chema?amespace 撖急香??,
+    "??神?亙??idempotent upsert?rror ledger?etry/backoff ??no-write dry-run??
+  ],
+  "deliverables": [
+    "repository adapter implementation plan or implementation",
+    "jsonl/postgres/dual smoke fixtures"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "postgres",
+    "adapter",
+    "dual-write"
+  ],
+  "notes": "2026-05-21 | ??? closed | 撽?: smoke-test-7-pass | 霈: ? evidence_repository.py嚗sonl/postgres/dual + factory + RetryPolicy嚗? 7 ??smoke test嚗?閮?mode=jsonl 銝霈?canonical 銵 | ?餃?: none",
+  "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0202.json",
+  "source": {
+    "planPath": "?辣/銝?RAG霅?鞈??Ｙ?PostgreSQL?????閮.md",
+    "sectionTitle": "M2 PostgreSQL schema?dapter?ackfill?ual-write"
+  },
+  "owner": "codex"
+}
+```
+

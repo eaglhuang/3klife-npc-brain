@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-BOOTSTRAP-0202",
+  "title": "bootstrap merge / normalize",
+  "status": "open",
+  "milestone": "M2",
+  "dependencies": [
+    "SANGUO-BOOTSTRAP-0201"
+  ],
+  "acceptance": [
+    "相同 pair 多次抽取可合併為單一 trustKey 並累積 supportCount。",
+    "spouse、sibling、sworn_sibling 會做對稱化；ruler_subject、faction_membership 維持非對稱。",
+    "同一 pair 的不同時段關係可分開保存，不互相覆蓋。"
+  ],
+  "deliverables": [
+    "merged candidate JSONL",
+    "normalize / dedupe policy"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "bootstrap",
+    "merge",
+    "normalize"
+  ],
+  "notes": [
+    "2026-05-24 | 狀態: open | 驗證: pending | 說明: 抽取完的關係要先收斂成可治理的 trustKey 層。 | 風險: 若 normalize 不穩，後面 blacklist/whitelist 會被重複 key 汙染。"
+  ],
+  "evidencePath": ".atm/history/evidence/SANGUO-BOOTSTRAP-0202.json",
+  "source": {
+    "planPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
+    "sectionTitle": "建議開立的任務卡",
+    "headingLine": 465,
+    "hash": "doc_sanguo_bootstrap_0001:0202"
+  },
+  "importedAt": "2026-05-24T23:48:52.4795862+08:00",
+  "owner": "codex"
+}

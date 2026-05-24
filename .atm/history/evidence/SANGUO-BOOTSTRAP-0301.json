@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "atm.evidence.v0.1",
+  "taskId": "SANGUO-BOOTSTRAP-0301",
+  "status": "not-started",
+  "summary": "bootstrap-to-trust-zone adapter 任務卡已建立，待把新 lane 接回既有 review lane。",
+  "repositoryKind": "generic-repository",
+  "evidence": [
+    {
+      "evidenceKind": "supporting",
+      "reportPath": "pipelines/sanguo-rag/run_relationship_skill_review_rounds.py",
+      "description": "現有 reviewer queue runner 可作 adapter 對接目標。",
+      "result": "present"
+    }
+  ]
+}

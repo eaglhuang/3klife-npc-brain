@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-BOOTSTRAP-0501",
+  "title": "next50 batch protocol",
+  "status": "open",
+  "milestone": "M5",
+  "dependencies": [
+    "SANGUO-BOOTSTRAP-0401"
+  ],
+  "acceptance": [
+    "定義 wave-002 起每批固定 50 人的擴張 SOP。",
+    "每波都需產出 wave summary、new whitelist candidates、new blacklist candidates、conflict report、coverage report。",
+    "只有上一波達到 coverage / conflict / reviewer workload 門檻，才允許進下一波。"
+  ],
+  "deliverables": [
+    "wave-002+ SOP",
+    "batch expansion gating rules"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "bootstrap",
+    "batching",
+    "full-roster"
+  ],
+  "notes": [
+    "2026-05-24 | 狀態: open | 驗證: pending | 說明: top50 成功後，這張卡把做法穩定放大到全 roster。 | 風險: 若沒有明確批次門檻，容易把 reviewer 負荷推爆。"
+  ],
+  "evidencePath": ".atm/history/evidence/SANGUO-BOOTSTRAP-0501.json",
+  "source": {
+    "planPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
+    "sectionTitle": "建議開立的任務卡",
+    "headingLine": 470,
+    "hash": "doc_sanguo_bootstrap_0001:0501"
+  },
+  "importedAt": "2026-05-24T23:48:52.4795862+08:00",
+  "owner": "codex"
+}

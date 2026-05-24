@@ -1,0 +1,42 @@
+﻿{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-RAGOPS-0401",
+  "title": "Large-run rehearsal profile with budgets and backpressure",
+  "status": "closed",
+  "milestone": "RAGOPS-M4",
+  "priority": "P0",
+  "dependencies": [
+    "SANGUO-RAGOPS-0204",
+    "SANGUO-RAGOPS-0302"
+  ],
+  "scope": [
+    "pipelines/sanguo-rag/run_full_roster_convergence_loop.py",
+    "data/sanguo/policies",
+    "local/codex-smoke/knowledge-growth"
+  ],
+  "acceptance": [
+    "撱箇? large-run rehearsal profile嚗? round?ource?age?aw bytes?eed/card/vector record ?賊???,
+    "backpressure 瘙箇???policy/telemetry 撽?嚗?雿輻撖急香鈭箇??皞???撠曉?銝脫??寞?璇辣??,
+    "瘥憚?Ｗ source ROI?imeout?ew evidence?esume seconds?ostgreSQL row count?ector count?rtifact bytes??,
+    "憯葫?臬 no-write/dry-run?sonl-only?ual-write?ector-smoke ?車璅∪?銝銵?
+  ],
+  "deliverables": [
+    "large-run rehearsal profile",
+    "backpressure telemetry ledger",
+    "rehearsal report"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "large-run",
+    "backpressure",
+    "telemetry"
+  ],
+  "notes": "2026-05-21 | ??? closed | 撽?: smoke-test-5-tests-45-pass | 霈: ? policy-large-run-rehearsal??璅∪? rehearsal runner?ackpressure telemetry ledger?ample fixtures嚗udget/backpressure 摰 policy-driven | ?餃?: none",
+  "evidencePath": ".atm/history/evidence/SANGUO-RAGOPS-0401.json",
+  "source": {
+    "planPath": "?辣/銝?RAG霅?鞈??Ｙ?PostgreSQL?????閮.md",
+    "sectionTitle": "M4 憭折?閰西? profile?ackpressure?祥??runbook"
+  },
+  "owner": "codex"
+}
+

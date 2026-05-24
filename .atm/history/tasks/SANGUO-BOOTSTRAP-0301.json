@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "atm.workItem.v0.2",
+  "workItemId": "SANGUO-BOOTSTRAP-0301",
+  "title": "bootstrap-to-trust-zone adapter",
+  "status": "open",
+  "milestone": "M3",
+  "dependencies": [
+    "SANGUO-BOOTSTRAP-0202",
+    "SANGUO-BOOTSTRAP-0203"
+  ],
+  "acceptance": [
+    "高信任 bootstrap candidate 可轉成既有 relationship trust-zone review lane 可讀格式。",
+    "adapter 明確維持 canonicalWrites=false，不直接寫 human-locked-100 或 canonical A。",
+    "reviewer / human 決策後才能透過既有 force-whitelist 或 force-blacklist 契約進 skip-index。"
+  ],
+  "deliverables": [
+    "review lane adapter",
+    "trust-zone bridge contract"
+  ],
+  "tags": [
+    "sanguo-rag",
+    "bootstrap",
+    "adapter",
+    "trust-zone"
+  ],
+  "notes": [
+    "2026-05-24 | 狀態: open | 驗證: pending | 說明: 新 lane 要接回舊治理，這張卡就是橋接層。 | 風險: 若 adapter 偷帶 canonical 行為，會破壞現有白黑名單治理。"
+  ],
+  "evidencePath": ".atm/history/evidence/SANGUO-BOOTSTRAP-0301.json",
+  "source": {
+    "planPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
+    "sectionTitle": "建議開立的任務卡",
+    "headingLine": 467,
+    "hash": "doc_sanguo_bootstrap_0001:0301"
+  },
+  "importedAt": "2026-05-24T23:48:52.4795862+08:00",
+  "owner": "codex"
+}
