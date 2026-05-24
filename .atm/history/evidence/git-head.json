@@ -6,7 +6,7 @@
       "evidenceType": "commit",
       "summary": "Git HEAD is covered by ATM git-head backfill evidence.",
       "artifactPaths": [],
-      "createdAt": "2026-05-24T17:15:59.912Z",
+      "createdAt": "2026-05-24T17:21:07.653Z",
       "producedBy": "codex-main",
       "evidenceFreshness": "fresh",
       "commandRuns": [],
@@ -15,19 +15,19 @@
         "kind": "commit",
         "freshness": "fresh",
         "git": {
-          "commitSha": "88fccff434b56153af7182f54a01869d1c3ba2aa",
-          "treeSha": "ec48d1f3b7095d33b2d3c1d1bfc25e051729b37d",
+          "commitSha": "34c0ec48dccb93e770e3d134f7c431b6c9377c26",
+          "treeSha": "e3cb790dec5d0d30e3aae94d0eb5e496aa438937",
           "parentCommitShas": [
-            "88fccff434b56153af7182f54a01869d1c3ba2aa"
+            "34c0ec48dccb93e770e3d134f7c431b6c9377c26"
           ],
           "stagedPathCount": 1,
           "evidencePath": ".atm/history/evidence/git-head.json",
-          "generatedAt": "2026-05-24T17:15:59.912Z"
+          "generatedAt": "2026-05-24T17:21:07.653Z"
         },
         "backfill": {
           "mode": "head-commit-evidence",
-          "coveredCommitSha": "88fccff434b56153af7182f54a01869d1c3ba2aa",
-          "reason": "Backfill git-head evidence for latest data-pipeline HEAD before runner sync commit"
+          "coveredCommitSha": "34c0ec48dccb93e770e3d134f7c431b6c9377c26",
+          "reason": "Backfill git-head evidence for post-repair ATM head before final runner sync commit"
         }
       }
     }
