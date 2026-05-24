@@ -1,0 +1,586 @@
+{
+  "id": "Policy_RelationshipTrustZone_P1",
+  "schemaVersion": "relationship-trust-zone-policy.v0.1",
+  "description": "Builds accumulating/review/stable/skill-reviewed/human-locked trust zones for relationship and faction timeline claims. Human-locked rows are relationship-alias-like mirrors, not handwritten canon.",
+  "inputs": {
+    "relationshipClaimsPath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-claim-graph/relationship-claims.jsonl",
+    "stableBootstrapPath": "artifacts/data-pipeline/sanguo-rag/extracted/stable-knowledge-bootstrap/stable-knowledge-bootstrap.json",
+    "formalMentionMapPath": "artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/formal-mention-map.json",
+    "humanReviewDecisionsPath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.human-decisions.json",
+    "skillReviewEvidencePath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.skill-review-evidence.jsonl",
+    "semanticReviewEvidencePath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.semantic-review-evidence.jsonl",
+    "secondarySemanticReviewEvidencePath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.semantic-review-secondary-evidence.jsonl",
+    "generalAliasRecordsPath": "artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/general-alias-records.json"
+  },
+  "outputs": {
+    "outputRoot": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone",
+    "stableFileName": "relationship-trust-zone.stable.jsonl",
+    "skillReviewedFileName": "relationship-trust-zone.skill-reviewed.jsonl",
+    "humanLockedFileName": "relationship-trust-zone.human-locked.jsonl",
+    "humanRejectedFileName": "relationship-trust-zone.human-rejected.jsonl",
+    "humanRemovedFileName": "relationship-trust-zone.human-removed.jsonl",
+    "reviewFileName": "relationship-trust-zone.review.jsonl",
+    "accumulatingFileName": "relationship-trust-zone.accumulating.jsonl",
+    "conflictFileName": "relationship-trust-zone.conflicts.jsonl",
+    "skipIndexFileName": "relationship-trust-zone.skip-index.json",
+    "humanReviewMarkdownFileName": "relationship-trust-zone-human-review.md",
+    "humanDecisionTemplateFileName": "relationship-trust-zone.human-decisions.template.json",
+    "factCheckFileName": "relationship-trust-zone.fact-check.jsonl",
+    "factCheckMarkdownFileName": "relationship-trust-zone-fact-check.md",
+    "relationshipReviewTable95PlusFileName": "relationship-trust-zone-review-95plus.relationships.md",
+    "factionReviewTable95PlusFileName": "relationship-trust-zone-review-95plus.factions.md",
+    "relationshipReviewTable95PlusJsonlFileName": "relationship-trust-zone-review-95plus.relationships.jsonl",
+    "factionReviewTable95PlusJsonlFileName": "relationship-trust-zone-review-95plus.factions.jsonl",
+    "summaryFileName": "relationship-trust-zone-summary.json"
+  },
+  "zones": {
+    "stableMinScore": 90.0,
+    "reviewMinScore": 80.0,
+    "skillReviewedScore": 95.0,
+    "humanReviewedScore": 100.0,
+    "humanRejectedScore": 0.0,
+    "fixedAliasMinScore": 100.0,
+    "noRecomputeMinScore": 90.0
+  },
+  "stageNames": {
+    "accumulating": "accumulating",
+    "review": "review",
+    "stable": "stable-90",
+    "skillReviewed": "skill-reviewed-95",
+    "humanLocked": "human-locked-100",
+    "humanRejected": "human-rejected-0",
+    "humanRemoved": "human-removed-from-index"
+  },
+  "keyModel": {
+    "description": "Trust is accumulated by relationship pair key, not by a single person's global faction/ruler slot.",
+    "directedKeyFields": ["dimension", "relationshipType", "fromId", "toId"],
+    "bidirectionalKeyFields": ["dimension", "relationshipType", "pairId"],
+    "scopeFieldsAreMetadataOnly": true,
+    "sameSubjectDifferentControllerAllowed": true,
+    "example": "ma-teng -> ma-chao and liu-bei -> ma-chao are independent trust keys."
+  },
+  "scoreModel": {
+    "maxScore": 100.0,
+    "claimGradeBaseScores": {
+      "A-history-cross-source": 94.0,
+      "A-history": 92.0,
+      "A-romance": 90.0,
+      "A-baseline": 92.0,
+      "B-history": 78.0,
+      "B-history-profile-baseline": 72.0,
+      "B-romance": 76.0,
+      "B-secondary": 62.0
+    },
+    "edgeConfidenceWeight": 4.0,
+    "edgeStrengthWeight": 3.0,
+    "booleanFieldBonuses": {
+      "directPairSignal": 1.5,
+      "pairRelationSignal": 2.0
+    },
+    "quoteLocatorHashBonus": 2.0,
+    "confidenceSignalBonuses": {
+      "cross-source": 1.5,
+      "internal-external": 1.5,
+      "quote+locator+hash": 1.0,
+      "anchor-passage-pair-cue": 1.0,
+      "baihua-translation-anchor": 0.5,
+      "strict-ruler-subject": 4.0,
+      "faction-timeline": 4.0
+    },
+    "promotionTraceBonuses": {
+      "quote-locator-hash": 1.0,
+      "cross-family-history": 2.0,
+      "pair-relation-cue": 1.0,
+      "local-curated-stable-baseline": 4.0
+    },
+    "additionalEvidenceBonus": 1.0,
+    "additionalEvidenceCap": 5,
+    "crossSourceFamilyBonus": 2.0,
+    "maxSupportingItems": 10,
+    "semanticInferencePolicy": {
+      "principle": "Deterministic relationship extraction narrows candidate windows and preserves full source sentences; it must not be treated as semantic truth for hard relationships.",
+      "deterministicOutputsAre": ["candidateRelationshipType", "pairRelationCue", "sourceQuote", "locator", "textHash"],
+      "requiresReviewerForStableTruth": ["parent_child", "adoptive_parent_child", "spouse", "sibling", "sworn_sibling", "ruler_subject"],
+      "reviewerPromotionSources": ["skill-review-evidence", "human-review", "stable-bootstrap-seed"],
+      "canonicalWrites": false
+    },
+    "scoreCaps": [
+      {
+        "description": "Hard pair relationships may enter a narrowed review queue, but deterministic pair cues are not semantic truth and cannot reach stable/95 without reviewer evidence.",
+        "relationshipTypes": ["parent_child", "adoptive_parent_child", "spouse", "sibling", "sworn_sibling", "ruler_subject"],
+        "unlessSupportingEvidenceRequiresAny": [
+          {"field": "sourceLayer", "equals": "stable-bootstrap-seed"},
+          {"field": "promotionTrace", "contains": "local-curated-stable-baseline"},
+          {"field": "humanReviewStatus", "contains": "human-approved"},
+          {"field": "reviewStatus", "contains": "accepted-by-human"}
+        ],
+        "maxScore": 89.0,
+        "stableBlocker": "semantic-review-required-before-stable"
+      }
+    ],
+    "humanReviewStatusFields": ["humanReviewStatus", "reviewStatus"],
+    "humanApprovedStatuses": ["human-approved", "reviewed-accepted", "accepted-by-human"]
+  },
+  "semanticReview": {
+    "enabled": true,
+    "description": "Local or remote sentence-level semantic extraction before skill review. The model reads the preserved source sentence first, extracts explicit relationship facts, then maps them back to candidate trust keys. Cached by sentence hash and remains proposal-only.",
+    "reviewMode": "sentence-relation-extraction",
+    "promptVersion": "relationship-semantic-review.v5-alias-consensus-grounding",
+    "reviewerProvider": "ollama",
+    "reviewerPreset": "quality",
+    "apiUrl": null,
+    "model": "deepseek-r1:7b",
+    "timeoutMs": 90000,
+    "numCtx": 4096,
+    "numPredict": 900,
+    "candidateStages": ["review", "stable-90"],
+    "cacheFileName": "relationship-trust-zone.semantic-review-cache.jsonl",
+    "queueFileName": "relationship-trust-zone.semantic-review-queue.jsonl",
+    "evidenceFileName": "relationship-trust-zone.semantic-review-evidence.jsonl",
+    "summaryFileName": "relationship-trust-zone.semantic-review-summary.json",
+    "maxCandidatesPerSentence": 6,
+    "supportedVerdicts": ["supported"],
+    "minSupportedConfidence": 0.78,
+    "minSupportedTrustScore": 80.0,
+    "highTrustScore": 90.0,
+    "skillReviewPreferredMinTrustScore": 90.0,
+    "requireStrictPairCheck": true,
+    "scoreScale": "0-100",
+    "scoreSemantics": "semanticTrustScore is sentence-level LLM confidence that a preserved source sentence supports the pair-key relationship. It may guide ranking and cache reuse, but it does not directly mutate the final trust-zone score.",
+    "cacheKeyFields": ["promptVersion", "normalizedSourceSentence"],
+    "consensus": {
+      "enabled": true,
+      "supportedStatuses": ["preferred-for-skill-review", "supported-for-review"],
+      "preferredMinTrustScore": 90.0,
+      "supportedMinTrustScore": 80.0,
+      "canonicalWrites": false
+    },
+    "secondaryRunner": {
+      "reviewerProvider": "ollama",
+      "reviewerPreset": "balanced",
+      "apiUrl": null,
+      "model": "qwen2.5:7b",
+      "timeoutMs": 90000,
+      "numCtx": 4096,
+      "numPredict": 900,
+      "cacheFileName": "relationship-trust-zone.semantic-review-secondary-cache.jsonl",
+      "queueFileName": "relationship-trust-zone.semantic-review-secondary-queue.jsonl",
+      "evidenceFileName": "relationship-trust-zone.semantic-review-secondary-evidence.jsonl",
+      "summaryFileName": "relationship-trust-zone.semantic-review-secondary-summary.json"
+    },
+    "codexSkillBridge": {
+      "enabled": true,
+      "description": "Temporary Codex-side sentence semantic reviewer used when local models are unavailable or too weak. It exports review packets and imports reviewed cache rows into the same semantic evidence contract.",
+      "skillPath": "integrations/codex-skills/sanguo-relationship-semantic-review/SKILL.md",
+      "bridgeScript": "pipelines/sanguo-rag/run_codex_relationship_semantic_review_bridge.py",
+      "packetFileName": "codex-relationship-semantic-review-packet.json",
+      "packetMarkdownFileName": "codex-relationship-semantic-review-packet.md",
+      "reviewedCacheFileName": "codex-relationship-semantic-reviewed-cache.jsonl",
+      "reviewerProvider": "codex-skill",
+      "canonicalWrites": false,
+      "replacementPlan": "Replace with an ollama-compatible stronger local or trusted remote model by changing semanticReview reviewerProvider/apiUrl/model; keep output evidence contract unchanged."
+    },
+    "canonicalWrites": false,
+    "systemPromptZhTw": "你是三國人物關係的句級語意審查員。只根據輸入的 sourceSentence 與候選 relationships 判斷該句是否支持每一個 pair-key 關係。deterministic extractor 只負責縮小候選範圍，不代表語意為真；不可只看關鍵字。如果句子只表示派遣、命令、推薦、攻打、見面、稱呼，不能直接推成君臣、親子、夫妻或結義。如果方向不明、主詞不明、年代不明或只能推測，請給 uncertain 或 not_enough_context。輸出 JSON：{\"relationships\":[{\"trustKey\":\"...\",\"verdict\":\"supported|contradicted|uncertain|not_enough_context\",\"semanticTrustScore\":0到100,\"confidence\":0到1,\"evidenceSentence\":\"原文句\",\"rationaleZhTw\":\"繁體中文理由\"}]}。semanticTrustScore 是句級語意信任分數，不是最終關係信任區分數；這一關不得宣告 canonicalWrites，也不得把候選直接升成白名單。"
+  },
+  "focusQueue": {
+    "enabled": true,
+    "description": "When focus general ids are supplied, only unresolved gap slots in the configured relationship order should enter semantic or skill review.",
+    "relationshipTypePriority": ["ruler_subject", "spouse", "parent_child", "sibling"],
+    "resolvedStages": ["skill-reviewed-95", "human-locked-100", "human-rejected-0"],
+    "slotCaps": {
+      "ruler_subject": 2,
+      "spouse": 1,
+      "parent_child": 2,
+      "sibling": 2
+    },
+    "slotRoleFields": {
+      "ruler_subject": ["toId", "subjectId"],
+      "spouse": ["fromId", "toId"],
+      "parent_child": ["fromId", "toId", "subjectId", "controllerId"],
+      "sibling": ["fromId", "toId"]
+    },
+    "priorityWeights": {
+      "relationshipTypeWeight": 1000.0,
+      "missingSlotWeight": 100.0,
+      "rowScoreWeight": 1.0
+    },
+    "canonicalWrites": false
+  },
+  "skillReview": {
+    "enabled": true,
+    "mode": "claim-sentence-fact-check",
+    "applicableDimensions": ["relationship"],
+    "candidateStages": ["stable-90"],
+    "minScore": 90.0,
+    "promotedScore": 95.0,
+    "minEvidenceCount": 1,
+    "requireNoStableBlockers": true,
+    "requiredRecordFields": ["trustKey", "relationshipType", "subjectId", "controllerId"],
+    "requiredSupportingEvidenceAnyFields": [
+      ["claimId", "sourceId", "sourceFamily", "sourceLayer"]
+    ],
+    "typeEvidenceRequirements": {
+      "enemy_rival": {
+        "supportingEvidenceRequiresAny": [
+          {"field": "pairRelationSignal", "equals": true},
+          {"field": "promotionTrace", "contains": "pair-relation-cue"}
+        ]
+      },
+      "parent_child": {
+        "supportingEvidenceRequiresAny": [
+          {"field": "pairRelationSignal", "equals": true},
+          {"field": "sourceLayer", "equals": "stable-bootstrap-seed"},
+          {"field": "confidenceSignals", "contains": "anchor-passage-pair-cue"},
+          {"field": "promotionTrace", "contains": "local-curated-stable-baseline"},
+          {"field": "promotionTrace", "contains": "pair-relation-cue"}
+        ]
+      },
+      "adoptive_parent_child": {
+        "supportingEvidenceRequiresAny": [
+          {"field": "pairRelationSignal", "equals": true},
+          {"field": "sourceLayer", "equals": "stable-bootstrap-seed"},
+          {"field": "confidenceSignals", "contains": "anchor-passage-pair-cue"},
+          {"field": "promotionTrace", "contains": "local-curated-stable-baseline"},
+          {"field": "promotionTrace", "contains": "pair-relation-cue"}
+        ]
+      },
+      "spouse": {
+        "supportingEvidenceRequiresAny": [
+          {"field": "pairRelationSignal", "equals": true},
+          {"field": "sourceLayer", "equals": "stable-bootstrap-seed"},
+          {"field": "confidenceSignals", "contains": "anchor-passage-pair-cue"},
+          {"field": "promotionTrace", "contains": "local-curated-stable-baseline"},
+          {"field": "promotionTrace", "contains": "pair-relation-cue"}
+        ]
+      },
+      "sibling": {
+        "supportingEvidenceRequiresAny": [
+          {"field": "pairRelationSignal", "equals": true},
+          {"field": "sourceLayer", "equals": "stable-bootstrap-seed"},
+          {"field": "confidenceSignals", "contains": "anchor-passage-pair-cue"},
+          {"field": "promotionTrace", "contains": "local-curated-stable-baseline"},
+          {"field": "promotionTrace", "contains": "pair-relation-cue"}
+        ]
+      },
+      "sworn_sibling": {
+        "supportingEvidenceRequiresAny": [
+          {"field": "pairRelationSignal", "equals": true},
+          {"field": "sourceLayer", "equals": "stable-bootstrap-seed"},
+          {"field": "confidenceSignals", "contains": "anchor-passage-pair-cue"},
+          {"field": "promotionTrace", "contains": "local-curated-stable-baseline"},
+          {"field": "promotionTrace", "contains": "pair-relation-cue"}
+        ]
+      },
+      "ruler_subject": {
+        "supportingEvidenceRequiresAny": [
+          {"field": "confidenceSignals", "contains": "strict-ruler-subject"},
+          {"field": "confidenceSignals", "contains": "faction-timeline"},
+          {"field": "sourceClaimScopes", "contains": "faction_timeline"},
+          {"field": "sourceLayer", "equals": "stable-bootstrap-seed"}
+        ]
+      }
+    },
+    "factCheck": {
+      "enabled": true,
+      "claimSentenceLanguage": "zh-TW",
+      "verifiedVerdict": "verified",
+      "unverifiedVerdict": "unverified-needs-source-query",
+      "minEligibleEvidenceItems": 1,
+      "minDistinctSourceFamilies": 1,
+      "allowTrustedSingleSource": true,
+      "requireExternalLookupFor95": true,
+      "externalVerifiedVerdicts": ["verified", "supported", "approved", "pass"],
+      "evidenceBasisMaxItems": 5,
+      "evidenceBasisQuoteMaxChars": 220,
+      "trustedSingleSourceLayers": ["stable-bootstrap-seed"],
+      "eligibleEvidenceRequiresAny": [
+        {"field": "sourceLayer", "equals": "stable-bootstrap-seed"},
+        {"field": "pairRelationSignal", "equals": true},
+        {"field": "confidenceSignals", "contains": "anchor-passage-pair-cue"},
+        {"field": "confidenceSignals", "contains": "strict-ruler-subject"},
+        {"field": "confidenceSignals", "contains": "faction-timeline"},
+        {"field": "sourceClaimScopes", "contains": "faction_timeline"},
+        {"field": "promotionTrace", "contains": "local-curated-stable-baseline"},
+        {"field": "promotionTrace", "contains": "pair-relation-cue"}
+      ],
+      "queryTargets": ["approved-external-relationship-sites", "anchor-corpus", "stable-bootstrap", "relationship-claim-graph"],
+      "queryTemplateZhTw": "{fromName} {toName} {relationshipLabel} 關係 證據",
+      "negativeQueryTemplateZhTw": "{fromName} 不是 {toName} {relationshipLabel} 證據",
+      "sourceQuotePreviewMaxChars": 180,
+      "sourceQuotePreviewMaxItems": 3,
+      "reviewInstructionsZhTw": [
+        "技能查證必須審查一個明確命題句，而不是只看欄位是否完整。",
+        "技能查證必須同時看原文句或證據摘錄與命題句，判斷原文是否真的支持該兩人關係鍵。",
+        "如果沒有實際外部查證紀錄，不能升 95 分，只能留在待複核或後段查證隊列。",
+        "如果查到反證或原文方向相反，必須留待人工打叉或進黑名單。"
+      ]
+    },
+    "passStatus": "skill-reviewed",
+    "failStatus": "skill-review-needs-human",
+    "failStage": "review",
+    "passVerdict": "pass",
+    "failVerdict": "needs-human-review",
+    "reviewerId": "relationship-trust-zone-skill-review",
+    "humanReviewRequiredAfterPass": true
+  },
+  "skillReviewRounds": {
+    "enabled": true,
+    "description": "Builds proposal-only Traditional Chinese review rounds from relationship trust-zone fact-check rows. These files are queues for skill/human verification and must not promote records by themselves.",
+    "roundCountDefault": 3,
+    "itemsPerRoundDefault": 12,
+    "selectionMode": "balanced-by-relationship-type",
+    "maxPerRelationshipTypePerRoundDefault": 6,
+    "candidateStages": ["review", "stable-90"],
+    "preferRelationshipTypes": ["ruler_subject", "faction_membership", "parent_child", "adoptive_parent_child", "spouse", "sworn_sibling", "sibling"],
+    "excludeRelationshipTypes": [],
+    "reviewQueueFileNameTemplate": "relationship-trust-zone-skill-review-round-{roundNo}.jsonl",
+    "reviewMarkdownFileNameTemplate": "relationship-trust-zone-skill-review-round-{roundNo}.md",
+    "aggregateJsonlFileName": "relationship-trust-zone-skill-review-human-review.jsonl",
+    "aggregateMarkdownFileName": "relationship-trust-zone-skill-review-human-review.md",
+    "summaryFileName": "relationship-trust-zone-skill-review-rounds-summary.json",
+    "maxExistingEvidenceItems": 3,
+    "maxQueryItems": 4,
+    "maxQuoteChars": 220,
+    "canonicalWrites": false,
+    "semanticPriority": {
+      "enabled": true,
+      "preferredMinTrustScore": 90.0,
+      "supportedMinTrustScore": 80.0,
+      "residualMaxTrustScore": 60.0,
+      "blacklistCandidateVerdicts": ["contradicted"],
+      "residualVerdicts": ["not_enough_context", "uncertain"],
+      "residualFileName": "relationship-trust-zone-semantic-residual-candidates.jsonl",
+      "blacklistCandidateFileName": "relationship-trust-zone-semantic-blacklist-candidates.jsonl",
+      "summaryFieldName": "semanticPrioritySummary",
+      "canonicalWrites": false
+    },
+    "decisionOptionsZhTw": ["待審", "通過", "打叉", "保留待查"],
+    "defaultDecisionZhTw": "待審",
+    "reviewInstructionsZhTw": [
+      "請先比對命題句與原文摘錄，確認原文是否真的支持這一組人物關係。",
+      "只有查到外部網站或 anchor 文本的明確支持句，才可標記通過；若方向或人物錯誤，請標記打叉。",
+      "打叉的關係會進入黑名單候選，之後每輪可直接阻擋相同關係鍵。",
+      "找不到明確來源時請保留待查，不要用常識硬判。"
+    ],
+    "humanEvidenceFieldsZhTw": ["查證來源", "網址或定位", "看到的原文句", "支持或反證", "審核備註"]
+  },
+  "claimSentenceTemplatesZhTw": {
+    "parent_child": "{fromName} 是 {toName} 的父母或親長嗎？",
+    "adoptive_parent_child": "{fromName} 是 {toName} 的義父母、養父母或義親嗎？",
+    "spouse": "{fromName} 與 {toName} 是夫妻或配偶嗎？",
+    "sibling": "{fromName} 與 {toName} 是兄弟姊妹嗎？",
+    "sworn_sibling": "{fromName} 與 {toName} 是結義兄弟嗎？",
+    "ruler_subject": "{fromName} 是 {toName} 在該時段的主君或效力對象嗎？",
+    "faction_membership": "{subjectName} 在該時段屬於 {controllerName} 陣營嗎？"
+  },
+  "relationshipLabelsZhTw": {
+    "parent_child": "親子",
+    "adoptive_parent_child": "義父義子",
+    "spouse": "夫妻",
+    "sibling": "兄弟姊妹",
+    "sworn_sibling": "結義",
+    "ruler_subject": "君臣",
+    "faction_membership": "陣營"
+  },
+  "factionLabelsZhTw": {
+    "wei": "魏／曹魏",
+    "shu": "蜀／蜀漢",
+    "wu": "吳／東吳",
+    "jin": "晉／西晉",
+    "lu-bu": "呂布勢力",
+    "dong-zhuo": "董卓勢力",
+    "ding-yuan": "丁原勢力",
+    "liu-zhang": "劉璋勢力",
+    "ma-family": "馬氏／西涼勢力"
+  },
+  "sourceLabelsZhTw": {
+    "stable-bootstrap": "穩定知識種子",
+    "stable-bootstrap-seed": "穩定知識種子",
+    "romance-mao-hant": "《三國演義》繁中原文",
+    "sanguoyanyi": "《三國演義》",
+    "sanguozhi": "《三國志》",
+    "houhanshu": "《後漢書》",
+    "external-history": "外部正史資料",
+    "external-romance": "外部演義資料",
+    "external-worldbuilding": "外部世界觀資料",
+    "primary-text-transcription": "一手文本轉錄",
+    "internal-primary-text": "內部一手文本"
+  },
+  "humanReview": {
+    "decisionField": "decision",
+    "pendingStatus": "待審",
+    "approvedStatuses": ["通過", "approved", "human-approved", "accept", "accepted"],
+    "rejectedStatuses": ["打叉", "rejected", "reject"],
+    "candidateStages": ["skill-reviewed-95", "stable-90"],
+    "lockStatus": "human-locked",
+    "lockScore": 100.0,
+    "rejectStatus": "human-rejected",
+    "rejectScore": 0.0,
+    "removeStatus": "human-removed-from-index",
+    "fixedAliasLike": true,
+    "overrideCommands": {
+      "commandListField": "commands",
+      "actionField": "action",
+      "forceWhitelistActions": ["強制白名單", "force-whitelist", "whitelist", "move-to-whitelist"],
+      "forceBlacklistActions": ["強制黑名單", "force-blacklist", "blacklist", "move-to-blacklist"],
+      "removeFromIndexActions": ["移除索引", "remove-from-index", "delete", "remove"],
+      "forceWhitelistScore": 100.0,
+      "forceBlacklistScore": 0.0,
+      "removeFromIndexScoreMode": "preserve-current-score"
+    },
+    "markdownMaxRows": 200,
+    "quotePreviewMaxChars": 120,
+    "decisionTemplateReviewer": "human",
+    "reviewInstructions": [
+      "Approve only if the pair-key relationship is correct as written.",
+      "Do not approve a different later/earlier ruler relationship unless that pair-key has its own evidence.",
+      "Human approval promotes the row to score=100 and fixedAliasLike=true in the mirror dataset.",
+      "Use commands[].action=force-whitelist to move any trustKey to the whitelist.",
+      "Use commands[].action=force-blacklist to move any trustKey to the blacklist with score=0.",
+      "Use commands[].action=remove-from-index to remove any trustKey from both whitelist and blacklist indexes."
+    ],
+    "markdownText": {
+      "title": "關係信任區人類審核清單",
+      "purpose": "這份清單列出已達 90 分以上、或已通過 skill review 變成 95 分的關係候選。請逐條確認 pair-key 是否正確。",
+      "decisionRule": "如果某一條不對，請在決策檔把該 trustKey 的 decision 改成 rejected；下一輪該條信任分數會直接降為 0，且不會進入跳過重算索引。",
+      "approvalRule": "如果某一條正確，請在決策檔把 decision 改成 approved；下一輪該條會變成 human-locked-100，等同關係版 alias 固定鏡像。",
+      "pairKeyRule": "每一條都是兩方關係 key 獨立累分；同一人物的不同時期主君或陣營不會互相繼承分數。",
+      "fieldLabels": {
+        "item": "項目",
+        "stage": "階段",
+        "score": "信任分數",
+        "relationshipType": "關係類型",
+        "fromId": "來源方",
+        "toId": "目標方",
+        "subjectId": "被歸屬方",
+        "controllerId": "控制方/主方",
+        "trustKey": "信任 key",
+        "scope": "時段/章回範圍",
+        "evidenceCount": "證據數",
+        "sourceFamilies": "來源家族",
+        "decision": "人類審核",
+        "claimSentence": "待審命題",
+        "quote": "證據摘錄"
+      },
+      "decisionOptions": {
+        "pending": "待審：保持 pending",
+        "approved": "正確：改成 approved，升為 100",
+        "rejected": "不對：改成 rejected，降為 0"
+      },
+      "overrideCommandText": {
+        "title": "人工糾錯指令",
+        "forceWhitelist": "force-whitelist：直接放入白名單，分數設為 100。",
+        "forceBlacklist": "force-blacklist：直接放入黑名單，分數設為 0，後續遇到同一 pair-key 視為已知錯誤。",
+        "removeFromIndex": "remove-from-index：從黑白名單索引移除，不作為正向或負向推理條件。"
+      },
+      "decisionOptionOrder": ["pending", "approved", "rejected"],
+      "sections": {
+        "decisionOptions": "審核選項",
+        "candidateList": "關係候選清單"
+      },
+      "templateHint": "請編輯同目錄的 relationship-trust-zone.human-decisions.template.json，另存或覆蓋成 relationship-trust-zone.human-decisions.json 後重跑 builder。"
+    }
+  },
+  "reviewTables": {
+    "minScore": 95.0,
+    "includedStages": ["skill-reviewed-95", "human-locked-100", "stable-90"],
+    "relationshipDimensions": ["relationship"],
+    "factionDimensions": ["faction"],
+    "maxQuoteChars": 180,
+    "maxQuoteItems": 3,
+    "titleZhTw": {
+      "relationships": "95 分以上關係審核表",
+      "factions": "95 分以上陣營審核表"
+    },
+    "instructionsZhTw": [
+      "請逐條審核：正確可在決策檔標「通過」；不對標「打叉」，下一輪會降為 0 並進黑名單。",
+      "每列都保留內部關係鍵，這是黑白名單與後續推理的硬條件。",
+      "若原文摘錄不足以支持命題，請不要通過；可先打叉，或保留待審等下一輪查證。"
+    ]
+  },
+  "skipIndex": {
+    "noRecomputeStages": ["stable-90", "skill-reviewed-95", "human-locked-100"],
+    "fixedAliasStages": ["human-locked-100"],
+    "negativeConditionStages": ["human-rejected-0"],
+    "positiveConditionName": "relationship-trust-whitelist",
+    "negativeConditionName": "relationship-trust-blacklist",
+    "positiveConditionSemantics": "If a pair-key appears here, downstream relationship extraction and review may use it as known-good relationship grounding.",
+    "negativeConditionSemantics": "If a pair-key appears here, downstream relationship extraction should treat the same pair/type claim as known-wrong and avoid promoting it."
+  },
+  "relationshipDimension": {
+    "enabled": true,
+    "stableRelationshipTypes": [
+      "ruler_subject",
+      "parent_child",
+      "adoptive_parent_child",
+      "spouse",
+      "sibling",
+      "sworn_sibling"
+    ],
+    "bidirectionalRelationshipTypes": [
+      "spouse",
+      "sibling",
+      "sworn_sibling"
+    ],
+    "typeStableRequirements": {
+      "ruler_subject": {
+        "requiresAny": [
+          {
+            "field": "sourceClaimScopes",
+            "contains": "faction_timeline"
+          },
+          {
+            "field": "confidenceSignals",
+            "contains": "strict-ruler-subject"
+          },
+          {
+            "field": "confidenceSignals",
+            "contains": "faction-timeline"
+          },
+          {
+            "field": "sourceLayer",
+            "equals": "stable-bootstrap-seed"
+          }
+        ]
+      }
+    },
+    "exclusiveGroups": [
+      {
+        "relationshipType": "ruler_subject",
+        "subjectField": "toId",
+        "controllerField": "fromId",
+        "mode": "pair-key-only",
+        "sameSubjectDifferentControllerAllowed": true
+      }
+    ]
+  },
+  "factionDimension": {
+    "enabled": true,
+    "inputKey": "factionTimelines",
+    "confidenceField": "confidence",
+    "subjectField": "generalId",
+    "valueField": "faction",
+    "relationshipType": "faction_membership",
+    "keyFields": ["dimension", "relationshipType", "subjectId", "factionId"],
+    "exclusivePerSubject": false,
+    "scopeFieldsAreMetadataOnly": true,
+    "confidenceSignal": "faction-timeline"
+  },
+  "scope": {
+    "validFromFields": ["validFromChapter", "validFrom"],
+    "validToFields": ["validToChapter", "validTo"],
+    "chapterFields": ["chapterNo", "chapter"],
+    "unknownScopeKey": "global"
+  },
+  "guards": [
+    "canonicalWrites=false",
+    "stable-zone-is-derived-not-manual-canon",
+    "skill-reviewed-95-still-requires-human-review-before-lock",
+    "human-locked-100-is-relationship-alias-like-mirror",
+    "human-rejected-0-is-negative-relationship-alias-like-condition",
+    "trust-key-is-relationship-pair-not-single-person-slot",
+    "ruler-subject-stable-requires-strict-scope-signal",
+    "time-scoped-faction-intervals-are-not-global-constants"
+  ]
+}

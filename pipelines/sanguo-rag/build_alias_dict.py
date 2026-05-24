@@ -19,6 +19,8 @@ DEFAULT_MANUAL_ROSTER_PATH = pipeline_config_path(REPO_ROOT, "manual-roster-seed
 DEFAULT_OUTPUT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary")
 DEFAULT_OBSERVED_MENTIONS_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/observed-mentions/observed-mentions.json")
 DEFAULT_WIKI_COURTESY_ALIASES_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/romance-courtesy-aliases.json")
+DEFAULT_ALIAS_SOURCE_CATALOG_PATH = Path("data/sanguo/catalogs/catalog-general-alias-sources.jsonl")
+DEFAULT_SEED_ALIAS_RECORDS_PATH = DEFAULT_OUTPUT_ROOT / "roster-identity-records.json"
 DEFAULT_GOVERNANCE_ROOT = default_governance_root()
 DECORATIVE_WRAPPER_CHARS = ""
 SOURCE_PRIORITY: dict[str, int] = {}
@@ -88,6 +90,16 @@ class GeneralAliasRecord(BaseModel):
     reviewStatus: str = Field(description="ready or needs-more-coverage")
     needsManualReview: bool = Field(description="Whether this general still needs more alias curation")
     aliases: list[AliasCandidate] = Field(description="Merged final alias candidates")
+    acceptedAliasesZhTw: list[str] = Field(default_factory=list, description="Accepted alias labels including canonical name")
+    ambiguousAliasesZhTw: list[str] = Field(default_factory=list, description="Collision aliases kept for scoped review but not global resolution")
+    scopedAliasesZhTw: list[str] = Field(default_factory=list, description="Aliases usable only in a scoped candidate sentence or review lane")
+    blockedAliasesZhTw: list[str] = Field(default_factory=list, description="Alias candidates reviewed and blocked from resolution")
+    acceptedCourtesyAliasesZhTw: list[str] = Field(default_factory=list, description="Accepted courtesy-style aliases derived from courtesy evidence")
+    ambiguousCourtesyAliasesZhTw: list[str] = Field(default_factory=list, description="Courtesy-style aliases blocked by collisions")
+    aliasCoverageTier: str = Field(
+        default="canonical-only",
+        description="Coverage tier: canonical-only, accepted-extra, courtesy-covered, collision-only, scoped-only, or reviewed-no-global-alias",
+    )
 
 
 class AliasMapEntry(BaseModel):
@@ -127,7 +139,7 @@ class TopUnresolvedLabelRecord(BaseModel):
 class AliasRecordsBundle(BaseModel):
     version: str = Field(description="Output schema version")
     generatedAt: str = Field(description="UTC timestamp")
-    generalsPath: str = Field(description="Input generals.json path")
+    generalsPath: str = Field(description="Input roster source path; may be client generals.json or service alias records fallback")
     overridesPath: str = Field(description="Input override config path")
     data: list[GeneralAliasRecord] = Field(description="Per-general alias records")
 
@@ -150,6 +162,12 @@ class AliasReviewReport(BaseModel):
     aliasTypeCounts: dict[str, int] = Field(description="Alias count by aliasType")
     aliasReviewStatusCounts: dict[str, int] = Field(description="Alias count by reviewStatus")
     generalReviewStatusCounts: dict[str, int] = Field(description="General count by reviewStatus")
+    aliasCoverageTierCounts: dict[str, int] = Field(default_factory=dict, description="General count by aliasCoverageTier")
+    generalsWithAcceptedExtraAliasCount: int = Field(default=0, description="Generals with at least one accepted alias beyond canonical name")
+    generalsWithAcceptedCourtesyAliasCount: int = Field(default=0, description="Generals with at least one accepted courtesy-style alias")
+    generalsWithCollisionCourtesyOnlyCount: int = Field(default=0, description="Generals whose only non-canonical courtesy aliases are collisions")
+    generalsWithScopedAliasCount: int = Field(default=0, description="Generals with scoped-only aliases")
+    generalsWithBlockedAliasCount: int = Field(default=0, description="Generals with reviewed blocked alias candidates")
     observedMentionsPath: str | None = Field(default=None, description="Observed mentions input path when available")
     unresolvedLabelTypeCounts: dict[str, int] = Field(default_factory=dict, description="Unresolved observed label count by mentionType")
     topUnresolvedLabels: list[TopUnresolvedLabelRecord] = Field(default_factory=list, description="Most frequent unresolved observed labels")
@@ -157,6 +175,20 @@ class AliasReviewReport(BaseModel):
     unknownOverrideGeneralIds: list[str] = Field(description="Override entries whose generalId was not found")
     collisions: list[CollisionRecord] = Field(description="Alias collisions that require review")
     excludedAliases: list[ExcludedAliasRecord] = Field(description="Aliases filtered out before final map")
+
+
+class AliasSourceCatalogEntry(BaseModel):
+    id: str = Field(description="Catalog row id")
+    generalId: str = Field(description="Canonical general id")
+    alias: str = Field(default="", description="Alias label")
+    aliasKind: str = Field(default="alias", description="alias, courtesy, title, romance-name, or candidate kind")
+    resolutionScope: str = Field(default="global", description="global, scoped-review-only, or blocked")
+    reviewStatus: str = Field(default="accepted", description="accepted or blocked")
+    sourceId: str | None = Field(default=None, description="Source id")
+    sourceUrl: str | None = Field(default=None, description="Source URL")
+    sourceQuote: str | None = Field(default=None, description="Short source quote")
+    sourceLicense: str | None = Field(default=None, description="Source license")
+    canonicalWrites: bool = Field(default=False, description="Catalog rows never write canonical runtime data")
 
 
 def parse_args() -> argparse.Namespace:
@@ -189,6 +221,16 @@ def parse_args() -> argparse.Namespace:
         default=str(DEFAULT_WIKI_COURTESY_ALIASES_PATH),
         help="Optional romance-courtesy-aliases.json generated from Wikipedia character-list courtesy names",
     )
+    parser.add_argument(
+        "--alias-source-catalog",
+        default=str(DEFAULT_ALIAS_SOURCE_CATALOG_PATH),
+        help="Optional JSONL catalog with sourced global/scoped/blocked alias rows",
+    )
+    parser.add_argument(
+        "--seed-alias-records",
+        default=str(DEFAULT_SEED_ALIAS_RECORDS_PATH),
+        help="Optional service-side alias artifact used when client generals.json is absent",
+    )
     parser.add_argument("--governance-root", default=str(DEFAULT_GOVERNANCE_ROOT), help="Sanguo governance root")
     parser.add_argument("--alias-mention-policy", default=None, help="Override policy-alias-mention-intake.json path")
     parser.add_argument("--alias-mention-cue-rules", default=None, help="Override rule-alias-mention-intake-cues.jsonl path")
@@ -203,6 +245,20 @@ def utc_now() -> str:
 
 def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def read_jsonl(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    rows: list[dict] = []
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
+        text = line.strip()
+        if not text:
+            continue
+        value = json.loads(text)
+        if isinstance(value, dict):
+            rows.append(value)
+    return rows
 
 
 def write_json(path: Path, model: BaseModel) -> None:
@@ -262,6 +318,55 @@ def summarize_metadata_counts(records: list[GeneralAliasRecord]) -> tuple[dict[s
     )
 
 
+def alias_has_courtesy_source(alias: AliasCandidate) -> bool:
+    if alias.aliasSource == "wiki-courtesy-alias":
+        return True
+    return "courtesy" in {str(source).strip().lower() for source in alias.sources}
+
+
+def dedupe_alias_labels(aliases: list[AliasCandidate]) -> list[str]:
+    labels: list[str] = []
+    seen: set[str] = set()
+    for alias in aliases:
+        normalized = normalize_alias(alias.label)
+        if not normalized or normalized in seen:
+            continue
+        labels.append(alias.label)
+        seen.add(normalized)
+    return labels
+
+
+def coverage_tier_for_record(record: GeneralAliasRecord) -> str:
+    if record.acceptedCourtesyAliasesZhTw:
+        return "courtesy-covered"
+    accepted_extras = [alias for alias in record.acceptedAliasesZhTw if normalize_alias(alias) != normalize_alias(record.name)]
+    if accepted_extras:
+        return "accepted-extra"
+    if record.scopedAliasesZhTw:
+        return "scoped-only"
+    if record.blockedAliasesZhTw:
+        return "reviewed-no-global-alias"
+    if record.ambiguousAliasesZhTw:
+        return "collision-only"
+    return "canonical-only"
+
+
+def finalize_record_alias_views(records: list[GeneralAliasRecord]) -> dict[str, int]:
+    coverage_counts: dict[str, int] = defaultdict(int)
+    for record in records:
+        accepted_aliases = [alias for alias in record.aliases if alias.reviewStatus == "accepted"]
+        ambiguous_aliases = [alias for alias in record.aliases if alias.reviewStatus == "collision"]
+        accepted_courtesy = [alias for alias in accepted_aliases if alias_has_courtesy_source(alias)]
+        ambiguous_courtesy = [alias for alias in ambiguous_aliases if alias_has_courtesy_source(alias)]
+        record.acceptedAliasesZhTw = dedupe_alias_labels(accepted_aliases)
+        record.ambiguousAliasesZhTw = dedupe_alias_labels(ambiguous_aliases)
+        record.acceptedCourtesyAliasesZhTw = dedupe_alias_labels(accepted_courtesy)
+        record.ambiguousCourtesyAliasesZhTw = dedupe_alias_labels(ambiguous_courtesy)
+        record.aliasCoverageTier = coverage_tier_for_record(record)
+        coverage_counts[record.aliasCoverageTier] += 1
+    return dict(sorted(coverage_counts.items()))
+
+
 def ensure_output_root(path: Path, overwrite: bool) -> None:
     path.mkdir(parents=True, exist_ok=True)
     if not overwrite:
@@ -309,6 +414,68 @@ def load_wiki_courtesy_aliases(path: Path) -> dict[str, list[str]]:
             aliases_by_general[general_id].append(cleaned_alias)
             seen.add(normalized_alias)
     return dict(aliases_by_general)
+
+
+def load_alias_source_catalog(path: Path) -> dict[str, dict[str, list[str]]]:
+    grouped: dict[str, dict[str, list[str]]] = defaultdict(lambda: {"global": [], "scoped": [], "blocked": []})
+    for raw_row in read_jsonl(path):
+        entry = AliasSourceCatalogEntry.model_validate(raw_row)
+        general_id = entry.generalId.strip()
+        alias = entry.alias.strip()
+        if not general_id or not alias:
+            continue
+        scope = entry.resolutionScope.strip().lower()
+        status = entry.reviewStatus.strip().lower()
+        if status == "blocked" or scope == "blocked":
+            bucket_name = "blocked"
+        elif scope in {"scoped", "scoped-review-only", "sentence", "sentence-only"}:
+            bucket_name = "scoped"
+        else:
+            bucket_name = "global"
+        normalized = normalize_alias(alias)
+        if not normalized:
+            continue
+        existing = {normalize_alias(value) for value in grouped[general_id][bucket_name]}
+        if normalized not in existing:
+            grouped[general_id][bucket_name].append(alias)
+    return {general_id: dict(values) for general_id, values in grouped.items()}
+
+
+def load_seed_generals_from_alias_records(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    payload = read_json(path)
+    rows = payload.get("data") if isinstance(payload, dict) else payload
+    if not isinstance(rows, list):
+        return []
+    generals: list[dict] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        general_id = str(row.get("generalId") or "").strip()
+        name = str(row.get("name") or "").strip()
+        if not general_id or not name:
+            continue
+        aliases: list[str] = []
+        for alias_row in row.get("aliases") or []:
+            if not isinstance(alias_row, dict):
+                continue
+            if str(alias_row.get("reviewStatus") or "accepted").strip().lower() not in {"accepted", "collision"}:
+                continue
+            label = str(alias_row.get("label") or "").strip()
+            if label and normalize_alias(label) != normalize_alias(name):
+                aliases.append(label)
+        generals.append(
+            {
+                "id": general_id,
+                "name": name,
+                "alias": sorted(set(aliases), key=lambda item: (-len(item), item)),
+                "faction": row.get("faction"),
+                "title": row.get("title"),
+                "source": "service-alias-records",
+            }
+        )
+    return generals
 
 
 def merge_manual_roster_entries(generals: list[dict], config: ManualRosterConfig) -> list[dict]:
@@ -420,6 +587,7 @@ def build_records(
     override_config: AliasOverrideConfig,
     overrides_by_id: dict[str, AliasOverrideEntry],
     wiki_courtesy_aliases_by_id: dict[str, list[str]] | None = None,
+    alias_source_catalog_by_id: dict[str, dict[str, list[str]]] | None = None,
 ) -> tuple[list[GeneralAliasRecord], list[ExcludedAliasRecord], list[str]]:
     excluded_normalized = {normalize_alias(alias) for alias in override_config.globalExcludedAliases if normalize_alias(alias)}
     excluded_aliases: list[ExcludedAliasRecord] = []
@@ -483,6 +651,9 @@ def build_records(
             add_candidate(str(alias), "alias")
         for alias in (wiki_courtesy_aliases_by_id or {}).get(general_id, []):
             add_candidate(str(alias), "courtesy")
+        catalog_entry = (alias_source_catalog_by_id or {}).get(general_id, {})
+        for alias in catalog_entry.get("global", []):
+            add_candidate(str(alias), "alias-source-catalog")
         for alias in derive_title_aliases(title):
             add_candidate(alias, "title")
         if override_entry:
@@ -506,6 +677,8 @@ def build_records(
                 reviewStatus=review_status,
                 needsManualReview=needs_manual_review,
                 aliases=alias_candidates,
+                scopedAliasesZhTw=sorted(set(catalog_entry.get("scoped", [])), key=lambda item: (-len(item), item)),
+                blockedAliasesZhTw=sorted(set(catalog_entry.get("blocked", [])), key=lambda item: (-len(item), item)),
             )
         )
 
@@ -585,29 +758,41 @@ def main() -> None:
     overrides_path = Path(args.overrides)
     manual_roster_path = Path(args.manual_roster)
     wiki_courtesy_aliases_path = Path(args.wiki_courtesy_aliases)
+    alias_source_catalog_path = Path(args.alias_source_catalog)
+    seed_alias_records_path = Path(args.seed_alias_records)
     output_root = Path(args.output_root)
 
-    if not generals_path.exists():
-        raise FileNotFoundError(f"generals.json not found: {generals_path}")
     if not overrides_path.exists():
         raise FileNotFoundError(f"override config not found: {overrides_path}")
 
     ensure_output_root(output_root, overwrite=args.overwrite)
 
-    generals = read_json(generals_path)
-    if not isinstance(generals, list):
-        raise TypeError("generals.json must be a JSON array")
+    if generals_path.exists():
+        generals = read_json(generals_path)
+        if not isinstance(generals, list):
+            raise TypeError("generals.json must be a JSON array")
+        source_generals_path = str(generals_path)
+    else:
+        generals = load_seed_generals_from_alias_records(seed_alias_records_path)
+        source_generals_path = str(seed_alias_records_path)
+        if not generals:
+            raise FileNotFoundError(
+                f"neither generals.json nor seed alias records are available: {generals_path}, {seed_alias_records_path}"
+            )
     generals = merge_manual_roster_entries(generals, load_manual_roster_config(manual_roster_path))
 
     override_config, overrides_by_id = load_override_config(overrides_path)
     wiki_courtesy_aliases_by_id = load_wiki_courtesy_aliases(wiki_courtesy_aliases_path)
+    alias_source_catalog_by_id = load_alias_source_catalog(alias_source_catalog_path)
     records, excluded_aliases, unknown_override_general_ids = build_records(
         generals,
         override_config,
         overrides_by_id,
         wiki_courtesy_aliases_by_id,
+        alias_source_catalog_by_id,
     )
     alias_map_entries, collisions = build_alias_map(records)
+    alias_coverage_tier_counts = finalize_record_alias_views(records)
     alias_source_counts, alias_type_counts, alias_review_status_counts, general_review_status_counts = summarize_metadata_counts(records)
     observed_mentions_path, unresolved_label_type_counts, top_unresolved_labels = load_top_unresolved_labels(
         Path(args.observed_mentions), args.top_unresolved
@@ -617,7 +802,7 @@ def main() -> None:
     records_bundle = AliasRecordsBundle(
         version="1.2.0",
         generatedAt=timestamp,
-        generalsPath=str(generals_path),
+        generalsPath=source_generals_path,
         overridesPath=str(overrides_path),
         data=records,
     )
@@ -634,6 +819,17 @@ def main() -> None:
         aliasTypeCounts=alias_type_counts,
         aliasReviewStatusCounts=alias_review_status_counts,
         generalReviewStatusCounts=general_review_status_counts,
+        aliasCoverageTierCounts=alias_coverage_tier_counts,
+        generalsWithAcceptedExtraAliasCount=sum(1 for record in records if any(normalize_alias(alias) != normalize_alias(record.name) for alias in record.acceptedAliasesZhTw)),
+        generalsWithAcceptedCourtesyAliasCount=sum(1 for record in records if record.acceptedCourtesyAliasesZhTw),
+        generalsWithCollisionCourtesyOnlyCount=sum(
+            1
+            for record in records
+            if not any(normalize_alias(alias) != normalize_alias(record.name) for alias in record.acceptedAliasesZhTw)
+            and bool(record.ambiguousCourtesyAliasesZhTw)
+        ),
+        generalsWithScopedAliasCount=sum(1 for record in records if record.scopedAliasesZhTw),
+        generalsWithBlockedAliasCount=sum(1 for record in records if record.blockedAliasesZhTw),
         observedMentionsPath=observed_mentions_path,
         unresolvedLabelTypeCounts=unresolved_label_type_counts,
         topUnresolvedLabels=top_unresolved_labels,
