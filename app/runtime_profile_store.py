@@ -69,7 +69,7 @@ class RuntimeProfileStore:
         payload = self.read_optional_api_fixture("persona-card.response.json")
         if payload and payload.get("generalId") == general_id:
             return payload
-        return None
+        return self._build_minimal_persona_card(general_id)
 
     def load_ready_events(self) -> list[dict]:
         if self._ready_events_cache is not None:
@@ -154,3 +154,16 @@ class RuntimeProfileStore:
         except (HTTPError, URLError, TimeoutError, json.JSONDecodeError, UnicodeDecodeError):
             payload = None
         return payload
+
+    def _build_minimal_persona_card(self, general_id: str) -> dict:
+        display_name = str(general_id or "").strip() or "unknown-general"
+        return {
+            "generalId": display_name,
+            "personaVersion": "general_persona_fallback_v1",
+            "displayName": display_name,
+            "voiceStyle": [],
+            "personalityTraits": [],
+            "safeFallbackLine": f"{display_name}仍須有憑有據，不可妄言。",
+            "taboos": [],
+            "evidenceRefs": [],
+        }
