@@ -1,0 +1,36 @@
+{
+  "taskId": "SANGUO-BOOTSTRAP-0302",
+  "updatedAt": "2026-05-25T07:28:44.097Z",
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "test",
+      "summary": "產出繁中人工審核 markdown 與 decision template",
+      "artifactPaths": [
+        "pipelines/sanguo-rag/render_baihua_bootstrap_human_review.py",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-bootstrap-human-review.zh-TW.md",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-bootstrap-human-decisions.template.json",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-bootstrap-human-review-summary.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T07:28:44.097Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "test",
+        "freshness": "fresh",
+        "validationPasses": [
+          "human-review-render"
+        ],
+        "commandRuns": [
+          {
+            "command": "python pipelines/sanguo-rag/render_baihua_bootstrap_human_review.py --overwrite > ",
+            "exitCode": 0,
+            "stdoutSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ]
+      }
+    }
+  ]
+}
