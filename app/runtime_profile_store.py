@@ -21,9 +21,11 @@ class RuntimeProfileStore:
         self.persona_root = self._resolve_path(persona_root)
         self.runtime_profile_root = self._resolve_path(runtime_profile_root)
         self.event_root = self._resolve_path(event_root)
+        self.persona_remote_base_url = (os.environ.get("NPC_PERSONA_REMOTE_BASE_URL") or "").strip().rstrip("/")
         self.runtime_profile_remote_base_url = (os.environ.get("NPC_RUNTIME_PROFILE_REMOTE_BASE_URL") or "").strip().rstrip("/")
         self._ready_events_cache: list[dict] | None = None
         self._source_event_packets_cache: list[dict] | None = None
+        self._remote_persona_card_cache: dict[str, dict | None] = {}
         self._remote_runtime_json_cache: dict[tuple[str, str], dict | None] = {}
 
     def read_api_fixture(self, filename: str) -> dict:
@@ -48,6 +50,9 @@ class RuntimeProfileStore:
         path = self.persona_root / f"{general_id}.persona.json"
         if path.exists():
             return json.loads(path.read_text(encoding="utf-8"))
+        remote_payload = self._read_remote_persona_card(general_id)
+        if remote_payload is not None:
+            return remote_payload
         payload = self.read_optional_api_fixture("persona-card.response.json")
         if payload and payload.get("generalId") == general_id:
             return payload
@@ -106,16 +111,33 @@ class RuntimeProfileStore:
         return path if path.is_absolute() else self.repo_root / path
 
     def _read_remote_runtime_json(self, general_id: str, suffix: str) -> dict | None:
-        if not self.runtime_profile_remote_base_url:
-            return None
         cache_key = (general_id, suffix)
         if cache_key in self._remote_runtime_json_cache:
             return self._remote_runtime_json_cache[cache_key]
-        url = f"{self.runtime_profile_remote_base_url}/{general_id}/{general_id}.{suffix}.json"
+        payload = self._read_remote_json_file(
+            self.runtime_profile_remote_base_url,
+            f"{general_id}/{general_id}.{suffix}.json",
+        )
+        self._remote_runtime_json_cache[cache_key] = payload
+        return payload
+
+    def _read_remote_persona_card(self, general_id: str) -> dict | None:
+        if general_id in self._remote_persona_card_cache:
+            return self._remote_persona_card_cache[general_id]
+        payload = self._read_remote_json_file(
+            self.persona_remote_base_url,
+            f"{general_id}.persona.json",
+        )
+        self._remote_persona_card_cache[general_id] = payload
+        return payload
+
+    def _read_remote_json_file(self, base_url: str, relative_path: str) -> dict | None:
+        if not base_url:
+            return None
+        url = f"{base_url}/{relative_path}"
         try:
             with urlopen(url, timeout=8) as response:
                 payload = json.loads(response.read().decode("utf-8"))
         except (HTTPError, URLError, TimeoutError, json.JSONDecodeError, UnicodeDecodeError):
             payload = None
-        self._remote_runtime_json_cache[cache_key] = payload
         return payload
