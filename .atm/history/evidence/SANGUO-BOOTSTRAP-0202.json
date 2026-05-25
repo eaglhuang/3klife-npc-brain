@@ -1,30 +1,15 @@
 {
+  "schemaVersion": "atm.evidence.v0.1",
   "taskId": "SANGUO-BOOTSTRAP-0202",
-  "updatedAt": "2026-05-25T01:01:39.385Z",
+  "status": "not-started",
+  "summary": "bootstrap merge / normalize 任務卡已建立，待實作 trustKey 層的合併與對稱化。",
+  "repositoryKind": "generic-repository",
   "evidence": [
     {
       "evidenceKind": "supporting",
       "reportPath": "data/sanguo/policies/policy-relationship-trust-zone.json",
       "description": "既有 relationship trust-zone 政策可作 normalize 與 key 對齊依據。",
       "result": "present"
-    },
-    {
-      "evidenceKind": "validation",
-      "evidenceType": "artifact",
-      "summary": "merge/normalize 規則已對齊 relationship trust-zone 結構與 key 介面",
-      "artifactPaths": [
-        "pipelines/sanguo-rag/build_relationship_trust_zone.py",
-        "data/sanguo/policies/policy-relationship-trust-zone.json",
-        ".atm/history/tasks/SANGUO-BOOTSTRAP-0202.json"
-      ],
-      "evidenceFreshness": "fresh",
-      "producedBy": "codex-main",
-      "createdAt": "2026-05-25T01:01:39.385Z",
-      "details": {
-        "actorId": "codex-main",
-        "kind": "artifact",
-        "freshness": "fresh"
-      }
     }
   ]
 }
