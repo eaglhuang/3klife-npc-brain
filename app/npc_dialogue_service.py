@@ -540,7 +540,11 @@ class SceneChorusLine(BaseModel):
     text: str
     provider: str | None = None
     model: str | None = None
+    generationMode: str | None = None
     fallbackUsed: bool = False
+    cacheHit: bool = False
+    providerTrace: list[str] = Field(default_factory=list)
+    qualityWarnings: list[str] = Field(default_factory=list)
     evidenceRefs: list[str] = Field(default_factory=list)
 
 
@@ -548,6 +552,57 @@ class SceneEvidenceResolution(BaseModel):
     usedEvidenceRefs: list[str] = Field(default_factory=list)
     unresolvedEvidenceRefs: list[str] = Field(default_factory=list)
     resolutionTrace: list[str] = Field(default_factory=list)
+
+
+class SceneSeedQuality(BaseModel):
+    status: str = "empty"
+    presentBeatFields: list[str] = Field(default_factory=list)
+    missingBeatFields: list[str] = Field(default_factory=list)
+    beatFieldCount: int = 0
+    seedKeys: list[str] = Field(default_factory=list)
+    seedKeyCount: int = 0
+
+
+class SceneSourceCoverage(BaseModel):
+    sourceRefCount: int = 0
+    usedEvidenceRefCount: int = 0
+    unresolvedEvidenceRefCount: int = 0
+    storyUsedEvidenceRefCount: int = 0
+    chorusEvidenceRefCount: int = 0
+
+
+class SceneSelectionDebug(BaseModel):
+    requestedTargetId: str | None = None
+    selectedTargetId: str | None = None
+    requestedEvidenceId: str | None = None
+    selectedEvidenceId: str | None = None
+    selectedContextKey: str | None = None
+    selectedKeywordKeys: list[str] = Field(default_factory=list)
+    selectedKeywordLabels: list[str] = Field(default_factory=list)
+    requestedChorusTargetIds: list[str] = Field(default_factory=list)
+    selectedChorusTargetIds: list[str] = Field(default_factory=list)
+
+
+class SceneProviderDebug(BaseModel):
+    provider: str | None = None
+    model: str | None = None
+    generationMode: str | None = None
+    fallbackUsed: bool = False
+    repairUsed: bool = False
+    cacheHit: bool = False
+    providerTrace: list[str] = Field(default_factory=list)
+    qualityWarnings: list[str] = Field(default_factory=list)
+
+
+class SceneDirectorDebugMetadata(BaseModel):
+    hasSceneData: bool = False
+    selectedEvidenceRefs: list[str] = Field(default_factory=list)
+    rejectedReasons: list[str] = Field(default_factory=list)
+    seedQuality: SceneSeedQuality = Field(default_factory=SceneSeedQuality)
+    sourceCoverage: SceneSourceCoverage = Field(default_factory=SceneSourceCoverage)
+    selection: SceneSelectionDebug = Field(default_factory=SceneSelectionDebug)
+    story: SceneProviderDebug = Field(default_factory=SceneProviderDebug)
+    chorus: list[SceneProviderDebug] = Field(default_factory=list)
 
 
 class SceneDirectorResponse(BaseModel):
@@ -568,10 +623,14 @@ class SceneDirectorResponse(BaseModel):
     storyText: str
     storyProvider: str | None = None
     storyModel: str | None = None
+    storyGenerationMode: str | None = None
     storyFallbackUsed: bool = False
     storyRepairUsed: bool = False
+    storyCacheHit: bool = False
+    storyQualityWarnings: list[str] = Field(default_factory=list)
     chorusLines: list[SceneChorusLine] = Field(default_factory=list)
     providerTrace: list[str] = Field(default_factory=list)
+    debug: SceneDirectorDebugMetadata = Field(default_factory=SceneDirectorDebugMetadata)
 
 
 class NpcDialogueService:
@@ -1031,8 +1090,12 @@ class NpcDialogueService:
                 f"dataStatus:{data_status}",
             ],
         )
+        story_context_key: str | None = None
+        story_keywords: list[dict[str, Any]] = []
+        chorus_targets: list[NarrativeInteractionTarget] = []
         if has_scene_data:
             story_context = self._build_scene_director_selected_context(profile, target, card, beats, request.renderMode)
+            story_context_key = str(story_context.get("contextKey") or "").strip() or None
             story_keywords = self._scene_story_keywords(profile, target, card, beats)
             story_provider_config = self._scene_story_provider_config(request.llmModelPreset, request.renderMode)
             try:
@@ -1124,6 +1187,19 @@ class NpcDialogueService:
                 story_generation.text,
             ]
         )
+        debug_metadata = self._build_scene_director_debug_metadata(
+            request=request,
+            target=target,
+            card=card,
+            beats=beats,
+            has_scene_data=has_scene_data,
+            evidence_resolution=evidence_resolution,
+            story_generation=story_generation,
+            story_context_key=story_context_key,
+            story_keywords=story_keywords,
+            chorus_targets=chorus_targets,
+            chorus_lines=chorus_lines,
+        )
         return SceneDirectorResponse(
             generalId=request.generalId,
             displayName=profile.displayName,
@@ -1142,10 +1218,135 @@ class NpcDialogueService:
             storyText=story_generation.text,
             storyProvider=story_generation.provider,
             storyModel=story_generation.model,
+            storyGenerationMode=story_generation.generationMode,
             storyFallbackUsed=story_generation.fallbackUsed,
             storyRepairUsed=story_generation.repairUsed,
+            storyCacheHit=self._generation_cache_hit(story_generation),
+            storyQualityWarnings=list(story_generation.qualityWarnings),
             chorusLines=chorus_lines,
             providerTrace=story_generation.providerTrace,
+            debug=debug_metadata,
+        )
+
+    def _generation_cache_hit(self, generation: DialogueGenerationResult) -> bool:
+        provider = str(generation.provider or "").strip()
+        if provider == "history_cache":
+            return True
+        trace = [str(item or "").strip() for item in generation.providerTrace]
+        return any(item == "history_cache:ok" or item.startswith("history_cache:ok") for item in trace)
+
+    def _scene_seed_quality(self, beats: SceneDirectorBeats) -> SceneSeedQuality:
+        beat_values = {
+            "sceneText": str(beats.sceneText or "").strip(),
+            "memoryText": str(beats.memoryText or "").strip(),
+            "emotionText": str(beats.emotionText or "").strip(),
+            "dialogueText": str(beats.dialogueText or "").strip(),
+            "intentText": str(beats.intentText or "").strip(),
+        }
+        present = [key for key, value in beat_values.items() if value]
+        missing = [key for key, value in beat_values.items() if not value]
+        seed_keys = sorted(str(key) for key, value in (beats.sceneSeeds or {}).items() if value)
+        if present and not missing:
+            status = "complete"
+        elif present:
+            status = "partial"
+        else:
+            status = "empty"
+        return SceneSeedQuality(
+            status=status,
+            presentBeatFields=present,
+            missingBeatFields=missing,
+            beatFieldCount=len(present),
+            seedKeys=seed_keys,
+            seedKeyCount=len(seed_keys),
+        )
+
+    def _scene_source_coverage(
+        self,
+        evidence_resolution: SceneEvidenceResolution,
+        beats: SceneDirectorBeats,
+        story_generation: DialogueGenerationResult,
+        chorus_lines: list[SceneChorusLine],
+    ) -> SceneSourceCoverage:
+        chorus_refs = sorted({ref for line in chorus_lines for ref in line.evidenceRefs})
+        return SceneSourceCoverage(
+            sourceRefCount=len(sorted(set(beats.sourceRefs))),
+            usedEvidenceRefCount=len(evidence_resolution.usedEvidenceRefs),
+            unresolvedEvidenceRefCount=len(evidence_resolution.unresolvedEvidenceRefs),
+            storyUsedEvidenceRefCount=len(sorted(set(story_generation.usedEvidenceRefs))),
+            chorusEvidenceRefCount=len(chorus_refs),
+        )
+
+    def _scene_rejected_reasons(
+        self,
+        story_generation: DialogueGenerationResult,
+        chorus_lines: list[SceneChorusLine],
+    ) -> list[str]:
+        reasons: list[str] = []
+        for warning in story_generation.qualityWarnings:
+            if warning and warning not in reasons:
+                reasons.append(str(warning))
+        for line in chorus_lines:
+            for warning in line.qualityWarnings:
+                if warning and warning not in reasons:
+                    reasons.append(str(warning))
+        return reasons
+
+    def _build_scene_director_debug_metadata(
+        self,
+        *,
+        request: SceneDirectorRequest,
+        target: NarrativeInteractionTarget | None,
+        card: NarrativeEvidenceCard | None,
+        beats: SceneDirectorBeats,
+        has_scene_data: bool,
+        evidence_resolution: SceneEvidenceResolution,
+        story_generation: DialogueGenerationResult,
+        story_context_key: str | None,
+        story_keywords: list[dict[str, Any]],
+        chorus_targets: list[NarrativeInteractionTarget],
+        chorus_lines: list[SceneChorusLine],
+    ) -> SceneDirectorDebugMetadata:
+        return SceneDirectorDebugMetadata(
+            hasSceneData=has_scene_data,
+            selectedEvidenceRefs=list(evidence_resolution.usedEvidenceRefs),
+            rejectedReasons=self._scene_rejected_reasons(story_generation, chorus_lines),
+            seedQuality=self._scene_seed_quality(beats),
+            sourceCoverage=self._scene_source_coverage(evidence_resolution, beats, story_generation, chorus_lines),
+            selection=SceneSelectionDebug(
+                requestedTargetId=request.targetId,
+                selectedTargetId=target.targetId if target else request.targetId,
+                requestedEvidenceId=request.evidenceId,
+                selectedEvidenceId=card.evidenceId if card else beats.evidenceId,
+                selectedContextKey=story_context_key,
+                selectedKeywordKeys=[str(keyword.get("keywordKey") or "") for keyword in story_keywords if str(keyword.get("keywordKey") or "").strip()],
+                selectedKeywordLabels=[str(keyword.get("label") or "") for keyword in story_keywords if str(keyword.get("label") or "").strip()],
+                requestedChorusTargetIds=list(request.chorusTargetIds),
+                selectedChorusTargetIds=[target_item.targetId for target_item in chorus_targets if str(target_item.targetId or "").strip()],
+            ),
+            story=SceneProviderDebug(
+                provider=story_generation.provider,
+                model=story_generation.model,
+                generationMode=story_generation.generationMode,
+                fallbackUsed=story_generation.fallbackUsed,
+                repairUsed=story_generation.repairUsed,
+                cacheHit=self._generation_cache_hit(story_generation),
+                providerTrace=list(story_generation.providerTrace),
+                qualityWarnings=list(story_generation.qualityWarnings),
+            ),
+            chorus=[
+                SceneProviderDebug(
+                    provider=line.provider,
+                    model=line.model,
+                    generationMode=line.generationMode,
+                    fallbackUsed=line.fallbackUsed,
+                    repairUsed=False,
+                    cacheHit=line.cacheHit,
+                    providerTrace=list(line.providerTrace),
+                    qualityWarnings=list(line.qualityWarnings),
+                )
+                for line in chorus_lines
+            ],
         )
 
     def _scene_director_remaining_seconds(self, started_at: float) -> float:
@@ -3261,7 +3462,11 @@ class NpcDialogueService:
             text=generation.text,
             provider=generation.provider,
             model=generation.model,
+            generationMode=generation.generationMode,
             fallbackUsed=generation.fallbackUsed,
+            cacheHit=self._generation_cache_hit(generation),
+            providerTrace=list(generation.providerTrace),
+            qualityWarnings=list(generation.qualityWarnings),
             evidenceRefs=evidence_refs[:12],
         )
         with self._scene_chorus_cache_lock:
