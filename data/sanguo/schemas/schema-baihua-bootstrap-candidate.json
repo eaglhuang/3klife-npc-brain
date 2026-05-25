@@ -1,0 +1,26 @@
+{
+  "id": "Schema_BaihuaBootstrapCandidate_P0",
+  "requiredTopLevelKeys": [
+    "trustKey",
+    "sourceMode",
+    "bootstrapStage",
+    "supportCount",
+    "focusGeneralIds",
+    "evidenceQuotes",
+    "chapterRefs",
+    "timeScopeZhTw",
+    "confidenceAggregate",
+    "conflictFlags",
+    "canonicalWrites"
+  ],
+  "requiredCanonicalValues": {
+    "sourceMode": "top50-baihua-bootstrap",
+    "canonicalWrites": false
+  },
+  "bootstrapStageAllowedValues": [
+    "bootstrap-candidate",
+    "review-ready",
+    "conflicted",
+    "rejected"
+  ]
+}

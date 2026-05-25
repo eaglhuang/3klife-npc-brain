@@ -1,0 +1,37 @@
+{
+  "taskId": "SANGUO-BOOTSTRAP-0001",
+  "updatedAt": "2026-05-25T06:57:29.204Z",
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "test",
+      "summary": "驗證 bootstrap lane policy JSON 可解析",
+      "artifactPaths": [
+        "data/sanguo/policies/policy-baihua-bootstrap-lane.json",
+        "data/sanguo/schemas/schema-baihua-bootstrap-job.json",
+        "data/sanguo/schemas/schema-baihua-bootstrap-skill-output.json",
+        "data/sanguo/schemas/schema-baihua-bootstrap-candidate.json",
+        "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T06:57:29.204Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "test",
+        "freshness": "fresh",
+        "validationPasses": [
+          "json-parse"
+        ],
+        "commandRuns": [
+          {
+            "command": "python -m json.tool data/sanguo/policies/policy-baihua-bootstrap-lane.json > ",
+            "exitCode": 0,
+            "stdoutSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ]
+      }
+    }
+  ]
+}

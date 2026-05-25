@@ -1,0 +1,72 @@
+{
+  "id": "Policy_BaihuaBootstrapLane_P0",
+  "description": "Top50 人物中心白話 bootstrap lane。先抽高信任候選，後接既有 trust-zone reviewer/human gate；全程 canonicalWrites=false。",
+  "sourceCorpusId": "sanguoyanyi-baihua-zh-tw",
+  "canonicalWrites": false,
+  "relationshipTypes": {
+    "allowed": [
+      "ruler_subject",
+      "faction_membership",
+      "parent_child",
+      "adoptive_parent_child",
+      "spouse",
+      "sibling",
+      "sworn_sibling"
+    ],
+    "symmetric": [
+      "spouse",
+      "sibling",
+      "sworn_sibling"
+    ],
+    "asymmetric": [
+      "ruler_subject",
+      "faction_membership",
+      "parent_child",
+      "adoptive_parent_child"
+    ]
+  },
+  "bootstrapStages": [
+    "bootstrap-candidate",
+    "review-ready",
+    "conflicted",
+    "rejected"
+  ],
+  "trustZoneMapping": {
+    "reviewReadyLane": "relationship-trust-zone.review.jsonl",
+    "humanLockedStage": "human-locked-100",
+    "humanRejectedStage": "human-rejected-0",
+    "skipIndexWhitelist": "relationship-trust-whitelist",
+    "skipIndexBlacklist": "relationship-trust-blacklist"
+  },
+  "conflictRules": [
+    {
+      "ruleId": "spouse-vs-parent-child",
+      "leftType": "spouse",
+      "rightType": "parent_child"
+    },
+    {
+      "ruleId": "parent-child-vs-adoptive",
+      "leftType": "parent_child",
+      "rightType": "adoptive_parent_child"
+    },
+    {
+      "ruleId": "sibling-vs-sworn-sibling",
+      "leftType": "sibling",
+      "rightType": "sworn_sibling"
+    }
+  ],
+  "waveProtocol": {
+    "defaultWaveSize": 50,
+    "wave001": "top50",
+    "nextWaves": "next50-repeat",
+    "requiredWaveOutputs": [
+      "wave-summary",
+      "job-manifest",
+      "bootstrap-candidates",
+      "new-whitelist-candidates",
+      "new-blacklist-candidates",
+      "conflict-report",
+      "coverage-report"
+    ]
+  }
+}
