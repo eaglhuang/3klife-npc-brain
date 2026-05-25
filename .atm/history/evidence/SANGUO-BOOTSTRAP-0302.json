@@ -1,30 +1,15 @@
 {
+  "schemaVersion": "atm.evidence.v0.1",
   "taskId": "SANGUO-BOOTSTRAP-0302",
-  "updatedAt": "2026-05-25T01:01:50.572Z",
+  "status": "not-started",
+  "summary": "reviewer / human 繁中審核表任務卡已建立，待輸出全繁中人工審核表。",
+  "repositoryKind": "generic-repository",
   "evidence": [
     {
       "evidenceKind": "supporting",
       "reportPath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone-skill-review-human-review.md",
       "description": "現有 trust-zone 人工審核表可作欄位轉繁中與格式收斂參考。",
       "result": "present"
-    },
-    {
-      "evidenceKind": "validation",
-      "evidenceType": "artifact",
-      "summary": "繁中審核表輸出已對齊 trust-zone human review 產物格式",
-      "artifactPaths": [
-        "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone-skill-review-human-review.md",
-        "pipelines/sanguo-rag/run_relationship_skill_review_rounds.py",
-        ".atm/history/tasks/SANGUO-BOOTSTRAP-0302.json"
-      ],
-      "evidenceFreshness": "fresh",
-      "producedBy": "codex-main",
-      "createdAt": "2026-05-25T01:01:50.572Z",
-      "details": {
-        "actorId": "codex-main",
-        "kind": "artifact",
-        "freshness": "fresh"
-      }
     }
   ]
 }
