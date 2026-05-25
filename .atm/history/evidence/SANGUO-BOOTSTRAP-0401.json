@@ -1,15 +1,30 @@
 {
-  "schemaVersion": "atm.evidence.v0.1",
   "taskId": "SANGUO-BOOTSTRAP-0401",
-  "status": "not-started",
-  "summary": "top50 pilot rehearsal 任務卡已建立，待實跑 wave-001 並驗證可審核的白名單候選。",
-  "repositoryKind": "generic-repository",
+  "updatedAt": "2026-05-25T01:01:54.422Z",
   "evidence": [
     {
       "evidenceKind": "supporting",
       "reportPath": "artifacts/data-pipeline/sanguo-rag/extracted/core-person-progress",
       "description": "現有 top50 / core person 相關輸出可作 pilot baseline 參照。",
       "result": "present"
+    },
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "artifact",
+      "summary": "top50 pilot rehearsal 輸出已對齊 wave-001 驗收需求",
+      "artifactPaths": [
+        "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone-skill-review-rounds-summary.json",
+        "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone-skill-review-human-review.md",
+        ".atm/history/tasks/SANGUO-BOOTSTRAP-0401.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T01:01:54.422Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "artifact",
+        "freshness": "fresh"
+      }
     }
   ]
 }
