@@ -1,30 +1,15 @@
 {
+  "schemaVersion": "atm.evidence.v0.1",
   "taskId": "SANGUO-BOOTSTRAP-0203",
-  "updatedAt": "2026-05-25T01:01:43.084Z",
+  "status": "not-started",
+  "summary": "bootstrap conflict checker 任務卡已建立，待實作互斥關係與時段衝突檢查。",
+  "repositoryKind": "generic-repository",
   "evidence": [
     {
       "evidenceKind": "supporting",
       "reportPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
       "description": "規劃書已列出 spouse / parent_child / adoptive_parent_child / sibling / sworn_sibling 的衝突要求。",
       "result": "present"
-    },
-    {
-      "evidenceKind": "validation",
-      "evidenceType": "artifact",
-      "summary": "conflict checker 規則已納入互斥關係檢查與保留時段分流原則",
-      "artifactPaths": [
-        "pipelines/sanguo-rag/build_relationship_claim_graph.py",
-        "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
-        ".atm/history/tasks/SANGUO-BOOTSTRAP-0203.json"
-      ],
-      "evidenceFreshness": "fresh",
-      "producedBy": "codex-main",
-      "createdAt": "2026-05-25T01:01:43.084Z",
-      "details": {
-        "actorId": "codex-main",
-        "kind": "artifact",
-        "freshness": "fresh"
-      }
     }
   ]
 }
