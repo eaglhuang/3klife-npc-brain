@@ -2,15 +2,11 @@ services:
   - type: web
     name: 3klife-npc-brain
     runtime: docker
-    plan: starter
+    plan: free
     region: singapore
     dockerfilePath: ./Dockerfile.render
     dockerContext: .
     healthCheckPath: /healthz
-    disk:
-      name: npc-brain-data
-      mountPath: /app/local
-      sizeGB: 5
     envVars:
       - key: GOOGLE_API_KEY
         sync: false
@@ -31,7 +27,7 @@ services:
       - key: NPC_LLM_TIMEOUT_MS
         value: "6000"
       - key: NPC_SCENE_CACHE_ENABLED
-        value: "true"
+        value: "false"
       - key: NPC_VECTOR_PROVIDER_ORDER
         value: pinecone
       - key: NPC_VECTOR_DEFAULT_PROVIDER
