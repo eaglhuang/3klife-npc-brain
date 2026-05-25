@@ -1,0 +1,35 @@
+{
+  "taskId": "SANGUO-BOOTSTRAP-0101",
+  "updatedAt": "2026-05-25T07:00:49.695Z",
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "test",
+      "summary": "top50 bootstrap job builder 可生成 wave-001 manifest",
+      "artifactPaths": [
+        "pipelines/sanguo-rag/build_baihua_top50_bootstrap_jobs.py",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-bootstrap-jobs.jsonl",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-bootstrap-jobs-summary.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T07:00:49.695Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "test",
+        "freshness": "fresh",
+        "validationPasses": [
+          "job-manifest"
+        ],
+        "commandRuns": [
+          {
+            "command": "python pipelines/sanguo-rag/build_baihua_top50_bootstrap_jobs.py --overwrite > ",
+            "exitCode": 0,
+            "stdoutSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ]
+      }
+    }
+  ]
+}
