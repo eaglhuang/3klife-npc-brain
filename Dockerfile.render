@@ -1,0 +1,23 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV HF_HOME=/app/local/hf-cache
+
+WORKDIR /app
+
+COPY requirements.txt ./requirements.txt
+
+# Render needs a self-contained production image, unlike the dev compose flow
+# that bind-mounts the repository and runs uvicorn in reload mode.
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir sentence-transformers
+
+COPY . .
+
+RUN mkdir -p /app/local /app/local/hf-cache /app/local/save
+
+EXPOSE 10000
+
+CMD ["sh", "-lc", "python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}"]

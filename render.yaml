@@ -1,0 +1,62 @@
+services:
+  - type: web
+    name: 3klife-npc-brain
+    runtime: docker
+    plan: starter
+    region: singapore
+    dockerfilePath: ./Dockerfile.render
+    dockerContext: .
+    healthCheckPath: /healthz
+    disk:
+      name: npc-brain-data
+      mountPath: /app/local
+      sizeGB: 5
+    envVars:
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: NPC_BRAIN_DEPLOY_API_KEY
+        generateValue: true
+      - key: NPC_BRAIN_DEPLOY_IDENTITY
+        value: render-production
+      - key: NPC_CORS_EXTRA_ORIGINS
+        value: https://eaglhuang.github.io
+      - key: NPC_BRAIN_PUBLIC_DEMO_MODE
+        value: "true"
+      - key: NPC_LLM_PROVIDER_ORDER
+        value: gemini,deterministic
+      - key: NPC_LLM_MODEL_GEMINI
+        value: gemini-2.5-pro
+      - key: NPC_LLM_TIMEOUT_MS
+        value: "6000"
+      - key: NPC_SCENE_CACHE_ENABLED
+        value: "true"
+      - key: NPC_VECTOR_PROVIDER_ORDER
+        value: pinecone
+      - key: NPC_VECTOR_DEFAULT_PROVIDER
+        value: pinecone
+      - key: NPC_VECTOR_DIMENSION
+        value: "1024"
+      - key: NPC_EMBEDDING_PROVIDER
+        value: sentence_transformers
+      - key: NPC_EMBEDDING_MODEL
+        value: BAAI/bge-m3
+      - key: NPC_VECTOR_NAMESPACE_FACTS
+        value: romance_facts_v1
+      - key: NPC_VECTOR_NAMESPACE_KEYWORDS
+        value: general_keywords_v1
+      - key: NPC_VECTOR_NAMESPACE_PERSONA
+        value: general_persona_v2
+      - key: NPC_PINECONE_INDEX
+        value: sanguo-npc-brain-dev
+      - key: NPC_PINECONE_CLOUD
+        value: aws
+      - key: NPC_PINECONE_REGION
+        value: us-east-1
+      - key: NPC_PINECONE_METRIC
+        value: cosine
+      - key: NPC_SQLITE_VEC_DB_PATH
+        value: /app/local/save/npc_memory.db
+      - key: HF_HOME
+        value: /app/local/hf-cache

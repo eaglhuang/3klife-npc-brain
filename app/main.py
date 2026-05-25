@@ -36,6 +36,7 @@ from .llm_dialogue_renderer import ProviderOutputError, ProviderUnavailableError
 
 
 DEPLOY_API_KEY_ENV = "NPC_BRAIN_DEPLOY_API_KEY"
+PUBLIC_DEMO_MODE_ENV = "NPC_BRAIN_PUBLIC_DEMO_MODE"
 DEV_CORS_ORIGINS = [
     "null",
     "http://localhost:7456",
@@ -65,7 +66,7 @@ def create_app() -> FastAPI:
         allow_origins=resolve_dev_cors_origins(),
         allow_origin_regex=DEV_CORS_ORIGIN_REGEX,
         allow_credentials=False,
-        allow_methods=["GET", "POST"],
+        allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],
     )
     service = NpcDialogueService()
@@ -145,8 +146,14 @@ def create_app() -> FastAPI:
     @app.post("/v1/npc/scene-illustration", response_model=SceneIllustrationResponse)
     def scene_illustration(
         request: SceneIllustrationRequest,
-        service_auth: None = Depends(require_service_api_key),
+        x_api_key: str | None = Header(default=None, alias="X-API-Key"),
+        authorization: str | None = Header(default=None),
     ):
+        require_service_api_key(
+            x_api_key=x_api_key,
+            authorization=authorization,
+            allow_public_demo=allow_public_demo_scene_illustration(),
+        )
         try:
             return service.render_scene_illustration(request)
         except ProviderUnavailableError as exc:
@@ -171,7 +178,10 @@ def extract_api_key(x_api_key: str | None, authorization: str | None) -> str | N
 def require_service_api_key(
     x_api_key: str | None = Header(default=None, alias="X-API-Key"),
     authorization: str | None = Header(default=None),
+    allow_public_demo: bool = False,
 ) -> None:
+    if allow_public_demo:
+        return
     expected_key = str(os.environ.get(DEPLOY_API_KEY_ENV) or "").strip()
     if not expected_key:
         raise HTTPException(status_code=503, detail=f"{DEPLOY_API_KEY_ENV} is not configured")
@@ -184,6 +194,11 @@ def parse_categories(categories: str | None) -> list[str] | None:
     if not categories:
         return None
     return [category.strip() for category in categories.split(",") if category.strip()]
+
+
+def allow_public_demo_scene_illustration() -> bool:
+    raw_value = str(os.environ.get(PUBLIC_DEMO_MODE_ENV) or "").strip().lower()
+    return raw_value in {"1", "true", "yes", "on"}
 
 
 app = create_app()
