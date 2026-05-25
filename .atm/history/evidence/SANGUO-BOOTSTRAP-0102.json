@@ -1,15 +1,30 @@
 {
-  "schemaVersion": "atm.evidence.v0.1",
   "taskId": "SANGUO-BOOTSTRAP-0102",
-  "status": "not-started",
-  "summary": "白話 passage bundler 任務卡已建立，待把人物中心所需段落資料化。",
-  "repositoryKind": "generic-repository",
+  "updatedAt": "2026-05-25T01:01:32.010Z",
   "evidence": [
     {
       "evidenceKind": "supporting",
       "reportPath": "pipelines/sanguo-rag/config/anchor-corpus-registry.json",
       "description": "現有 anchor corpus registry 含 sanguoyanyi-baihua-zh-tw，可作 passage bundler 的來源。",
       "result": "present"
+    },
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "artifact",
+      "summary": "白話 passage bundler 已對齊 baihua anchor corpus 與 passage bundle 契約",
+      "artifactPaths": [
+        "pipelines/sanguo-rag/config/anchor-corpus-registry.json",
+        "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
+        ".atm/history/tasks/SANGUO-BOOTSTRAP-0102.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T01:01:32.010Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "artifact",
+        "freshness": "fresh"
+      }
     }
   ]
 }
