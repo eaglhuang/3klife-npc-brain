@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import hmac
 import os
 
 try:
-    from fastapi import FastAPI, HTTPException, Query
+    from fastapi import Depends, FastAPI, Header, HTTPException, Query
 except ModuleNotFoundError as exc:
     raise RuntimeError(
         "FastAPI is not installed. Activate the server venv, or set PYTHON_BIN / "
@@ -34,18 +35,20 @@ from .npc_dialogue_service import (
 from .llm_dialogue_renderer import ProviderOutputError, ProviderUnavailableError
 
 
+DEPLOY_API_KEY_ENV = "NPC_BRAIN_DEPLOY_API_KEY"
 DEV_CORS_ORIGINS = [
     "null",
     "http://localhost:7456",
     "http://127.0.0.1:7456",
     "http://localhost:8787",
     "http://127.0.0.1:8787",
+    "https://eaglhuang.github.io",
     "https://smith.langchain.com",
 ]
 DEV_CORS_ORIGIN_REGEX = (
     r"^(null|file://.*|app://.*|"
     r"http://localhost(:\d+)?|http://127\.0\.0\.1(:\d+)?|"
-    r"https://smith\.langchain\.com)$"
+    r"https://eaglhuang\.github\.io|https://smith\.langchain\.com)$"
 )
 
 
@@ -72,23 +75,40 @@ def create_app() -> FastAPI:
         return service.get_health()
 
     @app.post("/v1/npc/interaction-events", response_model=InteractionEventWriteResponse)
-    def interaction_events(request: InteractionEventCreateRequest):
+    def interaction_events(
+        request: InteractionEventCreateRequest,
+        service_auth: None = Depends(require_service_api_key),
+    ):
         return service.record_interaction_event(request)
 
     @app.get("/v1/npc/general-memory", response_model=GeneralMemoryData)
-    def general_memory(saveId: str, generalId: str):
+    def general_memory(
+        saveId: str,
+        generalId: str,
+        service_auth: None = Depends(require_service_api_key),
+    ):
         return service.get_general_memory(saveId, generalId)
 
     @app.post("/v1/npc/general-memory", response_model=MemoryWriteResponse)
-    def save_general_memory(memory: GeneralMemoryData):
+    def save_general_memory(
+        memory: GeneralMemoryData,
+        service_auth: None = Depends(require_service_api_key),
+    ):
         return service.save_general_memory(memory)
 
     @app.post("/v1/npc/memory/compress", response_model=GeneralMemoryData)
-    def compress_memory(request: MemoryCompressRequest):
+    def compress_memory(
+        request: MemoryCompressRequest,
+        service_auth: None = Depends(require_service_api_key),
+    ):
         return service.compress_general_memory(request)
 
     @app.get("/v1/npc/context-options", response_model=ContextOptionsResponse)
-    def context_options(generalId: str, limit: int | None = Query(default=None, ge=0)):
+    def context_options(
+        generalId: str,
+        limit: int | None = Query(default=None, ge=0),
+        service_auth: None = Depends(require_service_api_key),
+    ):
         return service.get_context_options(generalId, limit=limit)
 
     @app.get("/v1/npc/keyword-options", response_model=KeywordOptionsResponse)
@@ -96,6 +116,7 @@ def create_app() -> FastAPI:
         generalId: str,
         categories: str | None = None,
         limitPerCategory: int | None = Query(default=None, ge=0),
+        service_auth: None = Depends(require_service_api_key),
     ):
         category_list = parse_categories(categories)
         return service.get_keyword_options(generalId, categories=category_list, limit_per_category=limitPerCategory)
@@ -112,14 +133,20 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     @app.post("/v1/npc/scene-director", response_model=SceneDirectorResponse)
-    def scene_director(request: SceneDirectorRequest):
+    def scene_director(
+        request: SceneDirectorRequest,
+        service_auth: None = Depends(require_service_api_key),
+    ):
         try:
             return service.build_scene_director(request)
         except ProviderUnavailableError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     @app.post("/v1/npc/scene-illustration", response_model=SceneIllustrationResponse)
-    def scene_illustration(request: SceneIllustrationRequest):
+    def scene_illustration(
+        request: SceneIllustrationRequest,
+        service_auth: None = Depends(require_service_api_key),
+    ):
         try:
             return service.render_scene_illustration(request)
         except ProviderUnavailableError as exc:
@@ -130,10 +157,33 @@ def create_app() -> FastAPI:
     return app
 
 
-app = create_app()
+def extract_api_key(x_api_key: str | None, authorization: str | None) -> str | None:
+    if x_api_key and x_api_key.strip():
+        return x_api_key.strip()
+    if not authorization:
+        return None
+    scheme, _, token = authorization.strip().partition(" ")
+    if scheme.lower() != "bearer" or not token:
+        return None
+    return token.strip()
+
+
+def require_service_api_key(
+    x_api_key: str | None = Header(default=None, alias="X-API-Key"),
+    authorization: str | None = Header(default=None),
+) -> None:
+    expected_key = str(os.environ.get(DEPLOY_API_KEY_ENV) or "").strip()
+    if not expected_key:
+        raise HTTPException(status_code=503, detail=f"{DEPLOY_API_KEY_ENV} is not configured")
+    provided_key = extract_api_key(x_api_key, authorization)
+    if not provided_key or not hmac.compare_digest(provided_key, expected_key):
+        raise HTTPException(status_code=401, detail="Invalid API key")
 
 
 def parse_categories(categories: str | None) -> list[str] | None:
     if not categories:
         return None
     return [category.strip() for category in categories.split(",") if category.strip()]
+
+
+app = create_app()
