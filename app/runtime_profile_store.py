@@ -42,7 +42,13 @@ class RuntimeProfileStore:
         self._remote_runtime_json_cache: dict[tuple[str, str], dict | None] = {}
 
     def read_api_fixture(self, filename: str) -> dict:
-        return json.loads((self.artifact_root / filename).read_text(encoding="utf-8"))
+        path = self.artifact_root / filename
+        if path.exists():
+            return json.loads(path.read_text(encoding="utf-8"))
+        fallback = self._build_missing_api_fixture(filename)
+        if fallback is not None:
+            return fallback
+        raise FileNotFoundError(path)
 
     def read_optional_api_fixture(self, filename: str) -> dict | None:
         path = self.artifact_root / filename
@@ -167,3 +173,17 @@ class RuntimeProfileStore:
             "taboos": [],
             "evidenceRefs": [],
         }
+
+    def _build_missing_api_fixture(self, filename: str) -> dict | None:
+        if filename == "context-options.response.json":
+            return {
+                "generalId": "missing-fixture-fallback",
+                "options": [],
+            }
+        if filename == "keyword-options.response.json":
+            return {
+                "generalId": "missing-fixture-fallback",
+                "keywordVersion": "missing-fixture-fallback-v1",
+                "categories": {},
+            }
+        return None
