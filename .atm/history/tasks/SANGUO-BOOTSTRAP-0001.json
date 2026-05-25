@@ -1,57 +1,22 @@
 {
   "schemaVersion": "atm.workItem.v0.2",
   "workItemId": "SANGUO-BOOTSTRAP-0001",
-  "title": "三國白話 bootstrap 規劃書與資料契約定稿",
-  "status": "done",
-  "milestone": "M0",
+  "title": "SANGUO-BOOTSTRAP-0001",
+  "status": "open",
+  "milestone": null,
   "dependencies": [],
-  "acceptance": [
-    "規劃書明確定義人物中心白話 bootstrap lane 的定位、治理邊界與擴張策略。",
-    "job 輸入、skill 輸出、bootstrap candidate JSONL 三種資料契約寫清楚且可供工程師直接依契約實作。",
-    "文件明寫 bootstrap 不能直接跳過 reviewer 或 human gate 成為 human-locked-100。"
-  ],
-  "deliverables": [
-    "三國白話Top50人物中心關係白名單Bootstrap計畫.md",
-    "job / output / candidate schema 定義"
-  ],
-  "tags": [
-    "sanguo-rag",
-    "bootstrap",
-    "baihua",
-    "relationship-trust-zone"
-  ],
-  "notes": [
-    "2026-05-24 | 狀態: open | 驗證: pending | 說明: 依人物中心白話 bootstrap 計畫開卡，作為後續 runner 與治理任務的母卡。 | 風險: 若契約未先定穩，後續 merge 與 adapter 容易反覆返工。"
-  ],
-  "evidencePath": ".atm/history/evidence/SANGUO-BOOTSTRAP-0001.json",
+  "acceptance": [],
+  "deliverables": [],
+  "tags": [],
+  "notes": null,
   "source": {
     "planPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
-    "sectionTitle": "建議開立的任務卡",
-    "headingLine": 459,
-    "hash": "doc_sanguo_bootstrap_0001:0001"
+    "sectionTitle": "SANGUO-BOOTSTRAP-0001",
+    "headingLine": 461,
+    "hash": "13cd724abdc7115a"
   },
-  "importedAt": "2026-05-24T23:48:52.4795862+08:00",
-  "owner": "codex-main",
-  "reservedAt": "2026-05-24T17:34:39.356Z",
-  "lastTransitionId": "2026-05-25T00-58-45-939Z-close-1f3706beaef1",
-  "lastTransitionAt": "2026-05-25T00:58:45.939Z",
-  "ledgerContractVersion": "task-ledger/v1",
-  "promotedAt": "2026-05-24T17:34:48.044Z",
-  "claim": {
-    "actorId": "codex-main",
-    "leaseId": "lease-02baf970a0cb",
-    "claimedAt": "2026-05-24T17:34:48.075Z",
-    "heartbeatAt": "2026-05-25T00:58:45.939Z",
-    "ttlSeconds": 1800,
-    "files": [
-      ".atm/history/tasks/SANGUO-BOOTSTRAP-0001.json"
-    ],
-    "state": "released",
-    "reason": "M0完成：規劃書、資料契約、任務卡與證據路徑均已落地"
-  },
-  "startedAt": "2026-05-24T16:02:46.120Z",
-  "startedByActor": "codex-main",
-  "closedAt": "2026-05-25T00:58:45.939Z",
-  "closedByActor": "codex-main",
-  "closeReason": "M0完成：規劃書、資料契約、任務卡與證據路徑均已落地"
+  "importedAt": "2026-05-25T04:21:22.975Z",
+  "lastTransitionId": "2026-05-25T04-21-22-978Z-import-a0b516b2e6b3",
+  "lastTransitionAt": "2026-05-25T04:21:22.978Z",
+  "ledgerContractVersion": "task-ledger/v1"
 }

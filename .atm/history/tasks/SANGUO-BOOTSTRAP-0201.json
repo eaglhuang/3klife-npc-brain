@@ -1,39 +1,22 @@
 {
   "schemaVersion": "atm.workItem.v0.2",
   "workItemId": "SANGUO-BOOTSTRAP-0201",
-  "title": "人物中心 skill 契約與 runner",
+  "title": "SANGUO-BOOTSTRAP-0201",
   "status": "open",
-  "milestone": "M2",
-  "dependencies": [
-    "SANGUO-BOOTSTRAP-0001",
-    "SANGUO-BOOTSTRAP-0101",
-    "SANGUO-BOOTSTRAP-0102"
-  ],
-  "acceptance": [
-    "skill 輸入與輸出格式完全對齊規劃書 JSON 契約。",
-    "runner 可逐 job 執行並輸出多筆 relationships[]，每筆均含 evidenceQuoteZhTw、chapterRef、sourcePassageRef、confidence、reasonZhTw。",
-    "關係型別只限 ruler_subject、faction_membership、parent_child、adoptive_parent_child、spouse、sibling、sworn_sibling。"
-  ],
-  "deliverables": [
-    "skill input/output contract",
-    "人物中心 bootstrap runner"
-  ],
-  "tags": [
-    "sanguo-rag",
-    "bootstrap",
-    "skill",
-    "runner"
-  ],
-  "notes": [
-    "2026-05-24 | 狀態: open | 驗證: pending | 說明: 這張卡是整條人物中心 lane 的抽取核心。 | 風險: 若輸出不帶原文與章回，後續 reviewer 會失去 provenance。"
-  ],
-  "evidencePath": ".atm/history/evidence/SANGUO-BOOTSTRAP-0201.json",
+  "milestone": null,
+  "dependencies": [],
+  "acceptance": [],
+  "deliverables": [],
+  "tags": [],
+  "notes": null,
   "source": {
     "planPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
-    "sectionTitle": "建議開立的任務卡",
+    "sectionTitle": "SANGUO-BOOTSTRAP-0201",
     "headingLine": 464,
-    "hash": "doc_sanguo_bootstrap_0001:0201"
+    "hash": "042691b1544b155a"
   },
-  "importedAt": "2026-05-24T23:48:52.4795862+08:00",
-  "owner": "codex"
+  "importedAt": "2026-05-25T04:21:22.975Z",
+  "lastTransitionId": "2026-05-25T04-21-22-982Z-import-feeea5db9d05",
+  "lastTransitionAt": "2026-05-25T04:21:22.982Z",
+  "ledgerContractVersion": "task-ledger/v1"
 }

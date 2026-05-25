@@ -1,37 +1,22 @@
 {
   "schemaVersion": "atm.workItem.v0.2",
   "workItemId": "SANGUO-BOOTSTRAP-0203",
-  "title": "bootstrap conflict checker",
+  "title": "SANGUO-BOOTSTRAP-0203",
   "status": "open",
-  "milestone": "M2",
-  "dependencies": [
-    "SANGUO-BOOTSTRAP-0202"
-  ],
-  "acceptance": [
-    "自動檢出 spouse vs parent_child、parent_child vs adoptive_parent_child、sibling vs sworn_sibling 等互斥關係。",
-    "同一 pair 的衝突結果可產出 conflictFlags 與 conflict report。",
-    "馬超這類多時段轉陣營人物不會被誤當成衝突，而是分時段保留。"
-  ],
-  "deliverables": [
-    "conflict report",
-    "conflict flag policy"
-  ],
-  "tags": [
-    "sanguo-rag",
-    "bootstrap",
-    "conflict-check",
-    "trust-zone"
-  ],
-  "notes": [
-    "2026-05-24 | 狀態: open | 驗證: pending | 說明: 這張卡負責把高信任候選中的互斥資料先擋住。 | 風險: 若 conflict checker 太鬆，髒資料會直接進 reviewer 表。"
-  ],
-  "evidencePath": ".atm/history/evidence/SANGUO-BOOTSTRAP-0203.json",
+  "milestone": null,
+  "dependencies": [],
+  "acceptance": [],
+  "deliverables": [],
+  "tags": [],
+  "notes": null,
   "source": {
     "planPath": "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
-    "sectionTitle": "建議開立的任務卡",
+    "sectionTitle": "SANGUO-BOOTSTRAP-0203",
     "headingLine": 466,
-    "hash": "doc_sanguo_bootstrap_0001:0203"
+    "hash": "0fbca2cedd7063e5"
   },
-  "importedAt": "2026-05-24T23:48:52.4795862+08:00",
-  "owner": "codex"
+  "importedAt": "2026-05-25T04:21:22.975Z",
+  "lastTransitionId": "2026-05-25T04-21-22-986Z-import-658241625f78",
+  "lastTransitionAt": "2026-05-25T04:21:22.986Z",
+  "ledgerContractVersion": "task-ledger/v1"
 }
