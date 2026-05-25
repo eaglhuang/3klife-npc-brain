@@ -6,6 +6,15 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
+DEFAULT_PERSONA_REMOTE_BASE_URL = (
+    "https://raw.githubusercontent.com/eaglhuang/3klife-npc-brain/main/"
+    "artifacts/data-pipeline/sanguo-rag/extracted/persona-cards"
+)
+DEFAULT_RUNTIME_PROFILE_REMOTE_BASE_URL = (
+    "https://raw.githubusercontent.com/eaglhuang/3klife-npc-brain/main/"
+    "artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles"
+)
+
 
 class RuntimeProfileStore:
     def __init__(
@@ -21,8 +30,12 @@ class RuntimeProfileStore:
         self.persona_root = self._resolve_path(persona_root)
         self.runtime_profile_root = self._resolve_path(runtime_profile_root)
         self.event_root = self._resolve_path(event_root)
-        self.persona_remote_base_url = (os.environ.get("NPC_PERSONA_REMOTE_BASE_URL") or "").strip().rstrip("/")
-        self.runtime_profile_remote_base_url = (os.environ.get("NPC_RUNTIME_PROFILE_REMOTE_BASE_URL") or "").strip().rstrip("/")
+        self.persona_remote_base_url = (
+            str(os.environ.get("NPC_PERSONA_REMOTE_BASE_URL") or DEFAULT_PERSONA_REMOTE_BASE_URL).strip().rstrip("/")
+        )
+        self.runtime_profile_remote_base_url = (
+            str(os.environ.get("NPC_RUNTIME_PROFILE_REMOTE_BASE_URL") or DEFAULT_RUNTIME_PROFILE_REMOTE_BASE_URL).strip().rstrip("/")
+        )
         self._ready_events_cache: list[dict] | None = None
         self._source_event_packets_cache: list[dict] | None = None
         self._remote_persona_card_cache: dict[str, dict | None] = {}
