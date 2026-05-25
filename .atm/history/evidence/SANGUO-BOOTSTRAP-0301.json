@@ -1,0 +1,35 @@
+{
+  "taskId": "SANGUO-BOOTSTRAP-0301",
+  "updatedAt": "2026-05-25T07:26:37.576Z",
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "test",
+      "summary": "bootstrap candidates 轉 trust-zone review lane",
+      "artifactPaths": [
+        "pipelines/sanguo-rag/adapt_baihua_bootstrap_to_trust_zone.py",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-bootstrap-review-lane.jsonl",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-bootstrap-review-lane-summary.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T07:26:37.576Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "test",
+        "freshness": "fresh",
+        "validationPasses": [
+          "review-lane-adapter"
+        ],
+        "commandRuns": [
+          {
+            "command": "python pipelines/sanguo-rag/adapt_baihua_bootstrap_to_trust_zone.py --overwrite > ",
+            "exitCode": 0,
+            "stdoutSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ]
+      }
+    }
+  ]
+}
