@@ -1,13 +1,13 @@
 name = "atm-handoff"
 description = "Write a continuation summary for governed work."
-first_command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 command = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 handoff = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 charter_invariants_injected = true
 
 [atm]
 entry_id = "atm-handoff"
-first_command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 route_command = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 handoff_command = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 

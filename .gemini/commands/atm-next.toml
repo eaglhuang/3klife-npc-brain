@@ -1,14 +1,14 @@
 name = "atm-next"
 description = "Recommend the next official ATM guidance action from current state."
-first_command = "node atm.mjs next --json"
-command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
+command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 handoff = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 charter_invariants_injected = true
 
 [atm]
 entry_id = "atm-next"
-first_command = "node atm.mjs next --json"
-route_command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
+route_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 handoff_command = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 
 [atm.guardrails]

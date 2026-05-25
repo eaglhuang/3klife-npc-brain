@@ -1,13 +1,13 @@
 name = "atm-governance-router"
 description = "Route natural-language cleanup, refactor, migration, and candidate ranking goals through ATM before local analysis."
-first_command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 command = "node atm.mjs guide --goal \"$ARGUMENTS\" --cwd . --json"
 handoff = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 charter_invariants_injected = true
 
 [atm]
 entry_id = "atm-governance-router"
-first_command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 route_command = "node atm.mjs guide --goal \"$ARGUMENTS\" --cwd . --json"
 handoff_command = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 

@@ -1,13 +1,13 @@
 name = "atm-internal-build-sync"
 description = "Build the ATM framework runner and sync it to explicit internal adopter repositories with skip/exclude controls."
-first_command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 command = "node atm.mjs internal-release sync $ARGUMENTS --json"
 handoff = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 charter_invariants_injected = true
 
 [atm]
 entry_id = "atm-internal-build-sync"
-first_command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 route_command = "node atm.mjs internal-release sync $ARGUMENTS --json"
 handoff_command = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 

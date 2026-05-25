@@ -1,13 +1,13 @@
 name = "atm-upgrade-scan"
 description = "Scan evidence reports and draft governed upgrade proposals."
-first_command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 command = "node atm.mjs upgrade --scan --input \"$ARGUMENTS\" --json"
 handoff = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 charter_invariants_injected = true
 
 [atm]
 entry_id = "atm-upgrade-scan"
-first_command = "node atm.mjs next --json"
+first_command = "node atm.mjs next --prompt \"$ARGUMENTS\" --json"
 route_command = "node atm.mjs upgrade --scan --input \"$ARGUMENTS\" --json"
 handoff_command = "node atm.mjs handoff summarize --task \"$ARGUMENTS\" --json"
 
