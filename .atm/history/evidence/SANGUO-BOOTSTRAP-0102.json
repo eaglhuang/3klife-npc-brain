@@ -1,0 +1,35 @@
+{
+  "taskId": "SANGUO-BOOTSTRAP-0102",
+  "updatedAt": "2026-05-25T07:03:06.722Z",
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "test",
+      "summary": "passage bundler 可輸出 focusGeneralId 對應 bundle",
+      "artifactPaths": [
+        "pipelines/sanguo-rag/build_baihua_passage_bundles.py",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-passage-bundles.jsonl",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/focus-general-to-bundle.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T07:03:06.722Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "test",
+        "freshness": "fresh",
+        "validationPasses": [
+          "passage-bundle"
+        ],
+        "commandRuns": [
+          {
+            "command": "python pipelines/sanguo-rag/build_baihua_passage_bundles.py --overwrite > ",
+            "exitCode": 0,
+            "stdoutSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ]
+      }
+    }
+  ]
+}
