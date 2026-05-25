@@ -1,0 +1,36 @@
+{
+  "taskId": "SANGUO-BOOTSTRAP-0201",
+  "updatedAt": "2026-05-25T07:08:45.694Z",
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "test",
+      "summary": "人物中心 runner 產生 skill output 並附證據句",
+      "artifactPaths": [
+        "pipelines/sanguo-rag/run_baihua_focus_relationship_runner.py",
+        "pipelines/sanguo-rag/baihua-focus-skill-contract.zh-TW.md",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-focus-skill-output.jsonl",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-focus-skill-output-summary.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T07:08:45.694Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "test",
+        "freshness": "fresh",
+        "validationPasses": [
+          "focus-runner"
+        ],
+        "commandRuns": [
+          {
+            "command": "python pipelines/sanguo-rag/run_baihua_focus_relationship_runner.py --overwrite > ",
+            "exitCode": 0,
+            "stdoutSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ]
+      }
+    }
+  ]
+}
