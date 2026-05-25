@@ -1,30 +1,15 @@
 {
+  "schemaVersion": "atm.evidence.v0.1",
   "taskId": "SANGUO-BOOTSTRAP-0201",
-  "updatedAt": "2026-05-25T01:01:35.682Z",
+  "status": "not-started",
+  "summary": "人物中心 skill 契約與 runner 任務卡已建立，待把白話人物中心抽取接成可執行 runner。",
+  "repositoryKind": "generic-repository",
   "evidence": [
     {
       "evidenceKind": "supporting",
       "reportPath": "integrations/codex-skills/sanguo-relationship-semantic-review/SKILL.md",
       "description": "現有句級語意審查 skill 可作為人物中心 skill 契約的參考基礎。",
       "result": "present"
-    },
-    {
-      "evidenceKind": "validation",
-      "evidenceType": "artifact",
-      "summary": "人物中心 skill 契約與 runner 入口已對齊現有 semantic/codex bridge 流程",
-      "artifactPaths": [
-        "pipelines/sanguo-rag/run_codex_relationship_semantic_review_bridge.py",
-        "integrations/codex-skills/sanguo-relationship-semantic-review/SKILL.md",
-        ".atm/history/tasks/SANGUO-BOOTSTRAP-0201.json"
-      ],
-      "evidenceFreshness": "fresh",
-      "producedBy": "codex-main",
-      "createdAt": "2026-05-25T01:01:35.682Z",
-      "details": {
-        "actorId": "codex-main",
-        "kind": "artifact",
-        "freshness": "fresh"
-      }
     }
   ]
 }
