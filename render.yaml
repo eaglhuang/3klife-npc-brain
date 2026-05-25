@@ -20,6 +20,8 @@ services:
         value: https://eaglhuang.github.io
       - key: NPC_BRAIN_PUBLIC_DEMO_MODE
         value: "true"
+      - key: NPC_RUNTIME_PROFILE_REMOTE_BASE_URL
+        value: https://raw.githubusercontent.com/eaglhuang/3klife-npc-brain/main/artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles
       - key: NPC_LLM_PROVIDER_ORDER
         value: gemini,deterministic
       - key: NPC_LLM_MODEL_GEMINI

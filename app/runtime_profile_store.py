@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.request import urlopen
 
 
 class RuntimeProfileStore:
@@ -18,8 +21,10 @@ class RuntimeProfileStore:
         self.persona_root = self._resolve_path(persona_root)
         self.runtime_profile_root = self._resolve_path(runtime_profile_root)
         self.event_root = self._resolve_path(event_root)
+        self.runtime_profile_remote_base_url = (os.environ.get("NPC_RUNTIME_PROFILE_REMOTE_BASE_URL") or "").strip().rstrip("/")
         self._ready_events_cache: list[dict] | None = None
         self._source_event_packets_cache: list[dict] | None = None
+        self._remote_runtime_json_cache: dict[tuple[str, str], dict | None] = {}
 
     def read_api_fixture(self, filename: str) -> dict:
         return json.loads((self.artifact_root / filename).read_text(encoding="utf-8"))
@@ -94,8 +99,23 @@ class RuntimeProfileStore:
     def _read_runtime_json(self, general_id: str, suffix: str) -> dict | None:
         path = self.runtime_profile_root / general_id / f"{general_id}.{suffix}.json"
         if not path.exists():
-            return None
+            return self._read_remote_runtime_json(general_id, suffix)
         return json.loads(path.read_text(encoding="utf-8"))
 
     def _resolve_path(self, path: Path) -> Path:
         return path if path.is_absolute() else self.repo_root / path
+
+    def _read_remote_runtime_json(self, general_id: str, suffix: str) -> dict | None:
+        if not self.runtime_profile_remote_base_url:
+            return None
+        cache_key = (general_id, suffix)
+        if cache_key in self._remote_runtime_json_cache:
+            return self._remote_runtime_json_cache[cache_key]
+        url = f"{self.runtime_profile_remote_base_url}/{general_id}/{general_id}.{suffix}.json"
+        try:
+            with urlopen(url, timeout=8) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+        except (HTTPError, URLError, TimeoutError, json.JSONDecodeError, UnicodeDecodeError):
+            payload = None
+        self._remote_runtime_json_cache[cache_key] = payload
+        return payload
