@@ -1,0 +1,14 @@
+{
+  "schemaId": "atm.taskTransition.v1",
+  "specVersion": "0.1.0",
+  "transitionId": "2026-05-25T07-31-20-639Z-reserve-70045ae20494",
+  "taskId": "SANGUO-BOOTSTRAP-0501",
+  "action": "reserve",
+  "actorId": "codex-main",
+  "fromStatus": "open",
+  "toStatus": "reserved",
+  "taskPath": ".atm/history/tasks/SANGUO-BOOTSTRAP-0501.json",
+  "taskSha256": "sha256:4c923750afdcba45e0857ece0e20d1de8e447b659312a115ccab20741a65deca",
+  "createdAt": "2026-05-25T07:31:20.639Z",
+  "command": "node atm.mjs tasks reserve"
+}

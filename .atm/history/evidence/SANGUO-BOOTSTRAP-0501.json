@@ -1,0 +1,37 @@
+{
+  "taskId": "SANGUO-BOOTSTRAP-0501",
+  "updatedAt": "2026-05-25T07:33:00.985Z",
+  "evidence": [
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "test",
+      "summary": "完成 wave-002+ batch protocol SOP 與模板",
+      "artifactPaths": [
+        "pipelines/sanguo-rag/build_baihua_next50_batch_protocol.py",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/protocol/wave-002-plus-sop.zh-TW.md",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/protocol/wave-002-run-template.json",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/protocol/wave-002-checkpoint-template.json",
+        "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/protocol/wave-002-plus-protocol-summary.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T07:33:00.985Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "test",
+        "freshness": "fresh",
+        "validationPasses": [
+          "next50-batch-protocol"
+        ],
+        "commandRuns": [
+          {
+            "command": "python pipelines/sanguo-rag/build_baihua_next50_batch_protocol.py --overwrite > ",
+            "exitCode": 0,
+            "stdoutSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ]
+      }
+    }
+  ]
+}
