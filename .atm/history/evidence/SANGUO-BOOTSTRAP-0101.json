@@ -1,0 +1,23 @@
+﻿{
+    "schemaVersion":  "atm.evidence.v0.1",
+    "taskId":  "SANGUO-BOOTSTRAP-0101",
+    "status":  "in-progress",
+    "summary":  "Rebuilt evidence stub after task reset",
+    "evidence":  [
+                     {
+                         "evidenceKind":  "artifact",
+                         "evidenceType":  "artifact",
+                         "summary":  "Task lifecycle record exists in ATM task/event ledger",
+                         "artifactPaths":  [
+                                               ".atm/history/tasks/SANGUO-BOOTSTRAP-0101.json",
+                                               ".atm/history/task-events/SANGUO-BOOTSTRAP-0101"
+                                           ],
+                         "producedBy":  "codex-main",
+                         "createdAt":  "2026-05-25T05:46:42.5402493Z",
+                         "details":  {
+                                         "actorId":  "codex-main",
+                                         "kind":  "artifact"
+                                     }
+                     }
+                 ]
+}
