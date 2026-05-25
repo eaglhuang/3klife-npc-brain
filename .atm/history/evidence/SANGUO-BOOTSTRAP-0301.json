@@ -1,15 +1,30 @@
 {
-  "schemaVersion": "atm.evidence.v0.1",
   "taskId": "SANGUO-BOOTSTRAP-0301",
-  "status": "not-started",
-  "summary": "bootstrap-to-trust-zone adapter 任務卡已建立，待把新 lane 接回既有 review lane。",
-  "repositoryKind": "generic-repository",
+  "updatedAt": "2026-05-25T01:01:46.838Z",
   "evidence": [
     {
       "evidenceKind": "supporting",
       "reportPath": "pipelines/sanguo-rag/run_relationship_skill_review_rounds.py",
       "description": "現有 reviewer queue runner 可作 adapter 對接目標。",
       "result": "present"
+    },
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "artifact",
+      "summary": "bootstrap-to-trust-zone adapter 已對齊既有 review lane 契約",
+      "artifactPaths": [
+        "pipelines/sanguo-rag/run_relationship_skill_review_rounds.py",
+        "pipelines/sanguo-rag/build_relationship_trust_zone.py",
+        ".atm/history/tasks/SANGUO-BOOTSTRAP-0301.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T01:01:46.838Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "artifact",
+        "freshness": "fresh"
+      }
     }
   ]
 }
