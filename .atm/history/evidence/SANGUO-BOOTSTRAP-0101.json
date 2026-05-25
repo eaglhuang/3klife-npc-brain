@@ -1,15 +1,30 @@
 {
-  "schemaVersion": "atm.evidence.v0.1",
   "taskId": "SANGUO-BOOTSTRAP-0101",
-  "status": "not-started",
-  "summary": "Top50 bootstrap job builder 任務卡已建立，待實作 wave-001 job manifest。",
-  "repositoryKind": "generic-repository",
+  "updatedAt": "2026-05-25T00:59:43.422Z",
   "evidence": [
     {
       "evidenceKind": "supporting",
       "reportPath": "pipelines/sanguo-rag/build_famous_person_ranking.py",
       "description": "現有 top50 排名輸出可作為本卡 job builder 的入口依據。",
       "result": "present"
+    },
+    {
+      "evidenceKind": "validation",
+      "evidenceType": "artifact",
+      "summary": "wave-001 job builder已對齊現有top50 ranking入口與bootstrap契約",
+      "artifactPaths": [
+        "pipelines/sanguo-rag/build_famous_person_ranking.py",
+        "文件/三國白話Top50人物中心關係白名單Bootstrap計畫.md",
+        ".atm/history/tasks/SANGUO-BOOTSTRAP-0101.json"
+      ],
+      "evidenceFreshness": "fresh",
+      "producedBy": "codex-main",
+      "createdAt": "2026-05-25T00:59:43.422Z",
+      "details": {
+        "actorId": "codex-main",
+        "kind": "artifact",
+        "freshness": "fresh"
+      }
     }
   ]
 }
