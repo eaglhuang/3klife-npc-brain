@@ -32,3 +32,10 @@
   3. 玩家與武將的雙邊關係（信任、好感與互動日誌）
 * **模型回退機制 (Fallback)**：主要採用高品質 LLM (如 Gemini Flash)，並具備 Fallback 鏈（Gemini Flash Lite ➡️ 本地 LLaMA ➡️ 歷史快取回應），確保服務高可用性。
 * **治理與變更管理**：本專案使用 `AI-Atomic-Framework` (ATM) 作為 AI 治理與變更管理工具，進行自動化煙霧測試 (Smoke Test) 與回歸測試。
+
+## 2026-05-26 Scene / 上游資料責任邊界
+
+- `scene-director`、`relationship`、`runtime-story-beat`、`pair linking`、`evidenceRefs`、`angle/classification` 若出錯，預設責任在上游 artifact 與 pipeline，不在 HTML 或下游顯示層。
+- NPC Brain service 只負責通用選卡、資料檢核、診斷、fail-fast、空狀態與 generic guard；不得為單一人物、單一關係、單一角度或 demo case 寫死條件、台詞、用字或規則去遮蓋錯資料。
+- 若 scene 內容出現怪劇情、錯關係、錯角度，處理順序應先回查 runtime profile、relationship edge、story beat、source packet、evidence export 與 pipeline 腳本，再決定 service 是否需要保留 generic guard。
+- `evidenceRefs` 應保持 canonical source refs；synthetic / internal ids 不應混入 scene 證據層，避免 scene 檢核與 fallback 誤判。
