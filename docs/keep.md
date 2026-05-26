@@ -33,9 +33,23 @@
 * **模型回退機制 (Fallback)**：主要採用高品質 LLM (如 Gemini Flash)，並具備 Fallback 鏈（Gemini Flash Lite ➡️ 本地 LLaMA ➡️ 歷史快取回應），確保服務高可用性。
 * **治理與變更管理**：本專案使用 `AI-Atomic-Framework` (ATM) 作為 AI 治理與變更管理工具，進行自動化煙霧測試 (Smoke Test) 與回歸測試。
 
-## 2026-05-26 Scene / 上游資料責任邊界
+## 2026-05-26 Scene / 責任區分
 
-- `scene-director`、`relationship`、`runtime-story-beat`、`pair linking`、`evidenceRefs`、`angle/classification` 若出錯，預設責任在上游 artifact 與 pipeline，不在 HTML 或下游顯示層。
-- NPC Brain service 只負責通用選卡、資料檢核、診斷、fail-fast、空狀態與 generic guard；不得為單一人物、單一關係、單一角度或 demo case 寫死條件、台詞、用字或規則去遮蓋錯資料。
-- 若 scene 內容出現怪劇情、錯關係、錯角度，處理順序應先回查 runtime profile、relationship edge、story beat、source packet、evidence export 與 pipeline 腳本，再決定 service 是否需要保留 generic guard。
-- `evidenceRefs` 應保持 canonical source refs；synthetic / internal ids 不應混入 scene 證據層，避免 scene 檢核與 fallback 誤判。
+- 目前 Scene 流程至少有 3 個角色：
+  - (A) `NPC Brain service`
+  - (B) 上游 `pipeline / artifact`
+  - (C) `HTML / 前端畫面`
+
+- (A) `NPC Brain service`
+  - 負責：依據既有 artifact 做通用選卡、資料檢核、`dataStatus` / `fallbackReason` / `emptyReason` / `evidenceResolution` / debug metadata 回傳、fail-fast、timeout 保護、完整 payload shape 輸出。
+  - 禁止：不得為單一人物、單一關係、單一角度或 demo case 寫死規則、條件、台詞、用字；不得用模板句、人物特判或固定 fallback 掩蓋上游資料錯誤。
+
+- (B) 上游 `pipeline / artifact`
+  - 負責：產出 canonical 的 `runtime profile`、`relationship edge`、`runtime-story-beat`、`pair linking`、`angle/classification`、`evidenceRefs`、`source packet / context`、readiness / export 結果。
+  - 禁止：不得把 synthetic / internal ids 混進 `evidenceRefs`；不得把錯的 pair linking、錯的 angle、錯的 evidence export、上下文不足的短摘，留給 service 或前端補救。
+
+- (C) `HTML / 前端畫面`
+  - 負責：通用顯示、互動、loading 狀態、timeout / abort、欄位空狀態、選項聯動、診斷資訊呈現。
+  - 禁止：不得自行判斷人物性格、關係正確性、角度正確性、證據真偽；不得在前端生成旁人感想、小劇場或補寫故事。
+
+- 排查順序固定為：先查 (B) 上游資料，再查 (A) service 的通用選卡與檢核，最後才查 (C) 畫面顯示；禁止顛倒順序，用下游硬補去掩蓋上游錯誤。

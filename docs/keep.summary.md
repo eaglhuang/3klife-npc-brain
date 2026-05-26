@@ -27,9 +27,10 @@
 - 新需求先對齊本摘要；若與摘要衝突，先升級 keep 共識再動手。
 - 非必要不改動 canonical 真值，優先走 proposal / review / gate 流程。
 
-## 2026-05-26 Scene / 上游資料責任邊界
+## 2026-05-26 Scene / 責任區分（摘要）
 
-- `scene-director`、`relationship`、`runtime-story-beat`、`pair linking`、`evidenceRefs`、`angle/classification` 若出錯，預設先視為上游 artifact / pipeline 問題。
-- NPC Brain service 只負責通用選卡、資料檢核、診斷、fail-fast、空狀態與 generic guard；不得為單一人物、單一關係、單一角度或 demo case 寫死規則、條件、台詞或用字去遮資料錯誤。
-- 若畫面出現怪劇情、錯關係、錯角度，優先回查 runtime profile、relationship edge、story beat、source packet、evidence export 與 pipeline 腳本，再決定 service 是否只需保留通用防呆。
-- `evidenceRefs` 應保持 canonical source refs；synthetic / internal ids 不應混入 scene 證據層。
+- 角色分三層：(A) `NPC Brain service`、(B) 上游 `pipeline / artifact`、(C) `HTML / 前端畫面`。
+- (A) service：負責通用選卡、資料檢核、`dataStatus` / `fallbackReason` / `evidenceResolution` / debug metadata、fail-fast、完整 payload；禁止為特定人物 / 關係 / demo case 寫死規則、台詞或模板句去遮資料錯誤。
+- (B) pipeline：負責 canonical 的 `runtime profile`、`relationship edge`、`runtime-story-beat`、`pair linking`、`angle/classification`、`evidenceRefs`、`source packet / context`；禁止輸出錯 pair、錯 angle、錯 evidence，或把 synthetic / internal ids 混入 `evidenceRefs`。
+- (C) HTML：負責顯示、互動、loading、timeout / abort、空狀態、選項聯動；禁止自行補劇情、補人格、補關係。
+- 排查順序固定：先查上游資料，再查 service，最後查 HTML。
