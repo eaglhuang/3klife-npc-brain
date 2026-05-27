@@ -9,8 +9,9 @@ from langgraph_sdk import Auth
 
 DEPLOY_API_KEY_ENV = "NPC_BRAIN_DEPLOY_API_KEY"
 DEPLOY_IDENTITY_ENV = "NPC_BRAIN_DEPLOY_IDENTITY"
+PUBLIC_DEMO_MODE_ENV = "NPC_BRAIN_PUBLIC_DEMO_MODE"
 PUBLIC_DEMO_ORIGINS_ENV = "NPC_BRAIN_PUBLIC_DEMO_ORIGINS"
-DEFAULT_PUBLIC_DEMO_ORIGINS = {
+DEFAULT_PUBLIC_DEMO_ORIGINS = [
     "https://eaglhuang.github.io",
     "http://localhost:7456",
     "http://127.0.0.1:7456",
@@ -18,7 +19,7 @@ DEFAULT_PUBLIC_DEMO_ORIGINS = {
     "http://127.0.0.1:8000",
     "http://localhost:8123",
     "http://127.0.0.1:8123",
-}
+]
 
 auth = Auth()
 
@@ -55,43 +56,59 @@ def _extract_api_key(headers: dict[str, str]) -> str | None:
     return token.strip()
 
 
-def _parse_origin(raw: str) -> str:
-    value = raw.strip().rstrip("/")
-    if not value:
-        return ""
-    parsed = urlparse(value)
+def _normalize_origin(value: str | None) -> str | None:
+    raw_value = str(value or "").strip()
+    if not raw_value:
+        return None
+    if raw_value.lower() == "null":
+        return "null"
+    parsed = urlparse(raw_value)
     if parsed.scheme and parsed.netloc:
-        return f"{parsed.scheme}://{parsed.netloc}"
-    return value
+        return f"{parsed.scheme.lower()}://{parsed.netloc.lower()}"
+    return raw_value.lower()
 
 
-def _extract_request_origin(headers: dict[str, str]) -> str:
-    origin = _parse_origin(headers.get("origin", ""))
+def _resolve_public_demo_origins() -> set[str]:
+    raw_value = str(os.environ.get(PUBLIC_DEMO_ORIGINS_ENV) or "").strip()
+    if raw_value:
+        candidates = [item.strip() for item in raw_value.split(",") if item.strip()]
+    else:
+        candidates = DEFAULT_PUBLIC_DEMO_ORIGINS
+    normalized = [_normalize_origin(origin) for origin in candidates]
+    return {origin for origin in normalized if origin}
+
+
+def _public_demo_mode_enabled() -> bool:
+    raw_value = str(os.environ.get(PUBLIC_DEMO_MODE_ENV) or "").strip().lower()
+    return raw_value in {"1", "true", "yes", "on"}
+
+
+def _extract_request_origin(headers: dict[str, str]) -> str | None:
+    origin = _normalize_origin(headers.get("origin"))
     if origin:
         return origin
+    referer = str(headers.get("referer") or "").strip()
+    if not referer:
+        return None
+    parsed = urlparse(referer)
+    if parsed.scheme and parsed.netloc:
+        return f"{parsed.scheme.lower()}://{parsed.netloc.lower()}"
+    return _normalize_origin(referer)
 
-    referer = headers.get("referer", "").strip()
-    if referer:
-        return _parse_origin(referer)
 
-    return ""
-
-
-def _allowed_demo_origins() -> set[str]:
-    raw = os.getenv(PUBLIC_DEMO_ORIGINS_ENV, "")
-    values = {
-        _parse_origin(item)
-        for item in raw.split(",")
-        if _parse_origin(item)
-    }
-    return values or set(DEFAULT_PUBLIC_DEMO_ORIGINS)
+def _is_public_demo_request(headers: dict[str, str]) -> bool:
+    if not _public_demo_mode_enabled():
+        return False
+    request_origin = _extract_request_origin(headers)
+    if not request_origin:
+        return False
+    return request_origin in _resolve_public_demo_origins()
 
 
 @auth.authenticate
 async def authenticate(headers: dict[object, object] | None = None) -> Auth.types.MinimalUserDict:
     normalized_headers = _normalize_headers(headers)
-    request_origin = _extract_request_origin(normalized_headers)
-    if request_origin and request_origin in _allowed_demo_origins():
+    if _is_public_demo_request(normalized_headers):
         return {
             "identity": os.getenv(DEPLOY_IDENTITY_ENV, "npc-brain-public-demo"),
             "is_authenticated": True,

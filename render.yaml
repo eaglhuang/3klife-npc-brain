@@ -20,6 +20,8 @@ services:
         value: https://eaglhuang.github.io
       - key: NPC_BRAIN_PUBLIC_DEMO_MODE
         value: "true"
+      - key: NPC_BRAIN_PUBLIC_DEMO_ORIGINS
+        value: https://eaglhuang.github.io,http://localhost:7456,http://127.0.0.1:7456,http://localhost:8000,http://127.0.0.1:8000,http://localhost:8123,http://127.0.0.1:8123
       - key: NPC_PERSONA_REMOTE_BASE_URL
         value: https://raw.githubusercontent.com/eaglhuang/3klife-npc-brain/main/artifacts/data-pipeline/sanguo-rag/extracted/persona-cards
       - key: NPC_RUNTIME_PROFILE_REMOTE_BASE_URL

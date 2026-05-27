@@ -2,6 +2,13 @@ from __future__ import annotations
 
 import hmac
 import os
+from urllib.parse import urlparse
+
+try:
+    from dotenv import load_dotenv
+except ModuleNotFoundError:
+    def load_dotenv(*args, **kwargs):
+        return False
 
 try:
     from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
@@ -37,6 +44,7 @@ from .llm_dialogue_renderer import ProviderOutputError, ProviderUnavailableError
 
 DEPLOY_API_KEY_ENV = "NPC_BRAIN_DEPLOY_API_KEY"
 PUBLIC_DEMO_MODE_ENV = "NPC_BRAIN_PUBLIC_DEMO_MODE"
+PUBLIC_DEMO_ORIGINS_ENV = "NPC_BRAIN_PUBLIC_DEMO_ORIGINS"
 DEV_CORS_ORIGINS = [
     "null",
     "http://localhost:7456",
@@ -50,10 +58,24 @@ DEV_CORS_ORIGINS = [
     "https://smith.langchain.com",
     "https://eaglhuang.github.io",
 ]
+DEFAULT_PUBLIC_DEMO_ORIGINS = [
+    "https://eaglhuang.github.io",
+    "http://localhost:7456",
+    "http://127.0.0.1:7456",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:8123",
+    "http://127.0.0.1:8123",
+]
 DEV_CORS_ORIGIN_REGEX = (
     r"^(null|file://.*|app://.*|"
     r"http://localhost(:\d+)?|http://127\.0\.0\.1(:\d+)?|"
     r"https://eaglhuang\.github\.io|https://smith\.langchain\.com)$"
+)
+
+load_dotenv(
+    dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"),
+    override=True,
 )
 
 
@@ -63,25 +85,55 @@ def resolve_dev_cors_origins() -> list[str]:
     return list(dict.fromkeys([*DEV_CORS_ORIGINS, *extras]))
 
 
-def normalize_origin(value: str | None) -> str:
-    return str(value or "").strip().rstrip("/")
+def normalize_origin(value: str | None) -> str | None:
+    raw_value = str(value or "").strip()
+    if not raw_value:
+        return None
+    if raw_value.lower() == "null":
+        return "null"
+    parsed = urlparse(raw_value)
+    if parsed.scheme and parsed.netloc:
+        return f"{parsed.scheme.lower()}://{parsed.netloc.lower()}"
+    return raw_value.lower()
 
 
-def is_public_demo_origin(origin: str | None, referer: str | None) -> bool:
-    public_demo_origins = {
-        "https://eaglhuang.github.io",
-        "http://localhost:7456",
-        "http://127.0.0.1:7456",
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-        "http://localhost:8123",
-        "http://127.0.0.1:8123",
-    }
-    candidate_origin = normalize_origin(origin)
-    if candidate_origin in public_demo_origins:
-        return True
-    candidate_referer = normalize_origin(referer)
-    return any(candidate_referer.startswith(f"{allowed}/") or candidate_referer == allowed for allowed in public_demo_origins)
+def resolve_public_demo_origins() -> set[str]:
+    raw_value = str(os.environ.get(PUBLIC_DEMO_ORIGINS_ENV) or "").strip()
+    if raw_value:
+        candidates = [item.strip() for item in raw_value.split(",") if item.strip()]
+    else:
+        candidates = DEFAULT_PUBLIC_DEMO_ORIGINS
+    normalized = [normalize_origin(origin) for origin in candidates]
+    return {origin for origin in normalized if origin}
+
+
+def public_demo_mode_enabled() -> bool:
+    raw_value = str(os.environ.get(PUBLIC_DEMO_MODE_ENV) or "").strip().lower()
+    return raw_value in {"1", "true", "yes", "on"}
+
+
+def extract_request_origin(request: Request | None) -> str | None:
+    if request is None:
+        return None
+    origin = normalize_origin(request.headers.get("origin"))
+    if origin:
+        return origin
+    referer = str(request.headers.get("referer") or "").strip()
+    if not referer:
+        return None
+    parsed = urlparse(referer)
+    if parsed.scheme and parsed.netloc:
+        return f"{parsed.scheme.lower()}://{parsed.netloc.lower()}"
+    return normalize_origin(referer)
+
+
+def is_public_demo_request(request: Request | None) -> bool:
+    if not public_demo_mode_enabled():
+        return False
+    request_origin = extract_request_origin(request)
+    if not request_origin:
+        return False
+    return request_origin in resolve_public_demo_origins()
 
 
 def create_app() -> FastAPI:
@@ -179,7 +231,6 @@ def create_app() -> FastAPI:
             request=request,
             x_api_key=x_api_key,
             authorization=authorization,
-            allow_public_demo=allow_public_demo_scene_illustration(),
         )
         try:
             return service.render_scene_illustration(scene_request)
@@ -206,11 +257,8 @@ def require_service_api_key(
     request: Request,
     x_api_key: str | None = Header(default=None, alias="X-API-Key"),
     authorization: str | None = Header(default=None),
-    allow_public_demo: bool = False,
 ) -> None:
-    origin = request.headers.get("origin")
-    referer = request.headers.get("referer")
-    if allow_public_demo or is_public_demo_origin(origin, referer):
+    if is_public_demo_request(request):
         return
     expected_key = str(os.environ.get(DEPLOY_API_KEY_ENV) or "").strip()
     if not expected_key:
@@ -224,11 +272,6 @@ def parse_categories(categories: str | None) -> list[str] | None:
     if not categories:
         return None
     return [category.strip() for category in categories.split(",") if category.strip()]
-
-
-def allow_public_demo_scene_illustration() -> bool:
-    raw_value = str(os.environ.get(PUBLIC_DEMO_MODE_ENV) or "").strip().lower()
-    return raw_value in {"1", "true", "yes", "on"}
 
 
 app = create_app()
