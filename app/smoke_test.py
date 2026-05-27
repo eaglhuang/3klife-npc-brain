@@ -28,6 +28,16 @@ def main() -> None:
             maxChars=90,
         )
     )
+    label_fallback_service = NpcDialogueService()
+    label_fallback_service._roster_name_for = lambda target_id, roster_index: target_id  # type: ignore[method-assign]
+    fallback_targets = label_fallback_service._build_interaction_targets(
+        "liu-bei",
+        label_fallback_service.store.read_runtime_persona("liu-bei") or {},
+        label_fallback_service.store.read_runtime_keywords("liu-bei") or {},
+        label_fallback_service.store.read_runtime_relationships("liu-bei") or {},
+        {},
+    )
+    fallback_target_labels = {target.targetId: target.label for target in fallback_targets}
     resolved_scene = service.build_scene_director(
         SceneDirectorRequest(
             generalId="liu-bei",
@@ -57,6 +67,7 @@ def main() -> None:
     assert response.speechContextMode == "inner_monologue", "dialogue response should echo speech context mode"
     assert response.llmModelPreset == "fallback_chain", "dialogue response should echo model preset"
     assert response.rejectedKeywordKeys == ["unknown-key"], "unknown keyword should be rejected explicitly"
+    assert fallback_target_labels.get("zhang-fei") == "張飛", "target labels should preserve human-readable names even when roster names are slugs"
     assert "關某" not in persona.safeFallbackLine, "zhang-fei fallback line must not use guan-yu self-name"
     assert resolved_scene.dataStatus in {"direct", "angle_empty_filled", "target_empty_filled"}, "liu-bei/zhang-fei scene should resolve to a non-empty scene"
     assert not resolved_scene.isEmpty, "liu-bei/zhang-fei scene should produce non-empty director beats"

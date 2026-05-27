@@ -5389,7 +5389,7 @@ class NpcDialogueService:
             gender = self._roster_gender_for(target_id, roster_index)
             bucket = {
                 "targetId": target_id,
-                "label": self._roster_name_for(target_id, roster_index),
+                "label": self._prefer_human_target_label(target_id, self._roster_name_for(target_id, roster_index), target_id),
                 "role": "人物線索",
                 "gender": gender,
                 "sourceType": "keyword-cooccurrence",
@@ -5421,7 +5421,13 @@ class NpcDialogueService:
                 edge_type = "spouse"
                 edge_label = "姻親 / 家室"
             edge_priority = self._relationship_display_priority(edge_type, original_types)
-            bucket["label"] = self._roster_name_for(target_id, roster_index) or str(edge.get("targetName") or bucket["label"] or target_id)
+            bucket["label"] = self._prefer_human_target_label(
+                target_id,
+                edge.get("targetName"),
+                self._roster_name_for(target_id, roster_index),
+                bucket["label"],
+                target_id,
+            )
             if edge_priority >= int(bucket.get("relationshipPriority") or 0):
                 bucket["role"] = edge_label
                 bucket["relationshipType"] = edge_type
@@ -5934,6 +5940,19 @@ class NpcDialogueService:
                     if bare_spouse not in aliases:
                         aliases.append(bare_spouse)
         return aliases
+
+    def _prefer_human_target_label(self, target_id: str, *candidates: Any) -> str:
+        normalized_target_id = str(target_id or "").strip()
+        normalized_candidates = [str(candidate or "").strip() for candidate in candidates if str(candidate or "").strip()]
+        for candidate in normalized_candidates:
+            if candidate == normalized_target_id:
+                continue
+            if not re.fullmatch(r"[a-z0-9][a-z0-9_.-]*", candidate):
+                return candidate
+        for candidate in normalized_candidates:
+            if candidate:
+                return candidate
+        return normalized_target_id
 
     def _target_aliases_for_interaction(self, target: NarrativeInteractionTarget) -> list[str]:
         seeds = [target.label]
