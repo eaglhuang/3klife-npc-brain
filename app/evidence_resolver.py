@@ -71,18 +71,21 @@ class EvidenceResolver:
 
         remaining_slots = max(MAX_RESOLVED_EVIDENCE - len(resolved), 0)
         if unresolved and remaining_slots > 0:
-            semantic_completion = self.vector_second.retrieve_semantic(
-                general_id=general_id,
-                context=context,
-                keywords=keywords,
-                unresolved_refs=unresolved,
-                already_resolved_refs=resolved_refs,
-                limit=remaining_slots,
-            )
-            resolved, resolved_refs = self._merge_resolved(resolved, resolved_refs, semantic_completion.resolvedEvidence)
-            covered_refs.update(semantic_completion.coveredRefs)
-            trace.extend(semantic_completion.trace)
-            unresolved = [ref for ref in evidence_refs if ref not in covered_refs]
+            if self._should_skip_semantic_completion(unresolved):
+                trace.append("vector-second:skipped:structured-unresolved")
+            else:
+                semantic_completion = self.vector_second.retrieve_semantic(
+                    general_id=general_id,
+                    context=context,
+                    keywords=keywords,
+                    unresolved_refs=unresolved,
+                    already_resolved_refs=resolved_refs,
+                    limit=remaining_slots,
+                )
+                resolved, resolved_refs = self._merge_resolved(resolved, resolved_refs, semantic_completion.resolvedEvidence)
+                covered_refs.update(semantic_completion.coveredRefs)
+                trace.extend(semantic_completion.trace)
+                unresolved = [ref for ref in evidence_refs if ref not in covered_refs]
         elif unresolved:
             trace.append("vector-second:skipped:no-slot")
 
@@ -212,6 +215,22 @@ class EvidenceResolver:
             for ref in (self._get(keyword, "sourceRefs") or [])
             if ref
         }
+
+    def _should_skip_semantic_completion(self, unresolved_refs: list[str]) -> bool:
+        refs = [str(ref or "").strip() for ref in unresolved_refs if str(ref or "").strip()]
+        if not refs:
+            return True
+        return all(self._is_structured_unresolved_ref(ref) for ref in refs)
+
+    def _is_structured_unresolved_ref(self, ref: str) -> bool:
+        value = str(ref or "").strip()
+        if not value:
+            return True
+        if value.startswith(("relationship:", "event.", "keyword-angle:", "romance.reviewed-a.")):
+            return True
+        if "#" in value and not value.startswith("ext-card:"):
+            return True
+        return False
 
     def _get(self, value: Any, name: str) -> Any:
         if value is None:

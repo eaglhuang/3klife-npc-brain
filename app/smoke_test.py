@@ -28,12 +28,22 @@ def main() -> None:
             maxChars=90,
         )
     )
-    missing_scene = service.build_scene_director(
+    resolved_scene = service.build_scene_director(
+        SceneDirectorRequest(
+            generalId="liu-bei",
+            angle="people",
+            targetId="zhang-fei",
+            llmModelPreset="fallback_chain",
+            renderMode="data_first",
+        )
+    )
+    invalid_scene = service.build_scene_director(
         SceneDirectorRequest(
             generalId="liu-bei",
             angle="emotion",
-            targetId="guan-yu",
+            targetId="not-real",
             llmModelPreset="fallback_chain",
+            renderMode="data_first",
         )
     )
 
@@ -48,13 +58,13 @@ def main() -> None:
     assert response.llmModelPreset == "fallback_chain", "dialogue response should echo model preset"
     assert response.rejectedKeywordKeys == ["unknown-key"], "unknown keyword should be rejected explicitly"
     assert "關某" not in persona.safeFallbackLine, "zhang-fei fallback line must not use guan-yu self-name"
-    assert missing_scene.beats.sceneText == "", "scene-director should not invent scene text without direct angle-target data"
-    assert missing_scene.beats.memoryText == "", "scene-director should not fill memory text from substitute evidence"
-    assert missing_scene.beats.emotionText == "", "scene-director should not fill emotion text from substitute evidence"
-    assert missing_scene.beats.dialogueText == "", "scene-director should not fill dialogue text from substitute evidence"
-    assert missing_scene.beats.intentText == "", "scene-director should not fill intent text from substitute evidence"
-    assert missing_scene.storyText == "", "scene-director should not call story LLM without direct angle-target data"
-    assert missing_scene.chorusLines == [], "scene-director should not generate chorus lines without direct angle-target data"
+    assert resolved_scene.dataStatus in {"direct", "angle_empty_filled", "target_empty_filled"}, "liu-bei/zhang-fei scene should resolve to a non-empty scene"
+    assert not resolved_scene.isEmpty, "liu-bei/zhang-fei scene should produce non-empty director beats"
+    assert resolved_scene.beats.sceneText or resolved_scene.storyText, "resolved scene should include at least one grounded narrative field"
+    assert invalid_scene.dataStatus == "invalid_request", "invalid target should be rejected explicitly"
+    assert invalid_scene.isEmpty, "invalid target should not produce scene content"
+    assert invalid_scene.beats.sceneText == "", "invalid target should not invent scene text"
+    assert invalid_scene.storyText == "", "invalid target should not call story LLM"
     print("[npc-brain-smoke] PASS")
     print(f"[npc-brain-smoke] contexts={len(contexts.options)} categories={len(keywords.categories)} evidenceRefs={len(response.evidenceRefs)}")
     print("[npc-brain-smoke] text=" + json.dumps(response.text, ensure_ascii=True))

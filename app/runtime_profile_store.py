@@ -36,6 +36,8 @@ class RuntimeProfileStore:
         self.runtime_profile_remote_base_url = (
             str(os.environ.get("NPC_RUNTIME_PROFILE_REMOTE_BASE_URL") or DEFAULT_RUNTIME_PROFILE_REMOTE_BASE_URL).strip().rstrip("/")
         )
+        self.allow_remote_persona_fallback = self._env_flag("NPC_PERSONA_REMOTE_FALLBACK_ENABLED", default=False)
+        self.allow_remote_runtime_fallback = self._env_flag("NPC_RUNTIME_REMOTE_FALLBACK_ENABLED", default=False)
         self._ready_events_cache: list[dict] | None = None
         self._source_event_packets_cache: list[dict] | None = None
         self._remote_persona_card_cache: dict[str, dict | None] = {}
@@ -69,9 +71,10 @@ class RuntimeProfileStore:
         path = self.persona_root / f"{general_id}.persona.json"
         if path.exists():
             return json.loads(path.read_text(encoding="utf-8"))
-        remote_payload = self._read_remote_persona_card(general_id)
-        if remote_payload is not None:
-            return remote_payload
+        if self.allow_remote_persona_fallback:
+            remote_payload = self._read_remote_persona_card(general_id)
+            if remote_payload is not None:
+                return remote_payload
         payload = self.read_optional_api_fixture("persona-card.response.json")
         if payload and payload.get("generalId") == general_id:
             return payload
@@ -123,8 +126,16 @@ class RuntimeProfileStore:
     def _read_runtime_json(self, general_id: str, suffix: str) -> dict | None:
         path = self.runtime_profile_root / general_id / f"{general_id}.{suffix}.json"
         if not path.exists():
+            if not self.allow_remote_runtime_fallback:
+                return None
             return self._read_remote_runtime_json(general_id, suffix)
         return json.loads(path.read_text(encoding="utf-8"))
+
+    def _env_flag(self, name: str, default: bool = False) -> bool:
+        raw = str(os.environ.get(name) or "").strip().lower()
+        if not raw:
+            return default
+        return raw in {"1", "true", "yes", "on"}
 
     def _resolve_path(self, path: Path) -> Path:
         return path if path.is_absolute() else self.repo_root / path
