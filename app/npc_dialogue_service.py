@@ -1552,7 +1552,13 @@ class NpcDialogueService:
     ) -> bool:
         if card is None or target is None:
             return card is not None
-        return target.targetId in set(card.relatedTargetIds or []) and self._card_source_mentions_target(card, target)
+        related_target_ids = set(card.relatedTargetIds or [])
+        source_mentions_target = self._card_source_mentions_target(card, target)
+        if target.targetId in related_target_ids:
+            return source_mentions_target
+        # Some Render payloads omit relatedTargetIds on otherwise grounded cards.
+        # Fall back to the source text itself so directly named pairs can still surface.
+        return source_mentions_target
 
     def _card_source_mentions_target(
         self,
