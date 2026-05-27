@@ -43,8 +43,12 @@ DEV_CORS_ORIGINS = [
     "http://127.0.0.1:7456",
     "http://localhost:8787",
     "http://127.0.0.1:8787",
-    "https://eaglhuang.github.io",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:8123",
+    "http://127.0.0.1:8123",
     "https://smith.langchain.com",
+    "https://eaglhuang.github.io",
 ]
 DEV_CORS_ORIGIN_REGEX = (
     r"^(null|file://.*|app://.*|"
@@ -57,6 +61,27 @@ def resolve_dev_cors_origins() -> list[str]:
     extra_origins_raw = str(os.environ.get("NPC_CORS_EXTRA_ORIGINS") or "").strip()
     extras = [origin.strip() for origin in extra_origins_raw.split(",") if origin.strip()]
     return list(dict.fromkeys([*DEV_CORS_ORIGINS, *extras]))
+
+
+def normalize_origin(value: str | None) -> str:
+    return str(value or "").strip().rstrip("/")
+
+
+def is_public_demo_origin(origin: str | None, referer: str | None) -> bool:
+    public_demo_origins = {
+        "https://eaglhuang.github.io",
+        "http://localhost:7456",
+        "http://127.0.0.1:7456",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:8123",
+        "http://127.0.0.1:8123",
+    }
+    candidate_origin = normalize_origin(origin)
+    if candidate_origin in public_demo_origins:
+        return True
+    candidate_referer = normalize_origin(referer)
+    return any(candidate_referer.startswith(f"{allowed}/") or candidate_referer == allowed for allowed in public_demo_origins)
 
 
 def create_app() -> FastAPI:
@@ -178,9 +203,11 @@ def extract_api_key(x_api_key: str | None, authorization: str | None) -> str | N
 def require_service_api_key(
     x_api_key: str | None = Header(default=None, alias="X-API-Key"),
     authorization: str | None = Header(default=None),
+    origin: str | None = Header(default=None, alias="Origin"),
+    referer: str | None = Header(default=None, alias="Referer"),
     allow_public_demo: bool = False,
 ) -> None:
-    if allow_public_demo:
+    if allow_public_demo or is_public_demo_origin(origin, referer):
         return
     expected_key = str(os.environ.get(DEPLOY_API_KEY_ENV) or "").strip()
     if not expected_key:
