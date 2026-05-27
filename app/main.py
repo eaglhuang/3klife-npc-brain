@@ -4,7 +4,7 @@ import hmac
 import os
 
 try:
-    from fastapi import Depends, FastAPI, Header, HTTPException, Query
+    from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 except ModuleNotFoundError as exc:
     raise RuntimeError(
         "FastAPI is not installed. Activate the server venv, or set PYTHON_BIN / "
@@ -170,17 +170,19 @@ def create_app() -> FastAPI:
 
     @app.post("/v1/npc/scene-illustration", response_model=SceneIllustrationResponse)
     def scene_illustration(
-        request: SceneIllustrationRequest,
+        scene_request: SceneIllustrationRequest,
+        request: Request,
         x_api_key: str | None = Header(default=None, alias="X-API-Key"),
         authorization: str | None = Header(default=None),
     ):
         require_service_api_key(
+            request=request,
             x_api_key=x_api_key,
             authorization=authorization,
             allow_public_demo=allow_public_demo_scene_illustration(),
         )
         try:
-            return service.render_scene_illustration(request)
+            return service.render_scene_illustration(scene_request)
         except ProviderUnavailableError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
         except ProviderOutputError as exc:
@@ -201,12 +203,13 @@ def extract_api_key(x_api_key: str | None, authorization: str | None) -> str | N
 
 
 def require_service_api_key(
+    request: Request,
     x_api_key: str | None = Header(default=None, alias="X-API-Key"),
     authorization: str | None = Header(default=None),
-    origin: str | None = Header(default=None, alias="Origin"),
-    referer: str | None = Header(default=None, alias="Referer"),
     allow_public_demo: bool = False,
 ) -> None:
+    origin = request.headers.get("origin")
+    referer = request.headers.get("referer")
     if allow_public_demo or is_public_demo_origin(origin, referer):
         return
     expected_key = str(os.environ.get(DEPLOY_API_KEY_ENV) or "").strip()
