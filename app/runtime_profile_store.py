@@ -39,7 +39,9 @@ class RuntimeProfileStore:
         self.allow_remote_persona_fallback = self._env_flag("NPC_PERSONA_REMOTE_FALLBACK_ENABLED", default=False)
         self.allow_remote_runtime_fallback = self._env_flag("NPC_RUNTIME_REMOTE_FALLBACK_ENABLED", default=False)
         self._ready_events_cache: list[dict] | None = None
+        self._ready_events_cache_mtime: float | None = None
         self._source_event_packets_cache: list[dict] | None = None
+        self._source_event_packets_cache_mtime: float | None = None
         self._remote_persona_card_cache: dict[str, dict | None] = {}
         self._remote_runtime_json_cache: dict[tuple[str, str], dict | None] = {}
 
@@ -81,11 +83,13 @@ class RuntimeProfileStore:
         return self._build_minimal_persona_card(general_id)
 
     def load_ready_events(self) -> list[dict]:
-        if self._ready_events_cache is not None:
-            return self._ready_events_cache
         path = self.event_root / "events.jsonl"
+        current_mtime = path.stat().st_mtime if path.exists() else None
+        if self._ready_events_cache is not None and self._ready_events_cache_mtime == current_mtime:
+            return self._ready_events_cache
         if not path.exists():
             self._ready_events_cache = []
+            self._ready_events_cache_mtime = None
             return self._ready_events_cache
         events: list[dict] = []
         for line in path.read_text(encoding="utf-8").splitlines():
@@ -95,14 +99,17 @@ class RuntimeProfileStore:
             if payload.get("reviewStatus") == "ready":
                 events.append(payload)
         self._ready_events_cache = events
+        self._ready_events_cache_mtime = current_mtime
         return events
 
     def load_source_event_packets(self) -> list[dict]:
-        if self._source_event_packets_cache is not None:
-            return self._source_event_packets_cache
         path = self.artifact_root.parent / "source-event-packets" / "source-event-packets.jsonl"
+        current_mtime = path.stat().st_mtime if path.exists() else None
+        if self._source_event_packets_cache is not None and self._source_event_packets_cache_mtime == current_mtime:
+            return self._source_event_packets_cache
         if not path.exists():
             self._source_event_packets_cache = []
+            self._source_event_packets_cache_mtime = None
             return self._source_event_packets_cache
         packets: list[dict] = []
         for line in path.read_text(encoding="utf-8").splitlines():
@@ -112,6 +119,7 @@ class RuntimeProfileStore:
             if isinstance(payload, dict):
                 packets.append(payload)
         self._source_event_packets_cache = packets
+        self._source_event_packets_cache_mtime = current_mtime
         return packets
 
     def list_runtime_general_ids(self) -> list[str]:
