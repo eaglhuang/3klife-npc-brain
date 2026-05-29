@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -13,6 +14,7 @@ from urllib.request import Request, urlopen
 
 DEFAULT_HEALTH_URL = "https://threeklife-npc-brain.onrender.com/healthz"
 ALLOWED_ARTIFACT_VERSION_KINDS = {"semver", "git-sha", "sha256", "opaque"}
+DEFAULT_ARTIFACT_VERSION_BASIS = "json-marker-path:v1-sorted"
 SEMVER_PATTERN = re.compile(
     r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
     r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
@@ -86,6 +88,7 @@ def extract_version_metadata(payload: object) -> dict[str, str]:
         "dataVersion": "",
         "artifactVersion": "",
         "artifactVersionKind": "",
+        "artifactVersionBasis": "",
     }
     for container in containers:
         if not metadata["dataVersion"]:
@@ -100,6 +103,10 @@ def extract_version_metadata(payload: object) -> dict[str, str]:
             value = str(container.get("artifactVersionKind") or "").strip().lower()
             if value:
                 metadata["artifactVersionKind"] = value
+        if not metadata["artifactVersionBasis"]:
+            value = str(container.get("artifactVersionBasis") or "").strip()
+            if value:
+                metadata["artifactVersionBasis"] = value
     return metadata
 
 
@@ -129,6 +136,10 @@ def evaluate_refresh(local_meta: dict[str, str], remote_meta: dict[str, str]) ->
         return False, "remote artifactVersionKind is unsupported"
     if local_artifact_kind != remote_artifact_kind:
         return False, "artifactVersionKind changed (cross-kind)"
+    local_artifact_basis = str(local_meta.get("artifactVersionBasis") or "").strip()
+    remote_artifact_basis = str(remote_meta.get("artifactVersionBasis") or "").strip()
+    if local_artifact_basis and remote_artifact_basis and local_artifact_basis != remote_artifact_basis:
+        return False, "artifactVersionBasis changed"
     if local_artifact_version != remote_artifact_version:
         return False, "artifactVersion changed"
     return True, "dataVersion and artifact identity unchanged"
@@ -148,24 +159,74 @@ def extract_markers(payload: object) -> dict[str, str]:
     return markers
 
 
+def _list_git_tracked_files(repo_root: Path) -> set[str]:
+    try:
+        completed = subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=repo_root,
+            check=True,
+            capture_output=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return set()
+    raw = completed.stdout.decode("utf-8", errors="ignore")
+    tracked = {
+        entry.replace("\\", "/")
+        for entry in raw.split("\x00")
+        if entry.strip()
+    }
+    return tracked
+
+
+def _read_tracked_json_from_head(repo_root: Path, rel_path: str) -> object:
+    try:
+        completed = subprocess.run(
+            ["git", "show", f"HEAD:{rel_path}"],
+            cwd=repo_root,
+            check=True,
+            capture_output=True,
+        )
+        text = completed.stdout.decode("utf-8")
+        return json.loads(text)
+    except (subprocess.CalledProcessError, FileNotFoundError, UnicodeDecodeError, json.JSONDecodeError):
+        path = repo_root / rel_path
+        return json.loads(path.read_text(encoding="utf-8"))
+
+
 def scan_artifact_versions(repo_root: Path, roots: list[Path]) -> dict[str, object]:
     files: list[dict[str, object]] = []
     digester = hashlib.sha256()
     total_files = 0
-    for root in roots:
-        absolute_root = root if root.is_absolute() else repo_root / root
-        if not absolute_root.exists():
-            continue
-        for path in absolute_root.rglob("*.json"):
+    tracked = _list_git_tracked_files(repo_root)
+    tracked_candidates = 0
+    using_tracked_only = bool(tracked)
+
+    if using_tracked_only:
+        root_prefixes: list[str] = []
+        for root in roots:
+            absolute_root = root if root.is_absolute() else repo_root / root
+            try:
+                rel_root = absolute_root.relative_to(repo_root)
+            except ValueError:
+                continue
+            prefix = str(rel_root).replace("\\", "/").rstrip("/") + "/"
+            root_prefixes.append(prefix)
+
+        candidate_paths = sorted(
+            path
+            for path in tracked
+            if path.endswith(".json") and any(path.startswith(prefix) for prefix in root_prefixes)
+        )
+        tracked_candidates = len(candidate_paths)
+        for rel_path in candidate_paths:
             total_files += 1
             try:
-                payload = json.loads(path.read_text(encoding="utf-8"))
+                payload = _read_tracked_json_from_head(repo_root, rel_path)
             except Exception:
                 continue
             markers = extract_markers(payload)
             if not markers:
                 continue
-            rel_path = str(path.relative_to(repo_root)).replace("\\", "/")
             ordered_markers = {key: markers[key] for key in sorted(markers)}
             fingerprint_row = json.dumps(
                 {"path": rel_path, "markers": ordered_markers},
@@ -179,10 +240,41 @@ def scan_artifact_versions(repo_root: Path, roots: list[Path]) -> dict[str, obje
                     "markers": ordered_markers,
                 }
             )
+
+    else:
+        for root in roots:
+            absolute_root = root if root.is_absolute() else repo_root / root
+            if not absolute_root.exists():
+                continue
+            for path in sorted(absolute_root.rglob("*.json"), key=lambda item: str(item).replace("\\", "/")):
+                total_files += 1
+                try:
+                    payload = json.loads(path.read_text(encoding="utf-8"))
+                except Exception:
+                    continue
+                markers = extract_markers(payload)
+                if not markers:
+                    continue
+                rel_path = str(path.relative_to(repo_root)).replace("\\", "/")
+                ordered_markers = {key: markers[key] for key in sorted(markers)}
+                fingerprint_row = json.dumps(
+                    {"path": rel_path, "markers": ordered_markers},
+                    ensure_ascii=False,
+                    sort_keys=True,
+                )
+                digester.update(fingerprint_row.encode("utf-8"))
+                files.append(
+                    {
+                        "path": rel_path,
+                        "markers": ordered_markers,
+                    }
+                )
     return {
         "versionDigest": digester.hexdigest()[:24] if files else "no-markers",
         "fileCount": total_files,
         "markerFileCount": len(files),
+        "trackedOnly": using_tracked_only,
+        "trackedCandidateCount": tracked_candidates,
         "files": files[:50],
     }
 
@@ -211,6 +303,7 @@ def run(args: argparse.Namespace) -> int:
         "dataVersion": expected_data_version,
         "artifactVersion": str(artifact_scan["versionDigest"]),
         "artifactVersionKind": args.artifact_version_kind,
+        "artifactVersionBasis": DEFAULT_ARTIFACT_VERSION_BASIS,
     }
 
     report: dict[str, object] = {
@@ -219,6 +312,7 @@ def run(args: argparse.Namespace) -> int:
         "dataVersionSource": expected_data_version_source,
         "artifactVersion": artifact_scan["versionDigest"],
         "artifactVersionKind": args.artifact_version_kind,
+        "artifactVersionBasis": DEFAULT_ARTIFACT_VERSION_BASIS,
         "artifactVersionFileCount": artifact_scan["markerFileCount"],
         "artifactVersionScannedFiles": artifact_scan["fileCount"],
         "healthUrl": args.health_url,

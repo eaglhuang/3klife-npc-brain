@@ -71,6 +71,7 @@ DEFAULT_BAIHUA_PASSAGE_PATH = Path("artifacts/data-pipeline/sanguo-rag/anchor-in
 DEFAULT_RELATIONSHIP_RUNTIME_CANON_POLICY_LOCAL_PATH = Path("data/sanguo/policies/policy-relationship-runtime-canon.json")
 DEFAULT_HEALTH_ARTIFACT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted")
 DEFAULT_HEALTH_ARTIFACT_CACHE_TTL_SECONDS = 120
+DEFAULT_HEALTH_ARTIFACT_BASIS = "json-marker-path:v1-sorted"
 HEALTH_SEMVER_PATTERN = re.compile(
     r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
     r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
@@ -797,7 +798,7 @@ class NpcDialogueService:
         digester = hashlib.sha256()
         total_files = 0
         marker_files = 0
-        for path in root.rglob("*.json"):
+        for path in sorted(root.rglob("*.json"), key=lambda item: str(item).replace("\\", "/")):
             total_files += 1
             try:
                 payload = json.loads(path.read_text(encoding="utf-8"))
@@ -820,6 +821,7 @@ class NpcDialogueService:
         result = {
             "artifactVersion": digest,
             "artifactVersionKind": "sha256",
+            "artifactVersionBasis": DEFAULT_HEALTH_ARTIFACT_BASIS,
             "artifactVersionSource": "sha256:path+markers",
             "artifactVersionFileCount": marker_files,
             "artifactVersionScannedFiles": total_files,
@@ -871,6 +873,7 @@ class NpcDialogueService:
             "dataVersionSource": data_version_source,
             "artifactVersion": artifact_identity["artifactVersion"],
             "artifactVersionKind": artifact_identity["artifactVersionKind"],
+            "artifactVersionBasis": artifact_identity["artifactVersionBasis"],
             "artifactVersionSource": artifact_identity["artifactVersionSource"],
         }
         return {
@@ -881,6 +884,7 @@ class NpcDialogueService:
             "dataVersionSource": data_version_source,
             "artifactVersion": artifact_identity["artifactVersion"],
             "artifactVersionKind": artifact_identity["artifactVersionKind"],
+            "artifactVersionBasis": artifact_identity["artifactVersionBasis"],
             "artifactVersionSource": artifact_identity["artifactVersionSource"],
             "artifactVersionFileCount": artifact_identity["artifactVersionFileCount"],
             "artifactVersionScannedFiles": artifact_identity["artifactVersionScannedFiles"],
