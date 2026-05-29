@@ -428,7 +428,7 @@ def main() -> int:
 
     version_metadata = build_version_metadata(
         schema_version="top50-stable-hard-review-bundle.v1",
-        artifact_paths=[input_path, packet_summary_path, *decision_paths, *reviewed_paths],
+        artifact_paths=[lane_policy_path, *reviewed_paths, *decision_paths],
         repo_root=REPO_ROOT,
     )
     for row in rows:

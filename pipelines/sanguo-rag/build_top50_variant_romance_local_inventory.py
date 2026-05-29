@@ -144,7 +144,7 @@ def main() -> int:
             "runtime-gap": "runtime 缺口",
         }.get(trace_kind, trace_kind or "未分類")
         proposal_stage = str(row.get("proposalStage") or "")
-        quote_ready = proposal_stage == "review-ready"
+        quote_ready = proposal_stage in {"quote-ready", "review-ready"}
         next_action = "保留作為 variant 線索，等待正式 romance-variant 書籍或來源句。"
         if trace_kind == "runtime-gap":
             next_action = "先補一個能證明人物存在與出場定位的正式引用來源。"

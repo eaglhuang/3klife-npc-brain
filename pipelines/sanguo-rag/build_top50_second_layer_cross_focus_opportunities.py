@@ -187,16 +187,16 @@ def source_rows_for_focus(
             quote = compact_text(row.get("sourceQuoteZhTw"))
             if not quote:
                 continue
-                results.append(
-                    {
-                        "sourceType": row_type,
-                        "sourceLayer": compact_text(row.get("sourceLayer") or "second-layer-anchor"),
-                        "sourceStrength": compact_text(row.get("anchorSuitability") or "unknown"),
-                        "sourceFile": source_file,
-                        "locator": compact_text(row.get("locator")),
-                        "quote": quote,
-                    }
-                )
+            results.append(
+                {
+                    "sourceType": row_type,
+                    "sourceLayer": compact_text(row.get("sourceLayer") or "second-layer-anchor"),
+                    "sourceStrength": compact_text(row.get("anchorSuitability") or "unknown"),
+                    "sourceFile": source_file,
+                    "locator": compact_text(row.get("locator")),
+                    "quote": quote,
+                }
+            )
         elif row_type == "source-event-packets":
             if focus_id not in string_list(row.get("generalIds")):
                 continue
