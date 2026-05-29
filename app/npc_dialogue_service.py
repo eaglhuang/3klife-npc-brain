@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import os
@@ -69,6 +69,24 @@ DEFAULT_CHAPTER_ROOT = Path("artifacts/data-pipeline/sanguoyanyi-mao-hant-2026-0
 DEFAULT_SOURCE_EVENT_PACKET_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/source-event-packets/source-event-packets.jsonl")
 DEFAULT_BAIHUA_PASSAGE_PATH = Path("artifacts/data-pipeline/sanguo-rag/anchor-index/sanguoyanyi-baihua-zh-tw-passages.jsonl")
 DEFAULT_RELATIONSHIP_RUNTIME_CANON_POLICY_LOCAL_PATH = Path("data/sanguo/policies/policy-relationship-runtime-canon.json")
+DEFAULT_HEALTH_ARTIFACT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted")
+DEFAULT_HEALTH_ARTIFACT_CACHE_TTL_SECONDS = 120
+HEALTH_SEMVER_PATTERN = re.compile(
+    r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
+    r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
+    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
+)
+HEALTH_VERSION_MARKER_KEYS = (
+    "schemaVersion",
+    "dataVersion",
+    "datasetVersion",
+    "snapshotVersion",
+    "cacheVersion",
+    "generatedAt",
+    "version",
+    "promptVersion",
+    "cacheSchemaVersion",
+)
 SPECIAL_SOURCE_REF_WINDOWS: dict[str, tuple[str, ...]] = {
     "041#changban-a-dou": tuple(f"041#p{index}" for index in range(10, 22)),
 }
@@ -683,6 +701,12 @@ class NpcDialogueService:
         self._baihua_passage_cache: dict[tuple[str, int], str] | None = None
         self._scene_chorus_cache: dict[str, SceneChorusLine] = {}
         self._scene_chorus_cache_lock = Lock()
+        self._health_artifact_cache: dict[str, Any] | None = None
+        self._health_artifact_cache_at: float = 0.0
+        self._health_artifact_cache_ttl_seconds = max(
+            1,
+            int(os.environ.get("NPC_HEALTH_ARTIFACT_CACHE_TTL_SECONDS") or DEFAULT_HEALTH_ARTIFACT_CACHE_TTL_SECONDS),
+        )
         if not self.scene_cache_enabled:
             self._clear_scene_cache(reason="scene-cache-disabled")
 
@@ -708,6 +732,102 @@ class NpcDialogueService:
         if payload.get("id") != "Policy_RelationshipRuntimeCanon_P1":
             raise ValueError(f"Unexpected relationship runtime canon policy id: {path}")
         return payload
+
+    def _describe_path_snapshot(self, path: Path) -> dict[str, Any]:
+        exists = path.exists()
+        snapshot: dict[str, Any] = {
+            "path": str(path),
+            "exists": exists,
+        }
+        if not exists:
+            return snapshot
+        stat = path.stat()
+        snapshot.update(
+            {
+                "mtime": datetime.fromtimestamp(stat.st_mtime, tz=UTC).isoformat(),
+                "sizeBytes": stat.st_size,
+            }
+        )
+        return snapshot
+
+    def _is_semver(self, value: str) -> bool:
+        return bool(HEALTH_SEMVER_PATTERN.match(value))
+
+    def _resolve_health_data_version(self) -> tuple[str, str]:
+        configured = str(os.environ.get("NPC_DATA_VERSION_SEMVER") or "").strip()
+        if configured and self._is_semver(configured):
+            return configured, "env:NPC_DATA_VERSION_SEMVER"
+
+        version_cache_path = self.repo_root / ".atm/runtime/version-cache.json"
+        if version_cache_path.exists():
+            try:
+                payload = json.loads(version_cache_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                payload = {}
+            for key in ("dataVersion", "lastSeenFrameworkVersion", "specVersion"):
+                candidate = str(payload.get(key) or "").strip()
+                if candidate and self._is_semver(candidate):
+                    return candidate, f".atm/runtime/version-cache.json:{key}"
+
+        framework_env = str(os.environ.get("ATM_FRAMEWORK_VERSION") or "").strip()
+        if framework_env and self._is_semver(framework_env):
+            return framework_env, "env:ATM_FRAMEWORK_VERSION"
+
+        return "0.0.0", "fallback:0.0.0"
+
+    def _extract_health_markers(self, payload: object) -> dict[str, str]:
+        if not isinstance(payload, dict):
+            return {}
+        markers: dict[str, str] = {}
+        for key in HEALTH_VERSION_MARKER_KEYS:
+            value = payload.get(key)
+            if value is None:
+                continue
+            text = str(value).strip()
+            if text:
+                markers[key] = text
+        return markers
+
+    def _compute_health_artifact_identity(self) -> dict[str, Any]:
+        now = time.monotonic()
+        if self._health_artifact_cache and now - self._health_artifact_cache_at < self._health_artifact_cache_ttl_seconds:
+            return dict(self._health_artifact_cache)
+
+        root = self.repo_root / DEFAULT_HEALTH_ARTIFACT_ROOT
+        digester = hashlib.sha256()
+        total_files = 0
+        marker_files = 0
+        for path in root.rglob("*.json"):
+            total_files += 1
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            markers = self._extract_health_markers(payload)
+            if not markers:
+                continue
+            marker_files += 1
+            rel_path = str(path.relative_to(self.repo_root)).replace("\\", "/")
+            ordered_markers = {key: markers[key] for key in sorted(markers)}
+            row = json.dumps(
+                {"path": rel_path, "markers": ordered_markers},
+                ensure_ascii=False,
+                sort_keys=True,
+            )
+            digester.update(row.encode("utf-8"))
+
+        digest = digester.hexdigest()[:24] if marker_files > 0 else "no-markers"
+        result = {
+            "artifactVersion": digest,
+            "artifactVersionKind": "sha256",
+            "artifactVersionSource": "sha256:path+markers",
+            "artifactVersionFileCount": marker_files,
+            "artifactVersionScannedFiles": total_files,
+            "artifactVersionScannedRoot": str(root),
+        }
+        self._health_artifact_cache = dict(result)
+        self._health_artifact_cache_at = now
+        return result
 
     def get_health(self) -> dict:
         provider_order = self.provider_router.provider_order
@@ -735,9 +855,45 @@ class NpcDialogueService:
         sqlite_health["status"] = "stub"
         sqlite_health["productionReady"] = False
         vector_health["sqliteVec"] = sqlite_health
+        data_version, data_version_source = self._resolve_health_data_version()
+        artifact_identity = self._compute_health_artifact_identity()
+        deployment_health = {
+            "runtime": "render",
+            "renderGitCommit": os.environ.get("RENDER_GIT_COMMIT"),
+            "renderServiceId": os.environ.get("RENDER_SERVICE_ID"),
+            "renderServiceName": os.environ.get("RENDER_SERVICE_NAME"),
+            "renderExternalUrl": os.environ.get("RENDER_EXTERNAL_URL"),
+            "githubSha": os.environ.get("GITHUB_SHA"),
+            "buildSha": os.environ.get("BUILD_SHA"),
+            "buildVersion": os.environ.get("BUILD_VERSION"),
+            "deployedAt": os.environ.get("RENDER_DEPLOY_TIMESTAMP") or os.environ.get("BUILD_TIMESTAMP"),
+            "dataVersion": data_version,
+            "dataVersionSource": data_version_source,
+            "artifactVersion": artifact_identity["artifactVersion"],
+            "artifactVersionKind": artifact_identity["artifactVersionKind"],
+            "artifactVersionSource": artifact_identity["artifactVersionSource"],
+        }
         return {
             "ok": True,
             "service": "npc-brain",
+            "schemaVersion": "healthz.v2",
+            "dataVersion": data_version,
+            "dataVersionSource": data_version_source,
+            "artifactVersion": artifact_identity["artifactVersion"],
+            "artifactVersionKind": artifact_identity["artifactVersionKind"],
+            "artifactVersionSource": artifact_identity["artifactVersionSource"],
+            "artifactVersionFileCount": artifact_identity["artifactVersionFileCount"],
+            "artifactVersionScannedFiles": artifact_identity["artifactVersionScannedFiles"],
+            "deployment": deployment_health,
+            "runtimeSnapshots": {
+                "personaRoot": self._describe_path_snapshot(self.persona_root),
+                "runtimeProfileRoot": self._describe_path_snapshot(self.runtime_profile_root),
+                "eventRoot": self._describe_path_snapshot(self.event_root),
+                "readyEventsFile": self._describe_path_snapshot(self.event_root / "events.jsonl"),
+                "sourceEventPacketsFile": self._describe_path_snapshot(
+                    self.repo_root / "artifacts" / "data-pipeline" / "sanguo-rag" / "extracted" / "source-event-packets" / "source-event-packets.jsonl"
+                ),
+            },
             "llm": {
                 "providerOrder": provider_order,
                 "geminiConfigured": bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")),
