@@ -1,0 +1,63 @@
+{
+  "id": "Policy_Top50RulerSubjectHistoricalPhaseLane_P0",
+  "description": "Top50 白話 bootstrap 的歷史階段君臣 lane。專門治理投奔、跟從、侍奉、歸附等時間性依附關係，與 stable-baseline 常數關係分流。",
+  "canonicalWrites": false,
+  "queueFilter": {
+    "relationshipType": "ruler_subject",
+    "requiredLaneHints": [
+      "historical-phase"
+    ]
+  },
+  "outputs": {
+    "queueFileName": "top50-ruler-subject-historical-phase-queue.jsonl",
+    "summaryFileName": "top50-ruler-subject-historical-phase-summary.json",
+    "markdownFileName": "top50-ruler-subject-historical-phase-summary.zh-TW.md",
+    "reviewBundleFileName": "top50-ruler-subject-historical-phase-reviewed-supported.jsonl",
+    "reviewBundleMarkdownFileName": "top50-ruler-subject-historical-phase-reviewed-supported.zh-TW.md",
+    "reviewBundleDecisionTemplateFileName": "top50-ruler-subject-historical-phase-reviewed-supported.template.json"
+  },
+  "cueTermsZhTw": [
+    "投奔",
+    "跟從",
+    "侍奉",
+    "歸附"
+  ],
+  "gapResolution": {
+    "enabled": true,
+    "resolvedVerdicts": [
+      "supported",
+      "contradicted"
+    ],
+    "resolvedDecisionActions": [
+      "force-whitelist",
+      "force-blacklist",
+      "remove-from-index"
+    ],
+    "reviewedCachePaths": [
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max400/codex-skill-review/top50-stable-hard-reviewed-cache.jsonl",
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max400/top50-stable-hard-semantic-review-cache.imported.jsonl",
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/codex-skill-review/top50-ruler-subject-historical-phase-reviewed-cache.jsonl",
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/codex-skill-review/top50-ruler-subject-historical-phase-reviewed-cache.imported.jsonl"
+    ],
+    "humanDecisionPaths": [
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max400/top50-stable-hard-human-decisions.applied.json",
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-ruler-subject-historical-phase-human-decisions.applied.json",
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-ruler-subject-historical-phase-human-decisions.feedback-batch001.applied.json"
+    ]
+  },
+  "reviewBatch": {
+    "preferHigherFocusGapCount": true,
+    "preferHigherSentenceQuality": true,
+    "preferHigherScoreBeforeSemanticReview": true,
+    "maxRowsPerPacket": 80
+  },
+  "reviewOutput": {
+    "relationshipGovernanceMode": "historical-phase",
+    "rawQueueEligibleForHumanReview": false,
+    "supportedReviewCacheEligible": true,
+    "proposalOnly": true,
+    "reviewPacketEligible": true,
+    "humanReviewTitleZhTw": "Top50 歷史階段君臣審核表",
+    "humanReviewNotesZhTw": "本 lane 僅治理歷史階段依附，不會直接寫成穩定白名單常數關係。"
+  }
+}

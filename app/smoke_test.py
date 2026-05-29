@@ -3,12 +3,17 @@ from __future__ import annotations
 import os
 import json
 
+from pathlib import Path
+
 from .npc_dialogue_service import DialogueRequest, NpcDialogueService, SceneDirectorRequest
 
 
 def main() -> None:
     os.environ["NPC_LLM_PROVIDER_ORDER"] = "deterministic"
-    service = NpcDialogueService()
+    workspace_root = Path(__file__).resolve().parents[1]
+    workspace_runtime_root = workspace_root / "artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles"
+    service_kwargs = {"runtime_profile_root": workspace_runtime_root} if workspace_runtime_root.exists() else {}
+    service = NpcDialogueService(**service_kwargs)
     contexts = service.get_context_options("zhang-fei")
     keywords = service.get_keyword_options("zhang-fei")
     persona = service.get_persona_card("zhang-fei")
@@ -56,6 +61,26 @@ def main() -> None:
             renderMode="data_first",
         )
     )
+    if workspace_runtime_root.exists():
+        liu_bei_profile = service.get_narrative_profile("liu-bei")
+        liu_bei_targets = {target.targetId: target for target in liu_bei_profile.interactionTargets}
+        # Canonical output must keep one card per (angle, relatedTargetId) pair and only merge sourceRefs.
+        pair_keys = [
+            (card.angle, target_id)
+            for card in liu_bei_profile.evidenceCards
+            for target_id in card.relatedTargetIds
+        ]
+        assert len(pair_keys) == len(set(pair_keys)), "liu-bei narrative profile should not duplicate angle/target pairs"
+        assert len({card.evidenceId for card in liu_bei_profile.evidenceCards}) == len(
+            liu_bei_profile.evidenceCards
+        ), "narrative profile evidence IDs should remain unique"
+        sun_shang_xiang = liu_bei_targets.get("sun-shang-xiang")
+        assert sun_shang_xiang is not None, "liu-bei narrative profile should keep sun-shang-xiang as an interaction target"
+        assert sun_shang_xiang.sourceType == "relationship-edge", "sun-shang-xiang should be relationship-backed, not mention-only"
+        assert sun_shang_xiang.relationshipType == "spouse", "sun-shang-xiang should retain the stable spouse anchor"
+        assert all(
+            target.sourceType != "source-text-mention" for target in liu_bei_profile.interactionTargets
+        ), "top interaction targets should not be filled by incidental source text mentions"
 
     assert contexts.options, "context options should not be empty"
     assert keywords.categories.get("person"), "person keyword options should not be empty"
@@ -67,8 +92,8 @@ def main() -> None:
     assert response.speechContextMode == "inner_monologue", "dialogue response should echo speech context mode"
     assert response.llmModelPreset == "fallback_chain", "dialogue response should echo model preset"
     assert response.rejectedKeywordKeys == ["unknown-key"], "unknown keyword should be rejected explicitly"
-    assert fallback_target_labels.get("zhang-fei") == "張飛", "target labels should preserve human-readable names even when roster names are slugs"
-    assert "關某" not in persona.safeFallbackLine, "zhang-fei fallback line must not use guan-yu self-name"
+    assert fallback_target_labels.get("zhang-fei") == "撘菟?", "target labels should preserve human-readable names even when roster names are slugs"
+    assert "??" not in persona.safeFallbackLine, "zhang-fei fallback line must not use guan-yu self-name"
     assert resolved_scene.dataStatus in {"direct", "angle_empty_filled", "target_empty_filled"}, "liu-bei/zhang-fei scene should resolve to a non-empty scene"
     assert not resolved_scene.isEmpty, "liu-bei/zhang-fei scene should produce non-empty director beats"
     assert resolved_scene.beats.sceneText or resolved_scene.storyText, "resolved scene should include at least one grounded narrative field"

@@ -1,0 +1,67 @@
+{
+  "id": "Policy_Top50_MaYunLu_VariantKeyFigureDemand_P0",
+  "description": "馬雲騄 romance-variant 關鍵人物需求。這份 policy 依使用者補充的《反三國演義》脈絡，整理第一批應補的核心人物與關係。",
+  "canonicalWrites": false,
+  "targetGeneralId": "ma-yun-lu",
+  "targetNameZhTw": "馬雲騄",
+  "targetAliasesZhTw": [
+    "馬雲騄"
+  ],
+  "keyFigures": [
+    {
+      "figureId": "zhao-yun",
+      "figureNameZhTw": "趙雲",
+      "figureAliasesZhTw": [
+        "趙雲",
+        "子龍"
+      ],
+      "relationshipType": "spouse",
+      "priority": 1,
+      "isTop50": true,
+      "lane": "variant-romance-top50-relationship",
+      "reasonZhTw": "在周大荒《反三國演義》中，趙雲是馬雲騄的丈夫，屬最優先的 variant 配偶線。"
+    },
+    {
+      "figureId": "ma-chao",
+      "figureNameZhTw": "馬超",
+      "figureAliasesZhTw": [
+        "馬超",
+        "孟起"
+      ],
+      "relationshipType": "sibling",
+      "priority": 2,
+      "isTop50": true,
+      "lane": "variant-romance-top50-relationship",
+      "reasonZhTw": "馬超是馬雲騄的親哥哥，屬核心家族關係，能穩定定義人物身世位置。"
+    },
+    {
+      "figureId": "ma-teng",
+      "figureNameZhTw": "馬騰",
+      "figureAliasesZhTw": [
+        "馬騰"
+      ],
+      "relationshipType": "parent_child",
+      "priority": 3,
+      "isTop50": false,
+      "lane": "variant-romance-non-top50-hard-baseline",
+      "reasonZhTw": "馬騰是馬雲騄之父，屬人物存在與家世基線的一部分。"
+    },
+    {
+      "figureId": "ma-dai",
+      "figureNameZhTw": "馬岱",
+      "figureAliasesZhTw": [
+        "馬岱"
+      ],
+      "relationshipType": "extended_kinship",
+      "priority": 4,
+      "isTop50": false,
+      "lane": "variant-romance-non-top50-extended-kinship",
+      "reasonZhTw": "馬岱是馬雲騄的堂兄，屬延伸親族線，可先以 proposal-only 方式整理。"
+    }
+  ],
+  "inputs": {
+    "focusBundlePath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/focus-bundles/ma-yun-lu.bundle.json",
+    "focusPacketPath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/focus-skill-packets/ma-yun-lu.skill-packet.json",
+    "reviewedCachePaths": []
+  }
+}

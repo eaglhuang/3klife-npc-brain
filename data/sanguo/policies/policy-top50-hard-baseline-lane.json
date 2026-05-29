@@ -1,0 +1,95 @@
+{
+  "id": "Policy_Top50HardBaselineLane_P0",
+  "description": "Top50 人物中心白話 bootstrap 的硬關係優先 lane。先收斂穩定硬關係與陣營歸屬，再把其餘較軟或較雜訊的關係延後。",
+  "canonicalWrites": false,
+  "hardRelationshipTypes": [
+    "ruler_subject",
+    "faction_membership",
+    "parent_child",
+    "adoptive_parent_child",
+    "spouse",
+    "sibling",
+    "sworn_sibling"
+  ],
+  "stableRulerSubject": {
+    "requiredLaneHints": [
+      "stable-baseline",
+      ""
+    ],
+    "blockedLaneHints": [
+      "historical-phase"
+    ]
+  },
+  "factionReview": {
+    "enabled": true,
+    "skipRankingFactions": [
+      "enemy",
+      "neutral",
+      "other",
+      "unknown"
+    ],
+    "genericMembershipTermsZhTw": [
+      "軍",
+      "軍中",
+      "麾下",
+      "帳下",
+      "陣營",
+      "勢力"
+    ],
+    "maxCandidatesPerSentence": 3,
+    "baseScore": 88.0,
+    "leaderAliasBoost": 4.0,
+    "labelAliasBoost": 2.0
+  },
+  "outputs": {
+    "stableHardQueueFileName": "top50-stable-hard-relation-queue.jsonl",
+    "stableHardSummaryFileName": "top50-stable-hard-relation-summary.json",
+    "stableHardMarkdownFileName": "top50-stable-hard-relation-summary.zh-TW.md",
+    "factionQueueFileName": "top50-faction-membership-queue.jsonl",
+    "factionSummaryFileName": "top50-faction-membership-queue-summary.json"
+  },
+  "gapResolution": {
+    "enabled": true,
+    "resolvedVerdicts": [
+      "supported",
+      "contradicted"
+    ],
+    "resolvedDecisionActions": [
+      "force-whitelist",
+      "force-blacklist",
+      "remove-from-index"
+    ],
+    "reviewedCachePaths": [
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max400/codex-skill-review/top50-stable-hard-reviewed-cache.jsonl",
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max400/top50-stable-hard-semantic-review-cache.imported.jsonl"
+    ],
+    "humanDecisionPaths": [
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max400/top50-stable-hard-human-decisions.applied.json"
+    ]
+  },
+  "reviewBatch": {
+    "relationshipTypePriority": [
+      "ruler_subject",
+      "spouse",
+      "parent_child",
+      "sworn_sibling",
+      "adoptive_parent_child",
+      "sibling",
+      "faction_membership"
+    ],
+    "pruneToPrimaryRelationshipType": true,
+    "preferHigherFocusGapCount": true,
+    "preferHigherSentenceQuality": true
+  },
+  "reviewOutput": {
+    "rawQueueEligibleForHumanReview": false,
+    "supportedReviewCacheEligible": true,
+    "proposalOnly": false,
+    "mixedReviewBlockedRelationshipTypes": [
+      "ruler_subject"
+    ],
+    "highRiskRelationshipTypes": [
+      "ruler_subject"
+    ]
+  }
+}

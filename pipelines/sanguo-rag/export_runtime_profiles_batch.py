@@ -11,10 +11,13 @@ from pathlib import Path
 from repo_layout import resolve_repo_root
 from typing import Any
 
+from primary_canon_inputs import choose_primary_or_fallback, latest_primary_canon_artifact_paths, primary_canon_metadata
 from sanguo_governance_loader import SanguoGovernanceError, default_governance_root, load_runtime_batch_keyword_readiness_policy
 
 
 REPO_ROOT = resolve_repo_root(__file__)
+SCRIPT_DIR = Path(__file__).resolve().parent
+CALLER_CWD = Path.cwd()
 PIPELINE_ROOT = Path("pipelines/sanguo-rag")
 
 DEFAULT_GENERAL_ID_FILE = Path(
@@ -49,9 +52,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--general-id", action="append", default=[])
     parser.add_argument("--general-id-file", default=str(DEFAULT_GENERAL_ID_FILE))
     parser.add_argument("--stable-knowledge", default=str(DEFAULT_STABLE_KNOWLEDGE_PATH))
-    parser.add_argument("--source-event-packets", default=str(DEFAULT_SOURCE_EVENT_PACKETS_PATH))
+    parser.add_argument("--source-event-packets", default="")
     parser.add_argument("--events", default=str(DEFAULT_EVENTS_PATH))
-    parser.add_argument("--relationship-evidence", default=str(DEFAULT_RELATIONSHIP_EVIDENCE_PATH))
+    parser.add_argument("--relationship-evidence", default="")
     parser.add_argument("--core-report", default=str(DEFAULT_CORE_REPORT_PATH))
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
     parser.add_argument("--report-path", default=str(DEFAULT_REPORT_PATH))
@@ -60,6 +63,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--per-general-timeout", type=float, default=10.0)
     parser.add_argument("--governance-root", default=str(DEFAULT_GOVERNANCE_ROOT), help="Sanguo governance root")
     parser.add_argument("--runtime-batch-keyword-policy", default=None, help="Override policy-runtime-batch-keyword-readiness.json path")
+    parser.add_argument(
+        "--no-primary-canon-defaults",
+        action="store_true",
+        help="Disable auto-selection of latest primary-canon relationship evidence and source-event packets.",
+    )
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--skip-existing", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -77,6 +85,11 @@ def repo_relative(path: Path) -> str:
         return str(path)
 
 
+def resolve_cli_path(value: str | Path) -> Path:
+    path = Path(value)
+    return path if path.is_absolute() else CALLER_CWD / path
+
+
 def read_general_ids(path: Path) -> list[str]:
     if not path.exists():
         return []
@@ -87,6 +100,10 @@ def read_general_ids(path: Path) -> list[str]:
             continue
         ids.extend(part.strip() for part in cleaned.replace(",", " ").split() if part.strip())
     return ids
+
+
+def read_json(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def unique(values: list[str]) -> list[str]:
@@ -123,6 +140,54 @@ def write_report(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def stable_input_gap(stable: dict[str, Any], general_id: str) -> list[str]:
+    identities = {str(row.get("generalId")) for row in stable.get("identitySeeds") or []}
+    profiles = {str(row.get("generalId")) for row in stable.get("basicProfileSeeds") or []}
+    missing: list[str] = []
+    if general_id not in identities:
+        missing.append("identitySeeds")
+    if general_id not in profiles:
+        missing.append("basicProfileSeeds")
+    return missing
+
+
+def missing_stable_result(general_id: str, missing_fields: list[str]) -> dict[str, Any]:
+    return {
+        "generalId": general_id,
+        "status": "missing-stable-input",
+        "returnCode": None,
+        "elapsedSec": 0,
+        "missingFields": missing_fields,
+        "needsUpstreamFill": True,
+        "stdout": "",
+        "stderr": "Missing stable identity/profile input; run upstream stable source enrichment before runtime profile export.",
+    }
+
+
+def resolve_input_paths(args: argparse.Namespace) -> dict[str, Any]:
+    run_root, primary_paths = (None, {})
+    if not args.no_primary_canon_defaults:
+        run_root, primary_paths = latest_primary_canon_artifact_paths()
+
+    source_event_packets = (
+        resolve_cli_path(args.source_event_packets)
+        if args.source_event_packets
+        else resolve_cli_path(choose_primary_or_fallback("sourceEventPackets", DEFAULT_SOURCE_EVENT_PACKETS_PATH, primary_paths))
+    )
+    relationship_evidence = (
+        resolve_cli_path(args.relationship_evidence)
+        if args.relationship_evidence
+        else resolve_cli_path(choose_primary_or_fallback("relationshipEvidence", DEFAULT_RELATIONSHIP_EVIDENCE_PATH, primary_paths))
+    )
+    args.source_event_packets = str(source_event_packets)
+    args.relationship_evidence = str(relationship_evidence)
+    return {
+        "primaryCanonDefaults": primary_canon_metadata(run_root, primary_paths),
+        "sourceEventPackets": source_event_packets,
+        "relationshipEvidence": relationship_evidence,
+    }
+
+
 def run_export(args: argparse.Namespace, general_id: str) -> dict[str, Any]:
     output_root = Path(args.output_root)
     outputs = expected_outputs(output_root, general_id)
@@ -138,7 +203,7 @@ def run_export(args: argparse.Namespace, general_id: str) -> dict[str, Any]:
 
     command = [
         sys.executable,
-        repo_relative(REPO_ROOT / PIPELINE_ROOT / "export_general_runtime_profile.py"),
+        str(SCRIPT_DIR / "export_general_runtime_profile.py"),
         "--general-id",
         general_id,
         "--stable-knowledge",
@@ -217,6 +282,13 @@ def main() -> None:
     if not general_ids:
         raise SystemExit("No general ids to export.")
 
+    resolved_inputs = resolve_input_paths(args)
+    args.stable_knowledge = str(resolve_cli_path(args.stable_knowledge))
+    args.events = str(resolve_cli_path(args.events))
+    args.core_report = str(resolve_cli_path(args.core_report))
+    args.output_root = str(resolve_cli_path(args.output_root))
+    args.report_path = str(resolve_cli_path(args.report_path))
+
     required_paths = [
         Path(args.stable_knowledge),
         Path(args.source_event_packets),
@@ -229,7 +301,9 @@ def main() -> None:
         raise FileNotFoundError(f"Missing input files: {missing}")
 
     report_path = Path(args.report_path)
+    stable = read_json(Path(args.stable_knowledge))
     results: list[dict[str, Any]] = []
+    missing_stable_inputs: list[dict[str, Any]] = []
     payload: dict[str, Any] = {
         "generatedAt": utc_now(),
         "mode": "runtime-profile-batch-export",
@@ -241,19 +315,33 @@ def main() -> None:
             "relationshipEvidence": args.relationship_evidence,
             "coreReport": args.core_report,
             "outputRoot": args.output_root,
+            "primaryCanonDefaults": resolved_inputs["primaryCanonDefaults"],
         },
         "settings": {
             "perGeneralTimeoutSec": args.per_general_timeout,
+            "primaryCanonDefaultsEnabled": not args.no_primary_canon_defaults,
             "overwrite": args.overwrite,
             "skipExisting": args.skip_existing,
             "dryRun": args.dry_run,
         },
         "summary": {},
+        "upstreamGaps": {
+            "missingStableInputs": missing_stable_inputs,
+        },
         "results": results,
     }
 
     for index, general_id in enumerate(general_ids, 1):
-        result = run_export(args, general_id)
+        missing_fields = stable_input_gap(stable, general_id)
+        if missing_fields:
+            result = missing_stable_result(general_id, missing_fields)
+            missing_stable_inputs.append({
+                "generalId": general_id,
+                "missingFields": missing_fields,
+                "recommendedAction": "populate stable-knowledge-bootstrap identitySeeds/basicProfileSeeds from upstream source evidence before runtime projection",
+            })
+        else:
+            result = run_export(args, general_id)
         results.append(result)
         counts: dict[str, int] = {}
         for item in results:
@@ -264,7 +352,8 @@ def main() -> None:
             "completed": len(results),
             "statusCounts": counts,
             "okCount": counts.get("ok", 0) + counts.get("skipped-existing", 0),
-            "failCount": counts.get("failed", 0) + counts.get("timeout", 0),
+            "failCount": counts.get("failed", 0) + counts.get("timeout", 0) + counts.get("missing-stable-input", 0),
+            "missingStableInputCount": counts.get("missing-stable-input", 0),
         }
         payload["updatedAt"] = utc_now()
         write_report(report_path, payload)

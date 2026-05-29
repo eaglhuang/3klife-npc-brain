@@ -81,6 +81,21 @@ def relationship_taxonomy_policy() -> dict[str, str]:
         "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist",
     }
 
+
+def focus_projection_policy() -> dict[str, Any]:
+    policy = RUNTIME_GENERAL_PROFILE_EXPORT_POLICY.get("focusProjectionPolicy")
+    if isinstance(policy, dict):
+        return policy
+    return {
+        "version": "runtime_focus_projection_v1",
+        "missingDataPolicy": "Downstream emits upstreamFeedback instead of fabricating missing runtime data.",
+        "readyStatus": "ready",
+        "missingDataStatus": "insufficient_source_data",
+        "defaultUpstreamFeedbackReason": "source needs upstream event or relationship evidence before scene use",
+        "authorityPriority": [],
+        "linkSourceRules": {},
+    }
+
 VOICE_PRESETS: dict[str, dict[str, Any]] = {}
 
 
@@ -392,6 +407,10 @@ def linked_general_ids(
 ) -> tuple[list[str], list[dict[str, Any]]]:
     trace: list[dict[str, Any]] = []
     buckets: dict[str, set[str]] = defaultdict(set)
+    for target_id in declared_ids or []:
+        cleaned_target_id = str(target_id or "").strip()
+        if cleaned_target_id and cleaned_target_id != general_id:
+            buckets[cleaned_target_id].add("declaredGeneralIds")
     for target_id in relationship_edge_general_ids(relationship_edges or [], general_id):
         buckets[target_id].add("relationshipEdges")
     for target_id in source_ref_related_ids(refs, relationship_targets_by_ref):
@@ -404,32 +423,148 @@ def linked_general_ids(
     return sorted(buckets), trace
 
 
+def projection_from_trace_sources(trace_sources: list[str]) -> dict[str, Any]:
+    policy = focus_projection_policy()
+    raw_rules = policy.get("linkSourceRules")
+    rules = raw_rules if isinstance(raw_rules, dict) else {}
+    source_set = {str(source or "").strip() for source in trace_sources if str(source or "").strip()}
+    authority_priority = [str(item).strip() for item in (policy.get("authorityPriority") or []) if str(item).strip()]
+    ordered_sources = [source for source in authority_priority if source in source_set]
+    ordered_sources.extend(sorted(source for source in source_set if source not in set(ordered_sources)))
+    matched_rules = [rules.get(source) for source in ordered_sources if isinstance(rules.get(source), dict)]
+    selected_rule = matched_rules[0] if matched_rules else {}
+    scene_eligible = any(bool(rule.get("sceneEligible")) for rule in matched_rules)
+    supplemental_eligible = any(bool(rule.get("supplementalEligible")) for rule in matched_rules)
+    feedback_reasons: list[str] = []
+    if not scene_eligible:
+        feedback_reasons = [
+            str(rule.get("upstreamFeedbackReason") or policy.get("defaultUpstreamFeedbackReason") or "insufficient source data")
+            for rule in matched_rules
+            if rule.get("upstreamFeedbackRequired")
+        ]
+        if not feedback_reasons:
+            feedback_reasons = [str(policy.get("defaultUpstreamFeedbackReason") or "insufficient source data")]
+    return {
+        "linkAuthority": str(selected_rule.get("linkAuthority") or (ordered_sources[0] if ordered_sources else "unknown")),
+        "sceneEligible": scene_eligible,
+        "supplementalEligible": supplemental_eligible,
+        "sourceDataStatus": str(policy.get("readyStatus") if scene_eligible else policy.get("missingDataStatus") or "insufficient_source_data"),
+        "upstreamFeedbackReasons": sorted(set(feedback_reasons)),
+    }
+
+
+def build_target_projections(*, general_id: str, source: dict[str, Any], source_type: str) -> list[dict[str, Any]]:
+    projections: list[dict[str, Any]] = []
+    source_refs = [str(ref) for ref in (source.get("sourceRefs") or []) if str(ref).strip()]
+    if source.get("sourceRef"):
+        source_refs.append(str(source.get("sourceRef")))
+    source_ref = source_refs[0] if source_refs else None
+    source_id = source.get("eventId") or source.get("eventKey") or source.get("sourceRef")
+    angle_families = [str(item) for item in (source.get("angleFamilies") or []) if str(item).strip()]
+    for trace in source.get("targetLinkTrace") or []:
+        target_id = str(trace.get("targetId") or "").strip()
+        if not target_id or target_id == general_id:
+            continue
+        trace_sources = [str(item).strip() for item in (trace.get("sources") or []) if str(item).strip()]
+        projection = projection_from_trace_sources(trace_sources)
+        upstream_feedback = [
+            {"reason": reason, "suggestedAction": "upstream_source_or_relationship_backfill"}
+            for reason in projection.pop("upstreamFeedbackReasons", [])
+        ]
+        payload = {
+            "focusGeneralId": general_id,
+            "targetId": target_id,
+            "sourceType": source_type,
+            "sourceRef": source_ref,
+            "sourceId": source_id,
+            "angleFamilies": angle_families,
+            "traceSources": sorted(set(trace_sources)),
+            **projection,
+        }
+        if upstream_feedback:
+            payload["upstreamFeedback"] = upstream_feedback
+        projections.append(payload)
+    return projections
+
+
 def build_angle_target_links(story_beats: list[dict[str, Any]], source_highlights: list[dict[str, Any]]) -> list[dict[str, Any]]:
     links: dict[tuple[str, str, str], dict[str, Any]] = {}
+
+    def add_link(*, angle: str, target_id: str, source_ref: Any, source_id: Any, source_type: str, projection: dict[str, Any] | None = None) -> None:
+        cleaned_angle = str(angle or "").strip() or "source_highlight"
+        cleaned_target_id = str(target_id or "").strip()
+        cleaned_source_ref = str(source_ref or "").strip()
+        cleaned_source_id = str(source_id or "").strip()
+        if not cleaned_target_id:
+            return
+        key = (cleaned_target_id, cleaned_source_ref or cleaned_source_id, source_type)
+        existing = links.get(key)
+        if existing:
+            angle_families = existing.setdefault("angleFamilies", [existing.get("angleFamily")])
+            if cleaned_angle not in angle_families:
+                angle_families.append(cleaned_angle)
+            if projection:
+                existing["sceneEligible"] = bool(existing.get("sceneEligible")) or bool(projection.get("sceneEligible"))
+                existing["linkAuthorities"] = unique(list(existing.get("linkAuthorities") or []) + [projection.get("linkAuthority")])
+                existing["sourceDataStatuses"] = unique(list(existing.get("sourceDataStatuses") or []) + [projection.get("sourceDataStatus")])
+                if projection.get("sceneEligible") or not existing.get("sourceDataStatus"):
+                    existing["sourceDataStatus"] = projection.get("sourceDataStatus")
+                    existing["linkAuthority"] = projection.get("linkAuthority")
+                if projection.get("upstreamFeedback"):
+                    existing["upstreamFeedback"] = list(existing.get("upstreamFeedback") or []) + list(projection.get("upstreamFeedback") or [])
+            return
+        payload = {
+            "angleFamily": cleaned_angle,
+            "angleFamilies": [cleaned_angle],
+            "targetId": cleaned_target_id,
+            "sourceRef": cleaned_source_ref or None,
+            "sourceId": cleaned_source_id or None,
+            "sourceType": source_type,
+        }
+        if projection:
+            payload.update(
+                {
+                    "linkAuthority": projection.get("linkAuthority"),
+                    "linkAuthorities": unique([projection.get("linkAuthority")]),
+                    "sceneEligible": bool(projection.get("sceneEligible")),
+                    "sourceDataStatus": projection.get("sourceDataStatus"),
+                    "sourceDataStatuses": unique([projection.get("sourceDataStatus")]),
+                }
+            )
+            if projection.get("upstreamFeedback"):
+                payload["upstreamFeedback"] = projection.get("upstreamFeedback")
+        links[key] = payload
+
+    def projected_targets(source: dict[str, Any]) -> list[dict[str, Any]]:
+        projections = [item for item in (source.get("targetProjections") or []) if item.get("targetId")]
+        if projections:
+            return projections
+        return [{"targetId": target_id} for target_id in (source.get("relatedGeneralIds") or [])]
+
     for beat in story_beats:
         angles = beat.get("angleFamilies") or ["story_event"]
         for angle in angles:
-            for target_id in beat.get("relatedGeneralIds") or []:
-                key = (str(angle), str(target_id), str(beat.get("eventId") or beat.get("eventKey") or ""))
-                links[key] = {
-                    "angleFamily": str(angle),
-                    "targetId": str(target_id),
-                    "sourceRef": (beat.get("sourceRefs") or [None])[0],
-                    "sourceId": beat.get("eventId") or beat.get("eventKey"),
-                    "sourceType": "storyBeat",
-                }
+            for projection in projected_targets(beat):
+                add_link(
+                    angle=str(angle),
+                    target_id=str(projection.get("targetId")),
+                    source_ref=(beat.get("sourceRefs") or [None])[0],
+                    source_id=beat.get("eventId") or beat.get("eventKey"),
+                    source_type="storyBeat",
+                    projection=projection,
+                )
     for highlight in source_highlights:
         angles = highlight.get("angleFamilies") or ["source_highlight"]
         for angle in angles:
-            for target_id in highlight.get("relatedGeneralIds") or []:
-                key = (str(angle), str(target_id), str(highlight.get("sourceRef") or ""))
-                links[key] = {
-                    "angleFamily": str(angle),
-                    "targetId": str(target_id),
-                    "sourceRef": highlight.get("sourceRef"),
-                    "sourceId": highlight.get("sourceRef"),
-                    "sourceType": "sourceHighlight",
-                }
+            for projection in projected_targets(highlight):
+                add_link(
+                    angle=str(angle),
+                    target_id=str(projection.get("targetId")),
+                    source_ref=highlight.get("sourceRef"),
+                    source_id=highlight.get("sourceRef"),
+                    source_type="sourceHighlight",
+                    projection=projection,
+                )
     return list(links.values())
 
 
@@ -738,8 +873,7 @@ def build_persona(
             relationship_targets_by_ref=relationship_targets_by_ref,
             alias_index=alias_index,
         )
-        story_beats.append(
-            {
+        story_beat = {
             "eventId": event.get("eventId"),
             "eventKey": event.get("eventKey"),
             "chapterNo": event.get("chapterNo"),
@@ -751,8 +885,13 @@ def build_persona(
             "relatedGeneralIds": related_ids,
             "targetLinkTrace": link_trace,
             "confidence": event.get("confidence"),
-            }
+        }
+        story_beat["targetProjections"] = build_target_projections(
+            general_id=general_id,
+            source=story_beat,
+            source_type="storyBeat",
         )
+        story_beats.append(story_beat)
     source_highlights: list[dict[str, Any]] = []
     for packet in packets[:16]:
         source_ref = str(packet.get("sourceRef") or "").strip()
@@ -766,17 +905,39 @@ def build_persona(
             relationship_targets_by_ref=relationship_targets_by_ref,
             alias_index=alias_index,
         )
-        source_highlights.append(
-            {
+        source_highlight = {
             "sourceRef": packet.get("sourceRef"),
             "packetStrength": packet.get("packetStrength"),
             "angleFamilies": packet.get("angleFamilies") or [],
             "example": example,
             "relatedGeneralIds": related_ids,
             "targetLinkTrace": link_trace,
-            }
+        }
+        source_highlight["targetProjections"] = build_target_projections(
+            general_id=general_id,
+            source=source_highlight,
+            source_type="sourceHighlight",
         )
+        source_highlights.append(source_highlight)
     angle_target_links = build_angle_target_links(story_beats, source_highlights)
+    all_target_projections = [
+        projection
+        for source in [*story_beats, *source_highlights]
+        for projection in (source.get("targetProjections") or [])
+    ]
+    missing_data_status = str(focus_projection_policy().get("missingDataStatus") or "insufficient_source_data")
+    upstream_feedback = [
+        {
+            "sourceRef": projection.get("sourceRef"),
+            "sourceId": projection.get("sourceId"),
+            "sourceType": projection.get("sourceType"),
+            "targetId": projection.get("targetId"),
+            "traceSources": projection.get("traceSources") or [],
+            "upstreamFeedback": projection.get("upstreamFeedback") or [],
+        }
+        for projection in all_target_projections
+        if projection.get("sourceDataStatus") == missing_data_status
+    ]
     return {
         "personaVersion": "general_runtime_persona_v1",
         "generalId": general_id,
@@ -822,8 +983,13 @@ def build_persona(
         "angleTargetLinks": angle_target_links,
         "targetLinking": {
             "version": "deterministic_source_link_v1",
-            "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
+            "focusProjectionVersion": focus_projection_policy().get("version"),
+            "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference; insufficient links emit upstreamFeedback instead of downstream backfill",
             "linkCount": len(angle_target_links),
+            "sceneEligibleLinkCount": len([item for item in angle_target_links if item.get("sceneEligible")]),
+            "upstreamFeedbackRequiredCount": len(upstream_feedback),
+            "missingDataPolicy": focus_projection_policy().get("missingDataPolicy"),
+            "upstreamFeedback": upstream_feedback[:80],
         },
         "relationshipSummary": {
             "typeCounts": relationships.get("typeCounts") or {},

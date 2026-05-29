@@ -1,0 +1,108 @@
+{
+  "id": "Policy_Top50_SecondLayerCrossFocusLane_P0",
+  "description": "Top50 人物中心白話 bootstrap 的 second-layer cross-focus lane。專門檢查第二層 anchor 與 source-grounded 句子中，是否存在可回到 Top50 主線的硬關係機會。此 lane 只輸出 proposal-only 候選與缺口摘要，不直接回寫 reviewed-cache 或 stable whitelist。",
+  "canonicalWrites": false,
+  "targetGeneralIds": [
+    "cai-yan"
+  ],
+  "allowedRelationshipTypes": [
+    "ruler_subject",
+    "faction_membership",
+    "parent_child",
+    "adoptive_parent_child",
+    "spouse",
+    "sibling",
+    "sworn_sibling"
+  ],
+  "pairWindowChars": 24,
+  "inputs": {
+    "top50JobsPath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-bootstrap-jobs.jsonl",
+    "relationshipPolicyPath": "data/sanguo/policies/policy-relationship-trust-zone.json",
+    "sourceSpecs": [
+      {
+        "id": "second-layer-anchor-proposals",
+        "path": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-second-layer-anchor-source-proposals.jsonl",
+        "rowType": "second-layer-anchor-proposals"
+      },
+      {
+        "id": "source-event-packets",
+        "path": "artifacts/data-pipeline/sanguo-rag/extracted/progress-advancement/abab-live-r3/repair-review/source-event-packets/abab-live-r3-a1-merged/source-event-packets.jsonl",
+        "rowType": "source-event-packets"
+      },
+      {
+        "id": "event-question-seeds",
+        "path": "artifacts/data-pipeline/sanguo-rag/extracted/progress-advancement/abab-live-r3/repair-review/event-question-seeds/abab-live-r3-a1-merged/event-question-seeds.jsonl",
+        "rowType": "event-question-seeds"
+      },
+      {
+        "id": "second-layer-reviewed-cache",
+        "path": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/codex-skill-review/top50-second-layer-focus-reviewed-cache.jsonl",
+        "rowType": "second-layer-reviewed-cache"
+      }
+    ]
+  },
+  "cueFamilies": {
+    "spouse": [
+      "妻",
+      "為妻",
+      "之妻",
+      "配與",
+      "嫁",
+      "娶",
+      "夫人"
+    ],
+    "parent_child": [
+      "其女",
+      "其子",
+      "之女",
+      "之子",
+      "父",
+      "母",
+      "兒",
+      "女"
+    ],
+    "adoptive_parent_child": [
+      "義父",
+      "義子",
+      "養子",
+      "養女"
+    ],
+    "sibling": [
+      "兄",
+      "弟",
+      "姊",
+      "妹",
+      "兄弟",
+      "姊妹"
+    ],
+    "sworn_sibling": [
+      "結義",
+      "義兄",
+      "義弟",
+      "桃園"
+    ],
+    "ruler_subject": [
+      "從",
+      "侍",
+      "投奔",
+      "歸附",
+      "麾下",
+      "主公",
+      "仕於"
+    ],
+    "faction_membership": [
+      "麾下",
+      "部下",
+      "屬",
+      "陣營",
+      "帳下"
+    ]
+  },
+  "outputContract": {
+    "proposalType": "second-layer-cross-focus-opportunity",
+    "requiredFlags": {
+      "canonicalWrites": false,
+      "proposalOnly": true
+    }
+  }
+}

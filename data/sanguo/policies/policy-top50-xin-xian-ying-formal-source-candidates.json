@@ -1,0 +1,41 @@
+{
+  "id": "Policy_Top50_XinXianYing_FormalSourceCandidates_P0",
+  "description": "辛憲英下一批正式來源候選。重點不再只是高平陵事件，而是辛毗與羊耽的家族基線來源。",
+  "canonicalWrites": false,
+  "targetGeneralId": "xin-xian-ying",
+  "targetNameZhTw": "辛憲英",
+  "candidateSources": [
+    {
+      "sourceId": "jinshu-juan096-wikisource",
+      "priority": 1,
+      "sourceType": "primary-historical-text",
+      "titleZhTw": "《晉書》卷九十六 列女傳 辛憲英條",
+      "url": "https://zh.wikisource.org/zh-hant/%E6%99%89%E6%9B%B8/%E5%8D%B7096",
+      "host": "維基文庫",
+      "supportsTargetsZhTw": [
+        "辛毗父女線",
+        "羊耽配偶線"
+      ],
+      "reasonZhTw": "這是辛憲英最核心的正式史料入口，能直接支撐她是辛毗之女、羊耽之妻。",
+      "nextActionZhTw": "優先從此頁抽出『魏侍中毗之女』與『羊耽妻辛氏』這類可直接引用句。",
+      "citationReady": true
+    },
+    {
+      "sourceId": "xin-xian-ying-wikipedia-context",
+      "priority": 2,
+      "sourceType": "context-index",
+      "titleZhTw": "辛憲英條目",
+      "url": "https://zh.wikipedia.org/wiki/%E8%BE%9B%E6%86%B2%E8%8B%B1",
+      "host": "維基百科",
+      "supportsTargetsZhTw": [
+        "辛毗父女線",
+        "羊耽配偶線",
+        "羊祜延伸親族線",
+        "夏侯湛傳記線"
+      ],
+      "reasonZhTw": "可輔助整理人物網絡與後續追索方向，但正式硬關係仍以史書原文為主。",
+      "nextActionZhTw": "只作搜尋導引與人物網絡整理，不直接取代史料原句。",
+      "citationReady": false
+    }
+  ]
+}

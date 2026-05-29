@@ -1,0 +1,95 @@
+{
+  "id": "Policy_Top50HardBaselineLane_FastGapReopen_P0",
+  "description": "Top50 硬關係加速補完 lane。僅將 supported 視為已解決，避免歷史 contradicted 快取過早封死候選。",
+  "canonicalWrites": false,
+  "hardRelationshipTypes": [
+    "ruler_subject",
+    "faction_membership",
+    "parent_child",
+    "adoptive_parent_child",
+    "spouse",
+    "sibling",
+    "sworn_sibling"
+  ],
+  "stableRulerSubject": {
+    "requiredLaneHints": [
+      "stable-baseline",
+      ""
+    ],
+    "blockedLaneHints": [
+      "historical-phase"
+    ]
+  },
+  "factionReview": {
+    "enabled": true,
+    "skipRankingFactions": [
+      "enemy",
+      "neutral",
+      "other",
+      "unknown"
+    ],
+    "genericMembershipTermsZhTw": [
+      "陣營",
+      "麾下",
+      "主公",
+      "部下",
+      "勢力",
+      "歸附"
+    ],
+    "maxCandidatesPerSentence": 3,
+    "baseScore": 88.0,
+    "leaderAliasBoost": 4.0,
+    "labelAliasBoost": 2.0
+  },
+  "outputs": {
+    "stableHardQueueFileName": "top50-stable-hard-relation-queue.fast-gap-reopen.jsonl",
+    "stableHardSummaryFileName": "top50-stable-hard-relation-summary.fast-gap-reopen.json",
+    "stableHardMarkdownFileName": "top50-stable-hard-relation-summary.fast-gap-reopen.zh-TW.md",
+    "factionQueueFileName": "top50-faction-membership-queue.jsonl",
+    "factionSummaryFileName": "top50-faction-membership-queue-summary.json"
+  },
+  "gapResolution": {
+    "enabled": true,
+    "resolvedVerdicts": [
+      "supported"
+    ],
+    "resolvedDecisionActions": [
+      "force-whitelist",
+      "force-blacklist",
+      "remove-from-index"
+    ],
+    "reviewedCachePaths": [
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max400/top50-stable-hard-semantic-review-cache.imported.jsonl",
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max400/top50-stable-hard-semantic-review-cache.rebuilt.jsonl",
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-stable-hard-semantic-review-cache.imported.jsonl"
+    ],
+    "humanDecisionPaths": [
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max400/top50-stable-hard-human-decisions.applied.json"
+    ]
+  },
+  "reviewBatch": {
+    "relationshipTypePriority": [
+      "ruler_subject",
+      "spouse",
+      "parent_child",
+      "sworn_sibling",
+      "adoptive_parent_child",
+      "sibling",
+      "faction_membership"
+    ],
+    "pruneToPrimaryRelationshipType": true,
+    "preferHigherFocusGapCount": true,
+    "preferHigherSentenceQuality": true
+  },
+  "reviewOutput": {
+    "rawQueueEligibleForHumanReview": false,
+    "supportedReviewCacheEligible": true,
+    "proposalOnly": true,
+    "mixedReviewBlockedRelationshipTypes": [
+      "ruler_subject"
+    ],
+    "highRiskRelationshipTypes": [
+      "ruler_subject"
+    ]
+  }
+}

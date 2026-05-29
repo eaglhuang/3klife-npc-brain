@@ -1,0 +1,76 @@
+{
+  "id": "Policy_Top50_MaYunLu_VariantSourceCampaign_P0",
+  "description": "馬雲騄 romance-variant 正式來源候選的第一批補源計畫。這份 policy 只負責定義優先順序與對手焦點，不直接回寫 baihua primary。",
+  "canonicalWrites": false,
+  "targetGeneralId": "ma-yun-lu",
+  "targetNameZhTw": "馬雲騄",
+  "sourceScope": "romance-variant-only",
+  "sourceAnchorZhTw": "優先來源系統：周大荒《反三國演義》及其可追溯的正式文本版本。",
+  "campaignSteps": [
+    {
+      "stepId": "identity-anchor",
+      "priority": 1,
+      "demandType": "entity-existence-and-quote-ready-anchor",
+      "demandLabelZhTw": "人物存在錨點",
+      "preferredCounterpartIds": [],
+      "preferredCounterpartNamesZhTw": [],
+      "reasonZhTw": "先補一個可引用的正式來源，優先鎖定周大荒《反三國演義》文本版本，用來證明馬雲騄作為 romance-variant 人物的存在、出場定位與 passage locator。"
+    },
+    {
+      "stepId": "counterpart-zhao-yun",
+      "priority": 2,
+      "demandType": "counterpart-anchored-quote",
+      "demandLabelZhTw": "對手綁定引用句",
+      "preferredCounterpartIds": [
+        "zhao-yun"
+      ],
+      "preferredCounterpartNamesZhTw": [
+        "趙雲"
+      ],
+      "reasonZhTw": "趙雲是馬雲騄在《反三國演義》中的配偶，也是最核心的對手綁定來源目標，應優先補成 quote-ready 句。"
+    },
+    {
+      "stepId": "counterpart-ma-chao",
+      "priority": 3,
+      "demandType": "counterpart-anchored-quote",
+      "demandLabelZhTw": "對手綁定引用句",
+      "preferredCounterpartIds": [
+        "ma-chao"
+      ],
+      "preferredCounterpartNamesZhTw": [
+        "馬超"
+      ],
+      "reasonZhTw": "馬超是馬雲騄的親哥哥，屬核心家族關係，應作為第二批 quote-ready 來源補充目標。"
+    },
+    {
+      "stepId": "counterpart-ma-teng",
+      "priority": 4,
+      "demandType": "counterpart-anchored-quote",
+      "demandLabelZhTw": "對手綁定引用句",
+      "preferredCounterpartIds": [
+        "ma-teng"
+      ],
+      "preferredCounterpartNamesZhTw": [
+        "馬騰"
+      ],
+      "reasonZhTw": "馬騰是馬雲騄之父，屬人物身世基線的一部分，應補成可引用的親子來源。"
+    },
+    {
+      "stepId": "counterpart-ma-dai",
+      "priority": 5,
+      "demandType": "counterpart-anchored-quote",
+      "demandLabelZhTw": "對手綁定引用句",
+      "preferredCounterpartIds": [
+        "ma-dai"
+      ],
+      "preferredCounterpartNamesZhTw": [
+        "馬岱"
+      ],
+      "reasonZhTw": "馬岱是馬雲騄的堂兄，目前只停留在結構化共現旁證，可作為第三批對手綁定來源補強。"
+    }
+  ],
+  "inputs": {
+    "localInventoryPath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-variant-romance-local-inventory.ma-yun-lu.jsonl",
+    "sourceDemandPath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-variant-romance-source-demand.jsonl"
+  }
+}

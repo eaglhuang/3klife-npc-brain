@@ -31,5 +31,94 @@
     "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
     "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
     "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  },
+  "focusProjectionPolicy": {
+    "version": "runtime_focus_projection_v1",
+    "missingDataPolicy": "Downstream must never invent missing person, relationship, event, or mood facts. When a target is only weakly linked, emit upstreamFeedback and keep sceneEligible=false.",
+    "readyStatus": "ready",
+    "missingDataStatus": "insufficient_source_data",
+    "defaultUpstreamFeedbackReason": "source needs upstream event or relationship evidence before scene use",
+    "authorityPriority": [
+      "relationshipEdges",
+      "relationshipRefs",
+      "declaredGeneralIds",
+      "aliasMatch"
+    ],
+    "linkSourceRules": {
+      "relationshipEdges": {
+        "linkAuthority": "event_relationship_edge",
+        "sceneEligible": true,
+        "supplementalEligible": true,
+        "upstreamFeedbackRequired": false
+      },
+      "relationshipRefs": {
+        "linkAuthority": "relationship_evidence_ref",
+        "sceneEligible": true,
+        "supplementalEligible": true,
+        "upstreamFeedbackRequired": false
+      },
+      "declaredGeneralIds": {
+        "linkAuthority": "source_event_participant",
+        "sceneEligible": false,
+        "supplementalEligible": true,
+        "upstreamFeedbackRequired": true,
+        "upstreamFeedbackReason": "participant exists, but relationship or scene authority is not established"
+      },
+      "aliasMatch": {
+        "linkAuthority": "alias_match_only",
+        "sceneEligible": false,
+        "supplementalEligible": false,
+        "upstreamFeedbackRequired": true,
+        "upstreamFeedbackReason": "alias mention alone cannot create runtime scene data"
+      }
+    }
+  },
+  "upstreamFeedbackQueuePolicy": {
+    "schemaVersion": "runtime-projection-upstream-feedback-queue.v1",
+    "proposalStatus": "proposal-open",
+    "reviewGate": "upstream-source-review",
+    "canonicalWrites": false,
+    "missingStableInput": {
+      "proposalType": "missing-stable-input",
+      "sourceDataStatus": "missing-stable-input",
+      "requiredUpstreamData": [
+        "stable-knowledge-bootstrap.identitySeeds",
+        "stable-knowledge-bootstrap.basicProfileSeeds"
+      ],
+      "recommendedActions": [
+        "populate stable identity/profile seeds from source-grounded upstream evidence"
+      ],
+      "reason": "runtime export cannot project a general until stable identity and profile seeds exist"
+    },
+    "projectionSourceGap": {
+      "proposalType": "projection-source-gap",
+      "requiredUpstreamData": [
+        "source-event-packets.relationshipEdges",
+        "relationship-evidence.relationshipRefs",
+        "ready-events.sceneAuthority"
+      ],
+      "defaultMissingFields": [
+        "relationshipEdges",
+        "relationshipRefs",
+        "sceneAuthority"
+      ],
+      "missingFieldsByTraceSource": {
+        "declaredGeneralIds": [
+          "relationshipEdges",
+          "relationshipRefs"
+        ],
+        "aliasMatch": [
+          "sourceRefs",
+          "relationshipEdges",
+          "readyEvent"
+        ]
+      },
+      "recommendedActionByTraceSource": {
+        "declaredGeneralIds": "promote participant mention into source-grounded relationship edge or relationship evidence ref",
+        "aliasMatch": "replace alias-only runtime link with source-grounded event participant and relationship evidence"
+      },
+      "fallbackRecommendedAction": "add upstream source evidence before allowing runtime scene projection",
+      "reason": "projection is blocked until upstream supplies source-grounded scene or relationship authority"
+    }
   }
 }

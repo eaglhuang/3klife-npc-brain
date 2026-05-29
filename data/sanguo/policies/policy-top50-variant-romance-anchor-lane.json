@@ -1,0 +1,37 @@
+{
+  "id": "Policy_Top50_VariantRomanceAnchorLane_P0",
+  "description": "Top50 人物中心白話 bootstrap 的旁支 lane。專門收容不宜混入白話主來源的 romance-variant / 稗官野史人物與關係線索，目前第一個目標為馬雲騄。此 lane 僅輸出 proposal-only 候選，不直接回寫 baihua primary，也不直接產生 stable whitelist。",
+  "canonicalWrites": false,
+  "targetGeneralIds": [
+    "ma-yun-lu"
+  ],
+  "sourceScope": "romance-variant-only",
+  "doNotMergeIntoBaihuaPrimary": true,
+  "proposalStages": [
+    "quote-ready",
+    "structured-trace-only",
+    "needs-new-source"
+  ],
+  "inputs": {
+    "stableBootstrapPath": "artifacts/data-pipeline/sanguo-rag/extracted/stable-knowledge-bootstrap/stable-knowledge-bootstrap.json",
+    "fallbackRefactorStablePaths": [
+      "artifacts/data-pipeline/sanguo-rag/refactor-phase2-baseline/after/stable-knowledge-bootstrap.json",
+      "artifacts/data-pipeline/sanguo-rag/refactor-phase2-baseline/before/stable-knowledge-bootstrap.json"
+    ],
+    "femaleProfileOverridesPath": "data/sanguo/catalogs/catalog-female-profile-overrides.jsonl",
+    "knownFemaleNamesPath": "data/sanguo/catalogs/catalog-known-female-names.jsonl",
+    "personaCardPaths": [
+      "artifacts/data-pipeline/sanguo-rag/extracted/persona-cards/ma-yun-lu.persona.json",
+      "artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles/ma-yun-lu/ma-yun-lu.persona.json"
+    ],
+    "runtimeRelationshipsPath": "artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles/ma-yun-lu/ma-yun-lu.relationships.json"
+  },
+  "outputContract": {
+    "proposalType": "variant-romance-anchor",
+    "requiredFlags": {
+      "sourceScope": "romance-variant-only",
+      "doNotMergeIntoBaihuaPrimary": true,
+      "canonicalWrites": false
+    }
+  }
+}

@@ -382,6 +382,10 @@ class NarrativeInteractionTarget(BaseModel):
     confidence: float = Field(default=0.68, ge=0.0, le=1.0)
     evidenceRefs: list[str] = Field(default_factory=list)
     femaleFocus: bool = False
+    sceneEligible: bool = True
+    linkAuthority: str | None = None
+    sourceDataStatus: str | None = None
+    upstreamFeedbackRequired: bool = False
 
 
 class NarrativeEvidenceCard(BaseModel):
@@ -397,6 +401,9 @@ class NarrativeEvidenceCard(BaseModel):
     sourceRefs: list[str] = Field(default_factory=list)
     relatedTargetIds: list[str] = Field(default_factory=list)
     confidence: float = Field(default=0.72, ge=0.0, le=1.0)
+    sceneEligible: bool = True
+    linkAuthority: str | None = None
+    sourceDataStatus: str | None = None
 
 
 class NarrativeActivitySeed(BaseModel):
@@ -5234,24 +5241,70 @@ class NpcDialogueService:
         if not runtime_persona or not refs:
             return []
         matched: list[str] = []
-        for source in [*(runtime_persona.get("storyBeats") or []), *(runtime_persona.get("sourceHighlights") or [])]:
-            source_refs = {str(ref).strip() for ref in (source.get("sourceRefs") or []) if str(ref).strip()}
-            source_ref = str(source.get("sourceRef") or "").strip()
-            if source_ref:
-                source_refs.add(source_ref)
+        seen_text: set[str] = set()
+        for _, source in self._iter_runtime_profile_sources(runtime_persona):
+            source_refs = self._runtime_source_refs(source)
             if not source_refs.intersection(refs):
                 continue
-            matched.extend(
-                str(value)
-                for value in [
-                    source.get("summary"),
-                    source.get("sourceQuote"),
-                    source.get("quote"),
-                    source.get("example"),
-                ]
-                if value
-            )
+            for value in [source.get("summary"), source.get("sourceQuote"), source.get("quote"), source.get("example")]:
+                text = str(value or "").strip()
+                if text and text not in seen_text:
+                    matched.append(text)
+                    seen_text.add(text)
         return matched
+
+    def _runtime_source_refs(self, source: dict[str, Any]) -> set[str]:
+        refs = {str(ref).strip() for ref in (source.get("sourceRefs") or []) if str(ref).strip()}
+        source_ref = str(source.get("sourceRef") or "").strip()
+        if source_ref:
+            refs.add(source_ref)
+        return refs
+
+    def _iter_runtime_profile_sources(
+        self,
+        runtime_persona: dict[str, Any] | None,
+        *,
+        story_limit: int | None = None,
+        highlight_limit: int | None = None,
+    ) -> list[tuple[str, dict[str, Any]]]:
+        if not runtime_persona:
+            return []
+        sources: list[tuple[str, dict[str, Any]]] = []
+        seen_story_refs: set[str] = set()
+        story_beats = list(runtime_persona.get("storyBeats") or [])
+        if story_limit is not None:
+            story_beats = story_beats[:story_limit]
+        for beat in story_beats:
+            refs = self._runtime_source_refs(beat)
+            seen_story_refs.update(refs)
+            sources.append(("storyBeat", beat))
+        highlights = list(runtime_persona.get("sourceHighlights") or [])
+        if highlight_limit is not None:
+            highlights = highlights[:highlight_limit]
+        for highlight in highlights:
+            refs = self._runtime_source_refs(highlight)
+            if refs and refs.intersection(seen_story_refs):
+                continue
+            sources.append(("sourceHighlight", highlight))
+        return sources
+
+    def _runtime_target_link_sources(self, source: dict[str, Any], target_id: str) -> set[str]:
+        cleaned_target_id = str(target_id or "").strip()
+        sources: set[str] = set()
+        for trace in source.get("targetLinkTrace") or []:
+            if str(trace.get("targetId") or "").strip() != cleaned_target_id:
+                continue
+            sources.update(str(item).strip() for item in (trace.get("sources") or []) if str(item).strip())
+        return sources
+
+    def _runtime_target_projection(self, source: dict[str, Any], target_id: str) -> dict[str, Any] | None:
+        cleaned_target_id = str(target_id or "").strip()
+        for projection in source.get("targetProjections") or []:
+            if not isinstance(projection, dict):
+                continue
+            if str(projection.get("targetId") or "").strip() == cleaned_target_id:
+                return projection
+        return None
 
     def _runtime_edge_source_text(self, edge: dict[str, Any], runtime_persona: dict[str, Any] | None = None) -> str:
         refs = self._runtime_edge_refs(edge)
@@ -5559,6 +5612,10 @@ class NpcDialogueService:
                 "score": 0.0,
                 "evidenceRefs": [],
                 "femaleFocus": self._is_female_gender(gender),
+                "sceneEligible": True,
+                "linkAuthority": None,
+                "sourceDataStatus": None,
+                "upstreamFeedbackRequired": False,
             }
             buckets[target_id] = bucket
             return bucket
@@ -5593,6 +5650,9 @@ class NpcDialogueService:
                 bucket["relationshipType"] = edge_type
                 bucket["sourceType"] = "relationship-edge"
                 bucket["relationshipPriority"] = edge_priority
+                bucket["sceneEligible"] = True
+                bucket["linkAuthority"] = "relationship-edge"
+                bucket["sourceDataStatus"] = "ready"
             bucket["confidence"] = max(bucket["confidence"], self._coerce_float(edge.get("edgeConfidence"), default=0.72))
             bucket["score"] += 4.0 + bucket["confidence"]
             bucket["evidenceRefs"].extend(str(ref) for ref in (edge.get("evidenceRefs") or []) if str(ref).strip())
@@ -5625,7 +5685,7 @@ class NpcDialogueService:
                         )
                     bucket["evidenceRefs"].extend(refs)
 
-        for source in [*(runtime_persona.get("storyBeats") or []), *(runtime_persona.get("sourceHighlights") or [])]:
+        for source_type, source in self._iter_runtime_profile_sources(runtime_persona):
             refs = [str(ref) for ref in (source.get("sourceRefs") or []) if str(ref).strip()]
             if source.get("sourceRef"):
                 refs.append(str(source.get("sourceRef")))
@@ -5638,6 +5698,12 @@ class NpcDialogueService:
                 )
                 if not target_key or target_key == general_id:
                     continue
+                trace_sources = self._runtime_target_link_sources(source, target_key)
+                projection = self._runtime_target_projection(source, target_key)
+                if projection is not None and not bool(projection.get("sceneEligible")):
+                    continue
+                if source_type == "sourceHighlight" and trace_sources and trace_sources <= {"aliasMatch"} and target_key not in buckets:
+                    continue
                 bucket = ensure_bucket(target_key)
                 is_female = bucket["femaleFocus"] or self._is_female_gender(self._roster_gender_for(target_key, roster_index))
                 bucket["femaleFocus"] = bool(is_female)
@@ -5648,7 +5714,13 @@ class NpcDialogueService:
                 bucket["confidence"] = max(bucket["confidence"], 0.74 if families else 0.68)
                 bucket["score"] += 2.0 if families else 1.2
                 bucket["evidenceRefs"].extend(refs)
+                if projection is not None:
+                    bucket["sceneEligible"] = bool(projection.get("sceneEligible"))
+                    bucket["linkAuthority"] = projection.get("linkAuthority")
+                    bucket["sourceDataStatus"] = projection.get("sourceDataStatus")
+                    bucket["upstreamFeedbackRequired"] = bool(projection.get("upstreamFeedback"))
 
+        projection_gate_active = bool((runtime_persona.get("targetLinking") or {}).get("focusProjectionVersion"))
         for text, refs, has_emotion_angle in self._iter_runtime_target_mention_sources(runtime_persona):
             if not text:
                 continue
@@ -5661,6 +5733,10 @@ class NpcDialogueService:
                     continue
                 allow_family_titles = self._is_female_gender(self._roster_gender_for(target_key, roster_index))
                 if not any(alias and alias in text for alias in self._target_label_aliases(label, allow_family_titles=allow_family_titles)):
+                    continue
+                if projection_gate_active and target_key not in buckets:
+                    continue
+                if target_key not in buckets and not (allow_family_titles and has_emotion_angle):
                     continue
                 bucket = ensure_bucket(target_key)
                 is_female = bucket["femaleFocus"] or self._is_female_gender(self._roster_gender_for(target_key, roster_index))
@@ -5693,6 +5769,10 @@ class NpcDialogueService:
                 confidence=self._coerce_float(item["confidence"], default=0.68),
                 evidenceRefs=sorted(set(item["evidenceRefs"]))[:12],
                 femaleFocus=bool(item["femaleFocus"]),
+                sceneEligible=bool(item.get("sceneEligible", True)),
+                linkAuthority=item.get("linkAuthority"),
+                sourceDataStatus=item.get("sourceDataStatus"),
+                upstreamFeedbackRequired=bool(item.get("upstreamFeedbackRequired")),
             )
             for item in sorted(buckets.values(), key=sort_key)[:12]
         ]
@@ -5700,33 +5780,18 @@ class NpcDialogueService:
 
     def _iter_runtime_target_mention_sources(self, runtime_persona: dict[str, Any]) -> list[tuple[str, list[str], bool]]:
         sources: list[tuple[str, list[str], bool]] = []
-        for beat in (runtime_persona.get("storyBeats") or [])[:18]:
-            refs = [str(ref) for ref in (beat.get("sourceRefs") or []) if str(ref).strip()]
-            text = " ".join(
-                str(value)
-                for value in [
-                    beat.get("summary"),
-                    beat.get("sourceQuote"),
-                    beat.get("location"),
-                ]
-                if value
-            )
+        for source_type, source in self._iter_runtime_profile_sources(runtime_persona, story_limit=18, highlight_limit=24):
+            refs = sorted(self._runtime_source_refs(source))
+            families = {str(family).strip() for family in (source.get("angleFamilies") or []) if str(family).strip()}
+            if source_type == "storyBeat":
+                text_values = [source.get("summary"), source.get("sourceQuote"), source.get("location")]
+                has_emotion_angle = False
+            else:
+                text_values = [source.get("example"), source.get("summary"), source.get("sourceRef")]
+                has_emotion_angle = "female_interaction" in families
+            text = " ".join(str(value) for value in text_values if value)
             if text.strip():
-                sources.append((text, refs, False))
-        for highlight in (runtime_persona.get("sourceHighlights") or [])[:24]:
-            source_ref = str(highlight.get("sourceRef") or "").strip()
-            families = {str(family).strip() for family in (highlight.get("angleFamilies") or []) if str(family).strip()}
-            text = " ".join(
-                str(value)
-                for value in [
-                    highlight.get("example"),
-                    highlight.get("summary"),
-                    source_ref,
-                ]
-                if value
-            )
-            if text.strip():
-                sources.append((text, [source_ref] if source_ref else [], "female_interaction" in families))
+                sources.append((text, refs, has_emotion_angle))
         return sources
 
     def _build_narrative_evidence_cards(
@@ -5750,6 +5815,19 @@ class NpcDialogueService:
                     related_ids.append(target_id)
             return related_ids
 
+        def scene_eligible_related_ids(source: dict[str, Any], raw_ids: list[Any] | None, source_text: str = "") -> list[str]:
+            projections = [item for item in (source.get("targetProjections") or []) if isinstance(item, dict)]
+            if projections:
+                related_ids: list[str] = []
+                for projection in projections:
+                    if not projection.get("sceneEligible"):
+                        continue
+                    target_id = self._normalize_runtime_target_id(projection.get("targetId"), None, source_text)
+                    if target_id in target_labels and target_id not in related_ids:
+                        related_ids.append(target_id)
+                return related_ids
+            return normalize_related_ids(raw_ids, source_text)
+
         def normalize_relationship_edge(edge: dict[str, Any]) -> dict[str, Any]:
             target_id = self._normalize_runtime_target_id(
                 edge.get("targetId"),
@@ -5766,8 +5844,10 @@ class NpcDialogueService:
             if str(item.get("sourceRef") or "").strip()
         }
 
+        story_refs_seen: set[str] = set()
         for beat in (runtime_persona.get("storyBeats") or [])[:14]:
             refs = [str(ref) for ref in (beat.get("sourceRefs") or []) if str(ref).strip()]
+            story_refs_seen.update(refs)
             primary_ref = refs[0] if refs else ""
             families = list((highlight_by_ref.get(primary_ref) or {}).get("angleFamilies") or [])
             beat_text = " ".join(
@@ -5779,7 +5859,7 @@ class NpcDialogueService:
                 ]
                 if value
             )
-            related_target_ids = normalize_related_ids(beat.get("relatedGeneralIds"), beat_text)
+            related_target_ids = scene_eligible_related_ids(beat, beat.get("relatedGeneralIds"), beat_text)
             if not related_target_ids:
                 related_target_ids = self._detect_related_target_ids(
                     beat_text,
@@ -5827,14 +5907,16 @@ class NpcDialogueService:
         for highlight in (runtime_persona.get("sourceHighlights") or []):
             if len(cards) >= 30:
                 break
+            source_ref = str(highlight.get("sourceRef") or "").strip()
+            if source_ref and source_ref in story_refs_seen:
+                continue
             evidence_id = f"highlight:{highlight.get('sourceRef') or len(cards)}"
             if evidence_id in seen:
                 continue
             seen.add(evidence_id)
             families = list(highlight.get("angleFamilies") or [])
             example = str(highlight.get("example") or "").strip()
-            source_ref = str(highlight.get("sourceRef") or "").strip()
-            related_target_ids = normalize_related_ids(highlight.get("relatedGeneralIds"), example)
+            related_target_ids = scene_eligible_related_ids(highlight, highlight.get("relatedGeneralIds"), example)
             if not related_target_ids:
                 related_target_ids = self._detect_related_target_ids(
                     example,
@@ -5908,6 +5990,9 @@ class NpcDialogueService:
                 continue
             seen.add(evidence_id)
             quote = next((str(line) for line in (edge.get("sourceQuotes") or []) if str(line).strip()), None)
+            source_refs = [str(ref) for ref in (edge.get("evidenceRefs") or []) if str(ref).strip()]
+            if not quote and not source_refs:
+                continue
             target_name = str(edge.get("targetName") or target_labels.get(target_id) or target_id)
             relationship_label = self._relationship_type_label(relationship_type, edge.get("typeLabel"))
             cards.append(
@@ -5921,18 +6006,72 @@ class NpcDialogueService:
                         source_text=" ".join(value for value in [quote or "", target_name] if value),
                     ),
                     title=f"想到{target_name}",
-                    summary=quote or f"{runtime_persona.get('displayName') or '此人'}與{target_name}之間有{edge.get('typeLabel') or relationship_type or '一段互動'}。",
+                    summary=quote or "",
                     quote=quote,
                     location=None,
                     chapterNo=None,
                     sourceType="runtime-relationship-edge",
-                    sourceRefs=[str(ref) for ref in (edge.get("evidenceRefs") or []) if str(ref).strip()],
+                    sourceRefs=source_refs,
                     relatedTargetIds=[target_id],
                     confidence=self._coerce_float(edge.get("edgeConfidence"), default=0.7),
+                    sceneEligible=True,
+                    linkAuthority="relationship-edge",
+                    sourceDataStatus="ready",
                 )
             )
 
-        return cards
+        def pair_sort_key(candidate: NarrativeEvidenceCard) -> tuple[int, float, int, int, str]:
+            chapter_no = candidate.chapterNo if isinstance(candidate.chapterNo, int) else 10**9
+            return (
+                0 if candidate.sourceType == "runtime-relationship-edge" else 1,
+                -self._coerce_float(candidate.confidence, default=0.0),
+                -len(candidate.sourceRefs or []),
+                chapter_no,
+                str(candidate.evidenceId or ""),
+            )
+
+        canonical_cards: list[NarrativeEvidenceCard] = []
+        pair_groups: dict[tuple[str, str], list[NarrativeEvidenceCard]] = {}
+        for candidate in cards:
+            related_target_ids = [
+                target_id
+                for target_id in dict.fromkeys(
+                    str(target_id).strip()
+                    for target_id in (candidate.relatedTargetIds or [])
+                    if str(target_id).strip()
+                )
+                if target_id in target_labels
+            ]
+            if not related_target_ids:
+                canonical_cards.append(candidate)
+                continue
+            for target_id in related_target_ids:
+                pair_groups.setdefault((candidate.angle, target_id), []).append(candidate)
+
+        for (angle, target_id), pair_candidates in sorted(pair_groups.items(), key=lambda item: (item[0][0], item[0][1])):
+            best_candidate = sorted(pair_candidates, key=pair_sort_key)[0]
+            source_refs = sorted({ref for candidate in pair_candidates for ref in candidate.sourceRefs if ref})
+            canonical_cards.append(
+                NarrativeEvidenceCard(
+                    evidenceId=f"{best_candidate.evidenceId}@@{target_id}",
+                    contextKey=best_candidate.contextKey,
+                    angle=angle,
+                    title=best_candidate.title,
+                    summary=best_candidate.summary,
+                    quote=best_candidate.quote,
+                    location=best_candidate.location,
+                    chapterNo=best_candidate.chapterNo,
+                    sourceType=best_candidate.sourceType,
+                    sourceRefs=source_refs,
+                    relatedTargetIds=[target_id],
+                    confidence=best_candidate.confidence,
+                    sceneEligible=best_candidate.sceneEligible,
+                    linkAuthority=best_candidate.linkAuthority,
+                    sourceDataStatus=best_candidate.sourceDataStatus,
+                )
+            )
+
+        return canonical_cards
 
     def _filter_related_target_ids_for_angle(
         self,

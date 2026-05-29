@@ -15,6 +15,7 @@
     "completion-ledger",
     "run-profile",
     "report-bundle",
+    "runtime-focus-projection",
     "plan-encoding",
     "schema-registry",
     "golden-snapshot",
@@ -35,6 +36,12 @@
   ],
   "phaseMatrix": [],
   "sensors": [
+    {
+      "id": "runtime-focus-projection",
+      "label": "Runtime focus projection gate",
+      "required": true,
+      "summaryKey": "runtimeFocusProjectionFailedCount"
+    },
     {
       "id": "vector-production-rollout-plan",
       "label": "Vector production rollout plan",

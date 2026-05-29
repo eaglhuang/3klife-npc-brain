@@ -13,8 +13,6 @@ from repo_layout import resolve_repo_root
 
 
 REPO_ROOT = resolve_repo_root(__file__)
-DEFAULT_INPUT_PATH = REPO_ROOT / "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/merged-bootstrap-candidates-conflict-checked.jsonl"
-DEFAULT_OUTPUT_ROOT = REPO_ROOT / "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001"
 
 
 RELATIONSHIP_LABELS: dict[str, str] = {
@@ -30,8 +28,8 @@ RELATIONSHIP_LABELS: dict[str, str] = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Adapt baihua bootstrap candidates to trust-zone review lane records.")
-    parser.add_argument("--input-path", default=str(DEFAULT_INPUT_PATH))
-    parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
+    parser.add_argument("--input-path", default="")
+    parser.add_argument("--output-root", default=str(REPO_ROOT / "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001"))
     parser.add_argument("--output-file-name", default="top50-bootstrap-review-lane.jsonl")
     parser.add_argument("--summary-file-name", default="top50-bootstrap-review-lane-summary.json")
     parser.add_argument("--overwrite", action="store_true")
@@ -101,8 +99,12 @@ def trim_quote(quote: str, limit: int = 180) -> str:
 
 def main() -> int:
     args = parse_args()
-    input_path = Path(args.input_path).resolve()
     output_root = Path(args.output_root).resolve()
+    input_path = (
+        Path(args.input_path).resolve()
+        if str(args.input_path).strip()
+        else output_root / "merged-bootstrap-candidates-conflict-checked.jsonl"
+    )
     output_path = output_root / args.output_file_name
     summary_path = output_root / args.summary_file_name
 

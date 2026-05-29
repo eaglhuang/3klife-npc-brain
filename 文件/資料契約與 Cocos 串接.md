@@ -63,6 +63,15 @@ python pipelines/sanguo-rag/build_api_readiness_index.py --general-id zhang-fei 
 - `qualityWarnings`
 - `repairUsed`
 
+## narrative-profile 單卡契約
+
+`/v1/npc/narrative-profile` 的 `evidenceCards` 是 canonical source。對外可以把它理解成「人物 + angle 單卡輸出」，但實作上的 canonical key 是 `(angle, relatedTargetId)`。
+
+- 同一人物在同一個 angle 下，若來源同時命中多個 `relatedTargetId`，服務層會拆成多張 pair card，而不是讓下游自己去重。
+- 每張 canonical card 都會保留並合併來源的 `sourceRefs`，用來追溯 provenance。
+- Cocos / HTML 只負責消費 canonical 輸出，不得再自行補卡、改卡，或把缺失人物 / 關聯資料留在下游硬補。
+- 缺人物資料或關聯資料時，應回饋上游 pipeline 從源頭補齊，不要在前端或 service 端用推測值填補。
+
 ## Cocos dev test flow
 
 建議流程：

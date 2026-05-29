@@ -1,6 +1,6 @@
 {
   "id": "Policy_BaihuaBootstrapLane_P0",
-  "description": "Top50 人物中心白話 bootstrap lane。先抽高信任候選，後接既有 trust-zone reviewer/human gate；全程 canonicalWrites=false。",
+  "description": "Top50 人物中心白話 bootstrap lane 的治理政策。這條 lane 先從白話《三國演義》的人物段落抽硬關係候選，再送入 trust-zone reviewer / human gate；所有輸出都維持 canonicalWrites=false。",
   "sourceCorpusId": "sanguoyanyi-baihua-zh-tw",
   "canonicalWrites": false,
   "relationshipTypes": {
@@ -25,12 +25,233 @@
       "adoptive_parent_child"
     ]
   },
+  "focusSentenceExtraction": {
+    "enabled": true,
+    "includeFullPassageWindow": false,
+    "includeSentenceWindows": true,
+    "maxWindowChars": 220,
+    "maxPersonIdsPerWindow": 8,
+    "maxRelationshipsPerFocus": 80,
+    "passageScopedFocusFallback": {
+      "enabled": true,
+      "requiresPassagePersonId": true,
+      "requiresCounterpartMention": true,
+      "injectFocusPersonId": true
+    },
+    "emptyFocusPassageFallback": {
+      "enabled": true,
+      "requiresPassagePersonId": true,
+      "requiresCounterpartMention": true,
+      "maxPassagesPerFocusFallback": 12
+    },
+    "timeScopeFallbackZhTw": "未限定時段",
+    "includeHardSpecFallback": true,
+    "defaultConfidence": 0.88,
+    "confidenceByRelationshipType": {
+      "ruler_subject": 0.9,
+      "faction_membership": 0.86,
+      "parent_child": 0.92,
+      "adoptive_parent_child": 0.91,
+      "spouse": 0.92,
+      "sibling": 0.89,
+      "sworn_sibling": 0.95
+    }
+  },
+  "focusSkillPrompt": {
+    "version": "baihua-focus-skill.v2",
+    "goalZhTw": "以單一人物為中心閱讀白話《三國演義》段落，抽出與 Top50 其他人物之間有原文直接支持的硬關係。",
+    "primaryTasksZhTw": [
+      "先辨識焦點人物在這批段落中的主要行動與互動對象",
+      "只抽出有明確語意支持的硬關係，不靠同段共現猜測",
+      "每筆關係都必須附原文句、章回與來源 locator",
+      "優先保留真正承載關係語意的句窗，不要整段照抄"
+    ],
+    "relationshipPriority": [
+      "ruler_subject",
+      "faction_membership",
+      "spouse",
+      "parent_child",
+      "adoptive_parent_child",
+      "sibling",
+      "sworn_sibling"
+    ],
+    "extractionStepsZhTw": [
+      "先確認句子是否真的以焦點人物為主語或主要互動一方",
+      "再確認另一位人物是否屬於 candidateCounterpartIds",
+      "辨識句內是否存在硬關係語意，而不是只有同場出現",
+      "若關係有方向，必須根據原文決定 fromId 與 toId",
+      "若一句話不足以穩定支持命題，寧可不輸出"
+    ],
+    "negativeGuardsZhTw": [
+      "只因為兩人同段出現，不可輸出關係",
+      "第三人事件卡不可直接投射成兩位旁支人物的關係",
+      "enemy_rival 必須有攻、拒、追、罵、殺、降、敵、戰等衝突語意",
+      "ruler_subject 必須有任官、效力、投奔、歸附、命令、派遣等明確主從語意",
+      "spouse 與 parent_child、sibling 與 sworn_sibling 不可混用",
+      "義父義子只能落在 adoptive_parent_child，不可落在 parent_child",
+      "像『兄弟如手足，妻子如衣服』這類比喻或格言，不可直接抽成實際人物關係；必須同句明確陳述兩人的真實關係"
+    ],
+    "relationDefinitionsZhTw": {
+      "ruler_subject": "任用、拜為、命令、派遣、效力、投奔、歸附、麾下、帳下、部將等明確主從語意。",
+      "faction_membership": "明確屬於某勢力、國別、陣營，如蜀、魏、吳、劉備軍、曹操軍、孫權軍。",
+      "parent_child": "明確親生親屬語意，如父、母、兒子、女兒、其子、其女。",
+      "adoptive_parent_child": "義父、義子、養子、收為義子等收養或義親語意。",
+      "spouse": "妻、夫人、娶、嫁、成婚、婚配等婚姻語意。",
+      "sibling": "兄、弟、姊、妹、兄弟、姊妹、昆弟等手足語意。",
+      "sworn_sibling": "桃園結義、結拜為兄弟、義兄、義弟等結義語意。"
+    },
+    "outputRequirementsZhTw": [
+      "每筆 relation 必須附 evidenceQuoteZhTw",
+      "每筆 relation 必須附 chapterRef 與 sourcePassageRef",
+      "若句子只提供上下文、不足以支持命題，不得輸出",
+      "reasonZhTw 應簡短說明是根據哪種語意或 cue 判定"
+    ],
+    "packetAssembly": {
+      "maxPassagesPerFocus": 120,
+      "maxPassagesPerChapter": 8,
+      "maxQuotesPerCounterpart": 6,
+      "preferSentenceWindows": true,
+      "prioritizeDirectFocusMentions": true,
+      "sortByCounterpartHitCount": true
+    }
+  },
+  "reviewReadyPolicy": {
+    "defaultSupportMin": 2,
+    "nextWave": {
+      "supportMin": 1,
+      "focusStartThreshold": 50
+    }
+  },
   "bootstrapStages": [
     "bootstrap-candidate",
     "review-ready",
     "conflicted",
     "rejected"
   ],
+  "focusSemanticReviewQueue": {
+    "rulerEligibilityGate": {
+      "enabled": true,
+      "snapshotPath": ""
+    },
+    "typeSuppressionRules": [
+      {
+        "whenPresent": "sworn_sibling",
+        "suppress": "sibling",
+        "minCueTermCount": 1
+      },
+      {
+        "whenPresent": "adoptive_parent_child",
+        "suppress": "parent_child",
+        "minCueTermCount": 1
+      }
+    ],
+    "contextualCounterpartFallback": {
+      "enabled": true,
+      "sentenceWindowsOnly": true,
+      "allowedRelationshipTypes": [
+        "ruler_subject",
+        "sibling",
+        "sworn_sibling"
+      ],
+      "defaultMinCueTermCount": 2,
+      "minCueTermCountByType": {
+        "ruler_subject": 1,
+        "spouse": 1,
+        "parent_child": 1,
+        "adoptive_parent_child": 1,
+        "sibling": 2,
+        "sworn_sibling": 2
+      },
+      "maxContextCounterparts": 3,
+        "scorePenalty": 8.0,
+        "priorityPenalty": 4.0
+    },
+    "directCounterpartRequiredTypes": [
+      "spouse",
+      "parent_child",
+      "adoptive_parent_child"
+    ],
+    "localCueBinding": {
+      "enabled": true,
+      "allowedRelationshipTypes": [
+        "spouse",
+        "sibling",
+        "parent_child",
+        "adoptive_parent_child"
+      ],
+      "minAliasLength": 2,
+      "minCueLength": 1,
+      "dropIfFocusNotBound": true,
+      "preferNearest": true,
+      "defaultMaxFocusDistance": 12,
+      "defaultMaxCounterpartDistance": 12,
+      "defaultMaxEntityPairSpan": 12,
+      "defaultMaxCounterparts": 1,
+      "maxFocusDistanceByType": {
+        "spouse": 20,
+        "sibling": 10,
+        "parent_child": 8,
+        "adoptive_parent_child": 8
+      },
+      "maxCounterpartDistanceByType": {
+        "spouse": 20,
+        "sibling": 10,
+        "parent_child": 8,
+        "adoptive_parent_child": 8
+      },
+      "maxEntityPairSpanByType": {
+        "spouse": 24,
+        "sibling": 10,
+        "parent_child": 8,
+        "adoptive_parent_child": 8
+      },
+      "maxCounterpartsByType": {
+        "spouse": 1,
+        "sibling": 1,
+        "parent_child": 1,
+        "adoptive_parent_child": 1
+      }
+    },
+    "rulerSubjectLaneSplit": {
+      "enabled": true,
+      "defaultLane": "stable-baseline",
+      "stableBaselineCueTerms": [
+        "主公",
+        "屬下",
+        "部將",
+        "部下",
+        "部屬",
+        "麾下",
+        "帳下",
+        "奉命",
+        "受命",
+        "聽命",
+        "遵命",
+        "詔書",
+        "任命",
+        "命為",
+        "拜為",
+        "恢複丞相職位",
+        "恢復丞相職位",
+        "五虎上將",
+        "歸降"
+      ],
+      "historicalPhaseCueTerms": [
+        "投奔",
+        "投靠",
+        "跟從",
+        "侍奉",
+        "歸附",
+        "歸順"
+      ],
+      "scorePenaltyByLane": {
+        "historical-phase": 6.0
+      },
+      "priorityPenaltyByLane": {
+        "historical-phase": 12.0
+      }
+    }
+  },
   "trustZoneMapping": {
     "reviewReadyLane": "relationship-trust-zone.review.jsonl",
     "humanLockedStage": "human-locked-100",

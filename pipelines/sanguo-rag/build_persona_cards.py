@@ -9,7 +9,11 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
+from repo_layout import resolve_repo_root
+from versioning import build_version_metadata
 
+
+REPO_ROOT = resolve_repo_root(__file__)
 DEFAULT_EVENTS_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/events/events.jsonl")
 DEFAULT_GENERALS_PATH = Path("assets/resources/data/generals.json")
 DEFAULT_KEYWORD_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/keyword-options")
@@ -315,14 +319,22 @@ def main() -> None:
     events_by_general = index_events(load_events(Path(args.events)))
     keyword_root = Path(args.keyword_root)
     cards = [build_persona_card(general, events_by_general.get(general.get("id"), []), keyword_root) for general in generals]
+    version_metadata = build_version_metadata(
+        schema_version="persona-card.v2",
+        artifact_paths=[Path(args.events), Path(args.generals), Path(args.keyword_root)],
+        repo_root=REPO_ROOT,
+    )
 
     for card in cards:
         path = output_root / f"{card.generalId}.persona.json"
-        path.write_text(json.dumps(card.model_dump(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        payload = card.model_dump()
+        payload.update(version_metadata)
+        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     index = {
         "version": PERSONA_VERSION,
         "generatedAt": utc_now(),
+        **version_metadata,
         "count": len(cards),
         "cards": [
             {

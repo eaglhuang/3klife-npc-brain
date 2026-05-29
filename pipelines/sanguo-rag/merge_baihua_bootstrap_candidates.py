@@ -12,19 +12,19 @@ from repo_layout import resolve_repo_root
 
 
 REPO_ROOT = resolve_repo_root(__file__)
-DEFAULT_SKILL_OUTPUT_PATH = REPO_ROOT / "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001/top50-focus-skill-output.jsonl"
 DEFAULT_POLICY_PATH = REPO_ROOT / "data/sanguo/policies/policy-baihua-bootstrap-lane.json"
 DEFAULT_OUTPUT_ROOT = REPO_ROOT / "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Merge and normalize baihua bootstrap relationship candidates.")
-    parser.add_argument("--skill-output-path", default=str(DEFAULT_SKILL_OUTPUT_PATH))
+    parser.add_argument("--skill-output-path", default="")
     parser.add_argument("--policy-path", default=str(DEFAULT_POLICY_PATH))
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
+    parser.add_argument("--wave-id", default="")
     parser.add_argument("--output-file-name", default="merged-bootstrap-candidates.jsonl")
     parser.add_argument("--summary-file-name", default="merged-bootstrap-candidates-summary.json")
-    parser.add_argument("--review-ready-support-min", type=int, default=2)
+    parser.add_argument("--review-ready-support-min", type=int, default=None)
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
 
@@ -87,13 +87,67 @@ def unique_strings(values: list[str]) -> list[str]:
     return output
 
 
+def read_wave_metrics(output_root: Path) -> dict[str, Any]:
+    summary_path = output_root / "top50-bootstrap-jobs-summary.json"
+    if not summary_path.exists():
+        return {}
+    payload = read_json(summary_path)
+    metrics = payload.get("metrics")
+    if isinstance(metrics, dict):
+        return metrics
+    return {}
+
+
+def resolve_review_ready_support_min(
+    args: argparse.Namespace,
+    policy: dict[str, Any],
+    output_root: Path,
+    wave_id: str,
+) -> int:
+    if args.review_ready_support_min is not None:
+        return max(1, int(args.review_ready_support_min))
+
+    review_ready_policy = policy.get("reviewReadyPolicy")
+    default_min = 2
+    if isinstance(review_ready_policy, dict):
+        value = review_ready_policy.get("defaultSupportMin")
+        try:
+            default_min = int(value)
+        except (TypeError, ValueError):
+            default_min = 2
+
+    metrics = read_wave_metrics(output_root)
+    focus_start = int(metrics.get("focusStart", 0))
+    is_next_wave = False
+    if isinstance(review_ready_policy, dict):
+        next_wave_cfg = review_ready_policy.get("nextWave") or {}
+    else:
+        next_wave_cfg = {}
+
+    if focus_start >= int(next_wave_cfg.get("focusStartThreshold", 50)):
+        is_next_wave = True
+    elif wave_id:
+        if str(wave_id).strip() != "wave-001":
+            is_next_wave = True
+
+    if is_next_wave and isinstance(next_wave_cfg, dict):
+        next_wave_min = next_wave_cfg.get("supportMin")
+        if next_wave_min is not None:
+            return max(1, int(next_wave_min))
+    return max(1, int(default_min))
+
+
 def main() -> int:
     args = parse_args()
-    skill_output_path = Path(args.skill_output_path).resolve()
     policy_path = Path(args.policy_path).resolve()
     output_root = Path(args.output_root).resolve()
     output_path = output_root / args.output_file_name
     summary_path = output_root / args.summary_file_name
+    skill_output_path = (
+        Path(args.skill_output_path).resolve()
+        if str(args.skill_output_path).strip()
+        else output_root / "top50-focus-skill-output.jsonl"
+    )
 
     if not args.overwrite and (output_path.exists() or summary_path.exists()):
         raise FileExistsError(f"Output exists. Re-run with --overwrite: {output_path}")
@@ -104,6 +158,8 @@ def main() -> int:
     allowed_types = {str(item).strip() for item in relation_policy.get("allowed") or [] if str(item or "").strip()}
     if not allowed_types:
         raise ValueError(f"policy relationshipTypes.allowed missing: {policy_path}")
+    wave_id = str(args.wave_id or output_root.name).strip()
+    review_ready_support_min = resolve_review_ready_support_min(args, policy, output_root, wave_id)
 
     focus_rows = read_jsonl(skill_output_path)
     grouped: dict[tuple[str, str, str, str], dict[str, Any]] = {}
@@ -164,7 +220,7 @@ def main() -> int:
     stage_counter: Counter[str] = Counter()
     for (_key, bucket) in grouped.items():
         support_count = len(bucket["supports"])
-        stage = "review-ready" if support_count >= max(1, int(args.review_ready_support_min)) else "bootstrap-candidate"
+        stage = "review-ready" if support_count >= review_ready_support_min else "bootstrap-candidate"
         stage_counter[stage] += 1
         time_scope_values = [value for value in bucket["timeScopeValues"] if value]
         time_scope = Counter(time_scope_values).most_common(1)[0][0] if time_scope_values else "時段未明"
@@ -200,6 +256,9 @@ def main() -> int:
         "inputs": {
             "skillOutputPath": str(skill_output_path),
             "policyPath": str(policy_path),
+            "waveId": wave_id,
+            "reviewReadySupportMin": review_ready_support_min,
+            "reviewReadySource": "policy-driven" if args.review_ready_support_min is None else "cli-override",
         },
         "outputs": {
             "mergedCandidatePath": str(output_path),

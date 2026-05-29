@@ -1,0 +1,56 @@
+{
+  "id": "Policy_Top50_MaYunLu_FormalSourceCandidates_P0",
+  "description": "馬雲騄 romance-variant 第一批正式來源候選。這份資料只定義來源候選與用途，不直接產生 relationship whitelist。",
+  "canonicalWrites": false,
+  "targetGeneralId": "ma-yun-lu",
+  "targetNameZhTw": "馬雲騄",
+  "sourceScope": "romance-variant-only",
+  "candidateSources": [
+    {
+      "sourceId": "zhou-dahuang-fansanguoyanyi-diancang",
+      "priority": 1,
+      "sourceType": "primary-variant-text",
+      "titleZhTw": "周大荒《反三國演義》線上全文",
+      "url": "https://www.diancang.xyz/wenxueyishu/fansanguoyanyi/",
+      "host": "中华典藏",
+      "supportsTargetsZhTw": [
+        "人物存在錨點",
+        "趙雲配偶線",
+        "馬超兄妹線",
+        "馬騰父女線",
+        "馬岱堂親線"
+      ],
+      "reasonZhTw": "這是目前最值得優先追的正式文本系統，因為馬雲騄本身即出自周大荒《反三國演義》。",
+      "nextActionZhTw": "先在此來源定位馬雲騄首次出場與人物介紹段，再往下抽趙雲與馬超的關係句。",
+      "citationReady": false
+    },
+    {
+      "sourceId": "fansanguoyanyi-wikipedia-provenance",
+      "priority": 2,
+      "sourceType": "provenance-index",
+      "titleZhTw": "《反三國演義》條目",
+      "url": "https://zh.wikipedia.org/wiki/%E5%8F%8D%E4%B8%89%E5%9C%8B%E6%BC%94%E7%BE%A9",
+      "host": "維基百科",
+      "supportsTargetsZhTw": [
+        "人物存在錨點"
+      ],
+      "reasonZhTw": "可用來確認馬雲騄屬於《反三國演義》系統的虛構人物，作為來源 provenance 輔助說明。",
+      "nextActionZhTw": "只作來源歸屬佐證，不直接拿來當 relationship quote。",
+      "citationReady": false
+    },
+    {
+      "sourceId": "ma-yun-lu-cne3-index",
+      "priority": 3,
+      "sourceType": "secondary-index",
+      "titleZhTw": "馬雲騄人物索引頁",
+      "url": "https://www.cne3online.com/biography/view/%E9%A9%AC%E4%BA%91%E9%A8%84.shtml",
+      "host": "三國演義電子辭典",
+      "supportsTargetsZhTw": [
+        "人物存在錨點"
+      ],
+      "reasonZhTw": "可作人物索引輔助，幫助確認名稱與出處，但仍不是正式 quote-ready 主來源。",
+      "nextActionZhTw": "僅作旁證與搜尋導引，不直接納入關係白名單。",
+      "citationReady": false
+    }
+  ]
+}

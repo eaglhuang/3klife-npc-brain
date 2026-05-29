@@ -1,0 +1,376 @@
+{
+  "schemaVersion": "codex-relationship-semantic-review-packet.v1",
+  "generatedAt": "2026-05-26T16:07:38+00:00",
+  "canonicalWrites": false,
+  "sourceQueuePath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-focus-semantic-review-queue.second-layer-anchor.round029.ma-yun-lu.focus-only.jsonl",
+  "codexSkillPath": "integrations/codex-skills/sanguo-relationship-semantic-review/SKILL.md",
+  "expectedReviewedCachePath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/codex-skill-review/codex-relationship-semantic-reviewed-cache.jsonl",
+  "entryCount": 4,
+  "entries": [
+    {
+      "semanticReviewUnitId": "relsem.95a24be4c5280175bc656921",
+      "promptVersion": "relationship-semantic-review.v5-alias-consensus-grounding",
+      "sentenceHash": "sha256:61b129753748875a0dad25d4d05f15e96d6d51b00a31b7ed02ebe94ebaa3b174",
+      "sourceSentence": "馬雲騄在小說中的丈夫是趙雲。",
+      "sentenceQualityScore": 91.786,
+      "sourceRefs": [
+        {
+          "canonicalWrites": false,
+          "confidenceSignals": [
+            "baihua-translation-anchor",
+            "focus-sentence-window",
+            "pair-cue:spouse"
+          ],
+          "evidenceRefs": [
+            "unknown",
+            "second-layer-anchor:https://moegirl.uk/index.php?title=%E4%B8%89%E5%9B%BD%E6%9D%80%3A%E9%A9%AC%E4%BA%91%E9%A8%84&variant=zh-hant#L1;sentence=1"
+          ],
+          "locator": "second-layer-anchor:https://moegirl.uk/index.php?title=%E4%B8%89%E5%9B%BD%E6%9D%80%3A%E9%A9%AC%E4%BA%91%E9%A8%84&variant=zh-hant#L1;sentence=1",
+          "sourceFamily": "baihua-bootstrap-focus",
+          "sourceId": "sanguoyanyi-baihua-zh-tw",
+          "sourceLayer": "baihua-focus-packets",
+          "url": ""
+        }
+      ],
+      "allowedEntities": [
+        {
+          "aliasesZhTw": [
+            "常山趙子龍",
+            "常山造子",
+            "趙子龍",
+            "子龍",
+            "趙雲"
+          ],
+          "canonicalWrites": false,
+          "entityId": "zhao-yun",
+          "nameZhTw": "趙雲",
+          "roleHints": [
+            "to"
+          ],
+          "scopedAmbiguousAliasesZhTw": []
+        },
+        {
+          "aliasesZhTw": [
+            "馬家姝騎",
+            "馬雲騄"
+          ],
+          "canonicalWrites": false,
+          "entityId": "ma-yun-lu",
+          "nameZhTw": "馬雲騄",
+          "roleHints": [
+            "from"
+          ],
+          "scopedAmbiguousAliasesZhTw": []
+        }
+      ],
+      "allowedRelationshipTypes": [
+        "spouse"
+      ],
+      "candidates": [
+        {
+          "canonicalWrites": false,
+          "claimSentenceZhTw": "馬雲騄與趙雲是配偶",
+          "controllerId": "",
+          "controllerNameZhTw": "",
+          "counterpartSelectionMode": "direct",
+          "focusGapCount": 1,
+          "focusGapGeneralIds": [
+            "ma-yun-lu"
+          ],
+          "focusQueuePriority": 118.357,
+          "fromId": "ma-yun-lu",
+          "fromNameZhTw": "馬雲騄",
+          "matchedCueTermCount": 1,
+          "matchedCueTerms": [
+            "丈夫"
+          ],
+          "relationshipLaneHint": "",
+          "relationshipLaneReasonZhTw": "",
+          "relationshipType": "spouse",
+          "scoreBeforeSemanticReview": 92.0,
+          "stableBaselineEligible": true,
+          "strictDirectionCheckZhTw": "只有句子明確表示兩人本身有婚配或妻妾關係時，才可支持此候選。",
+          "subjectId": "",
+          "subjectNameZhTw": "",
+          "toId": "zhao-yun",
+          "toNameZhTw": "趙雲",
+          "trustKey": "spouse:ma-yun-lu:zhao-yun"
+        }
+      ],
+      "canonicalWrites": false
+    },
+    {
+      "semanticReviewUnitId": "relsem.2fc0e6762a4da78274139eb5",
+      "promptVersion": "relationship-semantic-review.v5-alias-consensus-grounding",
+      "sentenceHash": "sha256:d8526d957d44cd0bda3663eaf3dba1604de579f3d28a41b5da6ec1a07a9195ec",
+      "sourceSentence": "馬雲騄是馬超之妹，後與趙雲成婚。",
+      "sentenceQualityScore": 85.625,
+      "sourceRefs": [
+        {
+          "canonicalWrites": false,
+          "confidenceSignals": [
+            "baihua-translation-anchor",
+            "focus-sentence-window",
+            "pair-cue:spouse"
+          ],
+          "evidenceRefs": [
+            "unknown",
+            "second-layer-anchor:https://kongming.net/encyclopedia/Ma-Yunlu#L96;sentence=1"
+          ],
+          "locator": "second-layer-anchor:https://kongming.net/encyclopedia/Ma-Yunlu#L96;sentence=1",
+          "sourceFamily": "baihua-bootstrap-focus",
+          "sourceId": "sanguoyanyi-baihua-zh-tw",
+          "sourceLayer": "baihua-focus-packets",
+          "url": ""
+        }
+      ],
+      "allowedEntities": [
+        {
+          "aliasesZhTw": [
+            "常山趙子龍",
+            "常山造子",
+            "趙子龍",
+            "子龍",
+            "趙雲"
+          ],
+          "canonicalWrites": false,
+          "entityId": "zhao-yun",
+          "nameZhTw": "趙雲",
+          "roleHints": [
+            "to"
+          ],
+          "scopedAmbiguousAliasesZhTw": []
+        },
+        {
+          "aliasesZhTw": [
+            "馬家姝騎",
+            "馬雲騄"
+          ],
+          "canonicalWrites": false,
+          "entityId": "ma-yun-lu",
+          "nameZhTw": "馬雲騄",
+          "roleHints": [
+            "from"
+          ],
+          "scopedAmbiguousAliasesZhTw": []
+        }
+      ],
+      "allowedRelationshipTypes": [
+        "spouse"
+      ],
+      "candidates": [
+        {
+          "canonicalWrites": false,
+          "claimSentenceZhTw": "馬雲騄與趙雲是配偶",
+          "controllerId": "",
+          "controllerNameZhTw": "",
+          "counterpartSelectionMode": "direct",
+          "focusGapCount": 1,
+          "focusGapGeneralIds": [
+            "ma-yun-lu"
+          ],
+          "focusQueuePriority": 117.125,
+          "fromId": "ma-yun-lu",
+          "fromNameZhTw": "馬雲騄",
+          "matchedCueTermCount": 1,
+          "matchedCueTerms": [
+            "成婚"
+          ],
+          "relationshipLaneHint": "",
+          "relationshipLaneReasonZhTw": "",
+          "relationshipType": "spouse",
+          "scoreBeforeSemanticReview": 92.0,
+          "stableBaselineEligible": true,
+          "strictDirectionCheckZhTw": "只有句子明確表示兩人本身有婚配或妻妾關係時，才可支持此候選。",
+          "subjectId": "",
+          "subjectNameZhTw": "",
+          "toId": "zhao-yun",
+          "toNameZhTw": "趙雲",
+          "trustKey": "spouse:ma-yun-lu:zhao-yun"
+        }
+      ],
+      "canonicalWrites": false
+    },
+    {
+      "semanticReviewUnitId": "relsem.f1c1a6207f786057ec24c142",
+      "promptVersion": "relationship-semantic-review.v5-alias-consensus-grounding",
+      "sentenceHash": "sha256:f77979586f54b616c503b60af9a9311393a7dc8cc8613742f85a317f0a24ea4d",
+      "sourceSentence": "馬雲騄是馬騰之女，與趙雲成婚。",
+      "sentenceQualityScore": 84.667,
+      "sourceRefs": [
+        {
+          "canonicalWrites": false,
+          "confidenceSignals": [
+            "baihua-translation-anchor",
+            "focus-sentence-window",
+            "pair-cue:spouse"
+          ],
+          "evidenceRefs": [
+            "unknown",
+            "second-layer-anchor:https://kongming.net/encyclopedia/Ma-Yunlu#L56;sentence=1"
+          ],
+          "locator": "second-layer-anchor:https://kongming.net/encyclopedia/Ma-Yunlu#L56;sentence=1",
+          "sourceFamily": "baihua-bootstrap-focus",
+          "sourceId": "sanguoyanyi-baihua-zh-tw",
+          "sourceLayer": "baihua-focus-packets",
+          "url": ""
+        }
+      ],
+      "allowedEntities": [
+        {
+          "aliasesZhTw": [
+            "常山趙子龍",
+            "常山造子",
+            "趙子龍",
+            "子龍",
+            "趙雲"
+          ],
+          "canonicalWrites": false,
+          "entityId": "zhao-yun",
+          "nameZhTw": "趙雲",
+          "roleHints": [
+            "to"
+          ],
+          "scopedAmbiguousAliasesZhTw": []
+        },
+        {
+          "aliasesZhTw": [
+            "馬家姝騎",
+            "馬雲騄"
+          ],
+          "canonicalWrites": false,
+          "entityId": "ma-yun-lu",
+          "nameZhTw": "馬雲騄",
+          "roleHints": [
+            "from"
+          ],
+          "scopedAmbiguousAliasesZhTw": []
+        }
+      ],
+      "allowedRelationshipTypes": [
+        "spouse"
+      ],
+      "candidates": [
+        {
+          "canonicalWrites": false,
+          "claimSentenceZhTw": "馬雲騄與趙雲是配偶",
+          "controllerId": "",
+          "controllerNameZhTw": "",
+          "counterpartSelectionMode": "direct",
+          "focusGapCount": 1,
+          "focusGapGeneralIds": [
+            "ma-yun-lu"
+          ],
+          "focusQueuePriority": 116.933,
+          "fromId": "ma-yun-lu",
+          "fromNameZhTw": "馬雲騄",
+          "matchedCueTermCount": 1,
+          "matchedCueTerms": [
+            "成婚"
+          ],
+          "relationshipLaneHint": "",
+          "relationshipLaneReasonZhTw": "",
+          "relationshipType": "spouse",
+          "scoreBeforeSemanticReview": 92.0,
+          "stableBaselineEligible": true,
+          "strictDirectionCheckZhTw": "只有句子明確表示兩人本身有婚配或妻妾關係時，才可支持此候選。",
+          "subjectId": "",
+          "subjectNameZhTw": "",
+          "toId": "zhao-yun",
+          "toNameZhTw": "趙雲",
+          "trustKey": "spouse:ma-yun-lu:zhao-yun"
+        }
+      ],
+      "canonicalWrites": false
+    },
+    {
+      "semanticReviewUnitId": "relsem.aefc414a1d1e0d565398b823",
+      "promptVersion": "relationship-semantic-review.v5-alias-consensus-grounding",
+      "sentenceHash": "sha256:86b5e8e9df5ac872f73a3d1e0c1b72b24e3e62e966db9df7e531327b6ff1bedb",
+      "sourceSentence": "諸葛亮為趙雲做媒人，迎娶了馬超智勇雙全的妹妹馬雲騄，令其雙雙建功立業。",
+      "sentenceQualityScore": 90.143,
+      "sourceRefs": [
+        {
+          "canonicalWrites": false,
+          "confidenceSignals": [
+            "baihua-translation-anchor",
+            "focus-sentence-window",
+            "pair-cue:sibling"
+          ],
+          "evidenceRefs": [
+            "第041回",
+            "second-layer-anchor:sgyy-fansanguo#chapter-041#L118;sentence=1"
+          ],
+          "locator": "second-layer-anchor:sgyy-fansanguo#chapter-041#L118;sentence=1",
+          "sourceFamily": "baihua-bootstrap-focus",
+          "sourceId": "sanguoyanyi-baihua-zh-tw",
+          "sourceLayer": "baihua-focus-packets",
+          "url": ""
+        }
+      ],
+      "allowedEntities": [
+        {
+          "aliasesZhTw": [
+            "孟起",
+            "馬超"
+          ],
+          "canonicalWrites": false,
+          "entityId": "ma-chao",
+          "nameZhTw": "馬超",
+          "roleHints": [
+            "from"
+          ],
+          "scopedAmbiguousAliasesZhTw": []
+        },
+        {
+          "aliasesZhTw": [
+            "馬家姝騎",
+            "馬雲騄"
+          ],
+          "canonicalWrites": false,
+          "entityId": "ma-yun-lu",
+          "nameZhTw": "馬雲騄",
+          "roleHints": [
+            "to"
+          ],
+          "scopedAmbiguousAliasesZhTw": []
+        }
+      ],
+      "allowedRelationshipTypes": [
+        "sibling"
+      ],
+      "candidates": [
+        {
+          "canonicalWrites": false,
+          "claimSentenceZhTw": "馬超與馬雲騄是兄弟姊妹",
+          "controllerId": "",
+          "controllerNameZhTw": "",
+          "counterpartSelectionMode": "direct",
+          "focusGapCount": 1,
+          "focusGapGeneralIds": [
+            "ma-yun-lu"
+          ],
+          "focusQueuePriority": 88.029,
+          "fromId": "ma-chao",
+          "fromNameZhTw": "馬超",
+          "matchedCueTermCount": 1,
+          "matchedCueTerms": [
+            "妹妹"
+          ],
+          "relationshipLaneHint": "",
+          "relationshipLaneReasonZhTw": "",
+          "relationshipType": "sibling",
+          "scoreBeforeSemanticReview": 90.143,
+          "stableBaselineEligible": true,
+          "strictDirectionCheckZhTw": "只有句子明確表示兩人是血緣兄弟姊妹時，才可支持此候選。",
+          "subjectId": "",
+          "subjectNameZhTw": "",
+          "toId": "ma-yun-lu",
+          "toNameZhTw": "馬雲騄",
+          "trustKey": "sibling:ma-chao:ma-yun-lu"
+        }
+      ],
+      "canonicalWrites": false
+    }
+  ]
+}

@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from repo_layout import resolve_repo_root
+from versioning import build_version_metadata
 
 
 REPO_ROOT = resolve_repo_root(__file__)
@@ -406,9 +407,19 @@ def row_has_requirement(row: dict[str, Any], requirement: dict[str, Any]) -> boo
 
 
 def stable_requirement_passed(row: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, list[str]]:
+    rel_type = str(row.get("relationshipType") or row.get("type") or "").strip()
+    gate_policy = object_map(object_map(policy.get("relationshipDimension")).get("rulerEligibilityGate"))
+    if (
+        rel_type == "ruler_subject"
+        and bool(gate_policy.get("enabled", False))
+        and bool(row.get("rulerEligibilityGateActive"))
+        and str(row.get("controllerEverRulerStatus") or "").strip() == "no"
+    ):
+        blocker = str(gate_policy.get("blocker") or "ruler-eligibility-not-met")
+        return False, [blocker]
+
     rel_policy = object_map(policy.get("relationshipDimension"))
     type_rules = object_map(rel_policy.get("typeStableRequirements"))
-    rel_type = str(row.get("relationshipType") or row.get("type") or "").strip()
     rule = object_map(type_rules.get(rel_type))
     requirements = rule.get("requiresAny")
     if not isinstance(requirements, list) or not requirements:
@@ -432,6 +443,219 @@ def relationship_key(row: dict[str, Any], policy: dict[str, Any]) -> tuple[str, 
         pair_id = "|".join(sorted([from_id, to_id]))
         return "relationship", f"relationship|{rel_type}|{pair_id}"
     return "relationship", f"relationship|{rel_type}|{from_id}|{to_id}"
+
+
+def parse_relationship_trust_key(trust_key: str) -> dict[str, str]:
+    parts = [segment.strip() for segment in str(trust_key or "").split("|")]
+    if len(parts) == 5 and parts[0] == "relationship":
+        return {
+            "dimension": parts[0],
+            "relationshipType": parts[1],
+            "fromId": parts[2],
+            "toId": parts[3],
+            "pairId": parts[4],
+        }
+    if len(parts) == 4 and parts[0] == "relationship":
+        return {
+            "dimension": parts[0],
+            "relationshipType": parts[1],
+            "fromId": parts[2],
+            "toId": parts[3],
+            "pairId": "",
+        }
+    return {"dimension": "", "relationshipType": "", "fromId": "", "toId": "", "pairId": ""}
+
+
+def parse_trust_key(trust_key: str) -> dict[str, str]:
+    relationship = parse_relationship_trust_key(trust_key)
+    if relationship.get("dimension") == "relationship":
+        return relationship
+    parts = [segment.strip() for segment in str(trust_key or "").split("|")]
+    if len(parts) == 4 and parts[0] == "faction":
+        return {
+            "dimension": parts[0],
+            "relationshipType": parts[1],
+            "fromId": parts[2],
+            "toId": parts[3],
+            "pairId": "",
+        }
+    return {"dimension": "", "relationshipType": "", "fromId": "", "toId": "", "pairId": ""}
+
+
+def _decision_is_whitelist(decision: dict[str, Any], policy: dict[str, Any]) -> bool:
+    review_policy = object_map(policy.get("humanReview"))
+    command_policy = object_map(review_policy.get("overrideCommands"))
+    decision_field = str(review_policy.get("decisionField") or "decision")
+    action_field = str(command_policy.get("actionField") or "action")
+    approved_statuses = set(string_list(review_policy.get("approvedStatuses")))
+    force_whitelist_actions = set(string_list(command_policy.get("forceWhitelistActions")))
+    status = str(decision.get(decision_field) or "").strip()
+    action = str(decision.get(action_field) or "").strip()
+    return action in force_whitelist_actions or status in approved_statuses
+
+
+def _controller_id_from_decision(decision: dict[str, Any]) -> str:
+    trust_key = str(decision.get("trustKey") or "").strip()
+    parsed = parse_relationship_trust_key(trust_key)
+    if parsed.get("relationshipType") == "ruler_subject" and parsed.get("fromId"):
+        return str(parsed.get("fromId") or "").strip()
+    relationship_type = str(decision.get("relationshipType") or "").strip()
+    if relationship_type == "ruler_subject":
+        return str(decision.get("fromId") or decision.get("controllerId") or "").strip()
+    return ""
+
+
+def build_ruler_eligibility_snapshot(
+    *,
+    policy: dict[str, Any],
+    decisions: dict[str, dict[str, Any]],
+    previous_skip_index_path: Path,
+) -> dict[str, Any]:
+    rel_policy = object_map(policy.get("relationshipDimension"))
+    gate_policy = object_map(rel_policy.get("rulerEligibilityGate"))
+    enabled = bool(gate_policy.get("enabled", False))
+    min_eligible = max(int(number_value(gate_policy.get("coldStartMinEligibleControllers"), 8.0)), 0)
+    allow_unknown_on_cold_start = bool(gate_policy.get("allowUnknownWhenColdStart", True))
+    use_skip_index = bool(gate_policy.get("seedFromPreviousSkipIndex", True))
+    use_human_decisions = bool(gate_policy.get("seedFromHumanDecisions", True))
+
+    source_counts: Counter[str] = Counter()
+    excluded_counts: Counter[str] = Counter()
+    controllers: set[str] = set()
+
+    record_filter_policy = object_map(gate_policy.get("previousRecordFilter"))
+    record_filter_enabled = bool(record_filter_policy.get("enabled", False))
+    record_filter_file_name = str(
+        record_filter_policy.get("recordFileName") or "relationship-trust-zone.human-locked.jsonl"
+    ).strip()
+    record_filter_path_text = str(record_filter_policy.get("recordPath") or "").strip()
+    record_filter_path = (
+        resolve_path(record_filter_path_text)
+        if record_filter_path_text
+        else previous_skip_index_path.parent / record_filter_file_name
+    )
+    previous_records_by_key: dict[str, dict[str, Any]] = {}
+    if record_filter_enabled and record_filter_path.exists():
+        previous_records_by_key = {
+            str(row.get("trustKey") or "").strip(): row
+            for row in read_jsonl(record_filter_path)
+            if isinstance(row, dict) and str(row.get("trustKey") or "").strip()
+        }
+    include_zones = {
+        str(item or "").strip()
+        for item in string_list(record_filter_policy.get("includeZones"))
+        if str(item or "").strip()
+    }
+    exclude_human_review_actions = {
+        str(item or "").strip()
+        for item in string_list(record_filter_policy.get("excludeHumanReviewActions"))
+        if str(item or "").strip()
+    }
+    disqualify_blockers = {
+        str(item or "").strip()
+        for item in string_list(record_filter_policy.get("disqualifyStableBlockers"))
+        if str(item or "").strip()
+    }
+    require_record_match = bool(record_filter_policy.get("requireRecordMatch", False))
+
+    def passes_previous_record_filter(trust_key: str) -> tuple[bool, str]:
+        if not record_filter_enabled:
+            return True, "record-filter-disabled"
+        row = previous_records_by_key.get(trust_key)
+        if row is None:
+            if require_record_match:
+                return False, "record-missing"
+            return True, "record-missing-allowed"
+        zone = str(row.get("zone") or "").strip()
+        if include_zones and zone not in include_zones:
+            return False, "zone-not-eligible"
+        human_review = object_map(row.get("humanReview"))
+        review_action = str(human_review.get("action") or "").strip()
+        if exclude_human_review_actions and review_action in exclude_human_review_actions:
+            return False, "human-review-action-excluded"
+        blockers = {str(item or "").strip() for item in string_list(row.get("stableBlockers"))}
+        if disqualify_blockers and blockers & disqualify_blockers:
+            return False, "stable-blocker-disqualified"
+        return True, "record-pass"
+
+    if use_skip_index and previous_skip_index_path.exists():
+        payload = read_json(previous_skip_index_path)
+        keys: list[str] = []
+        for field_name in ("fixedAliasLikeTrustKeys", "noRecomputeTrustKeys", "decisionOnlyWhitelistTrustKeys"):
+            keys.extend(string_list(object_map(payload).get(field_name)))
+        for trust_key in keys:
+            parsed = parse_relationship_trust_key(trust_key)
+            if parsed.get("relationshipType") != "ruler_subject":
+                continue
+            passes, reason = passes_previous_record_filter(trust_key)
+            if not passes:
+                excluded_counts[reason] += 1
+                continue
+            controller_id = str(parsed.get("fromId") or "").strip()
+            if controller_id:
+                controllers.add(controller_id)
+                source_counts["previous-skip-index"] += 1
+
+    if use_human_decisions:
+        unique_decisions: list[dict[str, Any]] = []
+        seen_ptr: set[int] = set()
+        for item in decisions.values():
+            if not isinstance(item, dict):
+                continue
+            pointer = id(item)
+            if pointer in seen_ptr:
+                continue
+            seen_ptr.add(pointer)
+            unique_decisions.append(item)
+        for decision in unique_decisions:
+            if not _decision_is_whitelist(decision, policy):
+                continue
+            trust_key = str(decision.get("trustKey") or "").strip()
+            parsed = parse_relationship_trust_key(trust_key)
+            if parsed.get("relationshipType") == "ruler_subject":
+                passes, reason = passes_previous_record_filter(trust_key)
+                if not passes:
+                    excluded_counts[reason] += 1
+                    continue
+            controller_id = _controller_id_from_decision(decision)
+            if controller_id:
+                controllers.add(controller_id)
+                source_counts["human-decisions"] += 1
+
+    manual_allow = set(string_list(gate_policy.get("manualAllowControllerIds")))
+    manual_deny = set(string_list(gate_policy.get("manualDenyControllerIds")))
+    controllers |= manual_allow
+    controllers -= manual_deny
+
+    gate_active = enabled and (len(controllers) >= min_eligible or not allow_unknown_on_cold_start)
+    if enabled and allow_unknown_on_cold_start and len(controllers) < min_eligible:
+        gate_active = False
+
+    return {
+        "enabled": enabled,
+        "gateActive": gate_active,
+        "allowUnknownWhenColdStart": allow_unknown_on_cold_start,
+        "coldStartMinEligibleControllers": min_eligible,
+        "eligibleControllerCount": len(controllers),
+        "eligibleControllerIds": sorted(controllers),
+        "sourceCounts": dict(source_counts),
+        "excludedCounts": dict(excluded_counts),
+        "manualAllowCount": len(manual_allow),
+        "manualDenyCount": len(manual_deny),
+        "usedPreviousSkipIndex": use_skip_index and previous_skip_index_path.exists(),
+        "previousSkipIndexPath": repo_relative(previous_skip_index_path),
+        "previousRecordFilter": {
+            "enabled": record_filter_enabled,
+            "recordPath": repo_relative(record_filter_path),
+            "recordLoaded": bool(previous_records_by_key),
+            "recordCount": len(previous_records_by_key),
+            "includeZones": sorted(include_zones),
+            "excludeHumanReviewActions": sorted(exclude_human_review_actions),
+            "disqualifyStableBlockers": sorted(disqualify_blockers),
+            "requireRecordMatch": require_record_match,
+        },
+        "canonicalWrites": False,
+    }
 
 
 def faction_key(row: dict[str, Any], policy: dict[str, Any]) -> tuple[str, str]:
@@ -1015,11 +1239,6 @@ def apply_human_decisions(records: list[dict[str, Any]], decisions: dict[str, di
             row["stableBlockers"] = sorted(set(blockers))
             output.append(refresh_trust_flags(row, policy))
             continue
-        if action in force_whitelist_actions or (status in approved_statuses and str(row.get("zone") or "") in candidate_stages):
-            row["zone"] = locked_stage
-            row["score"] = round(force_whitelist_score if action in force_whitelist_actions else lock_score, 3)
-            output.append(refresh_trust_flags(row, policy))
-            continue
         if action in remove_actions:
             row["zone"] = removed_stage
             row["noRecompute"] = False
@@ -1030,8 +1249,93 @@ def apply_human_decisions(records: list[dict[str, Any]], decisions: dict[str, di
             row["stableBlockers"] = sorted(set(blockers))
             output.append(refresh_trust_flags(row, policy))
             continue
+        current_zone = str(row.get("zone") or "")
+        approved_by_status = status in approved_statuses and current_zone not in {rejected_stage, removed_stage}
+        if action in force_whitelist_actions or approved_by_status:
+            row["zone"] = locked_stage
+            row["score"] = round(force_whitelist_score if action in force_whitelist_actions else lock_score, 3)
+            output.append(refresh_trust_flags(row, policy))
+            continue
         output.append(refresh_trust_flags(row, policy))
     return output
+
+
+def append_decision_only_locked_records(
+    records: list[dict[str, Any]],
+    decisions: dict[str, dict[str, Any]],
+    policy: dict[str, Any],
+) -> list[dict[str, Any]]:
+    review_policy = object_map(policy.get("humanReview"))
+    command_policy = object_map(review_policy.get("overrideCommands"))
+    decision_field = str(review_policy.get("decisionField") or "decision")
+    action_field = str(command_policy.get("actionField") or "action")
+    approved_statuses = set(string_list(review_policy.get("approvedStatuses")))
+    rejected_statuses = set(string_list(review_policy.get("rejectedStatuses")))
+    force_whitelist_actions = set(string_list(command_policy.get("forceWhitelistActions")))
+    force_blacklist_actions = set(string_list(command_policy.get("forceBlacklistActions")))
+    remove_actions = set(string_list(command_policy.get("removeFromIndexActions")))
+    locked_stage = stage_name(policy, "humanLocked", "human-locked-100")
+    lock_score = number_value(review_policy.get("lockScore"), number_value(zones_policy(policy).get("humanReviewedScore"), 100.0))
+    force_whitelist_score = number_value(command_policy.get("forceWhitelistScore"), lock_score)
+
+    existing_trust_keys = {str(row.get("trustKey") or "").strip() for row in records if str(row.get("trustKey") or "").strip()}
+    synthetic_rows: list[dict[str, Any]] = []
+    emitted_keys: set[str] = set()
+    for decision in decisions.values():
+        if not isinstance(decision, dict):
+            continue
+        trust_key = str(decision.get("trustKey") or "").strip()
+        if not trust_key or trust_key in existing_trust_keys or trust_key in emitted_keys:
+            continue
+        action = str(decision.get(action_field) or "").strip()
+        status = str(decision.get(decision_field) or "").strip()
+        if action in remove_actions or action in force_blacklist_actions or status in rejected_statuses:
+            continue
+        is_approved = action in force_whitelist_actions or status in approved_statuses
+        if not is_approved:
+            continue
+        parsed = parse_trust_key(trust_key)
+        dimension = str(parsed.get("dimension") or "").strip()
+        relationship_type = str(parsed.get("relationshipType") or "").strip()
+        from_id = str(parsed.get("fromId") or "").strip()
+        to_id = str(parsed.get("toId") or "").strip()
+        if not dimension or not relationship_type or not from_id or not to_id:
+            continue
+
+        row = {
+            "trustZoneId": "trustzone." + stable_hash(trust_key),
+            "dimension": dimension,
+            "trustKey": trust_key,
+            "zone": locked_stage,
+            "noRecompute": False,
+            "fixedAliasLike": False,
+            "negativeCondition": False,
+            "relationshipType": relationship_type,
+            "fromId": from_id,
+            "toId": to_id,
+            "subjectId": to_id if dimension == "relationship" else from_id,
+            "controllerId": from_id if dimension == "relationship" else to_id,
+            "factionId": to_id if dimension == "faction" else None,
+            "score": round(force_whitelist_score if action in force_whitelist_actions else lock_score, 3),
+            "evidenceCount": 0,
+            "distinctSourceFamilies": [],
+            "scope": {"mode": "decision-only", "values": []},
+            "stableBlockers": ["human-decision-only-whitelist"],
+            "supportingEvidence": [],
+            "humanReview": {
+                "decision": status or "approved",
+                "action": action,
+                "controlType": decision.get("_controlType") or "decision-only-record",
+                "reviewer": decision.get("reviewer") or review_policy.get("decisionTemplateReviewer"),
+                "reviewedAt": decision.get("reviewedAt"),
+                "notes": decision.get("notes") or "decision-only-whitelist-materialization",
+                "canonicalWrites": False,
+            },
+            "canonicalWrites": False,
+        }
+        synthetic_rows.append(refresh_trust_flags(row, policy))
+        emitted_keys.add(trust_key)
+    return [*records, *synthetic_rows]
 
 
 def candidate_review_records(records: list[dict[str, Any]], policy: dict[str, Any]) -> list[dict[str, Any]]:
@@ -1465,10 +1769,64 @@ def render_review_table_markdown(rows: list[dict[str, Any]], policy: dict[str, A
     return "\n".join(lines)
 
 
-def relationship_rows(claims: list[dict[str, Any]], policy: dict[str, Any]) -> list[dict[str, Any]]:
+def render_ruler_eligibility_review_markdown(snapshot: dict[str, Any], name_map: dict[str, str]) -> str:
+    controllers = string_list(snapshot.get("eligibleControllerIds"))
+    source_counts = object_map(snapshot.get("sourceCounts"))
+    excluded_counts = object_map(snapshot.get("excludedCounts"))
+    lines = [
+        "# 君主候選集合審核表",
+        "",
+        f"- 產出時間：`{utc_now()}`",
+        f"- 閘門啟用：`{'是' if bool(snapshot.get('enabled')) else '否'}`",
+        f"- 閘門生效：`{'是' if bool(snapshot.get('gateActive')) else '否'}`",
+        f"- 候選數量：`{len(controllers)}`",
+        "- 這份表是審核用輸出，所有資料仍維持 `canonicalWrites=false`。",
+        "- 若你發現某人不應是君主候選，可在後續決策中把相關主從關係打叉，下一輪會自動回饋。",
+        "",
+        "## 來源統計",
+    ]
+    if source_counts:
+        for key in sorted(source_counts.keys()):
+            lines.append(f"- `{key}`: `{int(number_value(source_counts.get(key)))}`")
+    else:
+        lines.append("- 無來源統計（可能是冷啟動或來源檔尚未建立）。")
+    lines.extend(["", "## 排除統計"])
+    if excluded_counts:
+        for key in sorted(excluded_counts.keys()):
+            lines.append(f"- `{key}`: `{int(number_value(excluded_counts.get(key)))}`")
+    else:
+        lines.append("- 無排除記錄。")
+
+    lines.extend(
+        [
+            "",
+            "## 候選清單",
+            "",
+            "| # | generalId | 名稱 |",
+            "|---:|---|---|",
+        ]
+    )
+    for index, controller_id in enumerate(sorted(controllers), 1):
+        lines.append(f"| {index} | `{controller_id}` | {markdown_cell(display_name(controller_id, name_map))} |")
+    if not controllers:
+        lines.append("| 1 | *(空)* | *(目前無候選)* |")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def relationship_rows(
+    claims: list[dict[str, Any]],
+    policy: dict[str, Any],
+    ruler_eligibility_snapshot: dict[str, Any] | None = None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     rel_policy = object_map(policy.get("relationshipDimension"))
     if not bool(rel_policy.get("enabled", True)):
-        return []
+        return [], {"rulerSubjectRows": 0, "rulerEligibilityBlockedRows": 0}
+    snapshot = object_map(ruler_eligibility_snapshot)
+    gate_active = bool(snapshot.get("gateActive"))
+    eligible_controllers = set(string_list(snapshot.get("eligibleControllerIds")))
+    blocked_rows = 0
+    ruler_subject_rows = 0
     stable_types = set(string_list(rel_policy.get("stableRelationshipTypes")))
     rows: list[dict[str, Any]] = []
     for claim in claims:
@@ -1487,8 +1845,16 @@ def relationship_rows(claims: list[dict[str, Any]], policy: dict[str, Any]) -> l
         row["controllerId"] = from_id
         row["trustKey"] = trust_key
         row["evidenceScore"] = relationship_score(claim, policy)
+        if rel_type == "ruler_subject":
+            ruler_subject_rows += 1
+            controller_ever_ruler = from_id in eligible_controllers
+            row["controllerEverRuler"] = controller_ever_ruler
+            row["controllerEverRulerStatus"] = "yes" if controller_ever_ruler else "no"
+            row["rulerEligibilityGateActive"] = gate_active
+            if gate_active and not controller_ever_ruler:
+                blocked_rows += 1
         rows.append(row)
-    return rows
+    return rows, {"rulerSubjectRows": ruler_subject_rows, "rulerEligibilityBlockedRows": blocked_rows}
 
 
 def faction_rows(stable_bootstrap: dict[str, Any], policy: dict[str, Any]) -> list[dict[str, Any]]:
@@ -1672,8 +2038,23 @@ def build_relationship_trust_zone(
     claims = read_jsonl(claims_path)
     stable_bootstrap = read_json(bootstrap_path)
     review_packets = read_keyed_jsonl(review_evidence_path, "trustKey") if str(review_evidence_path) and review_evidence_path.exists() else {}
+    human_decisions = read_human_decisions(resolved_human_decisions_path, policy) if str(resolved_human_decisions_path) else {}
+    default_previous_skip_index = resolve_path(str(outputs.get("outputRoot") or "")) / str(
+        outputs.get("skipIndexFileName") or "relationship-trust-zone.skip-index.json"
+    )
+    previous_skip_index_path = (
+        resolve_path(str(inputs.get("previousSkipIndexPath") or ""))
+        if str(inputs.get("previousSkipIndexPath") or "").strip()
+        else default_previous_skip_index
+    )
+    ruler_eligibility_snapshot = build_ruler_eligibility_snapshot(
+        policy=policy,
+        decisions=human_decisions,
+        previous_skip_index_path=previous_skip_index_path,
+    )
     name_map = build_name_map(stable_bootstrap)
-    source_rows = [*relationship_rows(claims, policy), *faction_rows(stable_bootstrap, policy)]
+    relation_rows, relation_row_stats = relationship_rows(claims, policy, ruler_eligibility_snapshot)
+    source_rows = [*relation_rows, *faction_rows(stable_bootstrap, policy)]
 
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     blockers: dict[str, list[str]] = defaultdict(list)
@@ -1702,8 +2083,13 @@ def build_relationship_trust_zone(
         record["claimSentenceZhTw"] = claim_sentence(record, policy, name_map)
         record["factCheckQueries"] = fact_check_queries(record, policy, name_map)
     records = apply_skill_review(records, policy, name_map, review_packets)
-    human_decisions = read_human_decisions(resolved_human_decisions_path, policy) if str(resolved_human_decisions_path) else {}
     records = apply_human_decisions(records, human_decisions, policy)
+    records = append_decision_only_locked_records(records, human_decisions, policy)
+    for record in records:
+        if not str(record.get("claimSentenceZhTw") or "").strip():
+            record["claimSentenceZhTw"] = claim_sentence(record, policy, name_map)
+        if not isinstance(record.get("factCheckQueries"), list):
+            record["factCheckQueries"] = fact_check_queries(record, policy, name_map)
     records.sort(key=lambda row: (str(row.get("zone") or ""), str(row.get("dimension") or ""), str(row.get("trustKey") or "")))
     stable_stage = stage_name(policy, "stable", "stable-90")
     skill_stage = stage_name(policy, "skillReviewed", "skill-reviewed-95")
@@ -1735,6 +2121,12 @@ def build_relationship_trust_zone(
     accumulating_path = root / str(outputs.get("accumulatingFileName") or "relationship-trust-zone.accumulating.jsonl")
     conflict_path = root / str(outputs.get("conflictFileName") or "relationship-trust-zone.conflicts.jsonl")
     skip_index_path = root / str(outputs.get("skipIndexFileName") or "relationship-trust-zone.skip-index.json")
+    ruler_eligibility_snapshot_path = root / str(
+        outputs.get("rulerEligibilitySnapshotFileName") or "relationship-trust-zone.ruler-eligibility.snapshot.json"
+    )
+    ruler_eligibility_review_md_path = root / str(
+        outputs.get("rulerEligibilityReviewMarkdownFileName") or "relationship-trust-zone.ruler-eligibility.review.zh-TW.md"
+    )
     human_review_md_path = root / str(outputs.get("humanReviewMarkdownFileName") or "relationship-trust-zone-human-review.md")
     human_decision_template_path = root / str(outputs.get("humanDecisionTemplateFileName") or "relationship-trust-zone.human-decisions.template.json")
     fact_check_path = root / str(outputs.get("factCheckFileName") or "relationship-trust-zone.fact-check.jsonl")
@@ -1754,6 +2146,11 @@ def build_relationship_trust_zone(
     write_jsonl(accumulating_path, accumulating_rows)
     write_jsonl(conflict_path, conflict_rows)
     skip_index = build_skip_index(records, policy, human_decisions)
+    write_json(ruler_eligibility_snapshot_path, ruler_eligibility_snapshot)
+    ruler_eligibility_review_md_path.write_text(
+        render_ruler_eligibility_review_markdown(ruler_eligibility_snapshot, name_map),
+        encoding="utf-8",
+    )
     write_json(skip_index_path, skip_index)
     human_review_md_path.write_text(render_human_review_markdown(human_review_records, policy), encoding="utf-8")
     write_json(human_decision_template_path, build_human_decision_template(human_review_records, policy))
@@ -1767,9 +2164,22 @@ def build_relationship_trust_zone(
     zone_counts = Counter(str(row.get("zone") or "") for row in records)
     dimension_counts = Counter(str(row.get("dimension") or "") for row in records)
     stable_type_counts = Counter(str(row.get("relationshipType") or "") for row in [*stable_rows, *skill_reviewed_rows, *human_locked_rows])
+    version_metadata = build_version_metadata(
+        schema_version="relationship-trust-zone.v1",
+        artifact_paths=[
+            policy_path,
+            claims_path,
+            bootstrap_path,
+            resolved_human_decisions_path,
+            review_evidence_path,
+            previous_skip_index_path,
+        ],
+        repo_root=REPO_ROOT,
+    )
     summary = {
         "version": "1.0.0",
         "generatedAt": utc_now(),
+        **version_metadata,
         "mode": "relationship-trust-zone",
         "canonicalWrites": False,
         "policyId": policy.get("id"),
@@ -1781,6 +2191,7 @@ def build_relationship_trust_zone(
             "humanReviewDecisionCount": len(human_decisions),
             "skillReviewEvidencePath": repo_relative(review_evidence_path) if str(review_evidence_path) else "",
             "skillReviewEvidencePacketCount": len(review_packets),
+            "previousSkipIndexPath": repo_relative(previous_skip_index_path),
         },
         "outputs": {
             "stable": repo_relative(stable_path),
@@ -1792,6 +2203,8 @@ def build_relationship_trust_zone(
             "accumulating": repo_relative(accumulating_path),
             "conflicts": repo_relative(conflict_path),
             "skipIndex": repo_relative(skip_index_path),
+            "rulerEligibilitySnapshot": repo_relative(ruler_eligibility_snapshot_path),
+            "rulerEligibilityReviewMarkdown": repo_relative(ruler_eligibility_review_md_path),
             "humanReviewMarkdown": repo_relative(human_review_md_path),
             "humanDecisionTemplate": repo_relative(human_decision_template_path),
             "factCheck": repo_relative(fact_check_path),
@@ -1821,6 +2234,11 @@ def build_relationship_trust_zone(
             "noRecomputeKeyCount": len(skip_index["noRecomputeTrustKeys"]),
             "whitelistCount": len(skip_index["whitelistTrustKeys"]),
             "blacklistCount": len(skip_index["blacklistTrustKeys"]),
+            "rulerEligibilityGateEnabled": bool(ruler_eligibility_snapshot.get("enabled")),
+            "rulerEligibilityGateActive": bool(ruler_eligibility_snapshot.get("gateActive")),
+            "rulerEligibilityControllerCount": int(number_value(ruler_eligibility_snapshot.get("eligibleControllerCount"))),
+            "rulerSubjectRowCount": int(number_value(relation_row_stats.get("rulerSubjectRows"))),
+            "rulerEligibilityBlockedRowCount": int(number_value(relation_row_stats.get("rulerEligibilityBlockedRows"))),
             "zoneCounts": dict(sorted(zone_counts.items())),
             "dimensionCounts": dict(sorted(dimension_counts.items())),
             "stableRelationshipTypeCounts": dict(sorted(stable_type_counts.items())),

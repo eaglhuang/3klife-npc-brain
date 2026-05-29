@@ -11,6 +11,7 @@ from typing import Any
 
 from repo_layout import resolve_repo_root
 from reviewer_adapters import resolve_reviewer_adapter
+from versioning import build_version_metadata
 
 
 REPO_ROOT = resolve_repo_root(__file__)
@@ -1983,6 +1984,17 @@ def main() -> int:
     name_map = build_name_map(stable_bootstrap, formal_mention_map)
     alias_map = build_alias_map(name_map, formal_mention_map, general_alias_records)
     scoped_ambiguous_alias_map = build_general_scoped_ambiguous_alias_map(general_alias_records)
+    version_metadata = build_version_metadata(
+        schema_version="relationship-semantic-review-cache.v1",
+        artifact_paths=[
+            policy_path,
+            fact_check_path,
+            stable_bootstrap_path,
+            formal_mention_map_path,
+            general_alias_records_path,
+        ],
+        repo_root=REPO_ROOT,
+    )
 
     rows = read_jsonl(fact_check_path)
     focus_general_ids_path = resolve_path(args.focus_general_ids_file) if str(args.focus_general_ids_file).strip() else Path("")
@@ -2004,6 +2016,8 @@ def main() -> int:
         scoped_ambiguous_alias_map=scoped_ambiguous_alias_map,
         review_mode=review_mode,
     )
+    for unit in units:
+        unit.update(version_metadata)
     cache = load_cache(cache_path)
     queued = [unit for unit in units if unit_needs_review(unit, cache)]
     page_shape_policy = semantic_page_shape_policy(policy)
@@ -2042,8 +2056,13 @@ def main() -> int:
 
     queue_rows = retry_units if args.execute else queued
     write_jsonl(queue_path, queue_rows)
-    write_jsonl(cache_path, sorted(cache.values(), key=lambda item: str(item.get("semanticReviewUnitId") or "")))
-    evidence_packets = evidence_packets_from_cache(list(cache.values()), policy)
+    cache_rows = sorted(cache.values(), key=lambda item: str(item.get("semanticReviewUnitId") or ""))
+    for row in cache_rows:
+        row.update(version_metadata)
+    write_jsonl(cache_path, cache_rows)
+    evidence_packets = evidence_packets_from_cache(cache_rows, policy)
+    for packet in evidence_packets:
+        packet.update(version_metadata)
     write_jsonl(evidence_path, evidence_packets)
 
     candidate_type_counts = Counter()
@@ -2062,6 +2081,7 @@ def main() -> int:
         "runnerName": str(args.runner_name or "primary").strip().lower(),
         "reviewMode": review_mode,
         "generatedAt": utc_now(),
+        **version_metadata,
         "canonicalWrites": False,
         "policyPath": repo_relative(policy_path),
         "factCheckPath": repo_relative(fact_check_path),

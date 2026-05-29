@@ -85,6 +85,80 @@ def bool_value(value: Any, default: bool = False) -> bool:
     return str(value).strip().lower() in {"1", "true", "yes", "y", "on"}
 
 
+def merge_unique_dict_rows(
+    existing_rows: list[dict[str, Any]],
+    incoming_rows: list[dict[str, Any]],
+    *,
+    key_fields: list[str],
+) -> list[dict[str, Any]]:
+    merged: dict[str, dict[str, Any]] = {}
+    ordered_keys: list[str] = []
+
+    def row_key(row: dict[str, Any]) -> str:
+        parts = [str(row.get(field) or "").strip() for field in key_fields]
+        return "|".join(parts)
+
+    for source_rows in (existing_rows, incoming_rows):
+        for row in source_rows:
+            if not isinstance(row, dict):
+                continue
+            key = row_key(row)
+            if not key.strip("|"):
+                continue
+            if key not in merged:
+                ordered_keys.append(key)
+                merged[key] = dict(row)
+            else:
+                merged[key].update(row)
+    return [merged[key] for key in ordered_keys]
+
+
+def merge_extracted_relationships(
+    existing_rows: list[dict[str, Any]],
+    incoming_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    return merge_unique_dict_rows(
+        existing_rows,
+        incoming_rows,
+        key_fields=["relationshipType", "fromId", "toId", "normalizedClaimZhTw"],
+    )
+
+
+def merge_reviewed_unit(existing: dict[str, Any], incoming: dict[str, Any]) -> dict[str, Any]:
+    merged = dict(existing)
+    merged.update(incoming)
+
+    existing_candidates = [row for row in existing.get("candidates") or [] if isinstance(row, dict)]
+    incoming_candidates = [row for row in incoming.get("candidates") or [] if isinstance(row, dict)]
+    merged["candidates"] = merge_unique_dict_rows(existing_candidates, incoming_candidates, key_fields=["trustKey"])
+
+    existing_relationships = [row for row in existing.get("relationships") or [] if isinstance(row, dict)]
+    incoming_relationships = [row for row in incoming.get("relationships") or [] if isinstance(row, dict)]
+    merged["relationships"] = merge_unique_dict_rows(existing_relationships, incoming_relationships, key_fields=["trustKey"])
+
+    existing_extracted = [row for row in existing.get("extractedRelationships") or [] if isinstance(row, dict)]
+    incoming_extracted = [row for row in incoming.get("extractedRelationships") or [] if isinstance(row, dict)]
+    merged["extractedRelationships"] = merge_extracted_relationships(existing_extracted, incoming_extracted)
+
+    reviewed_keys = {
+        str(key).strip()
+        for key in [*(existing.get("reviewedCandidateKeys") or []), *(incoming.get("reviewedCandidateKeys") or [])]
+        if str(key).strip()
+    }
+    merged["reviewedCandidateKeys"] = sorted(reviewed_keys)
+
+    allowed_types = {
+        str(key).strip()
+        for key in [*(existing.get("allowedRelationshipTypes") or []), *(incoming.get("allowedRelationshipTypes") or [])]
+        if str(key).strip()
+    }
+    merged["allowedRelationshipTypes"] = sorted(allowed_types)
+
+    merged["semanticReviewPerformed"] = bool_value(existing.get("semanticReviewPerformed")) or bool_value(incoming.get("semanticReviewPerformed"))
+    merged["canonicalWrites"] = False
+    return merged
+
+
 def default_paths(policy: dict[str, Any], output_root: Path) -> dict[str, Path]:
     outputs = object_map(policy.get("outputs"))
     inputs = object_map(policy.get("inputs"))
@@ -245,7 +319,10 @@ def import_reviewed_cache(args: argparse.Namespace, policy: dict[str, Any], path
     for row in reviewed_rows:
         unit_id = str(row.get("semanticReviewUnitId") or "").strip()
         if unit_id:
-            existing_cache[unit_id] = row
+            if unit_id in existing_cache:
+                existing_cache[unit_id] = merge_reviewed_unit(existing_cache[unit_id], row)
+            else:
+                existing_cache[unit_id] = row
     merged_cache_rows = sorted(existing_cache.values(), key=lambda item: str(item.get("semanticReviewUnitId") or ""))
     skip_evidence_write = bool(args.skip_evidence_write)
     if not args.dry_run:

@@ -1,0 +1,80 @@
+{
+  "id": "Policy_Top50_XinXianYing_KeyFigureDemand_P0",
+  "description": "辛憲英低覆蓋補強的關鍵親屬需求。這份 policy 只定義應優先補哪些人物與關係，不直接產生白名單；所有輸出皆為 proposal-only / review-ready 的上游需求整理。",
+  "canonicalWrites": false,
+  "targetGeneralId": "xin-xian-ying",
+  "targetNameZhTw": "辛憲英",
+  "targetAliasesZhTw": [
+    "辛憲英"
+  ],
+  "keyFigures": [
+    {
+      "figureId": "xin-pi",
+      "figureNameZhTw": "辛毗",
+      "figureAliasesZhTw": [
+        "辛毗"
+      ],
+      "relationshipType": "parent_child",
+      "priority": 1,
+      "isTop50": false,
+      "lane": "second-layer-non-top50-hard-baseline",
+      "reasonZhTw": "辛毗是辛憲英之父，屬最核心的硬親屬基線；若要讓辛憲英的人物中心資料更完整，父女線應優先補成可引用句。 "
+    },
+    {
+      "figureId": "xin-chang",
+      "figureNameZhTw": "辛敞",
+      "figureAliasesZhTw": [
+        "辛敞"
+      ],
+      "relationshipType": "sibling",
+      "priority": 2,
+      "isTop50": false,
+      "lane": "second-layer-non-top50-hard-baseline",
+      "reasonZhTw": "辛敞是目前白話段落中最接近辛憲英的已知親屬對象，也是現有句窗最可能回補成功的兄妹線。"
+    },
+    {
+      "figureId": "yang-dan",
+      "figureNameZhTw": "羊耽",
+      "figureAliasesZhTw": [
+        "羊耽"
+      ],
+      "relationshipType": "spouse",
+      "priority": 3,
+      "isTop50": false,
+      "lane": "second-layer-non-top50-hard-baseline",
+      "reasonZhTw": "羊耽是辛憲英之夫，屬穩定配偶關係；若能補到引用句，可讓辛憲英的人物基線脫離只有政治事件段落的狀態。"
+    },
+    {
+      "figureId": "yang-hu",
+      "figureNameZhTw": "羊祜",
+      "figureAliasesZhTw": [
+        "羊祜"
+      ],
+      "relationshipType": "extended_kinship",
+      "priority": 4,
+      "isTop50": false,
+      "lane": "second-layer-non-top50-extended-kinship",
+      "reasonZhTw": "羊祜是辛憲英的姪子，屬延伸親族線，可先以 proposal-only 方式整理，不與 Top50 硬關係混跑。"
+    },
+    {
+      "figureId": "xiahou-zhan",
+      "figureNameZhTw": "夏侯湛",
+      "figureAliasesZhTw": [
+        "夏侯湛"
+      ],
+      "relationshipType": "extended_kinship",
+      "priority": 5,
+      "isTop50": false,
+      "lane": "second-layer-non-top50-extended-kinship",
+      "reasonZhTw": "夏侯湛是辛憲英之外孫，也是傳記流傳的重要承接者；這條線較適合歸為延伸親族與傳記來源需求。"
+    }
+  ],
+  "inputs": {
+    "focusBundlePath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/focus-bundles-second-layer-anchor/xin-xian-ying.bundle.json",
+    "focusPacketPath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/focus-skill-packets-second-layer-anchor/xin-xian-ying.skill-packet.json",
+    "reviewedCachePaths": [
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/codex-skill-review/top50-low-coverage-focus-targeted-r2-reviewed-cache.jsonl",
+      "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/codex-skill-review/top50-low-coverage-focus-reviewed-cache.jsonl"
+    ]
+  }
+}

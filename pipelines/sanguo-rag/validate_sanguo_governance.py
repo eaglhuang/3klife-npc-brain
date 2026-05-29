@@ -777,6 +777,33 @@ def validate_minimum_shapes(root: Path) -> dict[str, Any]:
     taxonomy_policy = runtime_profile_policy.get("relationshipTaxonomyPolicy")
     if not isinstance(taxonomy_policy, dict) or any(not str(value).strip() for value in taxonomy_policy.values()):
         raise SanguoGovernanceError("policy-runtime-general-profile-export relationshipTaxonomyPolicy must be non-empty strings")
+    focus_projection_policy = runtime_profile_policy.get("focusProjectionPolicy")
+    if not isinstance(focus_projection_policy, dict) or not str(focus_projection_policy.get("version") or "").strip():
+        raise SanguoGovernanceError("policy-runtime-general-profile-export focusProjectionPolicy must define version")
+    if not str(focus_projection_policy.get("missingDataStatus") or "").strip():
+        raise SanguoGovernanceError("policy-runtime-general-profile-export focusProjectionPolicy missing missingDataStatus")
+    link_source_rules = focus_projection_policy.get("linkSourceRules")
+    if not isinstance(link_source_rules, dict) or not link_source_rules:
+        raise SanguoGovernanceError("policy-runtime-general-profile-export focusProjectionPolicy linkSourceRules cannot be empty")
+    for key, row in link_source_rules.items():
+        if not str(key).strip() or not isinstance(row, dict):
+            raise SanguoGovernanceError("policy-runtime-general-profile-export focusProjectionPolicy invalid linkSourceRules row")
+        if not str(row.get("linkAuthority") or "").strip():
+            raise SanguoGovernanceError(f"policy-runtime-general-profile-export linkSourceRules {key} missing linkAuthority")
+        for boolean_key in ("sceneEligible", "supplementalEligible", "upstreamFeedbackRequired"):
+            if not isinstance(row.get(boolean_key), bool):
+                raise SanguoGovernanceError(f"policy-runtime-general-profile-export linkSourceRules {key}.{boolean_key} must be boolean")
+    feedback_queue_policy = runtime_profile_policy.get("upstreamFeedbackQueuePolicy")
+    if not isinstance(feedback_queue_policy, dict) or not str(feedback_queue_policy.get("schemaVersion") or "").strip():
+        raise SanguoGovernanceError("policy-runtime-general-profile-export upstreamFeedbackQueuePolicy must define schemaVersion")
+    if feedback_queue_policy.get("canonicalWrites") is not False:
+        raise SanguoGovernanceError("policy-runtime-general-profile-export upstreamFeedbackQueuePolicy canonicalWrites must be false")
+    for section_key in ("missingStableInput", "projectionSourceGap"):
+        section = feedback_queue_policy.get(section_key)
+        if not isinstance(section, dict) or not str(section.get("proposalType") or "").strip():
+            raise SanguoGovernanceError(f"policy-runtime-general-profile-export upstreamFeedbackQueuePolicy {section_key} invalid")
+        if not isinstance(section.get("requiredUpstreamData"), list) or not section.get("requiredUpstreamData"):
+            raise SanguoGovernanceError(f"policy-runtime-general-profile-export upstreamFeedbackQueuePolicy {section_key} requiredUpstreamData cannot be empty")
     item_terms: set[str] = set()
     for row in runtime_profile_item_cues:
         if str(row.get("consumer") or "") != "export_general_runtime_profile.py":

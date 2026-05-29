@@ -1,0 +1,73 @@
+{
+  "id": "Policy_Top50_CaiYan_KeyFigureDemand_P0",
+  "description": "蔡琰（蔡文姬）第二層關鍵人物需求表。用來整理她在歷史/演義主線中最應優先搜尋的關係圈，避免盲目擴散搜尋。此 policy 只定義資料需求與 lane 建議，不直接產生 reviewed-cache 或 stable whitelist。",
+  "canonicalWrites": false,
+  "targetGeneralId": "cai-yan",
+  "targetNameZhTw": "蔡琰",
+  "targetAliasesZhTw": [
+    "蔡琰",
+    "蔡文姬"
+  ],
+  "keyFigures": [
+    {
+      "figureId": "cai-yong",
+      "figureNameZhTw": "蔡邕",
+      "figureAliasesZhTw": [
+        "蔡邕"
+      ],
+      "relationshipType": "parent_child",
+      "priority": 1,
+      "isTop50": false,
+      "lane": "second-layer-non-top50-hard-baseline",
+      "reasonZhTw": "蔡邕是蔡琰之父，也是她整條身世線的起點。若要補強蔡琰主線，這條父女關係是最穩的基底。"
+    },
+    {
+      "figureId": "cao-cao",
+      "figureNameZhTw": "曹操",
+      "figureAliasesZhTw": [
+        "曹操",
+        "孟德",
+        "曹孟德",
+        "魏武"
+      ],
+      "relationshipType": "ruler_subject",
+      "priority": 2,
+      "isTop50": true,
+      "lane": "top50-mainline-hard-relationship",
+      "reasonZhTw": "曹操是蔡琰歸漢與後段安置的關鍵人物，也是她目前最可能回到 Top50 主線的對手。"
+    },
+    {
+      "figureId": "zuo-xian-wang",
+      "figureNameZhTw": "左賢王",
+      "figureAliasesZhTw": [
+        "左賢王",
+        "劉豹"
+      ],
+      "relationshipType": "spouse",
+      "priority": 3,
+      "isTop50": false,
+      "lane": "second-layer-non-top50-hard-baseline",
+      "reasonZhTw": "左賢王是蔡琰在匈奴時期的丈夫，屬於非 Top50 但極重要的第二層婚姻線。"
+    },
+    {
+      "figureId": "dong-si",
+      "figureNameZhTw": "董祀",
+      "figureAliasesZhTw": [
+        "董祀"
+      ],
+      "relationshipType": "spouse",
+      "priority": 4,
+      "isTop50": false,
+      "lane": "second-layer-non-top50-hard-baseline",
+      "reasonZhTw": "董祀是蔡琰歸漢後的第二任丈夫，也是目前 second-layer 句子最容易直接落成硬關係的一條線。"
+    }
+  ],
+  "inputs": {
+    "relationshipPolicyPath": "data/sanguo/policies/policy-relationship-trust-zone.json",
+    "top50CrossFocusPath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-second-layer-cross-focus-opportunities.jsonl",
+    "secondLayerProposalPath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-second-layer-anchor-source-proposals.jsonl",
+    "sourceEventPacketPath": "artifacts/data-pipeline/sanguo-rag/extracted/progress-advancement/abab-live-r3/repair-review/source-event-packets/abab-live-r3-a1-merged/source-event-packets.jsonl",
+    "eventQuestionSeedPath": "artifacts/data-pipeline/sanguo-rag/extracted/progress-advancement/abab-live-r3/repair-review/event-question-seeds/abab-live-r3-a1-merged/event-question-seeds.jsonl",
+    "reviewedCachePath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/codex-skill-review/top50-second-layer-focus-reviewed-cache.jsonl"
+  }
+}

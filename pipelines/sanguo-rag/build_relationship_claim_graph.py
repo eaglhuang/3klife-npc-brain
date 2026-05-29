@@ -16,6 +16,7 @@ import relationship_type_refinement as relationship_types
 from relationship_type_refinement import refine_relationship_type, relationship_type_family
 from repo_layout import pipeline_config_path, resolve_repo_root
 from sanguo_governance_loader import default_governance_root, load_relationship_runtime_canon_policy
+from versioning import build_version_metadata
 
 
 REPO_ROOT = resolve_repo_root(__file__)
@@ -2007,9 +2008,23 @@ def main() -> int:
     source_family_counts = Counter(str(row.get("sourceFamily") or "") for row in claims)
     source_layer_counts = Counter(str(row.get("sourceLayer") or "") for row in claims)
     type_counts = Counter(str(row.get("type") or "") for row in claims)
+    version_metadata = build_version_metadata(
+        schema_version="relationship-claim-graph.v1",
+        artifact_paths=[
+            resolve_path(args.generals),
+            resolve_path(args.alias_map),
+            stable_path,
+            resolve_path(args.source_config),
+            *relationship_paths,
+            *relationship_claim_paths,
+            *external_card_paths,
+        ],
+        repo_root=REPO_ROOT,
+    )
     summary = {
         "version": "1.0.0",
         "generatedAt": utc_now(),
+        **version_metadata,
         "mode": "relationship-claim-graph",
         "canonicalWrites": False,
         "inputs": {

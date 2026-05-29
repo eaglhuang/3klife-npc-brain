@@ -81,7 +81,7 @@ def render_sop(*, protocol: dict[str, Any], wave001_summary: dict[str, Any], run
     lines.append("python pipelines/sanguo-rag/build_baihua_top50_bootstrap_jobs.py --wave-id <wave-id> --output-root artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/<wave-id> --top 50 --overwrite")
     lines.append("python pipelines/sanguo-rag/build_baihua_passage_bundles.py --wave-id <wave-id> --output-root artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/<wave-id> --overwrite")
     lines.append("python pipelines/sanguo-rag/run_baihua_focus_relationship_runner.py --output-root artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/<wave-id> --overwrite")
-    lines.append("python pipelines/sanguo-rag/merge_baihua_bootstrap_candidates.py --output-root artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/<wave-id> --overwrite")
+    lines.append("python pipelines/sanguo-rag/merge_baihua_bootstrap_candidates.py --output-root artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/<wave-id> --overwrite --wave-id <wave-id>")
     lines.append("python pipelines/sanguo-rag/check_baihua_bootstrap_conflicts.py --output-root artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/<wave-id> --overwrite")
     lines.append("python pipelines/sanguo-rag/adapt_baihua_bootstrap_to_trust_zone.py --output-root artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/<wave-id> --overwrite")
     lines.append("python pipelines/sanguo-rag/render_baihua_bootstrap_human_review.py --output-root artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/<wave-id> --overwrite")
@@ -135,7 +135,7 @@ def main() -> int:
             {"id": "0101-jobs", "command": "build_baihua_top50_bootstrap_jobs.py", "required": True},
             {"id": "0102-bundles", "command": "build_baihua_passage_bundles.py", "required": True},
             {"id": "0201-runner", "command": "run_baihua_focus_relationship_runner.py", "required": True},
-            {"id": "0202-merge", "command": "merge_baihua_bootstrap_candidates.py", "required": True},
+            {"id": "0202-merge", "command": "merge_baihua_bootstrap_candidates.py --wave-id <wave-id>", "required": True},
             {"id": "0203-conflict", "command": "check_baihua_bootstrap_conflicts.py", "required": True},
             {"id": "0301-adapter", "command": "adapt_baihua_bootstrap_to_trust_zone.py", "required": True},
             {"id": "0302-human-review", "command": "render_baihua_bootstrap_human_review.py", "required": True},

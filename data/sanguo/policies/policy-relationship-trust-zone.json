@@ -6,7 +6,8 @@
     "relationshipClaimsPath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-claim-graph/relationship-claims.jsonl",
     "stableBootstrapPath": "artifacts/data-pipeline/sanguo-rag/extracted/stable-knowledge-bootstrap/stable-knowledge-bootstrap.json",
     "formalMentionMapPath": "artifacts/data-pipeline/sanguo-rag/extracted/alias-dictionary/formal-mention-map.json",
-    "humanReviewDecisionsPath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.human-decisions.json",
+    "humanReviewDecisionsPath": "artifacts/data-pipeline/sanguo-rag/extracted/baihua-bootstrap/wave-001-max1200/top50-strict-human-decisions.approved-status.json",
+    "previousSkipIndexPath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.skip-index.json",
     "skillReviewEvidencePath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.skill-review-evidence.jsonl",
     "semanticReviewEvidencePath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.semantic-review-evidence.jsonl",
     "secondarySemanticReviewEvidencePath": "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.semantic-review-secondary-evidence.jsonl",
@@ -23,6 +24,8 @@
     "accumulatingFileName": "relationship-trust-zone.accumulating.jsonl",
     "conflictFileName": "relationship-trust-zone.conflicts.jsonl",
     "skipIndexFileName": "relationship-trust-zone.skip-index.json",
+    "rulerEligibilitySnapshotFileName": "relationship-trust-zone.ruler-eligibility.snapshot.json",
+    "rulerEligibilityReviewMarkdownFileName": "relationship-trust-zone.ruler-eligibility.review.zh-TW.md",
     "humanReviewMarkdownFileName": "relationship-trust-zone-human-review.md",
     "humanDecisionTemplateFileName": "relationship-trust-zone.human-decisions.template.json",
     "factCheckFileName": "relationship-trust-zone.fact-check.jsonl",
@@ -615,6 +618,33 @@
   },
   "relationshipDimension": {
     "enabled": true,
+    "rulerEligibilityGate": {
+      "enabled": true,
+      "allowUnknownWhenColdStart": true,
+      "coldStartMinEligibleControllers": 7,
+      "seedFromPreviousSkipIndex": true,
+      "seedFromHumanDecisions": true,
+      "previousRecordFilter": {
+        "enabled": true,
+        "recordPath": "",
+        "recordFileName": "relationship-trust-zone.human-locked.jsonl",
+        "includeZones": [
+          "human-locked-100"
+        ],
+        "excludeHumanReviewActions": [
+          "force-whitelist"
+        ],
+        "disqualifyStableBlockers": [
+          "stable-requirement-not-met:ruler_subject"
+        ],
+        "requireRecordMatch": false
+      },
+      "blocker": "ruler-eligibility-not-met",
+      "manualAllowControllerIds": [],
+      "manualDenyControllerIds": [
+        "cao-ren"
+      ]
+    },
     "stableRelationshipTypes": [
       "ruler_subject",
       "parent_child",

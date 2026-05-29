@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -1188,6 +1189,23 @@ def merge_external_artifacts(
 
 
 def merge_relationship_edges(paths: list[Path]) -> list[dict[str, Any]]:
+    def chapter_sort_key(raw_value: Any) -> tuple[int, int, str]:
+        """Normalize mixed chapterNo types (int/str) into a deterministic sortable key."""
+        if raw_value is None:
+            return (1, 10**9, "")
+        if isinstance(raw_value, (int, float)) and not isinstance(raw_value, bool):
+            return (0, int(raw_value), "")
+        text = str(raw_value or "").strip()
+        if not text:
+            return (1, 10**9, "")
+        match = re.search(r"-?\d+", text)
+        if match:
+            try:
+                return (0, int(match.group(0)), text.casefold())
+            except ValueError:
+                pass
+        return (0, 10**8, text.casefold())
+
     merged: dict[tuple[str, str, str, str], dict[str, Any]] = {}
     for path in paths:
         for row in read_jsonl(path):
@@ -1208,8 +1226,7 @@ def merge_relationship_edges(paths: list[Path]) -> list[dict[str, Any]]:
     rows = list(merged.values())
     rows.sort(
         key=lambda row: (
-            row.get("chapterNo") is None,
-            row.get("chapterNo") if row.get("chapterNo") is not None else 10**9,
+            *chapter_sort_key(row.get("chapterNo")),
             str((row.get("evidenceRefs") or [""])[0]),
             str(row.get("fromId") or ""),
             str(row.get("type") or ""),

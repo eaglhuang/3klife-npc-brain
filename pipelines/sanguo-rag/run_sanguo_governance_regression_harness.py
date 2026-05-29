@@ -21,6 +21,11 @@ from sanguo_governance_loader import (
     resolve_governance_root,
 )
 from validate_sanguo_governance import validate_expected_files, validate_minimum_shapes
+from validate_runtime_focus_projection import (
+    DEFAULT_PROFILE_ROOT as DEFAULT_RUNTIME_PROFILE_ROOT,
+    persona_paths as runtime_focus_persona_paths,
+    validate_persona as validate_runtime_focus_persona,
+)
 
 
 PIPELINE_ROOT = Path(__file__).resolve().parent
@@ -44,6 +49,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-profile-policy", default=None, help="Override policy-governance-run-profiles.json path")
     parser.add_argument("--report-bundle-policy", default=None, help="Override policy-governance-report-bundle.json path")
     parser.add_argument("--snapshot-policy", default=None, help="Override policy-governance-harness-snapshots.json path")
+    parser.add_argument("--runtime-profile-root", default=str(DEFAULT_RUNTIME_PROFILE_ROOT), help="Runtime profile root for focus projection validation")
     parser.add_argument("--skip-snapshot-check", action="store_true", help="Skip golden snapshot comparison when refreshing snapshot files")
     parser.add_argument("--output-root", default=None, help="Output root for harness reports")
     parser.add_argument("--strict-phase-plans", action="store_true", help="Fail if a planned phase document is missing")
@@ -126,6 +132,28 @@ def fixture_matrix(policy: dict[str, Any]) -> list[dict[str, Any]]:
                 row["missingFiles"].append(relative_path)
         rows.append(row)
     return rows
+
+
+def resolve_runtime_profile_root(path_text: str) -> Path:
+    path = Path(path_text)
+    return path if path.is_absolute() else (PIPELINE_ROOT.parents[1] / path).resolve()
+
+
+def runtime_focus_projection_validation(profile_root: Path) -> dict[str, Any]:
+    reports = [validate_runtime_focus_persona(path) for path in runtime_focus_persona_paths(profile_root, [])]
+    failed = [report for report in reports if not report.get("ok")]
+    warning_count = sum(len(report.get("warnings") or []) for report in reports)
+    return {
+        "status": "ok" if not failed else "failed",
+        "profileRoot": profile_root.as_posix(),
+        "checkedCount": len(reports),
+        "failedCount": len(failed),
+        "warningCount": warning_count,
+        "projectionCount": sum(int(report.get("projectionCount") or 0) for report in reports),
+        "sceneEligibleProjectionCount": sum(int(report.get("sceneEligibleProjectionCount") or 0) for report in reports),
+        "upstreamFeedbackProjectionCount": sum(int(report.get("upstreamFeedbackProjectionCount") or 0) for report in reports),
+        "failedReports": failed[:20],
+    }
 
 
 def handoff_index(expected_rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -434,6 +462,7 @@ def render_markdown(payload: dict[str, Any]) -> str:
         f"- Missing Validation Summary Keys: `{payload['summary']['missingValidationSummaryKeyCount']}`",
         f"- Fixture Manifests: `{payload['summary']['fixtureManifestCount']}`",
         f"- Missing Fixture Files: `{payload['summary']['missingFixtureFileCount']}`",
+        f"- Runtime Focus Projection: `{payload['runtimeFocusProjection']['status']}`",
         f"- Handoff Consumers: `{payload['summary']['handoffConsumerCount']}`",
         f"- Release Readiness: `{payload['releaseReadiness']['status']}`",
         f"- Governance Drift: `{payload['governanceDrift']['status']}`",
@@ -462,6 +491,15 @@ def render_markdown(payload: dict[str, Any]) -> str:
             lines.append(f"- Manifest Error: `{row['manifestError']}`")
         for missing in row["missingFiles"]:
             lines.append(f"- Missing Fixture File: `{missing}`")
+    lines.extend(["", "## Runtime Focus Projection", ""])
+    runtime_projection = payload["runtimeFocusProjection"]
+    lines.append(f"- Status: `{runtime_projection['status']}`")
+    lines.append(f"- Checked Profiles: `{runtime_projection['checkedCount']}`")
+    lines.append(f"- Failed Profiles: `{runtime_projection['failedCount']}`")
+    lines.append(f"- Warnings: `{runtime_projection['warningCount']}`")
+    lines.append(f"- Projections: `{runtime_projection['projectionCount']}`")
+    lines.append(f"- Scene Eligible Projections: `{runtime_projection['sceneEligibleProjectionCount']}`")
+    lines.append(f"- Upstream Feedback Projections: `{runtime_projection['upstreamFeedbackProjectionCount']}`")
     lines.extend(["", "## Handoff Index", ""])
     for section, rows in payload["handoffIndex"]["sections"].items():
         lines.append(f"- Section `{section}`: `{len(rows)}` files")
@@ -563,6 +601,7 @@ def main() -> None:
     missing_phase_plans = [row for row in phase_rows if not row["planExists"]]
     coverage = validation_coverage(validation_policy, shape_summary)
     fixture_rows = fixture_matrix(policy)
+    runtime_projection = runtime_focus_projection_validation(resolve_runtime_profile_root(args.runtime_profile_root))
     missing_fixture_count = sum(len(row["missingFiles"]) for row in fixture_rows)
     fixture_error_count = sum(1 for row in fixture_rows if row.get("manifestError"))
     handoff = handoff_index(expected_rows)
@@ -575,6 +614,7 @@ def main() -> None:
         "missingFixtureFileCount": missing_fixture_count,
         "fixtureManifestErrorCount": fixture_error_count,
         "minimumShapeMetricCount": len(shape_summary),
+        "runtimeFocusProjectionFailedCount": runtime_projection["failedCount"],
         "handoffConsumerCount": handoff["consumerCount"],
         "handoffSectionCount": handoff["sectionCount"],
     }
@@ -608,6 +648,8 @@ def main() -> None:
         status = "failed"
     if strict_enabled(args, "strict_triage", selected_run_profile, "strictTriage") and triage["itemCount"]:
         status = "failed"
+    if runtime_projection["failedCount"]:
+        status = "failed"
     output_root = Path(args.output_root or policy.get("defaultOutputRoot") or "local/codex-smoke/governance-regression")
     bundle = report_bundle(report_bundle_policy, output_root, args.no_write)
     summary["governanceReportBundleFileCount"] = bundle["fileCount"]
@@ -623,6 +665,7 @@ def main() -> None:
         "phaseMatrix": phase_rows,
         "validationCoverage": coverage,
         "fixtureMatrix": fixture_rows,
+        "runtimeFocusProjection": runtime_projection,
         "handoffIndex": handoff,
         "releaseReadiness": readiness,
         "governanceDrift": drift,
