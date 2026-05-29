@@ -1,0 +1,49 @@
+name: Render Scheduled Redeploy
+
+on:
+  schedule:
+    # Daily 03:00 UTC, which is 11:00 in Asia/Taipei.
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Optional note for the redeploy run"
+        required: false
+        default: "manual redeploy"
+
+concurrency:
+  group: render-redeploy
+  cancel-in-progress: false
+
+jobs:
+  trigger-render-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate deploy hook secret
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "RENDER_DEPLOY_HOOK_URL secret is not configured."
+            exit 1
+          fi
+
+      - name: Calibrate latest data version
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          python scripts/latest_data_refresh.py \
+            --repo-root . \
+            --health-url https://threeklife-npc-brain.onrender.com/healthz \
+            --deploy-hook-url "$RENDER_DEPLOY_HOOK_URL" \
+            --expected-data-version "${{ github.sha }}" \
+            --timeout-seconds 900 \
+            --poll-interval-seconds 15
