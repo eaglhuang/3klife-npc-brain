@@ -1,0 +1,213 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "zhang-fei",
+  "displayName": "張飛",
+  "generatedAt": "2026-05-30T07:39:09+00:00",
+  "relationshipCount": 6,
+  "typeCounts": {
+    "battlefield_contact": 2,
+    "enemy_rival": 1,
+    "parent_child": 1,
+    "sworn_sibling": 2
+  },
+  "anchors": [
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "sworn_sibling",
+      "typeLabel": "結義兄弟",
+      "originalTypes": [
+        "sworn_sibling"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:cd0dba7472ff24cc03b2",
+        "sgyy-baihua#chapter-001#p21;window=1"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
+      "sourceQuotes": [
+        "於是到了張飛的莊子，進了桃園，桃花盛開，春意盎然。他們擺下酒肉祭品，焚了高香，劉備說：“我劉備，還有關羽、張飛，以年齒排序，雖然不是同姓，但是誌趣相結，從此結為兄弟，戮力同心，上報國家，下安鄉黨。",
+        "」玄德曰：「此關羽，張飛，備結義兄弟也"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "sworn_sibling",
+      "typeLabel": "結義兄弟",
+      "originalTypes": [
+        "sworn_sibling"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:4f6f4bd4ec3681945c19",
+        "sgyy-baihua#chapter-001#p21;window=1"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
+      "sourceQuotes": [
+        "於是到了張飛的莊子，進了桃園，桃花盛開，春意盎然。他們擺下酒肉祭品，焚了高香，劉備說：“我劉備，還有關羽、張飛，以年齒排序，雖然不是同姓，但是誌趣相結，從此結為兄弟，戮力同心，上報國家，下安鄉黨。",
+        "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "zhang-bao",
+      "targetName": "張苞",
+      "type": "parent_child",
+      "typeLabel": "親子",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-081#p8;window=2"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
+      "sourceQuotes": [
+        "劉備一看，是一員小將，白袍銀鎧，滾鞍下馬，伏在地上哭泣，正是張飛的兒子張苞。張苞說：“範疆、張達殺了我父親，跑去了東吳，我也要去打東吳。"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "commands"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "036#p5"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "：「吾已取樊城多時矣！」眾驚視之，乃關雲長也。仁大驚，撥馬便走。雲長追殺過來。。船渡河，岸上一彪軍殺到，爲首大將，乃張飛也。曹仁死戰，李典保護曹仁下船渡河。"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:ce227ba4ab3ca35b523d"
+      ],
+      "edgeConfidence": 0.77,
+      "edgeStrength": 0.65,
+      "sourceQuotes": [
+        "只見張飛扯劍上廳，要殺呂布，玄德慌忙阻住"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "protects"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "041#p11"
+      ],
+      "edgeConfidence": 0.74,
+      "edgeStrength": 0.62,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "battlefield_contact",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "070#p2"
+      ],
+      "sourceQuote": "軍師何故反送酒與他？」孔明笑曰：「主公與翼德做了許多年兄弟，還不知其爲人耶？。？翼德自來剛強，然前於收川之時，義釋嚴顏，此非勇夫所爲也。今與張郃相拒五十餘",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "battlefield_contact",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "070#p2"
+      ],
+      "sourceQuote": "軍師何故反送酒與他？」孔明笑曰：「主公與翼德做了許多年兄弟，還不知其爲人耶？。？翼德自來剛強，然前於收川之時，義釋嚴顏，此非勇夫所爲也。今與張郃相拒五十餘",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

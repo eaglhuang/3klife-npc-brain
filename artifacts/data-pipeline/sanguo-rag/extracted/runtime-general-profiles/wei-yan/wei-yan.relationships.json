@@ -1,0 +1,574 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "wei-yan",
+  "displayName": "魏延",
+  "generatedAt": "2026-05-21T09:52:24+00:00",
+  "relationshipCount": 7,
+  "typeCounts": {
+    "battlefield_contact": 5,
+    "betrayal_surrender": 1,
+    "enemy_rival": 1
+  },
+  "anchors": [
+    {
+      "targetId": "e-huan",
+      "targetName": "鄂煥",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "087#p5"
+      ],
+      "edgeConfidence": 0.84,
+      "edgeStrength": 0.72,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "source-grounded-strong",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "huang-zhong",
+      "targetName": "黃忠",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "mentor_student"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "063#p5"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "重賞魏延。玄德設宴款待彭羕。忽報荊州諸葛亮軍師特遣馬良奉書至此。玄德召入問之。。延。交馬不數合，被魏延活捉去了。比及吳蘭，雷同來接應時，又被黃忠一軍殺來。魏"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "mentor_student"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "063#p2"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "重賞魏延。玄德設宴款待彭羕。忽報荊州諸葛亮軍師特遣馬良奉書至此。玄德召入問之。。延。交馬不數合，被魏延活捉去了。比及吳蘭，雷同來接應時，又被黃忠一軍殺來。魏"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    },
+    {
+      "targetId": "peng-yang",
+      "targetName": "彭羕",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "mentor_student"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "063#p2"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "重賞魏延。玄德設宴款待彭羕。忽報荊州諸葛亮軍師特遣馬良奉書至此。玄德召入問之。。延。交馬不數合，被魏延活捉去了。比及吳蘭，雷同來接應時，又被黃忠一軍殺來。魏"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    },
+    {
+      "targetId": "wang-ping",
+      "targetName": "王平",
+      "type": "betrayal_surrender",
+      "typeLabel": "背叛投降",
+      "originalTypes": [
+        "betrayal_surrender"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:4e54f25f8f6a5053a3f4",
+        "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:d4ade73cf8c9fd5869cf"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "E 鄂焕 ：八十七回， 高定 将，使方天戟，为魏延、王平、张翼合擒，降，封益州牙将"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "xiahou-ba",
+      "targetName": "夏侯霸",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "104#p2"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "吐血數口，臥倒床上，謂魏延曰：「此是司馬懿料吾有病，故令人來試探虛實。汝可急出。」魏延領命，出帳上馬，引兵殺出寨來。夏侯霸見了魏延，慌忙引軍退走。延追趕二十餘"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    },
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "070#p2",
+        "087#p6",
+        "104#p2"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "battlefield_contact",
+      "originalType": "mentor_student",
+      "evidenceRefs": [
+        "087#p6"
+      ],
+      "sourceQuote": "雍闓的人盡殺。」眾軍皆聞此言。少時，孔明令取雍闓的人到帳前問曰：「汝等皆是何。人部從？」眾僞曰：「高定部下人也。」孔明教皆免其死，與酒食賞勞，令人送出界首",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "e-huan",
+      "targetName": "鄂煥",
+      "type": "battlefield_contact",
+      "originalType": "mentor_student",
+      "evidenceRefs": [
+        "087#p5"
+      ],
+      "sourceQuote": "雍闓的人盡殺。」眾軍皆聞此言。少時，孔明令取雍闓的人到帳前問曰：「汝等皆是何。人部從？」眾僞曰：「高定部下人也。」孔明教皆免其死，與酒食賞勞，令人送出界首",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "e-huan",
+      "targetName": "鄂煥",
+      "type": "battlefield_contact",
+      "originalType": "mentor_student",
+      "evidenceRefs": [
+        "087#p5"
+      ],
+      "sourceQuote": "雍闓的人盡殺。」眾軍皆聞此言。少時，孔明令取雍闓的人到帳前問曰：「汝等皆是何。人部從？」眾僞曰：「高定部下人也。」孔明教皆免其死，與酒食賞勞，令人送出界首",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "e-huan",
+      "targetName": "鄂煥",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
+      "evidenceRefs": [
+        "087#p5"
+      ],
+      "sourceQuote": "，闓曰：「如何得鄂煥回也？」定曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之。曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之計，欲令我兩人不和，故施此謀也",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wang-ping",
+      "targetName": "王平",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
+      "evidenceRefs": [
+        "087#p5"
+      ],
+      "sourceQuote": "，闓曰：「如何得鄂煥回也？」定曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之。曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之計，欲令我兩人不和，故施此謀也",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "e-huan",
+      "targetName": "鄂煥",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "087#p5"
+      ],
+      "sourceQuote": "，闓曰：「如何得鄂煥回也？」定曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之。曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之計，欲令我兩人不和，故施此謀也",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
+      "evidenceRefs": [
+        "070#p2"
+      ],
+      "sourceQuote": "軍師何故反送酒與他？」孔明笑曰：「主公與翼德做了許多年兄弟，還不知其爲人耶？。？翼德自來剛強，然前於收川之時，義釋嚴顏，此非勇夫所爲也。今與張郃相拒五十餘",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-fei",
+      "targetName": "張飛",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
+      "evidenceRefs": [
+        "070#p2"
+      ],
+      "sourceQuote": "軍師何故反送酒與他？」孔明笑曰：「主公與翼德做了許多年兄弟，還不知其爲人耶？。？翼德自來剛強，然前於收川之時，義釋嚴顏，此非勇夫所爲也。今與張郃相拒五十餘",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-fei",
+      "targetName": "張飛",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
+      "evidenceRefs": [
+        "070#p2"
+      ],
+      "sourceQuote": "軍師何故反送酒與他？」孔明笑曰：「主公與翼德做了許多年兄弟，還不知其爲人耶？。？翼德自來剛強，然前於收川之時，義釋嚴顏，此非勇夫所爲也。今與張郃相拒五十餘",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lei-tong",
+      "targetName": "雷銅",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
+      "evidenceRefs": [
+        "070#p2"
+      ],
+      "sourceQuote": "軍師何故反送酒與他？」孔明笑曰：「主公與翼德做了許多年兄弟，還不知其爲人耶？。？翼德自來剛強，然前於收川之時，義釋嚴顏，此非勇夫所爲也。今與張郃相拒五十餘",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "jiang-wei",
+      "targetName": "姜維",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "093#p5"
+      ],
+      "sourceQuote": "卻說姜維回見馬遵曰：「趙雲敗去，孔明必然自來。在城上守禦。」分撥已定。卻說孔明因慮姜維，自爲前部，望天水郡進發。將到城邊，",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "jiang-wei",
+      "targetName": "姜維",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "093#p5"
+      ],
+      "sourceQuote": "卻說姜維回見馬遵曰：「趙雲敗去，孔明必然自來。在城上守禦。」分撥已定。卻說孔明因慮姜維，自爲前部，望天水郡進發。將到城邊，",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "093#p5"
+      ],
+      "sourceQuote": "卻說姜維回見馬遵曰：「趙雲敗去，孔明必然自來。在城上守禦。」分撥已定。卻說孔明因慮姜維，自爲前部，望天水郡進發。將到城邊，",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "093#p5"
+      ],
+      "sourceQuote": "卻說姜維回見馬遵曰：「趙雲敗去，孔明必然自來。在城上守禦。」分撥已定。卻說孔明因慮姜維，自爲前部，望天水郡進發。將到城邊，",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "mentor_student",
+      "evidenceRefs": [
+        "064#p3"
+      ],
+      "sourceQuote": "打城，從辰至未，人馬漸漸力乏。張任教吳蘭、雷銅二將引兵出北門，轉東門，敵黃忠。卻說孔明已將起程日期申報玄德，教都會聚雒城。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "huang-zhong",
+      "targetName": "黃忠",
+      "type": "battlefield_contact",
+      "originalType": "mentor_student",
+      "evidenceRefs": [
+        "064#p3"
+      ],
+      "sourceQuote": "打城，從辰至未，人馬漸漸力乏。張任教吳蘭、雷銅二將引兵出北門，轉東門，敵黃忠。卻說孔明已將起程日期申報玄德，教都會聚雒城。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lei-tong",
+      "targetName": "雷銅",
+      "type": "battlefield_contact",
+      "originalType": "mentor_student",
+      "evidenceRefs": [
+        "064#p3"
+      ],
+      "sourceQuote": "打城，從辰至未，人馬漸漸力乏。張任教吳蘭、雷銅二將引兵出北門，轉東門，敵黃忠。卻說孔明已將起程日期申報玄德，教都會聚雒城。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "huang-zhong",
+      "targetName": "黃忠",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "064#p4"
+      ],
+      "sourceQuote": "打城，從辰至未，人馬漸漸力乏。張任教吳蘭、雷銅二將引兵出北門，轉東門，敵黃忠。卻說孔明已將起程日期申報玄德，教都會聚雒城。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "huang-zhong",
+      "targetName": "黃忠",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "062#p20"
+      ],
+      "sourceQuote": "。」玄德問何人。達曰：「此人曾在荊州劉表部下爲中郎將，乃南郡枝江人，姓霍，名。後路，吾進退不得，當如之何？」龐統謂孟達曰：「公乃蜀中人，多知地理，去守葭萌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "062#p20"
+      ],
+      "sourceQuote": "。」玄德問何人。達曰：「此人曾在荊州劉表部下爲中郎將，乃南郡枝江人，姓霍，名。後路，吾進退不得，當如之何？」龐統謂孟達曰：「公乃蜀中人，多知地理，去守葭萌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "huang-zhong",
+      "targetName": "黃忠",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "062#p18"
+      ],
+      "sourceQuote": "。」玄德問何人。達曰：「此人曾在荊州劉表部下爲中郎將，乃南郡枝江人，姓霍，名。後路，吾進退不得，當如之何？」龐統謂孟達曰：「公乃蜀中人，多知地理，去守葭萌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "062#p18"
+      ],
+      "sourceQuote": "。」玄德問何人。達曰：「此人曾在荊州劉表部下爲中郎將，乃南郡枝江人，姓霍，名。後路，吾進退不得，當如之何？」龐統謂孟達曰：「公乃蜀中人，多知地理，去守葭萌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

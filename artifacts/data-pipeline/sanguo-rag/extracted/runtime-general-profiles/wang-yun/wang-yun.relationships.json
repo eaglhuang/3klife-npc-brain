@@ -1,0 +1,145 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "wang-yun",
+  "displayName": "王允",
+  "generatedAt": "2026-05-21T09:22:06+00:00",
+  "relationshipCount": 4,
+  "typeCounts": {
+    "battlefield_contact": 1,
+    "enemy_rival": 3
+  },
+  "anchors": [
+    {
+      "targetId": "li-jue",
+      "targetName": "李傕",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-houhanshu:candidate-card:ffb24a8edf0ae280908e",
+        "ext-card:wikisource-romance:candidate-card:0006b7a558e6376b1e2d"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "」李傕、郭汜仰面奏曰：「董太師乃陛下社稷之臣，無端被王允謀殺，臣等特來報讎，非敢造反",
+        "李傕殺司徒王允，復代允為司徒"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:010f065b470a2740dcda",
+        "ext-card:wikisource-sanguozhi:candidate-card:4efb0282293737ebe458"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "夏四月，司徒王允與呂布共殺卓",
+        "〉 夏四月，司徒王允與呂布共殺卓"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "romance-person-9ec3-742c",
+      "targetName": "黃琬",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-houhanshu:candidate-card:af10dde19d3635154cc5",
+        "ext-card:wikisource-houhanshu:candidate-card:ed26f22503161c66c45a"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "李傕殺司隷校尉黃琬，甲子，殺司徒王允，皆滅其族"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "009#p9"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "diao-chan",
+      "targetName": "貂蟬",
+      "type": "battlefield_contact",
+      "originalType": "spouse",
+      "evidenceRefs": [
+        "008#p4"
+      ],
+      "sourceQuote": "皆好色之徒，今欲用連環計，先將汝許嫁呂布，後獻與董卓，汝於中取便諜間他父子反",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

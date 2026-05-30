@@ -1,0 +1,124 @@
+{
+  "keywordVersion": "general_runtime_keywords_v1",
+  "generalId": "cao-zhen",
+  "displayName": "曹真",
+  "generatedAt": "2026-05-21T09:27:27+00:00",
+  "categories": {
+    "identity": [
+      {
+        "keywordKey": "identity.u5b50-4e39",
+        "label": "子丹",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u66f9-771f",
+        "label": "曹真",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "title.u3010-66f9-771f-3011",
+        "label": "【曹真】",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      }
+    ],
+    "person": [
+      {
+        "keywordKey": "person.romance-person-8a31-660c",
+        "label": "許昌",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:wikisource-sanguozhi:candidate-card:f459be55bfa2c189d7da"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "romance-person-8a31-660c"
+      },
+      {
+        "keywordKey": "person.wen-pin",
+        "label": "文聘",
+        "category": "person",
+        "sourceRefs": [
+          "086#p11"
+        ],
+        "confidence": 0.66,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "wen-pin"
+      },
+      {
+        "keywordKey": "person.zhuge-liang",
+        "label": "諸葛亮",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:gutenberg-sanguozhi:candidate-card:3a94cd27f624d975cff9"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhuge-liang"
+      }
+    ],
+    "relationship": [
+      {
+        "keywordKey": "relationship.romance-person-8a31-660c.enemy_rival",
+        "label": "許昌-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:wikisource-sanguozhi:candidate-card:f459be55bfa2c189d7da"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "romance-person-8a31-660c",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.wen-pin.battlefield_contact",
+        "label": "文聘-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "086#p11"
+        ],
+        "confidence": 0.66,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "wen-pin",
+        "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.zhuge-liang.enemy_rival",
+        "label": "諸葛亮-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:gutenberg-sanguozhi:candidate-card:3a94cd27f624d975cff9"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhuge-liang",
+        "relationshipType": "enemy_rival"
+      }
+    ]
+  },
+  "categoryCounts": {
+    "identity": 3,
+    "person": 3,
+    "relationship": 3
+  }
+}

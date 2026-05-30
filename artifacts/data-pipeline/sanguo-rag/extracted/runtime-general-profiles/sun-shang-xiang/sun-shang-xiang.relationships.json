@@ -1,0 +1,268 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "sun-shang-xiang",
+  "displayName": "孫尚香",
+  "generatedAt": "2026-05-21T09:52:28+00:00",
+  "relationshipCount": 2,
+  "typeCounts": {
+    "battlefield_contact": 1,
+    "spouse": 1
+  },
+  "anchors": [
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "spouse",
+      "typeLabel": "夫妻姻親",
+      "originalTypes": [
+        "spouse"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "054#marriage-alliance"
+      ],
+      "edgeConfidence": 0.94,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "spouse",
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "055#p10",
+        "055#p6",
+        "055#p7",
+        "055#p9"
+      ],
+      "edgeConfidence": 0.9,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "正行間，忽聽得背後喊聲大起。玄德又告孫夫人曰：「後面追兵又到，如之奈何？」夫人",
+        "道理。」雲故意催逼數番而出。玄德入見孫夫人，暗暗垂淚。孫夫人曰：「丈夫何故煩惱",
+        "開，獻與玄德。玄德看了，急來車前泣告孫夫人曰：「備有心腹之言，至此盡當實訴。」"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback",
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "spouse",
+      "evidenceRefs": [
+        "055#p2"
+      ],
+      "sourceQuote": "事，吾甚心寒，可命暫去。」管家婆稟覆孫夫人曰：「房中擺列兵器，嬌客不安，今且去",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "spouse",
+      "evidenceRefs": [
+        "055#p2"
+      ],
+      "sourceQuote": "事，吾甚心寒，可命暫去。」管家婆稟覆孫夫人曰：「房中擺列兵器，嬌客不安，今且去",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "055#p10"
+      ],
+      "sourceQuote": "正行間，忽聽得背後喊聲大起。玄德又告孫夫人曰：「後面追兵又到，如之奈何？」夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wu-guo-tai",
+      "targetName": "吳國太",
+      "type": "battlefield_contact",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "055#p2"
+      ],
+      "sourceQuote": "事，吾甚心寒，可命暫去。」管家婆稟覆孫夫人曰：「房中擺列兵器，嬌客不安，今且去",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "055#p6"
+      ],
+      "sourceQuote": "道理。」雲故意催逼數番而出。玄德入見孫夫人，暗暗垂淚。孫夫人曰：「丈夫何故煩惱",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "082#p2"
+      ],
+      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "082#p2"
+      ],
+      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-pi",
+      "targetName": "曹丕",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "082#p2"
+      ],
+      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "082#p2"
+      ],
+      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wu-guo-tai",
+      "targetName": "吳國太",
+      "type": "battlefield_contact",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "061#p5"
+      ],
+      "sourceQuote": "準備下船隻。只今便請夫人上車出城。」孫夫人聽知母病危急，如何不慌？便將七歲孩子",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "055#p9"
+      ],
+      "sourceQuote": "開，獻與玄德。玄德看了，急來車前泣告孫夫人曰：「備有心腹之言，至此盡當實訴。」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

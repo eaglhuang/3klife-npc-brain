@@ -1,0 +1,2792 @@
+{
+  "personaVersion": "general_runtime_persona_v1",
+  "generalId": "cao-pi",
+  "displayName": "曹丕",
+  "aliases": [],
+  "title": "【曹丕】",
+  "gender": "男",
+  "baseFaction": "wei",
+  "generatedAt": "2026-05-21T09:27:27+00:00",
+  "runtimeReadiness": {
+    "status": "ready-for-dialogue-smoke",
+    "canonicalWrites": false,
+    "completionPercent": null,
+    "readyEventCount": 1,
+    "relationshipCount": 3,
+    "rejectedRelationshipEdgeCount": 1,
+    "keywordCategoryCounts": {
+      "activity": 2,
+      "affect": 1,
+      "decision": 1,
+      "event": 1,
+      "identity": 2,
+      "location": 1,
+      "person": 3,
+      "personality": 2,
+      "relationship": 3
+    },
+    "reviewBacklogCount": 0
+  },
+  "profile": {
+    "role": "Commander",
+    "coverageLevel": "plain-rich",
+    "roleActivityTags": [
+      "general_commander",
+      "warlord_ruler"
+    ],
+    "aptitudeTags": [],
+    "affectTags": [
+      "family_affection"
+    ],
+    "personalityTags": [
+      "martial",
+      "family-bound"
+    ],
+    "activitySeedHints": [
+      "family_duty",
+      "suppress_unrest"
+    ],
+    "decisionWeightHints": [
+      "prefers_battle"
+    ],
+    "choiceWeightHints": []
+  },
+  "voiceAndPrompt": {
+    "voiceStyle": [
+      "克制",
+      "重證據",
+      "符合身份",
+      "不妄言"
+    ],
+    "safeFallbackLine": "曹丕仍須有憑有據，不可妄言。",
+    "taboos": [
+      "不可借用他人自稱",
+      "不可新增無 evidence 的重大史實"
+    ],
+    "promptRules": [
+      "只使用 persona、keywords、relationships 與 retrieved evidence 生成台詞。",
+      "若 evidence 不足，使用 safeFallbackLine 或保守回應。",
+      "輸出繁體中文，避免現代網路語。"
+    ]
+  },
+  "storyBeats": [
+    {
+      "eventId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "eventKey": "female-interaction-082-p2",
+      "chapterNo": 82,
+      "location": "東吳",
+      "summary": "東吳：非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "sourceRefs": [
+        "082#p2"
+      ],
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "female_interaction",
+        "item_equipment",
+        "location_context"
+      ],
+      "relatedGeneralIds": [
+        "lu-meng",
+        "sun-lu-ban",
+        "sun-lu-yu",
+        "sun-shang-xiang",
+        "xu-shi"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "lu-meng",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sun-lu-ban",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sun-lu-yu",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sun-shang-xiang",
+          "sources": [
+            "aliasMatch",
+            "relationshipEdges"
+          ]
+        },
+        {
+          "targetId": "xu-shi",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ],
+      "confidence": 0.82
+    }
+  ],
+  "sourceHighlights": [
+    {
+      "sourceRef": "072#p7",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "碗中有雞肋，因而有感於懷。正沈吟間，夏侯惇入帳，稟請夜間口號。操隨口曰：「雞肋",
+      "relatedGeneralIds": [
+        "xiahou-dun"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "xiahou-dun",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "078#p10",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "出，自此得病。操召曹洪、陳群、賈詡、司馬懿等，同至臥榻前，囑以後事。曹洪等頓首",
+      "relatedGeneralIds": [
+        "cao-hong",
+        "chen-qun",
+        "jia-xu",
+        "sima-yi"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "cao-hong",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "chen-qun",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "jia-xu",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sima-yi",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "079#p11",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "出班，哭拜於地曰：「關公父子遇害，實劉封、孟達之罪。乞誅此二賊。」玄德便欲遣",
+      "relatedGeneralIds": [
+        "liu-bei",
+        "liu-feng",
+        "meng-da"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "liu-bei",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "liu-feng",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "meng-da",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "085#p14",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "不乘此時進兵，更待何時？」眾視之，乃司馬懿也。丕大喜，遂問計於懿。懿曰：「若只",
+      "relatedGeneralIds": [
+        "sima-yi"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "sima-yi",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "085#p15",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "起蠻兵十萬，犯益州四郡；第五路乃番王軻比能，起羌兵十萬，犯西平關。此五路軍馬，",
+      "relatedGeneralIds": [
+        "ke-bi-neng"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "ke-bi-neng",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "086#p9",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "雍曰：「今主上既與西蜀連和，可修書與諸葛孔明，令起兵出漢中，以分其勢。一面遣一大",
+      "relatedGeneralIds": [
+        "zhuge-liang"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "zhuge-liang",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "087#p3",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "獲爲響導官，攻打永昌郡。今王伉與功曹呂凱，會集百姓，死守此城。」其報甚急。孔",
+      "relatedGeneralIds": [
+        "lv-kai",
+        "romance-person-738b-4f09"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "lv-kai",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "romance-person-738b-4f09",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "033#p3",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "female_interaction",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "於前。操視之曰：「真吾兒婦也！」遂令曹丕納之。操既定冀州，親往袁紹墓下設祭，",
+      "relatedGeneralIds": [
+        "yuan-shao"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "yuan-shao",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "034#p2",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "其子炎於府中。復聚眾謀士商議，欲南征劉表。荀彧曰：「大軍方北征而回，未可復動",
+      "relatedGeneralIds": [
+        "liu-biao",
+        "xun-yu"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "liu-biao",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "xun-yu",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "068#p12",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "decision_weight",
+        "faction_timeline",
+        "female_interaction",
+        "item_equipment",
+        "location_context"
+      ],
+      "example": "妾劉氏生子曹昂，因征張繡時死於宛城；卞氏所生四子：長曰丕，次曰彰，三曰植，四",
+      "relatedGeneralIds": [
+        "bian-fu-ren",
+        "cao-ang",
+        "zhang-xiu"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "bian-fu-ren",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "cao-ang",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "zhang-xiu",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "078#p12",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "子息哀，且議大事。」眾視之，乃中庶子司馬孚也。孚曰：「魏王既薨，天下震動；當早",
+      "relatedGeneralIds": [
+        "romance-person-53f8-99ac-5b5a"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "romance-person-53f8-99ac-5b5a",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "079#p17",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "觴進酒，效漢高祖還沛之事。人報大將軍夏侯惇病危，丕即還鄴郡，時惇已卒。不爲掛孝",
+      "relatedGeneralIds": [
+        "xiahou-dun"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "xiahou-dun",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "079#p2",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "禁奉命到彼，只見陵屋中白粉壁上，圖畫關雲長水淹七軍擒獲于禁之事。畫雲長儼然上坐",
+      "relatedGeneralIds": [
+        "guan-yu",
+        "yu-jin"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "guan-yu",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "yu-jin",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "081#p2",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "察之。」先主曰：「孫權害了朕弟，又兼傅士仁、糜芳、潘璋、馬忠皆有切齒之仇：啖其",
+      "relatedGeneralIds": [
+        "ma-zhong",
+        "pan-zhang",
+        "romance-person-5085-58eb-4ec1",
+        "sun-quan"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "ma-zhong",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "pan-zhang",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "romance-person-5085-58eb-4ec1",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sun-quan",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "082#p2",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "female_interaction",
+        "item_equipment",
+        "location_context"
+      ],
+      "example": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "relatedGeneralIds": [
+        "lu-meng",
+        "sun-lu-ban",
+        "sun-lu-yu",
+        "sun-shang-xiang",
+        "xu-shi"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "lu-meng",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sun-lu-ban",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sun-lu-yu",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sun-shang-xiang",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "xu-shi",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "082#p4",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "location_context",
+        "work_role"
+      ],
+      "example": "是其聰也；拔呂蒙於行陣，是其明也；獲于禁而不害，是其仁也；取荊州兵不血刃，是",
+      "relatedGeneralIds": [
+        "lu-meng",
+        "yu-jin"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "lu-meng",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "yu-jin",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    }
+  ],
+  "angleTargetLinks": [
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2",
+      "sourceType": "storyBeat"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "xiahou-dun",
+      "sourceRef": "072#p7",
+      "sourceId": "072#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "xiahou-dun",
+      "sourceRef": "072#p7",
+      "sourceId": "072#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "xiahou-dun",
+      "sourceRef": "072#p7",
+      "sourceId": "072#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "xiahou-dun",
+      "sourceRef": "072#p7",
+      "sourceId": "072#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "xiahou-dun",
+      "sourceRef": "072#p7",
+      "sourceId": "072#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "xiahou-dun",
+      "sourceRef": "072#p7",
+      "sourceId": "072#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "xiahou-dun",
+      "sourceRef": "072#p7",
+      "sourceId": "072#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "xiahou-dun",
+      "sourceRef": "072#p7",
+      "sourceId": "072#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "cao-hong",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "chen-qun",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "jia-xu",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sima-yi",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "cao-hong",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "chen-qun",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "jia-xu",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sima-yi",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "cao-hong",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "chen-qun",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "jia-xu",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sima-yi",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "cao-hong",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "chen-qun",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "jia-xu",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "sima-yi",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "cao-hong",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "chen-qun",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "jia-xu",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "sima-yi",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "cao-hong",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "chen-qun",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "jia-xu",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sima-yi",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "cao-hong",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "chen-qun",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "jia-xu",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sima-yi",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "cao-hong",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "chen-qun",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "jia-xu",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "sima-yi",
+      "sourceRef": "078#p10",
+      "sourceId": "078#p10",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "liu-bei",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "liu-feng",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "meng-da",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "liu-bei",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "liu-feng",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "meng-da",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "liu-bei",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "liu-feng",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "meng-da",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "liu-bei",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "liu-feng",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "meng-da",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "liu-bei",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "liu-feng",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "meng-da",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "liu-bei",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "liu-feng",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "meng-da",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "liu-bei",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "liu-feng",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "meng-da",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "liu-bei",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "liu-feng",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "meng-da",
+      "sourceRef": "079#p11",
+      "sourceId": "079#p11",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sima-yi",
+      "sourceRef": "085#p14",
+      "sourceId": "085#p14",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sima-yi",
+      "sourceRef": "085#p14",
+      "sourceId": "085#p14",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sima-yi",
+      "sourceRef": "085#p14",
+      "sourceId": "085#p14",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "sima-yi",
+      "sourceRef": "085#p14",
+      "sourceId": "085#p14",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "sima-yi",
+      "sourceRef": "085#p14",
+      "sourceId": "085#p14",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sima-yi",
+      "sourceRef": "085#p14",
+      "sourceId": "085#p14",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sima-yi",
+      "sourceRef": "085#p14",
+      "sourceId": "085#p14",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "sima-yi",
+      "sourceRef": "085#p14",
+      "sourceId": "085#p14",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "ke-bi-neng",
+      "sourceRef": "085#p15",
+      "sourceId": "085#p15",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "ke-bi-neng",
+      "sourceRef": "085#p15",
+      "sourceId": "085#p15",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "ke-bi-neng",
+      "sourceRef": "085#p15",
+      "sourceId": "085#p15",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "ke-bi-neng",
+      "sourceRef": "085#p15",
+      "sourceId": "085#p15",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "ke-bi-neng",
+      "sourceRef": "085#p15",
+      "sourceId": "085#p15",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "ke-bi-neng",
+      "sourceRef": "085#p15",
+      "sourceId": "085#p15",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "ke-bi-neng",
+      "sourceRef": "085#p15",
+      "sourceId": "085#p15",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "ke-bi-neng",
+      "sourceRef": "085#p15",
+      "sourceId": "085#p15",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "zhuge-liang",
+      "sourceRef": "086#p9",
+      "sourceId": "086#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "zhuge-liang",
+      "sourceRef": "086#p9",
+      "sourceId": "086#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "zhuge-liang",
+      "sourceRef": "086#p9",
+      "sourceId": "086#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "zhuge-liang",
+      "sourceRef": "086#p9",
+      "sourceId": "086#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "zhuge-liang",
+      "sourceRef": "086#p9",
+      "sourceId": "086#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "zhuge-liang",
+      "sourceRef": "086#p9",
+      "sourceId": "086#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "zhuge-liang",
+      "sourceRef": "086#p9",
+      "sourceId": "086#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "zhuge-liang",
+      "sourceRef": "086#p9",
+      "sourceId": "086#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "lv-kai",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "romance-person-738b-4f09",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "lv-kai",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "romance-person-738b-4f09",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "lv-kai",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "romance-person-738b-4f09",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "lv-kai",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "romance-person-738b-4f09",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "lv-kai",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "romance-person-738b-4f09",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "lv-kai",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "romance-person-738b-4f09",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "lv-kai",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "romance-person-738b-4f09",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "lv-kai",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "romance-person-738b-4f09",
+      "sourceRef": "087#p3",
+      "sourceId": "087#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "liu-biao",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "xun-yu",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "liu-biao",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "xun-yu",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "liu-biao",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "xun-yu",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "liu-biao",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "xun-yu",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "liu-biao",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "xun-yu",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "liu-biao",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "xun-yu",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "liu-biao",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "xun-yu",
+      "sourceRef": "034#p2",
+      "sourceId": "034#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "bian-fu-ren",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "cao-ang",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "zhang-xiu",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "bian-fu-ren",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "cao-ang",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "zhang-xiu",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "bian-fu-ren",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "cao-ang",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "zhang-xiu",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "bian-fu-ren",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "cao-ang",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "zhang-xiu",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "bian-fu-ren",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "cao-ang",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "zhang-xiu",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "bian-fu-ren",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "cao-ang",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "zhang-xiu",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "bian-fu-ren",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "cao-ang",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "zhang-xiu",
+      "sourceRef": "068#p12",
+      "sourceId": "068#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "romance-person-53f8-99ac-5b5a",
+      "sourceRef": "078#p12",
+      "sourceId": "078#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "romance-person-53f8-99ac-5b5a",
+      "sourceRef": "078#p12",
+      "sourceId": "078#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "romance-person-53f8-99ac-5b5a",
+      "sourceRef": "078#p12",
+      "sourceId": "078#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "romance-person-53f8-99ac-5b5a",
+      "sourceRef": "078#p12",
+      "sourceId": "078#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "romance-person-53f8-99ac-5b5a",
+      "sourceRef": "078#p12",
+      "sourceId": "078#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "romance-person-53f8-99ac-5b5a",
+      "sourceRef": "078#p12",
+      "sourceId": "078#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "romance-person-53f8-99ac-5b5a",
+      "sourceRef": "078#p12",
+      "sourceId": "078#p12",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "xiahou-dun",
+      "sourceRef": "079#p17",
+      "sourceId": "079#p17",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "xiahou-dun",
+      "sourceRef": "079#p17",
+      "sourceId": "079#p17",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "xiahou-dun",
+      "sourceRef": "079#p17",
+      "sourceId": "079#p17",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "xiahou-dun",
+      "sourceRef": "079#p17",
+      "sourceId": "079#p17",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "xiahou-dun",
+      "sourceRef": "079#p17",
+      "sourceId": "079#p17",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "xiahou-dun",
+      "sourceRef": "079#p17",
+      "sourceId": "079#p17",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "xiahou-dun",
+      "sourceRef": "079#p17",
+      "sourceId": "079#p17",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "guan-yu",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "yu-jin",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "guan-yu",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "yu-jin",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "guan-yu",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "yu-jin",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "guan-yu",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "yu-jin",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "guan-yu",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "yu-jin",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "guan-yu",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "yu-jin",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "guan-yu",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "yu-jin",
+      "sourceRef": "079#p2",
+      "sourceId": "079#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "ma-zhong",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "pan-zhang",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "romance-person-5085-58eb-4ec1",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sun-quan",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "ma-zhong",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "pan-zhang",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "romance-person-5085-58eb-4ec1",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sun-quan",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "ma-zhong",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "pan-zhang",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "romance-person-5085-58eb-4ec1",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sun-quan",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "ma-zhong",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "pan-zhang",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "romance-person-5085-58eb-4ec1",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "sun-quan",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "ma-zhong",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "pan-zhang",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "romance-person-5085-58eb-4ec1",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sun-quan",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "ma-zhong",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "pan-zhang",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "romance-person-5085-58eb-4ec1",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sun-quan",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "ma-zhong",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "pan-zhang",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "romance-person-5085-58eb-4ec1",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "sun-quan",
+      "sourceRef": "081#p2",
+      "sourceId": "081#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sun-lu-ban",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sun-lu-yu",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sun-shang-xiang",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "xu-shi",
+      "sourceRef": "082#p2",
+      "sourceId": "082#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "yu-jin",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "yu-jin",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "yu-jin",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "yu-jin",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "yu-jin",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "yu-jin",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "lu-meng",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "yu-jin",
+      "sourceRef": "082#p4",
+      "sourceId": "082#p4",
+      "sourceType": "sourceHighlight"
+    }
+  ],
+  "targetLinking": {
+    "version": "deterministic_source_link_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
+    "linkCount": 286
+  },
+  "relationshipSummary": {
+    "typeCounts": {
+      "enemy_rival": 1,
+      "parent_child": 2
+    },
+    "topAnchors": [
+      {
+        "targetId": "cao-cao",
+        "targetName": "曹操",
+        "type": "parent_child",
+        "typeLabel": "親子",
+        "originalTypes": [
+          "parent_child"
+        ],
+        "directions": [
+          "incoming"
+        ],
+        "evidenceRefs": [
+          "068#succession"
+        ],
+        "edgeConfidence": 0.95,
+        "edgeStrength": 0.85,
+        "sourceQuotes": [],
+        "refinementReasons": [
+          "stable_relationship_baseline"
+        ],
+        "reviewStatus": "ready",
+        "sourceLayer": "stable-bootstrap-seed"
+      },
+      {
+        "targetId": "cao-rui",
+        "targetName": "曹睿",
+        "type": "parent_child",
+        "typeLabel": "親子",
+        "originalTypes": [
+          "parent_child"
+        ],
+        "directions": [
+          "outgoing"
+        ],
+        "evidenceRefs": [
+          "086#wei-succession"
+        ],
+        "edgeConfidence": 0.9,
+        "edgeStrength": 0.85,
+        "sourceQuotes": [],
+        "refinementReasons": [
+          "stable_relationship_baseline"
+        ],
+        "reviewStatus": "ready",
+        "sourceLayer": "stable-bootstrap-seed"
+      },
+      {
+        "targetId": "yuan-tan",
+        "targetName": "袁譚",
+        "type": "enemy_rival",
+        "typeLabel": "敵對競爭",
+        "originalTypes": [
+          "enemy_rival"
+        ],
+        "directions": [
+          "outgoing"
+        ],
+        "evidenceRefs": [
+          "ext-card:wikisource-romance:candidate-card:13e12031d1dc00fc7efa"
+        ],
+        "edgeConfidence": 0.82,
+        "edgeStrength": 0.7,
+        "sourceQuotes": [
+          "正敘冀州廝殺，忽有袁譚失妻、曹丕納婦一段文字"
+        ],
+        "refinementReasons": [
+          "stable_relationship_baseline"
+        ],
+        "reviewStatus": "ready",
+        "sourceLayer": "claim-graph-a-romance"
+      }
+    ]
+  },
+  "reviewBacklog": [],
+  "evidenceRefs": [
+    "082#p2"
+  ],
+  "observedMentionStats": {
+    "mentionCount": 738,
+    "firstChapter": 32,
+    "lastChapter": 119,
+    "chapterCount": 19,
+    "topLabels": [
+      "曹丕",
+      "孔明",
+      "孫權",
+      "後主",
+      "曹操",
+      "孟達",
+      "賈詡",
+      "司馬懿"
+    ],
+    "sourceRefs": [
+      "032#p15",
+      "033#p1",
+      "033#p2",
+      "033#p3",
+      "034#p2",
+      "068#p12",
+      "072#p7",
+      "078#p10",
+      "078#p12",
+      "079#p2",
+      "079#p4",
+      "079#p5"
+    ]
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "zhao-yun",
+  "displayName": "趙雲",
+  "generatedAt": "2026-05-21T09:52:24+00:00",
+  "relationshipCount": 5,
+  "typeCounts": {
+    "battlefield_contact": 4,
+    "ruler_subject": 1
+  },
+  "anchors": [
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "041#changban-a-dou",
+        "054#zhao-yun-guards"
+      ],
+      "edgeConfidence": 0.93,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "gongsun-zan",
+      "targetName": "公孫瓚",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "protects"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "007#p6"
+      ],
+      "edgeConfidence": 0.74,
+      "edgeStrength": 0.62,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "huang-zhong",
+      "targetName": "黃忠",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "protects"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "071#p15"
+      ],
+      "edgeConfidence": 0.74,
+      "edgeStrength": 0.62,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "055#p13"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "patron_client",
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "092#p2",
+        "093#p2",
+        "094#p5"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
+      "evidenceRefs": [
+        "052#p7"
+      ],
+      "sourceQuote": "本寨，只見火光未滅，寨中突出一將，乃張翼德也。劉賢叫道榮：「不可入寨，卻去劫孔。，打破城池，滿門盡誅。劉賢回零陵見父劉度，備述孔明之德，勸父投降。度從之，遂",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "gongsun-zan",
+      "targetName": "公孫瓚",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "007#p5"
+      ],
+      "sourceQuote": "？」言未畢，文醜策馬挺槍，直殺上橋。公孫瓚就橋邊與文醜交鋒。戰不到十餘合，瓚抵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yan-liang",
+      "targetName": "顏良",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "007#p6"
+      ],
+      "sourceQuote": "如羽翼。馬五千餘匹，大半皆是白馬。因公孫瓚曾與羌人戰，盡選白馬爲先鋒，號爲「白",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yan-liang",
+      "targetName": "顏良",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "007#p6"
+      ],
+      "sourceQuote": "如羽翼。馬五千餘匹，大半皆是白馬。因公孫瓚曾與羌人戰，盡選白馬爲先鋒，號爲「白",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "041#p13"
+      ],
+      "sourceQuote": "趙雲便問二夫人消息。軍士曰：「恰纔見甘夫人披頭跣足，相隨一夥百姓婦女，投南而走",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "041#p13"
+      ],
+      "sourceQuote": "趙雲便問二夫人消息。軍士曰：「恰纔見甘夫人披頭跣足，相隨一夥百姓婦女，投南而走",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

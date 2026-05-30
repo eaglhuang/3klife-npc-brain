@@ -1,0 +1,121 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "liu-shan",
+  "displayName": "劉禪",
+  "generatedAt": "2026-05-21T09:52:25+00:00",
+  "relationshipCount": 2,
+  "typeCounts": {
+    "parent_child": 1,
+    "protects_family": 1
+  },
+  "anchors": [
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "parent_child",
+      "typeLabel": "親子",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "041#changban-a-dou"
+      ],
+      "edgeConfidence": 0.94,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "gan-shi",
+      "targetName": "甘氏",
+      "type": "protects_family",
+      "typeLabel": "守護家眷",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "042#p8"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.65,
+      "sourceQuotes": [
+        "等到漢津，已有船隻伺候，雲長請玄德并甘夫人、阿斗至船中坐定。雲長問曰：「二嫂嫂"
+      ],
+      "refinementReasons": [
+        "family_guardian_terms"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "gan-shi",
+      "targetName": "甘氏",
+      "type": "protects_family",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "041#p13"
+      ],
+      "sourceQuote": "趙雲便問二夫人消息。軍士曰：「恰纔見甘夫人披頭跣足，相隨一夥百姓婦女，投南而走",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "family_guardian_terms"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "mi-shi",
+      "targetName": "糜氏",
+      "type": "protects_family",
+      "originalType": "protects",
+      "evidenceRefs": [
+        "041#p13"
+      ],
+      "sourceQuote": "趙雲便問二夫人消息。軍士曰：「恰纔見甘夫人披頭跣足，相隨一夥百姓婦女，投南而走",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "family_guardian_terms"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "mi-shi",
+      "targetName": "糜氏",
+      "type": "battlefield_contact",
+      "originalType": "protects",
+      "evidenceRefs": [
+        "041#p14"
+      ],
+      "sourceQuote": "點退心，只顧往來尋覓，但逢百姓，便問糜夫人消息。忽一人指曰：「夫人抱著孩兒，左",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "jiang-wei",
+  "displayName": "姜維",
+  "generatedAt": "2026-05-21T09:52:25+00:00",
+  "relationshipCount": 3,
+  "typeCounts": {
+    "battlefield_contact": 2,
+    "enemy_rival": 1
+  },
+  "anchors": [
+    {
+      "targetId": "deng-ai",
+      "targetName": "鄧艾",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:07d9204fbb6ba831bcdb",
+        "ext-card:gutenberg-sanguozhi:candidate-card:098072305e5acb809f64"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "癸未，安西將軍鄧艾大破蜀大將姜維于上邽，詔曰：「兵未極武，醜虜摧破，斬首獲生，動以萬計，自頃戰克，無如此者"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject",
+        "mentor_student"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "093#p4",
+        "095#p5",
+        "100#p11"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "卻說姜維回見馬遵曰：「趙雲敗去，孔明必然自來。在城上守禦。」分撥已定。卻說孔明因慮姜維，自爲前部，望天水郡進發。將到城邊，"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "xiahou-ba",
+      "targetName": "夏侯霸",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "115#p4"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "093#p5"
+      ],
+      "sourceQuote": "卻說姜維回見馬遵曰：「趙雲敗去，孔明必然自來。在城上守禦。」分撥已定。卻說孔明因慮姜維，自爲前部，望天水郡進發。將到城邊，",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "093#p5"
+      ],
+      "sourceQuote": "卻說姜維回見馬遵曰：「趙雲敗去，孔明必然自來。在城上守禦。」分撥已定。卻說孔明因慮姜維，自爲前部，望天水郡進發。將到城邊，",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

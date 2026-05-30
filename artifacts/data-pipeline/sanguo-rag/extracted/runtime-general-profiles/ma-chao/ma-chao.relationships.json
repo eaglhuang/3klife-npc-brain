@@ -1,0 +1,145 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "ma-chao",
+  "displayName": "馬超",
+  "generatedAt": "2026-05-21T09:52:26+00:00",
+  "relationshipCount": 5,
+  "typeCounts": {
+    "alliance_oath": 1,
+    "battlefield_contact": 1,
+    "enemy_rival": 3
+  },
+  "anchors": [
+    {
+      "targetId": "han-sui",
+      "targetName": "韓遂",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:bfee7a893a20240b7613"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "〉 太祖後與韓遂、馬超戰於渭南，超等索割地以和，并求任子"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "romance-person-97cb-5eb7",
+      "targetName": "韋康",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-houhanshu:candidate-card:053512bdde5136c877d1",
+        "ext-card:wikisource-houhanshu:candidate-card:3538cb4edd2181ce442d"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "八月，馬超破涼州，殺刺史韋康"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "ma-teng",
+      "targetName": "馬騰",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:9bad8fa5d3bf68d5d8d3"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "本是馬騰與昭烈同事，又弄出馬超攻昭烈，則一變"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "pang-de",
+      "targetName": "龐德",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "059#p2"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "zhao-ang",
+      "targetName": "趙昂",
+      "type": "alliance_oath",
+      "typeLabel": "盟約同盟",
+      "originalTypes": [
+        "alliance_oath"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "064#p17"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

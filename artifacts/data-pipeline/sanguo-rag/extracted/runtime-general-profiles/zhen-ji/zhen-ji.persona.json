@@ -1,0 +1,582 @@
+{
+  "personaVersion": "general_runtime_persona_v1",
+  "generalId": "zhen-ji",
+  "displayName": "甄姬",
+  "aliases": [
+    "甄氏",
+    "甄宓",
+    "洛神",
+    "在最危險"
+  ],
+  "title": "【甄姬】",
+  "gender": "女",
+  "baseFaction": "wei",
+  "generatedAt": "2026-05-21T09:52:28+00:00",
+  "runtimeReadiness": {
+    "status": "thin-but-testable",
+    "canonicalWrites": false,
+    "completionPercent": null,
+    "readyEventCount": 0,
+    "relationshipCount": 0,
+    "rejectedRelationshipEdgeCount": 0,
+    "keywordCategoryCounts": {
+      "activity": 1,
+      "affect": 2,
+      "aptitude": 1,
+      "choice": 1,
+      "decision": 1,
+      "identity": 6,
+      "personality": 2
+    },
+    "reviewBacklogCount": 0
+  },
+  "profile": {
+    "role": "Support",
+    "coverageLevel": "plain-rich",
+    "roleActivityTags": [],
+    "aptitudeTags": [
+      "diplomacy_speech"
+    ],
+    "affectTags": [
+      "romance_love",
+      "fear_shame"
+    ],
+    "personalityTags": [
+      "survival-minded",
+      "persuasive"
+    ],
+    "activitySeedHints": [
+      "family_duty"
+    ],
+    "decisionWeightHints": [
+      "prefers_diplomacy"
+    ],
+    "choiceWeightHints": [
+      "chooses_negotiation_or_recruitment"
+    ]
+  },
+  "voiceAndPrompt": {
+    "voiceStyle": [
+      "克制",
+      "重證據",
+      "符合身份",
+      "不妄言"
+    ],
+    "safeFallbackLine": "甄姬仍須有憑有據，不可妄言。",
+    "taboos": [
+      "不可借用他人自稱",
+      "不可新增無 evidence 的重大史實"
+    ],
+    "promptRules": [
+      "只使用 persona、keywords、relationships 與 retrieved evidence 生成台詞。",
+      "若 evidence 不足，使用 safeFallbackLine 或保守回應。",
+      "輸出繁體中文，避免現代網路語。"
+    ]
+  },
+  "storyBeats": [],
+  "sourceHighlights": [
+    {
+      "sourceRef": "033#p3",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "female_interaction",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "於前。操視之曰：「真吾兒婦也！」遂令曹丕納之。操既定冀州，親往袁紹墓下設祭，",
+      "relatedGeneralIds": [
+        "cao-pi",
+        "yuan-shao"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "cao-pi",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "yuan-shao",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "033#p2",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "female_interaction",
+        "item_equipment",
+        "location_context"
+      ],
+      "example": "卻說曹丕見二婦人啼哭，拔劍欲斬之。忽見紅光滿",
+      "relatedGeneralIds": [
+        "cao-pi"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "cao-pi",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "091#p8",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "將軍曹真、鎮軍大將軍陳群、撫軍大將軍司馬懿三人入寢宮。丕喚曹睿至，指謂曹真等曰",
+      "relatedGeneralIds": [
+        "cao-rui",
+        "cao-zhen",
+        "chen-qun",
+        "sima-yi"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "cao-rui",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "cao-zhen",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "chen-qun",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sima-yi",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "091#p7",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "affect_story",
+        "battle",
+        "female_interaction",
+        "item_equipment",
+        "location_context"
+      ],
+      "example": "甄夫人賜死，立郭貴妃爲後。因無出，養曹睿爲己子。雖甚愛之，不立爲嗣。睿年至十",
+      "relatedGeneralIds": [
+        "cao-rui"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "cao-rui",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    }
+  ],
+  "angleTargetLinks": [
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "yuan-shao",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p2",
+      "sourceId": "033#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p2",
+      "sourceId": "033#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p2",
+      "sourceId": "033#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p2",
+      "sourceId": "033#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p2",
+      "sourceId": "033#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "cao-pi",
+      "sourceRef": "033#p2",
+      "sourceId": "033#p2",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "cao-zhen",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "chen-qun",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sima-yi",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "cao-zhen",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "chen-qun",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sima-yi",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "cao-zhen",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "chen-qun",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "sima-yi",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "cao-zhen",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "chen-qun",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sima-yi",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "cao-zhen",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "chen-qun",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sima-yi",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "cao-zhen",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "chen-qun",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "sima-yi",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p7",
+      "sourceId": "091#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p7",
+      "sourceId": "091#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p7",
+      "sourceId": "091#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p7",
+      "sourceId": "091#p7",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "cao-rui",
+      "sourceRef": "091#p7",
+      "sourceId": "091#p7",
+      "sourceType": "sourceHighlight"
+    }
+  ],
+  "targetLinking": {
+    "version": "deterministic_source_link_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
+    "linkCount": 49
+  },
+  "relationshipSummary": {
+    "typeCounts": {},
+    "topAnchors": []
+  },
+  "reviewBacklog": [],
+  "evidenceRefs": [],
+  "observedMentionStats": {
+    "mentionCount": 49,
+    "firstChapter": 33,
+    "lastChapter": 91,
+    "chapterCount": 2,
+    "topLabels": [
+      "甄氏",
+      "曹睿",
+      "曹丕",
+      "本初",
+      "司馬懿",
+      "曹真",
+      "曹休",
+      "陳群"
+    ],
+    "sourceRefs": [
+      "033#p1",
+      "033#p2",
+      "033#p3",
+      "091#p7",
+      "091#p8"
+    ]
+  }
+}

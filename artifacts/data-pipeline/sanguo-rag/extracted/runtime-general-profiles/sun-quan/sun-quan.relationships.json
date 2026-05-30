@@ -1,0 +1,987 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "sun-quan",
+  "displayName": "孫權",
+  "generatedAt": "2026-05-21T09:52:24+00:00",
+  "relationshipCount": 21,
+  "typeCounts": {
+    "battlefield_contact": 4,
+    "enemy_rival": 9,
+    "parent_child": 2,
+    "ruler_subject": 4,
+    "sibling": 1,
+    "spouse": 1
+  },
+  "anchors": [
+    {
+      "targetId": "sun-jian",
+      "targetName": "孫堅",
+      "type": "parent_child",
+      "typeLabel": "親子",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "029#jiangdong"
+      ],
+      "edgeConfidence": 0.96,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "sun-ce",
+      "targetName": "孫策",
+      "type": "sibling",
+      "typeLabel": "手足",
+      "originalTypes": [
+        "sibling"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "029#jiangdong"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-houhanshu:candidate-card:4afe8590ce8bcacc2527",
+        "ext-card:wikisource-houhanshu:candidate-card:79240ad8b9a920b39b3a"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "曹操以舟師伐孫權，權將周瑜敗之於烏林、赤壁"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "gongsun-yuan",
+      "targetName": "公孫淵",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:d9edf03a3ad4503740c3"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "」 〈 《 漢晉春秋 》曰：公孫淵聞魏將來討，復稱臣於孫權，乞兵自救"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "le-jin",
+      "targetName": "樂進",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:d2586d15ea8e1714953f"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "太祖 旣征 孫權 還，使 遼 與 樂進 、 李典 等將七千餘人屯 合肥"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "li-dian",
+      "targetName": "李典",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:cf99e11da04e695488d0",
+        "ext-card:wikisource-sanguozhi:candidate-card:d2586d15ea8e1714953f"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "太祖 旣征 孫權 還，使 遼 與 樂進 、 李典 等將七千餘人屯 合肥"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "liao-li",
+      "targetName": "廖立",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:243a24d5015a6b199f04"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "先主入蜀，諸葛亮鎮荊土，孫權遣使通好於亮，因問士人皆誰相經緯者，亮答曰：「龐統、廖立，楚之良才，當贊興世業者也"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "lv-fan",
+      "targetName": "呂範",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:0ba256af5dd67c1ee876"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "臣以十一日平旦部所領江夏太守行建威中郎將周瑜、領桂陽太守行征虜中郎將呂範、領零陵太守行蕩寇中郎將程普、行奉業校尉孫權、行先登校尉韓當、行武鋒校尉黃蓋等同時俱進"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "man-chong",
+      "targetName": "滿寵",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:3f8ddbbb11ce1cb879a0",
+        "ext-card:wikisource-sanguozhi:candidate-card:8c00f0c2814b26546005"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "後孫權號十萬衆攻新城，征東將軍滿寵欲率諸軍救之"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "romance-person-5b6b-4eae",
+      "targetName": "孫亮",
+      "type": "parent_child",
+      "typeLabel": "親子",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "108#wu-succession"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "romance-person-5b6b-89c0",
+      "targetName": "孫觀",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:01b57a091030c7bad0c8",
+        "ext-card:wikisource-sanguozhi:candidate-card:99af0026926ed3ede0be"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "而孫觀亦至青州刺史，假節，從太祖討孫權，戰被創，薨"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "wen-pin",
+      "targetName": "文聘",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:6d0d9cb3a449cb44b743",
+        "ext-card:wikisource-sanguozhi:candidate-card:7022541716f8dfd8ac37"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "八月，孫權攻江夏郡，太守文聘堅守"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "zhang-liao",
+      "targetName": "張遼",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:2b13bbf25348fe9b8a20",
+        "ext-card:wikisource-sanguozhi:candidate-card:30b366708a2ad81fb153"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "與張遼、樂進屯合肥，孫權率眾圍之，遼欲奉教出戰"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "sun-ce",
+      "targetName": "孫策",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:795784c2390671704281"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "操還許都，表奏孫策有功，封為討逆將軍，賜爵吳侯，遣使齎詔江東，諭令防剿劉表"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "sun-yi",
+      "targetName": "孫翊",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:2f0dac3993988a7f0d3d"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "正敘孫權戰黃祖，忽有孫翊妻為夫報讐一段文字"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "wu-guo-tai",
+      "targetName": "吳國太",
+      "type": "spouse",
+      "typeLabel": "夫妻姻親",
+      "originalTypes": [
+        "spouse"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:6d9e5486b10aba63c74f"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "孫權僭號，在八十五回後，而吳夫人夢日之兆，早於三十八回中伏下一筆"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "zhou-tai",
+      "targetName": "周泰",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:0dce699a77eee3862fc1"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "隨後一賊躍馬挺槍直取周泰，被泰扯住槍，拖下馬來，奪了槍馬，殺條血路，救出孫權"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "cheng-pu",
+      "targetName": "程普",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "protects"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "053#p12"
+      ],
+      "edgeConfidence": 0.74,
+      "edgeStrength": 0.62,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "chen-wu",
+      "targetName": "陳武",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "055#p8"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "lu-meng",
+      "targetName": "呂蒙",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "067#p12"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "lu-su",
+      "targetName": "魯肅",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "042#p11",
+        "057#p9"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "wu-guo-tai",
+      "targetName": "吳國太",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "054#p8"
+      ],
+      "sourceQuote": "國太問曰：「此是何人？」玄德答曰：「常山趙子龍也。」國太曰：「莫非當陽長阪抱阿斗者。卻說喬國老辭吳國太歸，使人去報玄德，言：「來日吳侯、國",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "pan-zhang",
+      "targetName": "潘璋",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "055#p8"
+      ],
+      "sourceQuote": "觀武事，嚴毅剛正，諸將皆懼。既然肯順劉備，必同心而去。所追之將，若見郡主，豈。聽令，曰：「汝二人將這口劍去取吾妹并劉備頭來！違令者立斬！」蔣欽、周泰領命，",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "055#p8"
+      ],
+      "sourceQuote": "觀武事，嚴毅剛正，諸將皆懼。既然肯順劉備，必同心而去。所追之將，若見郡主，豈。聽令，曰：「汝二人將這口劍去取吾妹并劉備頭來！違令者立斬！」蔣欽、周泰領命，",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "055#p8"
+      ],
+      "sourceQuote": "觀武事，嚴毅剛正，諸將皆懼。既然肯順劉備，必同心而去。所追之將，若見郡主，豈。聽令，曰：「汝二人將這口劍去取吾妹并劉備頭來！違令者立斬！」蔣欽、周泰領命，",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhou-yu",
+      "targetName": "周瑜",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "057#p9"
+      ],
+      "sourceQuote": "州，夜觀天文，見將星墜地，乃笑曰：「周瑜死矣！」至曉，白於玄德。玄德使人探之。使人探之，果然死了。玄德問孔明曰：「周瑜既死，還當如何？」孔明曰：「代瑜領兵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhou-yu",
+      "targetName": "周瑜",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "051#p3"
+      ],
+      "sourceQuote": "居中。瑜正與眾商議征進之策，忽報：「劉玄德使孫乾來與都督作賀。」瑜命請入。乾施。肅曰：「卻纔都督爲何失驚？」瑜曰：「劉備屯兵油江，必有取南郡之意。我等費了許",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhou-yu",
+      "targetName": "周瑜",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "051#p3"
+      ],
+      "sourceQuote": "居中。瑜正與眾商議征進之策，忽報：「劉玄德使孫乾來與都督作賀。」瑜命請入。乾施。肅曰：「卻纔都督爲何失驚？」瑜曰：「劉備屯兵油江，必有取南郡之意。我等費了許",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-lu",
+      "targetName": "張魯",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "062#p20"
+      ],
+      "sourceQuote": "。」玄德問何人。達曰：「此人曾在荊州劉表部下爲中郎將，乃南郡枝江人，姓霍，名。後路，吾進退不得，當如之何？」龐統謂孟達曰：「公乃蜀中人，多知地理，去守葭萌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wu-guo-tai",
+      "targetName": "吳國太",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "054#p8"
+      ],
+      "sourceQuote": "：「有何喜事？」喬國老曰：「令愛已許劉玄德爲夫人，今玄德已到，何故相瞞？」國太",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-shang-xiang",
+      "targetName": "孫尚香",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "055#p10"
+      ],
+      "sourceQuote": "正行間，忽聽得背後喊聲大起。玄德又告孫夫人曰：「後面追兵又到，如之奈何？」夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-shang-xiang",
+      "targetName": "孫尚香",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "055#p6"
+      ],
+      "sourceQuote": "道理。」雲故意催逼數番而出。玄德入見孫夫人，暗暗垂淚。孫夫人曰：「丈夫何故煩惱",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wu-guo-tai",
+      "targetName": "吳國太",
+      "type": "battlefield_contact",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "007#p11"
+      ],
+      "sourceQuote": "三子名翊，字叔弼；四子名匡，字季佐。吳夫人之妹，即爲孫堅次妻，亦生一子一女，子",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wu-guo-tai",
+      "targetName": "吳國太",
+      "type": "battlefield_contact",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "054#p5"
+      ],
+      "sourceQuote": "。此事家國兩便，請皇叔勿疑。但我國太吳夫人甚愛幼女，不肯遠嫁，必求皇叔到東吳就",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wu-guo-tai",
+      "targetName": "吳國太",
+      "type": "battlefield_contact",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "054#p7"
+      ],
+      "sourceQuote": "：「有何喜事？」喬國老曰：「令愛已許劉玄德爲夫人，今玄德已到，何故相瞞？」國太",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-shang-xiang",
+      "targetName": "孫尚香",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "082#p2"
+      ],
+      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-shang-xiang",
+      "targetName": "孫尚香",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "082#p2"
+      ],
+      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-shang-xiang",
+      "targetName": "孫尚香",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "082#p2"
+      ],
+      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-shang-xiang",
+      "targetName": "孫尚香",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "055#p9"
+      ],
+      "sourceQuote": "開，獻與玄德。玄德看了，急來車前泣告孫夫人曰：「備有心腹之言，至此盡當實訴。」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wu-guo-tai",
+      "targetName": "吳國太",
+      "type": "battlefield_contact",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "061#p4"
+      ],
+      "sourceQuote": "斬之！欲害吾女之命耶？」眾驚視之，乃吳國太也。國太怒曰：「吾一生惟有一女，嫁與",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-jian",
+      "targetName": "孫堅",
+      "type": "battlefield_contact",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "007#p11"
+      ],
+      "sourceQuote": "三子名翊，字叔弼；四子名匡，字季佐。吳夫人之妹，即爲孫堅次妻，亦生一子一女，子",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-ce",
+      "targetName": "孫策",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "007#p11"
+      ],
+      "sourceQuote": "三子名翊，字叔弼；四子名匡，字季佐。吳夫人之妹，即爲孫堅次妻，亦生一子一女，子",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-ce",
+      "targetName": "孫策",
+      "type": "battlefield_contact",
+      "originalType": "sibling",
+      "evidenceRefs": [
+        "007#p11"
+      ],
+      "sourceQuote": "三子名翊，字叔弼；四子名匡，字季佐。吳夫人之妹，即爲孫堅次妻，亦生一子一女，子",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lv-fan",
+      "targetName": "呂範",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "054#p5"
+      ],
+      "sourceQuote": "。此事家國兩便，請皇叔勿疑。但我國太吳夫人甚愛幼女，不肯遠嫁，必求皇叔到東吳就",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-qian",
+      "targetName": "孫乾",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "054#p5"
+      ],
+      "sourceQuote": "。此事家國兩便，請皇叔勿疑。但我國太吳夫人甚愛幼女，不肯遠嫁，必求皇叔到東吳就",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lv-fan",
+      "targetName": "呂範",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "054#p5"
+      ],
+      "sourceQuote": "。此事家國兩便，請皇叔勿疑。但我國太吳夫人甚愛幼女，不肯遠嫁，必求皇叔到東吳就",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

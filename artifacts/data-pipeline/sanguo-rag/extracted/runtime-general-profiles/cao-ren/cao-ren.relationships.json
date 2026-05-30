@@ -1,0 +1,302 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "cao-ren",
+  "displayName": "曹仁",
+  "generatedAt": "2026-05-21T09:52:25+00:00",
+  "relationshipCount": 6,
+  "typeCounts": {
+    "battlefield_contact": 2,
+    "enemy_rival": 4
+  },
+  "anchors": [
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:98be30f0540e34488329",
+        "ext-card:wikisource-sanguozhi:candidate-card:b90beda3c2ab167bae00"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "關羽圍襄陽，寵助征南將軍曹仁屯樊城拒之，而左將軍于禁等軍以霖雨水長爲羽所沒"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:a163bc846375a642e641",
+        "ext-card:wikisource-sanguozhi:candidate-card:f17093cf94ad10c3876f"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "復從攻 張繡 於 穰 ，禽 呂布 於 下邳 ，別與 史渙 、 曹仁 攻 眭固 於 射犬 ，破斬之"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "yu-jin",
+      "targetName": "于禁",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:6d1b5cb3d37c76ffafe4",
+        "ext-card:wikisource-sanguozhi:candidate-card:b90beda3c2ab167bae00"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "關羽圍襄陽，寵助征南將軍曹仁屯樊城拒之，而左將軍于禁等軍以霖雨水長爲羽所沒"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "zhang-xiu",
+      "targetName": "張繡",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:a163bc846375a642e641",
+        "ext-card:wikisource-sanguozhi:candidate-card:d801def6e761270916cf"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "復從攻 張繡 於 穰 ，禽 呂布 於 下邳 ，別與 史渙 、 曹仁 攻 眭固 於 射犬 ，破斬之"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "li-dian",
+      "targetName": "李典",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "patron_client",
+        "ruler_subject",
+        "protects"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "036#p2",
+        "036#p4"
+      ],
+      "edgeConfidence": 0.74,
+      "edgeStrength": 0.62,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted",
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "cao-hong",
+      "targetName": "曹洪",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "051#p7"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "006#p7"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "019#p3"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "073#p9"
+      ],
+      "sourceQuote": "一面使人過江探雲長動靜，方可行事。」諸葛瑾曰：「某聞雲長自到荊州，劉備娶與妻室。。」孫權用其謀，先送滿寵回許都；卻遣諸葛瑾爲使，投荊州來。入城見雲長，禮畢。雲",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "073#p9"
+      ],
+      "sourceQuote": "一面使人過江探雲長動靜，方可行事。」諸葛瑾曰：「某聞雲長自到荊州，劉備娶與妻室。。」孫權用其謀，先送滿寵回許都；卻遣諸葛瑾爲使，投荊州來。入城見雲長，禮畢。雲",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "dong-zhuo",
+      "targetName": "董卓",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "006#p6"
+      ],
+      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p13"
+      ],
+      "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p13"
+      ],
+      "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

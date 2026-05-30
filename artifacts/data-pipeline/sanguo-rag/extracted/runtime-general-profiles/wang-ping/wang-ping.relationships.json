@@ -1,0 +1,35 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "wang-ping",
+  "displayName": "王平",
+  "generatedAt": "2026-05-15T17:33:45+00:00",
+  "relationshipCount": 0,
+  "typeCounts": {},
+  "anchors": [],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
+      "evidenceRefs": [
+        "087#p5"
+      ],
+      "sourceQuote": "，闓曰：「如何得鄂煥回也？」定曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之。曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之計，欲令我兩人不和，故施此謀也",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

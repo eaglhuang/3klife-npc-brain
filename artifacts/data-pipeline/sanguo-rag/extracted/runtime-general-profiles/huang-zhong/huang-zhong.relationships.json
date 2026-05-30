@@ -1,0 +1,163 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "huang-zhong",
+  "displayName": "黃忠",
+  "generatedAt": "2026-05-21T09:52:25+00:00",
+  "relationshipCount": 3,
+  "typeCounts": {
+    "battlefield_contact": 3
+  },
+  "anchors": [
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "mentor_student"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "063#p5"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "重賞魏延。玄德設宴款待彭羕。忽報荊州諸葛亮軍師特遣馬良奉書至此。玄德召入問之。。延。交馬不數合，被魏延活捉去了。比及吳蘭，雷同來接應時，又被黃忠一軍殺來。魏"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    },
+    {
+      "targetId": "zhao-yun",
+      "targetName": "趙雲",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "protects"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "071#p15"
+      ],
+      "edgeConfidence": 0.74,
+      "edgeStrength": 0.62,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "mentor_student",
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "062#p20",
+        "071#p5"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "battlefield_contact",
+      "originalType": "mentor_student",
+      "evidenceRefs": [
+        "064#p3"
+      ],
+      "sourceQuote": "打城，從辰至未，人馬漸漸力乏。張任教吳蘭、雷銅二將引兵出北門，轉東門，敵黃忠。卻說孔明已將起程日期申報玄德，教都會聚雒城。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "064#p4"
+      ],
+      "sourceQuote": "打城，從辰至未，人馬漸漸力乏。張任教吳蘭、雷銅二將引兵出北門，轉東門，敵黃忠。卻說孔明已將起程日期申報玄德，教都會聚雒城。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "062#p20"
+      ],
+      "sourceQuote": "。」玄德問何人。達曰：「此人曾在荊州劉表部下爲中郎將，乃南郡枝江人，姓霍，名。後路，吾進退不得，當如之何？」龐統謂孟達曰：「公乃蜀中人，多知地理，去守葭萌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wei-yan",
+      "targetName": "魏延",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "062#p18"
+      ],
+      "sourceQuote": "。」玄德問何人。達曰：「此人曾在荊州劉表部下爲中郎將，乃南郡枝江人，姓霍，名。後路，吾進退不得，當如之何？」龐統謂孟達曰：「公乃蜀中人，多知地理，去守葭萌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

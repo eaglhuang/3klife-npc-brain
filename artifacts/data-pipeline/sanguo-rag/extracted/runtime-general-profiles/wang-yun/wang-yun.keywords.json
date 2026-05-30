@@ -1,0 +1,212 @@
+{
+  "keywordVersion": "general_runtime_keywords_v1",
+  "generalId": "wang-yun",
+  "displayName": "王允",
+  "generatedAt": "2026-05-21T09:22:06+00:00",
+  "categories": {
+    "event": [
+      {
+        "keywordKey": "event.female-interaction-008-p4",
+        "label": "皆好色之徒，今欲用...",
+        "category": "event",
+        "sourceRefs": [
+          "008#p4"
+        ],
+        "confidence": 0.74,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "立江山：皆好色之徒，今欲用連環計，先將汝許嫁呂布，後獻與董卓，汝於中取便諜間他父子反",
+        "eventId": "romance.reviewed-a.diao-chan-female-interaction-008-p4-008-p4"
+      },
+      {
+        "keywordKey": "event.generic-battle-009-p13",
+        "label": "卻說呂布勒兵到山下...",
+        "category": "event",
+        "sourceRefs": [
+          "009#p13"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "長安：卻說呂布勒兵到山下，李傕引軍搦戰。",
+        "eventId": "romance.reviewed-a.lu-bu-generic-battle-009-p13-009-p13"
+      },
+      {
+        "keywordKey": "event.generic-battle-009-p14",
+        "label": "卻說呂布勒兵到山下...",
+        "category": "event",
+        "sourceRefs": [
+          "009#p14"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "長安：卻說呂布勒兵到山下，李傕引軍搦戰。",
+        "eventId": "romance.reviewed-a.lu-bu-generic-battle-009-p14-009-p14"
+      }
+    ],
+    "identity": [
+      {
+        "keywordKey": "identity.u5b50-5e2b",
+        "label": "子師",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u738b-5141",
+        "label": "王允",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "title.u3010-738b-5141-3011",
+        "label": "【王允】",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      }
+    ],
+    "location": [
+      {
+        "keywordKey": "location.u7acb-6c5f-5c71",
+        "label": "立江山",
+        "category": "location",
+        "sourceRefs": [
+          "008#p4"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u9577-5b89",
+        "label": "長安",
+        "category": "location",
+        "sourceRefs": [
+          "009#p13",
+          "009#p14"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      }
+    ],
+    "person": [
+      {
+        "keywordKey": "person.li-jue",
+        "label": "李傕",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:wikisource-houhanshu:candidate-card:ffb24a8edf0ae280908e",
+          "ext-card:wikisource-romance:candidate-card:0006b7a558e6376b1e2d"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "li-jue"
+      },
+      {
+        "keywordKey": "person.lu-bu",
+        "label": "呂布",
+        "category": "person",
+        "sourceRefs": [
+          "009#p9",
+          "ext-card:gutenberg-sanguozhi:candidate-card:010f065b470a2740dcda",
+          "ext-card:wikisource-sanguozhi:candidate-card:4efb0282293737ebe458"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "lu-bu"
+      },
+      {
+        "keywordKey": "person.romance-person-9ec3-742c",
+        "label": "黃琬",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:wikisource-houhanshu:candidate-card:af10dde19d3635154cc5",
+          "ext-card:wikisource-houhanshu:candidate-card:ed26f22503161c66c45a"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "romance-person-9ec3-742c"
+      }
+    ],
+    "relationship": [
+      {
+        "keywordKey": "relationship.li-jue.enemy_rival",
+        "label": "李傕-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:wikisource-houhanshu:candidate-card:ffb24a8edf0ae280908e",
+          "ext-card:wikisource-romance:candidate-card:0006b7a558e6376b1e2d"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "li-jue",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.lu-bu.battlefield_contact",
+        "label": "呂布-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "009#p9"
+        ],
+        "confidence": 0.66,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "lu-bu",
+        "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.lu-bu.enemy_rival",
+        "label": "呂布-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:gutenberg-sanguozhi:candidate-card:010f065b470a2740dcda",
+          "ext-card:wikisource-sanguozhi:candidate-card:4efb0282293737ebe458"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "lu-bu",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.romance-person-9ec3-742c.enemy_rival",
+        "label": "黃琬-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:wikisource-houhanshu:candidate-card:af10dde19d3635154cc5",
+          "ext-card:wikisource-houhanshu:candidate-card:ed26f22503161c66c45a"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "romance-person-9ec3-742c",
+        "relationshipType": "enemy_rival"
+      }
+    ]
+  },
+  "categoryCounts": {
+    "event": 3,
+    "identity": 3,
+    "location": 2,
+    "person": 3,
+    "relationship": 4
+  }
+}

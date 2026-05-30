@@ -1,0 +1,734 @@
+{
+  "keywordVersion": "general_runtime_keywords_v1",
+  "generalId": "wei-yan",
+  "displayName": "魏延",
+  "generatedAt": "2026-05-21T09:52:24+00:00",
+  "categories": {
+    "activity": [
+      {
+        "keywordKey": "activity.appoint_office",
+        "label": "任官受封",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "appoint_office"
+      },
+      {
+        "keywordKey": "activity.family_duty",
+        "label": "家族責任",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family_duty"
+      },
+      {
+        "keywordKey": "activity.serve_army",
+        "label": "serve_army",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "serve_army"
+      }
+    ],
+    "affect": [
+      {
+        "keywordKey": "affect.family_affection",
+        "label": "家族情感",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family_affection"
+      },
+      {
+        "keywordKey": "affect.friendship_loyalty",
+        "label": "忠義友情",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "friendship_loyalty"
+      }
+    ],
+    "aptitude": [
+      {
+        "keywordKey": "aptitude.command_strategy",
+        "label": "軍事統率",
+        "category": "aptitude",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "command_strategy"
+      },
+      {
+        "keywordKey": "aptitude.martial_weapon",
+        "label": "武器戰鬥",
+        "category": "aptitude",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "martial_weapon"
+      }
+    ],
+    "choice": [
+      {
+        "keywordKey": "choice.chooses_deployment_or_drill",
+        "label": "部署操練",
+        "category": "choice",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "chooses_deployment_or_drill"
+      },
+      {
+        "keywordKey": "choice.chooses_frontline_action",
+        "label": "親赴前線",
+        "category": "choice",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "chooses_frontline_action"
+      }
+    ],
+    "decision": [
+      {
+        "keywordKey": "decision.prefers_battle",
+        "label": "偏好戰鬥",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_battle"
+      },
+      {
+        "keywordKey": "decision.prefers_governance",
+        "label": "prefers_governance",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_governance"
+      },
+      {
+        "keywordKey": "decision.prefers_strategy",
+        "label": "prefers_strategy",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_strategy"
+      }
+    ],
+    "event": [
+      {
+        "keywordKey": "event.core-source-packet-sun-quan-062-p20",
+        "label": "「東吳孫權遣人結好...",
+        "category": "event",
+        "sourceRefs": [
+          "062#p20"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "荊州：細作報說：「東吳孫權遣人結好東川張魯，將欲來攻葭萌關。",
+        "eventId": "romance.reviewed-a.sun-quan-core-source-packet-sun-quan-062-p20-062-p20"
+      },
+      {
+        "keywordKey": "event.core-source-packet-wei-yan-062-p20",
+        "label": "「東吳孫權遣人結好...",
+        "category": "event",
+        "sourceRefs": [
+          "062#p20"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "荊州：細作報說：「東吳孫權遣人結好東川張魯，將欲來攻葭萌關。",
+        "eventId": "romance.reviewed-a.sun-quan-core-source-packet-wei-yan-062-p20-062-p20"
+      },
+      {
+        "keywordKey": "event.core-source-packet-wei-yan-063-p3",
+        "label": "」玄德即拜彭羕爲幕...",
+        "category": "event",
+        "sourceRefs": [
+          "063#p3"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "荊州：」玄德即拜彭羕爲幕賓，使人密報魏延，黃忠，教朝幕用心巡警，以防決水。",
+        "eventId": "romance.reviewed-a.wei-yan-core-source-packet-wei-yan-063-p3-063-p3"
+      },
+      {
+        "keywordKey": "event.core-source-packet-wei-yan-064-p3",
+        "label": "攻到第四日，玄德自...",
+        "category": "event",
+        "sourceRefs": [
+          "064#p3"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "大寨：攻到第四日，玄德自提一軍攻打西門，令黃忠、魏延在東門攻打，留南門放軍行走。",
+        "eventId": "romance.reviewed-a.wei-yan-core-source-packet-wei-yan-064-p3-064-p3"
+      },
+      {
+        "keywordKey": "event.core-source-packet-wei-yan-070-p2",
+        "label": "」孔明令魏延解酒赴...",
+        "category": "event",
+        "sourceRefs": [
+          "070#p2"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "大寨：」孔明令魏延解酒赴軍前，車上各插黃旗，大書「軍前公用美酒」。",
+        "eventId": "romance.reviewed-a.wei-yan-core-source-packet-wei-yan-070-p2-070-p2"
+      },
+      {
+        "keywordKey": "event.core-source-packet-wei-yan-087-p5",
+        "label": "「此乃諸葛亮反間之...",
+        "category": "event",
+        "sourceRefs": [
+          "087#p5"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "大寨：，闓曰：「如何得鄂煥回也？」定曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之。曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之計，欲令我兩人不和，故施此謀也",
+        "eventId": "romance.reviewed-a.wei-yan-core-source-packet-wei-yan-087-p5-087-p5"
+      },
+      {
+        "keywordKey": "event.core-source-packet-wei-yan-087-p6",
+        "label": "卻說孔明令魏延等兩...",
+        "category": "event",
+        "sourceRefs": [
+          "087#p6"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "大寨：卻說孔明令魏延等兩路伺候；",
+        "eventId": "romance.reviewed-a.wei-yan-core-source-packet-wei-yan-087-p6-087-p6"
+      },
+      {
+        "keywordKey": "event.core-source-packet-wei-yan-093-p4",
+        "label": "卻說姜維引兵至冀城...",
+        "category": "event",
+        "sourceRefs": [
+          "093#p4"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "長安：卻說姜維引兵至冀城，前面一彪軍擺開，爲首蜀將乃是魏延。",
+        "eventId": "romance.reviewed-a.wei-yan-core-source-packet-wei-yan-093-p4-093-p4"
+      },
+      {
+        "keywordKey": "event.core-source-packet-wei-yan-094-p5",
+        "label": "孔明引三軍連夜投祁...",
+        "category": "event",
+        "sourceRefs": [
+          "094#p5"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "大寨：孔明引三軍連夜投祁山大寨而來，命關興、張苞引軍先行；",
+        "eventId": "romance.reviewed-a.zhuge-liang-core-source-packet-wei-yan-094-p5-094-p5"
+      },
+      {
+        "keywordKey": "event.core-source-packet-wei-yan-104-p2",
+        "label": "夏侯霸見了魏延，慌...",
+        "category": "event",
+        "sourceRefs": [
+          "104#p2"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "五丈原：夏侯霸見了魏延，慌忙引軍退走。",
+        "eventId": "romance.reviewed-a.wei-yan-core-source-packet-wei-yan-104-p2-104-p2"
+      },
+      {
+        "keywordKey": "event.core-source-packet-zhao-yun-094-p5",
+        "label": "孔明引三軍連夜投祁...",
+        "category": "event",
+        "sourceRefs": [
+          "094#p5"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "大寨：孔明引三軍連夜投祁山大寨而來，命關興、張苞引軍先行；",
+        "eventId": "romance.reviewed-a.zhuge-liang-core-source-packet-zhao-yun-094-p5-094-p5"
+      },
+      {
+        "keywordKey": "event.core-source-packet-zhuge-liang-063-p3",
+        "label": "」玄德即拜彭羕爲幕...",
+        "category": "event",
+        "sourceRefs": [
+          "063#p3"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "荊州：」玄德即拜彭羕爲幕賓，使人密報魏延，黃忠，教朝幕用心巡警，以防決水。",
+        "eventId": "romance.reviewed-a.wei-yan-core-source-packet-zhuge-liang-063-p3-063-p3"
+      },
+      {
+        "keywordKey": "event.core-source-packet-zhuge-liang-070-p2",
+        "label": "」孔明令魏延解酒赴...",
+        "category": "event",
+        "sourceRefs": [
+          "070#p2"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "大寨：」孔明令魏延解酒赴軍前，車上各插黃旗，大書「軍前公用美酒」。",
+        "eventId": "romance.reviewed-a.zhuge-liang-core-source-packet-zhuge-liang-070-p2-070-p2"
+      },
+      {
+        "keywordKey": "event.core-source-packet-zhuge-liang-087-p6",
+        "label": "卻說孔明令魏延等兩...",
+        "category": "event",
+        "sourceRefs": [
+          "087#p6"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "大寨：卻說孔明令魏延等兩路伺候；",
+        "eventId": "romance.reviewed-a.zhuge-liang-core-source-packet-zhuge-liang-087-p6-087-p6"
+      },
+      {
+        "keywordKey": "event.core-source-packet-zhuge-liang-093-p4",
+        "label": "孔明急上馬，有關興...",
+        "category": "event",
+        "sourceRefs": [
+          "093#p4"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "長安：孔明急上馬，有關興、張苞二將保護，殺出重圍。",
+        "eventId": "romance.reviewed-a.zhuge-liang-core-source-packet-zhuge-liang-093-p4-093-p4"
+      },
+      {
+        "keywordKey": "event.female-interaction-090-p15",
+        "label": "此時王平、張翼已引...",
+        "category": "event",
+        "sourceRefs": [
+          "090#p15"
+        ],
+        "confidence": 0.81,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "南中：此時王平、張翼已引一軍趕到蠻寨中，將祝融夫人并一應老小皆活捉而來。孔明歸到寨中，",
+        "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15"
+      },
+      {
+        "keywordKey": "event.female-interaction-090-p7",
+        "label": "去。次日，蠻兵報入...",
+        "category": "event",
+        "sourceRefs": [
+          "090#p7"
+        ],
+        "confidence": 0.77,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "大寨：去。次日，蠻兵報入洞中，說趙雲搦戰。祝融夫人即上馬出迎。二人戰不數合，雲撥馬便走",
+        "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7"
+      }
+    ],
+    "identity": [
+      {
+        "keywordKey": "identity.u6587-9577",
+        "label": "文長",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u9b4f-5ef6",
+        "label": "魏延",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "title.u3010-9b4f-5ef6-3011",
+        "label": "【魏延】",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      }
+    ],
+    "location": [
+      {
+        "keywordKey": "location.u4e94-4e08-539f",
+        "label": "五丈原",
+        "category": "location",
+        "sourceRefs": [
+          "104#p2"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u5357-4e2d",
+        "label": "南中",
+        "category": "location",
+        "sourceRefs": [
+          "090#p15"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u5927-5be8",
+        "label": "大寨",
+        "category": "location",
+        "sourceRefs": [
+          "064#p3",
+          "070#p2",
+          "087#p5",
+          "087#p6",
+          "090#p7",
+          "094#p5"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u834a-5dde",
+        "label": "荊州",
+        "category": "location",
+        "sourceRefs": [
+          "062#p20",
+          "063#p3"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u9577-5b89",
+        "label": "長安",
+        "category": "location",
+        "sourceRefs": [
+          "093#p4"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      }
+    ],
+    "person": [
+      {
+        "keywordKey": "person.e-huan",
+        "label": "鄂煥",
+        "category": "person",
+        "sourceRefs": [
+          "087#p5"
+        ],
+        "confidence": 0.84,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "e-huan"
+      },
+      {
+        "keywordKey": "person.huang-zhong",
+        "label": "黃忠",
+        "category": "person",
+        "sourceRefs": [
+          "063#p5"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "huang-zhong"
+      },
+      {
+        "keywordKey": "person.liu-bei",
+        "label": "劉備",
+        "category": "person",
+        "sourceRefs": [
+          "063#p2"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "liu-bei"
+      },
+      {
+        "keywordKey": "person.peng-yang",
+        "label": "彭羕",
+        "category": "person",
+        "sourceRefs": [
+          "063#p2"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "peng-yang"
+      },
+      {
+        "keywordKey": "person.wang-ping",
+        "label": "王平",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:4e54f25f8f6a5053a3f4",
+          "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:d4ade73cf8c9fd5869cf"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "wang-ping"
+      },
+      {
+        "keywordKey": "person.xiahou-ba",
+        "label": "夏侯霸",
+        "category": "person",
+        "sourceRefs": [
+          "104#p2"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "xiahou-ba"
+      },
+      {
+        "keywordKey": "person.zhuge-liang",
+        "label": "諸葛亮",
+        "category": "person",
+        "sourceRefs": [
+          "070#p2",
+          "087#p6",
+          "104#p2"
+        ],
+        "confidence": 0.66,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhuge-liang"
+      }
+    ],
+    "personality": [
+      {
+        "keywordKey": "personality.commanding",
+        "label": "統率威嚴",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "commanding"
+      },
+      {
+        "keywordKey": "personality.direct_force",
+        "label": "直接用武",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "direct_force"
+      },
+      {
+        "keywordKey": "personality.family-bound",
+        "label": "重家族與結義",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family-bound"
+      },
+      {
+        "keywordKey": "personality.governance-minded",
+        "label": "governance-minded",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "governance-minded"
+      },
+      {
+        "keywordKey": "personality.martial",
+        "label": "武勇",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "martial"
+      },
+      {
+        "keywordKey": "personality.strategic",
+        "label": "strategic",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "strategic"
+      }
+    ],
+    "relationship": [
+      {
+        "keywordKey": "relationship.e-huan.enemy_rival",
+        "label": "鄂煥-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "087#p5"
+        ],
+        "confidence": 0.84,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "e-huan",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.huang-zhong.battlefield_contact",
+        "label": "黃忠-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "063#p5"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "huang-zhong",
+        "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.liu-bei.battlefield_contact",
+        "label": "劉備-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "063#p2"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "liu-bei",
+        "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.peng-yang.battlefield_contact",
+        "label": "彭羕-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "063#p2"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "peng-yang",
+        "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.wang-ping.betrayal_surrender",
+        "label": "王平-背叛投降",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:4e54f25f8f6a5053a3f4",
+          "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:d4ade73cf8c9fd5869cf"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "wang-ping",
+        "relationshipType": "betrayal_surrender"
+      },
+      {
+        "keywordKey": "relationship.xiahou-ba.battlefield_contact",
+        "label": "夏侯霸-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "104#p2"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "xiahou-ba",
+        "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.zhuge-liang.battlefield_contact",
+        "label": "諸葛亮-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "070#p2",
+          "087#p6",
+          "104#p2"
+        ],
+        "confidence": 0.66,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhuge-liang",
+        "relationshipType": "battlefield_contact"
+      }
+    ]
+  },
+  "categoryCounts": {
+    "activity": 3,
+    "affect": 2,
+    "aptitude": 2,
+    "choice": 2,
+    "decision": 3,
+    "event": 17,
+    "identity": 3,
+    "location": 5,
+    "person": 7,
+    "personality": 6,
+    "relationship": 7
+  }
+}

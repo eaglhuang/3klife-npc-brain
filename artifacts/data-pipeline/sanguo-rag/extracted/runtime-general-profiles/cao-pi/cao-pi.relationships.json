@@ -1,0 +1,110 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "cao-pi",
+  "displayName": "曹丕",
+  "generatedAt": "2026-05-21T09:27:27+00:00",
+  "relationshipCount": 3,
+  "typeCounts": {
+    "enemy_rival": 1,
+    "parent_child": 2
+  },
+  "anchors": [
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "parent_child",
+      "typeLabel": "親子",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "068#succession"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "cao-rui",
+      "targetName": "曹睿",
+      "type": "parent_child",
+      "typeLabel": "親子",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "086#wei-succession"
+      ],
+      "edgeConfidence": 0.9,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "yuan-tan",
+      "targetName": "袁譚",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:13e12031d1dc00fc7efa"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "正敘冀州廝殺，忽有袁譚失妻、曹丕納婦一段文字"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "sun-shang-xiang",
+      "targetName": "孫尚香",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "082#p2"
+      ],
+      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

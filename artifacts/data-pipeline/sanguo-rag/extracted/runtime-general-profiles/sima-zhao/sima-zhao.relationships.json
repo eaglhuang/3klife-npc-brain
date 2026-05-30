@@ -1,0 +1,91 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "sima-zhao",
+  "displayName": "司馬昭",
+  "generatedAt": "2026-05-21T09:27:28+00:00",
+  "relationshipCount": 3,
+  "typeCounts": {
+    "parent_child": 2,
+    "sibling": 1
+  },
+  "anchors": [
+    {
+      "targetId": "sima-yan",
+      "targetName": "司馬炎",
+      "type": "parent_child",
+      "typeLabel": "親子",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "119#jin-succession"
+      ],
+      "edgeConfidence": 0.94,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "sima-yi",
+      "targetName": "司馬懿",
+      "type": "parent_child",
+      "typeLabel": "親子",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "107#sima-family"
+      ],
+      "edgeConfidence": 0.94,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "sima-shi",
+      "targetName": "司馬師",
+      "type": "sibling",
+      "typeLabel": "手足",
+      "originalTypes": [
+        "sibling"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "107#sima-family"
+      ],
+      "edgeConfidence": 0.92,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    }
+  ],
+  "rejectedRelationshipEdges": [],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

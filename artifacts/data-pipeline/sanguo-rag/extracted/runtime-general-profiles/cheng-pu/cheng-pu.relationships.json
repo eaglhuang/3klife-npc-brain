@@ -1,0 +1,165 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "cheng-pu",
+  "displayName": "程普",
+  "generatedAt": "2026-05-21T09:27:28+00:00",
+  "relationshipCount": 5,
+  "typeCounts": {
+    "battlefield_contact": 2,
+    "enemy_rival": 1,
+    "ruler_subject": 2
+  },
+  "anchors": [
+    {
+      "targetId": "lv-fan",
+      "targetName": "呂範",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:0ba256af5dd67c1ee876",
+        "ext-card:gutenberg-sanguozhi:candidate-card:81424a824ad267c70b54"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "臣以十一日平旦部所領江夏太守行建威中郎將周瑜、領桂陽太守行征虜中郎將呂範、領零陵太守行蕩寇中郎將程普、行奉業校尉孫權、行先登校尉韓當、行武鋒校尉黃蓋等同時俱進"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "zhou-yu",
+      "targetName": "周瑜",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:2743f6d415048d4c133d",
+        "ext-card:gutenberg-sanguozhi:candidate-card:81424a824ad267c70b54"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "臣以十一日平旦部所領江夏太守行建威中郎將周瑜、領桂陽太守行征虜中郎將呂範、領零陵太守行蕩寇中郎將程普、行奉業校尉孫權、行先登校尉韓當、行武鋒校尉黃蓋等同時俱進"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "zhou-yu",
+      "targetName": "周瑜",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:f40ee66ed255f787b9b0"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "朗大驚，急回馬來迎：原來是周瑜與程普引軍刺斜殺來，前後來攻"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "sun-ce",
+      "targetName": "孫策",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "protects"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "007#p14"
+      ],
+      "edgeConfidence": 0.74,
+      "edgeStrength": 0.62,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "protects"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "053#p12"
+      ],
+      "edgeConfidence": 0.74,
+      "edgeStrength": 0.62,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "sun-jian",
+      "targetName": "孫堅",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "005#p12"
+      ],
+      "sourceQuote": "名茂，字太榮，吳郡富春人也，使雙刀。孫堅披爛銀鎧，裹赤幘，橫古錠刀，騎花鬃馬",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

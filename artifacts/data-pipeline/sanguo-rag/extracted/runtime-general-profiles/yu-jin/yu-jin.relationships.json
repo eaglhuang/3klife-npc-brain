@@ -1,0 +1,306 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "yu-jin",
+  "displayName": "于禁",
+  "generatedAt": "2026-05-21T09:52:26+00:00",
+  "relationshipCount": 7,
+  "typeCounts": {
+    "battlefield_contact": 1,
+    "enemy_rival": 4,
+    "ruler_subject": 2
+  },
+  "anchors": [
+    {
+      "targetId": "cao-ren",
+      "targetName": "曹仁",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:6d1b5cb3d37c76ffafe4",
+        "ext-card:wikisource-sanguozhi:candidate-card:b90beda3c2ab167bae00"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "關羽圍襄陽，寵助征南將軍曹仁屯樊城拒之，而左將軍于禁等軍以霖雨水長爲羽所沒"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:6d1b5cb3d37c76ffafe4",
+        "ext-card:wikisource-sanguozhi:candidate-card:98be30f0540e34488329"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "關羽圍襄陽，寵助征南將軍曹仁屯樊城拒之，而左將軍于禁等軍以霖雨水長爲羽所沒"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "le-jin",
+      "targetName": "樂進",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "011#p15"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:e9898c07101e845b8ba7"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "操即分呂布一軍在左，玄德一軍在右，自統大軍居中，令夏侯惇、于禁為先鋒"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:7611e18f6ebd410e0c20"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "操即分呂布一軍在左，玄德一軍在右，自統大軍居中，令夏侯惇、于禁為先鋒"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "xiahou-dun",
+      "targetName": "夏侯惇",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "016#p17"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "禁造反，趕殺青州軍馬。操大驚。須臾，夏侯惇、許褚、李典、樂進都到。操言于禁造反"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
+    },
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "074#p2",
+        "074#p3"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "le-jin",
+      "targetName": "樂進",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p15"
+      ],
+      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "010#p7"
+      ],
+      "sourceQuote": "熟嫻，武藝出眾，命爲點軍司馬。一日，夏侯惇引一大漢來見，操問何人，惇曰：「此乃",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "010#p7"
+      ],
+      "sourceQuote": "熟嫻，武藝出眾，命爲點軍司馬。一日，夏侯惇引一大漢來見，操問何人，惇曰：「此乃",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p8"
+      ],
+      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p8"
+      ],
+      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-fei",
+      "targetName": "張飛",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p8"
+      ],
+      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

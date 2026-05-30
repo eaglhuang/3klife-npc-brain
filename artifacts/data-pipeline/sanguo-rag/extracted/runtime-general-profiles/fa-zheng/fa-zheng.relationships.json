@@ -1,0 +1,43 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "fa-zheng",
+  "displayName": "法正",
+  "generatedAt": "2026-05-15T17:33:42+00:00",
+  "relationshipCount": 1,
+  "typeCounts": {
+    "battlefield_contact": 1
+  },
+  "anchors": [
+    {
+      "targetId": "liu-zhang",
+      "targetName": "劉璋",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "patron_client"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "063#p15"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

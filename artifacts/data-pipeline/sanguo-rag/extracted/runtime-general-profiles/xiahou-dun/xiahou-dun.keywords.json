@@ -1,0 +1,707 @@
+{
+  "keywordVersion": "general_runtime_keywords_v1",
+  "generalId": "xiahou-dun",
+  "displayName": "夏侯惇",
+  "generatedAt": "2026-05-21T09:52:25+00:00",
+  "categories": {
+    "activity": [
+      {
+        "keywordKey": "activity.appoint_office",
+        "label": "任官受封",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "appoint_office"
+      },
+      {
+        "keywordKey": "activity.family_duty",
+        "label": "家族責任",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family_duty"
+      },
+      {
+        "keywordKey": "activity.serve_army",
+        "label": "serve_army",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "serve_army"
+      }
+    ],
+    "affect": [
+      {
+        "keywordKey": "affect.ambition_pride",
+        "label": "ambition_pride",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "ambition_pride"
+      },
+      {
+        "keywordKey": "affect.family_affection",
+        "label": "家族情感",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family_affection"
+      },
+      {
+        "keywordKey": "affect.friendship_loyalty",
+        "label": "忠義友情",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "friendship_loyalty"
+      },
+      {
+        "keywordKey": "affect.grief_regret",
+        "label": "grief_regret",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "grief_regret"
+      }
+    ],
+    "aptitude": [
+      {
+        "keywordKey": "aptitude.command_strategy",
+        "label": "軍事統率",
+        "category": "aptitude",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "command_strategy"
+      }
+    ],
+    "choice": [
+      {
+        "keywordKey": "choice.chooses_deployment_or_drill",
+        "label": "部署操練",
+        "category": "choice",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "chooses_deployment_or_drill"
+      }
+    ],
+    "decision": [
+      {
+        "keywordKey": "decision.prefers_battle",
+        "label": "偏好戰鬥",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_battle"
+      },
+      {
+        "keywordKey": "decision.prefers_governance",
+        "label": "prefers_governance",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_governance"
+      }
+    ],
+    "event": [
+      {
+        "keywordKey": "event.changban-bridge",
+        "label": "張飛據長坂橋斷後，...",
+        "category": "event",
+        "sourceRefs": [
+          "042#p1",
+          "042#p2",
+          "042#p3",
+          "042#p4",
+          "042#p6",
+          "042#p7"
+        ],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "張飛據長坂橋斷後，以大喝震懾曹軍，為劉備爭取退走時間。",
+        "eventId": "romance.ch042.zhang-fei.changban-bridge"
+      },
+      {
+        "keywordKey": "event.core-source-packet-guan-yu-025-p2",
+        "label": "結義兄弟",
+        "category": "event",
+        "sourceRefs": [
+          "025#p2"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "下邳：stableKnowledgeBootstrap:sworn_sibling",
+        "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-025-p2-025-p2"
+      },
+      {
+        "keywordKey": "event.generic-battle-006-p7",
+        "label": "」卓從其計，又令呂...",
+        "category": "event",
+        "sourceRefs": [
+          "006#p7"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "陽城：」卓從其計，又令呂布引精兵歇後。",
+        "eventId": "romance.reviewed-a.lu-bu-generic-battle-006-p7-006-p7"
+      },
+      {
+        "keywordKey": "event.generic-battle-010-p7",
+        "label": "乃泰山巨平人，姓於...",
+        "category": "event",
+        "sourceRefs": [
+          "010#p7"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "潁川：又有一將，引軍數百人來投曹操：乃泰山巨平人，姓於，名禁，字文則。",
+        "eventId": "romance.reviewed-a.cao-cao-generic-battle-010-p7-010-p7"
+      },
+      {
+        "keywordKey": "event.generic-battle-011-p14",
+        "label": "」布乃撥高順并魏續...",
+        "category": "event",
+        "sourceRefs": [
+          "011#p14"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "西寨：」布乃撥高順并魏續、侯成引兵往守西寨。",
+        "eventId": "romance.reviewed-a.lu-bu-generic-battle-011-p14-011-p14"
+      },
+      {
+        "keywordKey": "event.generic-battle-012-p10",
+        "label": "操令許褚、典韋爲先...",
+        "category": "event",
+        "sourceRefs": [
+          "012#p10"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "潁川：操令許褚、典韋爲先鋒，夏侯惇、夏侯淵爲左軍，李典、樂進爲右軍，操自領中軍，于禁、呂虔爲合後。",
+        "eventId": "romance.reviewed-a.li-dian-generic-battle-012-p10-012-p10"
+      },
+      {
+        "keywordKey": "event.generic-battle-012-p4",
+        "label": "卻說曹操見典韋殺出...",
+        "category": "event",
+        "sourceRefs": [
+          "012#p4"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "陽城：卻說曹操見典韋殺出去了，四下裏人馬截來，不得出南門；",
+        "eventId": "romance.reviewed-a.cao-cao-generic-battle-012-p4-012-p4"
+      },
+      {
+        "keywordKey": "event.generic-battle-012-p8",
+        "label": "「我仇未報，汝不費...",
+        "category": "event",
+        "sourceRefs": [
+          "012#p8"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "潁川：操在鄄城，知陶謙已死，劉玄德領徐州牧，大怒曰：「我仇未報，汝不費半箭之功，坐得徐州。",
+        "eventId": "romance.reviewed-a.liu-bei-generic-battle-012-p8-012-p8"
+      },
+      {
+        "keywordKey": "event.generic-battle-014-p10",
+        "label": "便令許褚出馬與徐晃...",
+        "category": "event",
+        "sourceRefs": [
+          "014#p10"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "洛陽：便令許褚出馬與徐晃交鋒。",
+        "eventId": "romance.reviewed-a.xu-zhu-generic-battle-014-p10-014-p10"
+      },
+      {
+        "keywordKey": "event.generic-battle-014-p6",
+        "label": "聞李傕、郭汜犯洛陽...",
+        "category": "event",
+        "sourceRefs": [
+          "014#p6"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "洛陽：聞李傕、郭汜犯洛陽，先差夏侯惇爲先鋒，引上將十員，精兵五萬，前來保駕。",
+        "eventId": "romance.reviewed-a.xiahou-dun-generic-battle-014-p6-014-p6"
+      },
+      {
+        "keywordKey": "event.generic-battle-014-p7",
+        "label": "聞李傕、郭汜犯洛陽...",
+        "category": "event",
+        "sourceRefs": [
+          "014#p7"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "陽城：聞李傕、郭汜犯洛陽，先差夏侯惇爲先鋒，引上將十員，精兵五萬，前來保駕。",
+        "eventId": "romance.reviewed-a.xiahou-dun-generic-battle-014-p7-014-p7"
+      },
+      {
+        "keywordKey": "event.generic-battle-016-p13",
+        "label": "玄德至豫州，令人約...",
+        "category": "event",
+        "sourceRefs": [
+          "016#p13"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "宛城：玄德至豫州，令人約會曹操。",
+        "eventId": "romance.reviewed-a.liu-bei-generic-battle-016-p13-016-p13"
+      },
+      {
+        "keywordKey": "event.generic-battle-016-p17",
+        "label": "時夏侯惇所領青州之...",
+        "category": "event",
+        "sourceRefs": [
+          "016#p17"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "青州：時夏侯惇所領青州之兵，乘勢下鄉劫掠民家，平虜校尉于禁即將本部軍於路剿殺，安撫鄉民。",
+        "eventId": "romance.reviewed-a.xiahou-dun-generic-battle-016-p17-016-p17"
+      },
+      {
+        "keywordKey": "event.repair.repair-review-r1.zhang-liao.generic-battle-012-p4.0647",
+        "label": "卻說曹操見典韋殺出...",
+        "category": "event",
+        "sourceRefs": [
+          "012#p4"
+        ],
+        "confidence": 0.77,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "陽城：卻說曹操見典韋殺出去了，四下裏人馬截來，不得出南門；",
+        "eventId": "romance.reviewed-a.cao-cao-repair-repair-review-r1-zhang-liao-generic-battle-012-p4-0647-012-p4"
+      },
+      {
+        "keywordKey": "event.repair.repair-review-r1.zhang-liao.generic-battle-012-p4.0741",
+        "label": "卻說曹操見典韋殺出...",
+        "category": "event",
+        "sourceRefs": [
+          "012#p4"
+        ],
+        "confidence": 0.77,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "陽城：卻說曹操見典韋殺出去了，四下裏人馬截來，不得出南門；",
+        "eventId": "romance.reviewed-a.cao-cao-repair-repair-review-r1-zhang-liao-generic-battle-012-p4-0741-012-p4"
+      },
+      {
+        "keywordKey": "event.repair.repair-review-r1.zhang-liao.generic-battle-012-p4.0838",
+        "label": "卻說曹操見典韋殺出...",
+        "category": "event",
+        "sourceRefs": [
+          "012#p4"
+        ],
+        "confidence": 0.77,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "陽城：卻說曹操見典韋殺出去了，四下裏人馬截來，不得出南門；",
+        "eventId": "romance.reviewed-a.cao-cao-repair-repair-review-r1-zhang-liao-generic-battle-012-p4-0838-012-p4"
+      },
+      {
+        "keywordKey": "event.repair.repair-review-r1.zhang-liao.generic-battle-012-p4.0938",
+        "label": "卻說曹操見典韋殺出...",
+        "category": "event",
+        "sourceRefs": [
+          "012#p4"
+        ],
+        "confidence": 0.77,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "陽城：卻說曹操見典韋殺出去了，四下裏人馬截來，不得出南門；",
+        "eventId": "romance.reviewed-a.cao-cao-repair-repair-review-r1-zhang-liao-generic-battle-012-p4-0938-012-p4"
+      },
+      {
+        "keywordKey": "event.repair.repair-review-r1.zhang-liao.generic-battle-012-p4.1046",
+        "label": "卻說曹操見典韋殺出...",
+        "category": "event",
+        "sourceRefs": [
+          "012#p4"
+        ],
+        "confidence": 0.77,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "陽城：卻說曹操見典韋殺出去了，四下裏人馬截來，不得出南門；",
+        "eventId": "romance.reviewed-a.cao-cao-repair-repair-review-r1-zhang-liao-generic-battle-012-p4-1046-012-p4"
+      }
+    ],
+    "identity": [
+      {
+        "keywordKey": "identity.u5143-8ba9",
+        "label": "元让",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u590f-4faf-60c7",
+        "label": "夏侯惇",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "title.u3010-590f-4faf-60c7-3011",
+        "label": "【夏侯惇】",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      }
+    ],
+    "location": [
+      {
+        "keywordKey": "location.u4e0b-90b3",
+        "label": "下邳",
+        "category": "location",
+        "sourceRefs": [
+          "025#p2"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u5b9b-57ce",
+        "label": "宛城",
+        "category": "location",
+        "sourceRefs": [
+          "016#p13"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u6d1b-967d",
+        "label": "洛陽",
+        "category": "location",
+        "sourceRefs": [
+          "014#p10",
+          "014#p6"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u6f41-5ddd",
+        "label": "潁川",
+        "category": "location",
+        "sourceRefs": [
+          "010#p7",
+          "012#p10",
+          "012#p8"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u897f-5be8",
+        "label": "西寨",
+        "category": "location",
+        "sourceRefs": [
+          "011#p14"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u9577-5742-6a4b",
+        "label": "長坂橋",
+        "category": "location",
+        "sourceRefs": [
+          "042#p1",
+          "042#p2",
+          "042#p3",
+          "042#p4",
+          "042#p6",
+          "042#p7"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u967d-57ce",
+        "label": "陽城",
+        "category": "location",
+        "sourceRefs": [
+          "006#p7",
+          "012#p4",
+          "014#p7"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u9752-5dde",
+        "label": "青州",
+        "category": "location",
+        "sourceRefs": [
+          "016#p17"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      }
+    ],
+    "person": [
+      {
+        "keywordKey": "person.cao-cao",
+        "label": "曹操",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:wikisource-romance:candidate-card:1c3f3de18575f665c5e7"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "cao-cao"
+      },
+      {
+        "keywordKey": "person.li-jue",
+        "label": "李傕",
+        "category": "person",
+        "sourceRefs": [
+          "014#p6"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "li-jue"
+      },
+      {
+        "keywordKey": "person.lu-bu",
+        "label": "呂布",
+        "category": "person",
+        "sourceRefs": [
+          "006#p7",
+          "ext-card:wikisource-romance:candidate-card:4c27095343ce903af844"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "lu-bu"
+      },
+      {
+        "keywordKey": "person.xu-zhu",
+        "label": "許褚",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:gutenberg-sanguozhi:candidate-card:48424f63bd81538ec0ea",
+          "ext-card:wikisource-sanguozhi:candidate-card:1ddf3621bb06babb44f5"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "xu-zhu"
+      },
+      {
+        "keywordKey": "person.yu-jin",
+        "label": "于禁",
+        "category": "person",
+        "sourceRefs": [
+          "016#p17"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "yu-jin"
+      },
+      {
+        "keywordKey": "person.zhang-liao",
+        "label": "張遼",
+        "category": "person",
+        "sourceRefs": [
+          "011#p14"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhang-liao"
+      }
+    ],
+    "personality": [
+      {
+        "keywordKey": "personality.commanding",
+        "label": "統率威嚴",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "commanding"
+      },
+      {
+        "keywordKey": "personality.family-bound",
+        "label": "重家族與結義",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family-bound"
+      }
+    ],
+    "relationship": [
+      {
+        "keywordKey": "relationship.cao-cao.mentor_student",
+        "label": "曹操-師友教導",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:wikisource-romance:candidate-card:1c3f3de18575f665c5e7"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "cao-cao",
+        "relationshipType": "mentor_student"
+      },
+      {
+        "keywordKey": "relationship.li-jue.battlefield_contact",
+        "label": "李傕-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "014#p6"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "li-jue",
+        "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.lu-bu.enemy_rival",
+        "label": "呂布-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "006#p7",
+          "ext-card:wikisource-romance:candidate-card:4c27095343ce903af844"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "lu-bu",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.xu-zhu.ruler_subject",
+        "label": "許褚-君臣主從",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:gutenberg-sanguozhi:candidate-card:48424f63bd81538ec0ea",
+          "ext-card:wikisource-sanguozhi:candidate-card:1ddf3621bb06babb44f5"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "xu-zhu",
+        "relationshipType": "ruler_subject"
+      },
+      {
+        "keywordKey": "relationship.yu-jin.enemy_rival",
+        "label": "于禁-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "016#p17"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "yu-jin",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.zhang-liao.enemy_rival",
+        "label": "張遼-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "011#p14"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhang-liao",
+        "relationshipType": "enemy_rival"
+      }
+    ]
+  },
+  "categoryCounts": {
+    "activity": 3,
+    "affect": 4,
+    "aptitude": 1,
+    "choice": 1,
+    "decision": 2,
+    "event": 18,
+    "identity": 3,
+    "location": 8,
+    "person": 6,
+    "personality": 2,
+    "relationship": 6
+  }
+}

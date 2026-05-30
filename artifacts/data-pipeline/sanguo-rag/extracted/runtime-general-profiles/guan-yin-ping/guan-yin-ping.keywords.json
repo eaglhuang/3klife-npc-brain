@@ -1,0 +1,161 @@
+{
+  "keywordVersion": "general_runtime_keywords_v1",
+  "generalId": "guan-yin-ping",
+  "displayName": "關銀屏",
+  "generatedAt": "2026-05-21T09:52:29+00:00",
+  "categories": {
+    "activity": [
+      {
+        "keywordKey": "activity.appoint_office",
+        "label": "任官受封",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "appoint_office"
+      }
+    ],
+    "affect": [
+      {
+        "keywordKey": "affect.family_affection",
+        "label": "家族情感",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family_affection"
+      },
+      {
+        "keywordKey": "affect.friendship_loyalty",
+        "label": "忠義友情",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "friendship_loyalty"
+      }
+    ],
+    "decision": [
+      {
+        "keywordKey": "decision.prefers_battle",
+        "label": "偏好戰鬥",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_battle"
+      }
+    ],
+    "event": [
+      {
+        "keywordKey": "event.core-source-packet-guan-yu-073-p9",
+        "label": "結義兄弟",
+        "category": "event",
+        "sourceRefs": [
+          "073#p9"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "荊州：stableKnowledgeBootstrap:sworn_sibling",
+        "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9"
+      }
+    ],
+    "identity": [
+      {
+        "keywordKey": "identity.u864e-5973",
+        "label": "虎女",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u95dc-4e09-5c0f-59d0",
+        "label": "關三小姐",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u95dc-9280-5c4f",
+        "label": "關銀屏",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "title.u3010-95dc-9280-5c4f-3011",
+        "label": "【關銀屏】",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      }
+    ],
+    "location": [
+      {
+        "keywordKey": "location.u834a-5dde",
+        "label": "荊州",
+        "category": "location",
+        "sourceRefs": [
+          "073#p9"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      }
+    ],
+    "personality": [
+      {
+        "keywordKey": "personality.family-bound",
+        "label": "重家族與結義",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family-bound"
+      },
+      {
+        "keywordKey": "personality.martial",
+        "label": "武勇",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "martial"
+      }
+    ]
+  },
+  "categoryCounts": {
+    "activity": 1,
+    "affect": 2,
+    "decision": 1,
+    "event": 1,
+    "identity": 4,
+    "location": 1,
+    "personality": 2
+  }
+}

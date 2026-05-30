@@ -1,0 +1,238 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "zhou-yu",
+  "displayName": "周瑜",
+  "generatedAt": "2026-05-21T09:52:24+00:00",
+  "relationshipCount": 5,
+  "typeCounts": {
+    "enemy_rival": 3,
+    "ruler_subject": 2
+  },
+  "anchors": [
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-houhanshu:candidate-card:2af0c5c9cf3177535963",
+        "ext-card:wikisource-houhanshu:candidate-card:4afe8590ce8bcacc2527"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "曹操以舟師伐孫權，權將周瑜敗之於烏林、赤壁"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "cheng-pu",
+      "targetName": "程普",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:2743f6d415048d4c133d",
+        "ext-card:gutenberg-sanguozhi:candidate-card:81424a824ad267c70b54"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "臣以十一日平旦部所領江夏太守行建威中郎將周瑜、領桂陽太守行征虜中郎將呂範、領零陵太守行蕩寇中郎將程普、行奉業校尉孫權、行先登校尉韓當、行武鋒校尉黃蓋等同時俱進"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "lv-fan",
+      "targetName": "呂範",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:0ba256af5dd67c1ee876",
+        "ext-card:gutenberg-sanguozhi:candidate-card:2743f6d415048d4c133d"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "臣以十一日平旦部所領江夏太守行建威中郎將周瑜、領桂陽太守行征虜中郎將呂範、領零陵太守行蕩寇中郎將程普、行奉業校尉孫權、行先登校尉韓當、行武鋒校尉黃蓋等同時俱進"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "cheng-pu",
+      "targetName": "程普",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:f40ee66ed255f787b9b0"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "朗大驚，急回馬來迎：原來是周瑜與程普引軍刺斜殺來，前後來攻"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:0d823812891c0bfcb02c"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "本是孔明助周郎，却弄出周郎欲殺孔明，則一變"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "057#p9"
+      ],
+      "sourceQuote": "州，夜觀天文，見將星墜地，乃笑曰：「周瑜死矣！」至曉，白於玄德。玄德使人探之。使人探之，果然死了。玄德問孔明曰：「周瑜既死，還當如何？」孔明曰：「代瑜領兵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "051#p3"
+      ],
+      "sourceQuote": "居中。瑜正與眾商議征進之策，忽報：「劉玄德使孫乾來與都督作賀。」瑜命請入。乾施。肅曰：「卻纔都督爲何失驚？」瑜曰：「劉備屯兵油江，必有取南郡之意。我等費了許",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "051#p3"
+      ],
+      "sourceQuote": "居中。瑜正與眾商議征進之策，忽報：「劉玄德使孫乾來與都督作賀。」瑜命請入。乾施。肅曰：「卻纔都督爲何失驚？」瑜曰：「劉備屯兵油江，必有取南郡之意。我等費了許",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wang-lang",
+      "targetName": "王朗",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "015#p16"
+      ],
+      "sourceQuote": "孫策，策使爲從征校尉，遂同引兵渡江。嚴白虎聚寇分佈於西津渡口，程普與戰，復大敗",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "wang-lang",
+      "targetName": "王朗",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "015#p16"
+      ],
+      "sourceQuote": "孫策，策使爲從征校尉，遂同引兵渡江。嚴白虎聚寇分佈於西津渡口，程普與戰，復大敗",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "xun-yu",
+  "displayName": "荀彧",
+  "generatedAt": "2026-05-21T09:27:28+00:00",
+  "relationshipCount": 2,
+  "typeCounts": {
+    "enemy_rival": 1,
+    "ruler_subject": 1
+  },
+  "anchors": [
+    {
+      "targetId": "cao-hong",
+      "targetName": "曹洪",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:ea9e50549a4ae04a2999",
+        "ext-card:wikisource-sanguozhi:candidate-card:5f7d97c34455dba43a85"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "太祖將迎天子，諸將或疑，荀彧、程昱勸之，乃遣曹洪將兵西迎，衞將軍董承與袁術將萇奴拒險，洪不得進",
+        "太祖將迎天子，諸將或疑，荀彧、程昱勸之，乃遣曹洪將兵西迎，衛將軍董承與袁術將萇奴拒險，洪不得進"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "yuan-shu",
+      "targetName": "袁術",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:ea9e50549a4ae04a2999",
+        "ext-card:wikisource-sanguozhi:candidate-card:bb52c230795b97ea4c87"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "太祖將迎天子，諸將或疑，荀彧、程昱勸之，乃遣曹洪將兵西迎，衛將軍董承與袁術將萇奴拒險，洪不得進",
+        "太祖將迎天子，諸將或疑，荀彧、程昱勸之，乃遣曹洪將兵西迎，衞將軍董承與袁術將萇奴拒險，洪不得進"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "011#p11"
+      ],
+      "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

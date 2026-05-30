@@ -1,0 +1,801 @@
+{
+  "keywordVersion": "general_runtime_keywords_v1",
+  "generalId": "guan-yu",
+  "displayName": "關羽",
+  "generatedAt": "2026-05-30T07:39:09+00:00",
+  "categories": {
+    "activity": [
+      {
+        "keywordKey": "activity.appoint_office",
+        "label": "任官受封",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "appoint_office"
+      },
+      {
+        "keywordKey": "activity.family_duty",
+        "label": "家族責任",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family_duty"
+      },
+      {
+        "keywordKey": "activity.host_banquet",
+        "label": "宴飲社交",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "host_banquet"
+      },
+      {
+        "keywordKey": "activity.recruitment_visit",
+        "label": "拜訪招攬",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "recruitment_visit"
+      }
+    ],
+    "affect": [
+      {
+        "keywordKey": "affect.family_affection",
+        "label": "家族情感",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family_affection"
+      },
+      {
+        "keywordKey": "affect.friendship_loyalty",
+        "label": "忠義友情",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "friendship_loyalty"
+      },
+      {
+        "keywordKey": "affect.mercy_compassion",
+        "label": "仁義憐憫",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "mercy_compassion"
+      }
+    ],
+    "aptitude": [
+      {
+        "keywordKey": "aptitude.command_strategy",
+        "label": "軍事統率",
+        "category": "aptitude",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "command_strategy"
+      },
+      {
+        "keywordKey": "aptitude.diplomacy_speech",
+        "label": "外交言辭",
+        "category": "aptitude",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "diplomacy_speech"
+      },
+      {
+        "keywordKey": "aptitude.martial_weapon",
+        "label": "武器戰鬥",
+        "category": "aptitude",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "martial_weapon"
+      },
+      {
+        "keywordKey": "aptitude.opportunistic_survival",
+        "label": "危局求生",
+        "category": "aptitude",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "opportunistic_survival"
+      }
+    ],
+    "choice": [
+      {
+        "keywordKey": "choice.chooses_deployment_or_drill",
+        "label": "部署操練",
+        "category": "choice",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "chooses_deployment_or_drill"
+      },
+      {
+        "keywordKey": "choice.chooses_frontline_action",
+        "label": "親赴前線",
+        "category": "choice",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "chooses_frontline_action"
+      },
+      {
+        "keywordKey": "choice.chooses_gamble_or_escape",
+        "label": "冒險突圍",
+        "category": "choice",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "chooses_gamble_or_escape"
+      },
+      {
+        "keywordKey": "choice.chooses_negotiation_or_recruitment",
+        "label": "談判招募",
+        "category": "choice",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "chooses_negotiation_or_recruitment"
+      }
+    ],
+    "decision": [
+      {
+        "keywordKey": "decision.prefers_battle",
+        "label": "偏好戰鬥",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_battle"
+      },
+      {
+        "keywordKey": "decision.prefers_diplomacy",
+        "label": "偏好外交",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_diplomacy"
+      },
+      {
+        "keywordKey": "decision.prefers_risk",
+        "label": "願承風險",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_risk"
+      }
+    ],
+    "event": [
+      {
+        "keywordKey": "event.changban-bridge",
+        "label": "張飛據長坂橋斷後，...",
+        "category": "event",
+        "sourceRefs": [
+          "042#p1",
+          "042#p2",
+          "042#p3",
+          "042#p4",
+          "042#p6",
+          "042#p7"
+        ],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "張飛據長坂橋斷後，以大喝震懾曹軍，為劉備爭取退走時間。",
+        "eventId": "romance.ch042.zhang-fei.changban-bridge"
+      },
+      {
+        "keywordKey": "event.core-source-packet-guan-yu-007-p6",
+        "label": "結義兄弟",
+        "category": "event",
+        "sourceRefs": [
+          "007#p6"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "平原：stableKnowledgeBootstrap:sworn_sibling",
+        "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-007-p6-007-p6"
+      },
+      {
+        "keywordKey": "event.core-source-packet-guan-yu-025-p2",
+        "label": "結義兄弟",
+        "category": "event",
+        "sourceRefs": [
+          "025#p2"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "下邳：stableKnowledgeBootstrap:sworn_sibling",
+        "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-025-p2-025-p2"
+      },
+      {
+        "keywordKey": "event.core-source-packet-guan-yu-036-p4",
+        "label": "玄德帶回，令拜雲長...",
+        "category": "event",
+        "sourceRefs": [
+          "036#p4"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "潁川：玄德帶回，令拜雲長、翼德爲叔。",
+        "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-036-p4-036-p4"
+      },
+      {
+        "keywordKey": "event.core-source-packet-guan-yu-042-p8",
+        "label": "「又中諸葛亮之計也！",
+        "category": "event",
+        "sourceRefs": [
+          "042#p8"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "江夏：曹操一見雲長，即勒住馬，回顧眾將曰：「又中諸葛亮之計也！",
+        "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-042-p8-042-p8"
+      },
+      {
+        "keywordKey": "event.core-source-packet-guan-yu-073-p9",
+        "label": "結義兄弟",
+        "category": "event",
+        "sourceRefs": [
+          "073#p9"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "荊州：stableKnowledgeBootstrap:sworn_sibling",
+        "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9"
+      }
+    ],
+    "identity": [
+      {
+        "keywordKey": "identity.u7f8e-9aef-516c",
+        "label": "美髯公",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u9577-751f",
+        "label": "長生",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u95dc-7fbd",
+        "label": "關羽",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u96f2-9577",
+        "label": "雲長",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "title.u3010-7f8e-9aef-516c-3011",
+        "label": "【美髯公】",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      }
+    ],
+    "location": [
+      {
+        "keywordKey": "location.u4e0b-90b3",
+        "label": "下邳",
+        "category": "location",
+        "sourceRefs": [
+          "025#p2"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u5e73-539f",
+        "label": "平原",
+        "category": "location",
+        "sourceRefs": [
+          "007#p6"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u6c5f-590f",
+        "label": "江夏",
+        "category": "location",
+        "sourceRefs": [
+          "042#p8"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u6f41-5ddd",
+        "label": "潁川",
+        "category": "location",
+        "sourceRefs": [
+          "036#p4"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u834a-5dde",
+        "label": "荊州",
+        "category": "location",
+        "sourceRefs": [
+          "073#p9"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u9577-5742-6a4b",
+        "label": "長坂橋",
+        "category": "location",
+        "sourceRefs": [
+          "042#p1",
+          "042#p2",
+          "042#p3",
+          "042#p4",
+          "042#p6",
+          "042#p7"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      }
+    ],
+    "person": [
+      {
+        "keywordKey": "person.cao-cao",
+        "label": "曹操",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:wikisource-romance:candidate-card:98fff7779ddbb600d5d4",
+          "ext-card:wikisource-romance:candidate-card:ee7462a8e89ca56889ae"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "cao-cao"
+      },
+      {
+        "keywordKey": "person.guan-ping",
+        "label": "關平",
+        "category": "person",
+        "sourceRefs": [
+          "077#maicheng"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "guan-ping"
+      },
+      {
+        "keywordKey": "person.guan-xing",
+        "label": "關興",
+        "category": "person",
+        "sourceRefs": [
+          "077#next-generation"
+        ],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "guan-xing"
+      },
+      {
+        "keywordKey": "person.liu-bei",
+        "label": "劉備",
+        "category": "person",
+        "sourceRefs": [
+          "007#p6",
+          "025#p2",
+          "073#p9",
+          "ext-card:wikisource-romance:candidate-card:55fb43d96aea8ea126be",
+          "sgyy-baihua#chapter-026#p7;window=7"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "liu-bei"
+      },
+      {
+        "keywordKey": "person.lu-bu",
+        "label": "呂布",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:wikisource-romance:candidate-card:753828c01a532c7944ec"
+        ],
+        "confidence": 0.77,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "lu-bu"
+      },
+      {
+        "keywordKey": "person.xu-huang",
+        "label": "徐晃",
+        "category": "person",
+        "sourceRefs": [
+          "sgyy-baihua#chapter-076#p0;window=1"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "xu-huang"
+      },
+      {
+        "keywordKey": "person.zhang-fei",
+        "label": "張飛",
+        "category": "person",
+        "sourceRefs": [
+          "036#p5",
+          "ext-card:wikisource-romance:candidate-card:cd0dba7472ff24cc03b2",
+          "sgyy-baihua#chapter-001#p21;window=1"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhang-fei"
+      },
+      {
+        "keywordKey": "person.zhang-liao",
+        "label": "張遼",
+        "category": "person",
+        "sourceRefs": [
+          "sgyy-baihua#chapter-053#p0;window=1"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhang-liao"
+      },
+      {
+        "keywordKey": "person.zhao-yun",
+        "label": "趙雲",
+        "category": "person",
+        "sourceRefs": [
+          "sgyy-baihua#chapter-028#p15;window=5"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhao-yun"
+      },
+      {
+        "keywordKey": "person.zhuge-liang",
+        "label": "諸葛亮",
+        "category": "person",
+        "sourceRefs": [
+          "042#p8",
+          "sgyy-baihua#chapter-051#p1;window=1"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhuge-liang"
+      }
+    ],
+    "personality": [
+      {
+        "keywordKey": "personality.commanding",
+        "label": "統率威嚴",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "commanding"
+      },
+      {
+        "keywordKey": "personality.direct_force",
+        "label": "直接用武",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "direct_force"
+      },
+      {
+        "keywordKey": "personality.family-bound",
+        "label": "重家族與結義",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family-bound"
+      },
+      {
+        "keywordKey": "personality.martial",
+        "label": "武勇",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "martial"
+      },
+      {
+        "keywordKey": "personality.opportunistic",
+        "label": "臨機應變",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "opportunistic"
+      },
+      {
+        "keywordKey": "personality.persuasive",
+        "label": "能言勸說",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "persuasive"
+      }
+    ],
+    "relationship": [
+      {
+        "keywordKey": "relationship.cao-cao.enemy_rival",
+        "label": "曹操-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:wikisource-romance:candidate-card:98fff7779ddbb600d5d4",
+          "ext-card:wikisource-romance:candidate-card:ee7462a8e89ca56889ae"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "cao-cao",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.guan-ping.parent_child",
+        "label": "關平-親子",
+        "category": "relationship",
+        "sourceRefs": [
+          "077#maicheng"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "guan-ping",
+        "relationshipType": "parent_child"
+      },
+      {
+        "keywordKey": "relationship.guan-xing.parent_child",
+        "label": "關興-親子",
+        "category": "relationship",
+        "sourceRefs": [
+          "077#next-generation"
+        ],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "guan-xing",
+        "relationshipType": "parent_child"
+      },
+      {
+        "keywordKey": "relationship.liu-bei.sworn_sibling",
+        "label": "劉備-結義兄弟",
+        "category": "relationship",
+        "sourceRefs": [
+          "007#p6",
+          "025#p2",
+          "073#p9",
+          "ext-card:wikisource-romance:candidate-card:55fb43d96aea8ea126be",
+          "sgyy-baihua#chapter-026#p7;window=7"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "liu-bei",
+        "relationshipType": "sworn_sibling"
+      },
+      {
+        "keywordKey": "relationship.lu-bu.enemy_rival",
+        "label": "呂布-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:wikisource-romance:candidate-card:753828c01a532c7944ec"
+        ],
+        "confidence": 0.77,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "lu-bu",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.xu-huang.enemy_rival",
+        "label": "徐晃-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "sgyy-baihua#chapter-076#p0;window=1"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "xu-huang",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.zhang-fei.battle_ally",
+        "label": "張飛-戰場同袍",
+        "category": "relationship",
+        "sourceRefs": [
+          "036#p5"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhang-fei",
+        "relationshipType": "battle_ally"
+      },
+      {
+        "keywordKey": "relationship.zhang-fei.sworn_sibling",
+        "label": "張飛-結義兄弟",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:wikisource-romance:candidate-card:cd0dba7472ff24cc03b2",
+          "sgyy-baihua#chapter-001#p21;window=1"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhang-fei",
+        "relationshipType": "sworn_sibling"
+      },
+      {
+        "keywordKey": "relationship.zhang-liao.enemy_rival",
+        "label": "張遼-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "sgyy-baihua#chapter-053#p0;window=1"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhang-liao",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.zhao-yun.sibling",
+        "label": "趙雲-手足",
+        "category": "relationship",
+        "sourceRefs": [
+          "sgyy-baihua#chapter-028#p15;window=5"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhao-yun",
+        "relationshipType": "sibling"
+      },
+      {
+        "keywordKey": "relationship.zhuge-liang.strategy_pressure",
+        "label": "諸葛亮-策略牽制",
+        "category": "relationship",
+        "sourceRefs": [
+          "042#p8"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhuge-liang",
+        "relationshipType": "strategy_pressure"
+      },
+      {
+        "keywordKey": "relationship.zhuge-liang.sworn_sibling",
+        "label": "諸葛亮-結義兄弟",
+        "category": "relationship",
+        "sourceRefs": [
+          "sgyy-baihua#chapter-051#p1;window=1"
+        ],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhuge-liang",
+        "relationshipType": "sworn_sibling"
+      }
+    ]
+  },
+  "categoryCounts": {
+    "activity": 4,
+    "affect": 3,
+    "aptitude": 4,
+    "choice": 4,
+    "decision": 3,
+    "event": 6,
+    "identity": 5,
+    "location": 6,
+    "person": 10,
+    "personality": 6,
+    "relationship": 12
+  }
+}

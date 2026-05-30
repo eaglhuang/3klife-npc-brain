@@ -1,0 +1,398 @@
+{
+  "personaVersion": "general_runtime_persona_v1",
+  "generalId": "da-qiao",
+  "displayName": "大喬",
+  "aliases": [
+    "喬姊",
+    "喬國老長女"
+  ],
+  "title": "【大喬】",
+  "gender": "女",
+  "baseFaction": "wu",
+  "generatedAt": "2026-05-21T09:52:29+00:00",
+  "runtimeReadiness": {
+    "status": "thin-but-testable",
+    "canonicalWrites": false,
+    "completionPercent": null,
+    "readyEventCount": 0,
+    "relationshipCount": 0,
+    "rejectedRelationshipEdgeCount": 0,
+    "keywordCategoryCounts": {
+      "activity": 1,
+      "affect": 2,
+      "aptitude": 2,
+      "choice": 2,
+      "decision": 3,
+      "identity": 4,
+      "personality": 5
+    },
+    "reviewBacklogCount": 0
+  },
+  "profile": {
+    "role": "Support",
+    "coverageLevel": "plain-rich",
+    "roleActivityTags": [
+      "strategist_advisor"
+    ],
+    "aptitudeTags": [
+      "diplomacy_speech",
+      "opportunistic_survival"
+    ],
+    "affectTags": [
+      "family_affection",
+      "romance_love"
+    ],
+    "personalityTags": [
+      "strategic",
+      "governance-minded",
+      "literary",
+      "persuasive",
+      "opportunistic"
+    ],
+    "activitySeedHints": [
+      "suppress_unrest"
+    ],
+    "decisionWeightHints": [
+      "prefers_strategy",
+      "prefers_diplomacy",
+      "prefers_risk"
+    ],
+    "choiceWeightHints": [
+      "chooses_negotiation_or_recruitment",
+      "chooses_gamble_or_escape"
+    ]
+  },
+  "voiceAndPrompt": {
+    "voiceStyle": [
+      "克制",
+      "重證據",
+      "符合身份",
+      "不妄言"
+    ],
+    "safeFallbackLine": "大喬仍須有憑有據，不可妄言。",
+    "taboos": [
+      "不可借用他人自稱",
+      "不可新增無 evidence 的重大史實"
+    ],
+    "promptRules": [
+      "只使用 persona、keywords、relationships 與 retrieved evidence 生成台詞。",
+      "若 evidence 不足，使用 safeFallbackLine 或保守回應。",
+      "輸出繁體中文，避免現代網路語。"
+    ]
+  },
+  "storyBeats": [],
+  "sourceHighlights": [
+    {
+      "sourceRef": "044#p5",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context"
+      ],
+      "example": "本好色之徒，久聞江東喬公有二女，長曰大喬，次曰小喬，有沉魚落雁之容，閉月羞花",
+      "relatedGeneralIds": [
+        "diao-chan",
+        "xiao-qiao"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "diao-chan",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "xiao-qiao",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "044#p8",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "female_interaction",
+        "item_equipment",
+        "work_role"
+      ],
+      "example": "女乎？」瑜曰：「公有所不知，大喬是孫伯符將軍主婦，小喬乃瑜之妻也。」孔明佯作",
+      "relatedGeneralIds": [
+        "sun-ce",
+        "xiao-qiao",
+        "zhuge-liang"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "sun-ce",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "xiao-qiao",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "zhuge-liang",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    }
+  ],
+  "angleTargetLinks": [
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "diao-chan",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "diao-chan",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "diao-chan",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "diao-chan",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "faction_timeline",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "diao-chan",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "diao-chan",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p5",
+      "sourceId": "044#p5",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sun-ce",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "zhuge-liang",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sun-ce",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "zhuge-liang",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sun-ce",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "zhuge-liang",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "sun-ce",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "female_interaction",
+      "targetId": "zhuge-liang",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sun-ce",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "zhuge-liang",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "sun-ce",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "xiao-qiao",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "zhuge-liang",
+      "sourceRef": "044#p8",
+      "sourceId": "044#p8",
+      "sourceType": "sourceHighlight"
+    }
+  ],
+  "targetLinking": {
+    "version": "deterministic_source_link_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
+    "linkCount": 30
+  },
+  "relationshipSummary": {
+    "typeCounts": {},
+    "topAnchors": []
+  },
+  "reviewBacklog": [],
+  "evidenceRefs": [],
+  "observedMentionStats": {
+    "mentionCount": 26,
+    "firstChapter": 44,
+    "lastChapter": 44,
+    "chapterCount": 1,
+    "topLabels": [
+      "孔明",
+      "大喬",
+      "小喬",
+      "曹操",
+      "伯符",
+      "子建",
+      "曹植",
+      "閉月"
+    ],
+    "sourceRefs": [
+      "044#p5",
+      "044#p8"
+    ]
+  }
+}

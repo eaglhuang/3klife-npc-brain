@@ -1,0 +1,379 @@
+{
+  "personaVersion": "general_runtime_persona_v1",
+  "generalId": "xin-xian-ying",
+  "displayName": "辛憲英",
+  "aliases": [
+    "辛家女史"
+  ],
+  "title": "【辛憲英】",
+  "gender": "女",
+  "baseFaction": "wei",
+  "generatedAt": "2026-05-21T09:52:29+00:00",
+  "runtimeReadiness": {
+    "status": "thin-but-testable",
+    "canonicalWrites": false,
+    "completionPercent": null,
+    "readyEventCount": 0,
+    "relationshipCount": 1,
+    "rejectedRelationshipEdgeCount": 0,
+    "keywordCategoryCounts": {
+      "activity": 2,
+      "affect": 1,
+      "aptitude": 1,
+      "choice": 1,
+      "decision": 1,
+      "identity": 3,
+      "person": 1,
+      "personality": 2,
+      "relationship": 1
+    },
+    "reviewBacklogCount": 0
+  },
+  "profile": {
+    "role": "Support",
+    "coverageLevel": "plain-rich",
+    "roleActivityTags": [
+      "strategist_advisor"
+    ],
+    "aptitudeTags": [
+      "command_strategy"
+    ],
+    "affectTags": [
+      "family_affection"
+    ],
+    "personalityTags": [
+      "governance-minded",
+      "analytical"
+    ],
+    "activitySeedHints": [
+      "teach_train",
+      "suppress_unrest"
+    ],
+    "decisionWeightHints": [
+      "prefers_strategy"
+    ],
+    "choiceWeightHints": [
+      "chooses_planning_or_trap"
+    ]
+  },
+  "voiceAndPrompt": {
+    "voiceStyle": [
+      "克制",
+      "重證據",
+      "符合身份",
+      "不妄言"
+    ],
+    "safeFallbackLine": "辛憲英仍須有憑有據，不可妄言。",
+    "taboos": [
+      "不可借用他人自稱",
+      "不可新增無 evidence 的重大史實"
+    ],
+    "promptRules": [
+      "只使用 persona、keywords、relationships 與 retrieved evidence 生成台詞。",
+      "若 evidence 不足，使用 safeFallbackLine 或保守回應。",
+      "輸出繁體中文，避免現代網路語。"
+    ]
+  },
+  "storyBeats": [],
+  "sourceHighlights": [
+    {
+      "sourceRef": "107#p3",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "與魯芝引數十騎，斬關奪門而出。人報知司馬懿。懿恐桓範亦走，急令人召之。範與其子",
+      "relatedGeneralIds": [
+        "sima-yi"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "sima-yi",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    },
+    {
+      "sourceRef": "107#p9",
+      "packetStrength": "strong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "example": "卻說司馬懿斬了曹爽，太尉蔣濟曰：「尚有魯芝、辛",
+      "relatedGeneralIds": [
+        "cao-shuang",
+        "romance-person-8523-6fdf",
+        "sima-yi"
+      ],
+      "targetLinkTrace": [
+        {
+          "targetId": "cao-shuang",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "romance-person-8523-6fdf",
+          "sources": [
+            "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "sima-yi",
+          "sources": [
+            "aliasMatch"
+          ]
+        }
+      ]
+    }
+  ],
+  "angleTargetLinks": [
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p3",
+      "sourceId": "107#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p3",
+      "sourceId": "107#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p3",
+      "sourceId": "107#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "decision_weight",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p3",
+      "sourceId": "107#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p3",
+      "sourceId": "107#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p3",
+      "sourceId": "107#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p3",
+      "sourceId": "107#p3",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "cao-shuang",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "romance-person-8523-6fdf",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "activity_seed",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "cao-shuang",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "romance-person-8523-6fdf",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "affect_story",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "cao-shuang",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "romance-person-8523-6fdf",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "battle",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "cao-shuang",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "romance-person-8523-6fdf",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "item_equipment",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "cao-shuang",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "romance-person-8523-6fdf",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "location_context",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "cao-shuang",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "romance-person-8523-6fdf",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    },
+    {
+      "angleFamily": "work_role",
+      "targetId": "sima-yi",
+      "sourceRef": "107#p9",
+      "sourceId": "107#p9",
+      "sourceType": "sourceHighlight"
+    }
+  ],
+  "targetLinking": {
+    "version": "deterministic_source_link_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
+    "linkCount": 25
+  },
+  "relationshipSummary": {
+    "typeCounts": {
+      "enemy_rival": 1
+    },
+    "topAnchors": [
+      {
+        "targetId": "sima-yi",
+        "targetName": "司馬懿",
+        "type": "enemy_rival",
+        "typeLabel": "敵對競爭",
+        "originalTypes": [
+          "enemy_rival"
+        ],
+        "directions": [
+          "incoming"
+        ],
+        "evidenceRefs": [
+          "ext-card:wikisource-romance:candidate-card:0e54b37b6ff1a4bccb56"
+        ],
+        "edgeConfidence": 0.82,
+        "edgeStrength": 0.7,
+        "sourceQuotes": [
+          "正敘司馬懿殺曹爽，忽有辛憲英為弟畫策一段文字"
+        ],
+        "refinementReasons": [
+          "stable_relationship_baseline"
+        ],
+        "reviewStatus": "ready",
+        "sourceLayer": "claim-graph-a-romance"
+      }
+    ]
+  },
+  "reviewBacklog": [],
+  "evidenceRefs": [],
+  "observedMentionStats": {
+    "mentionCount": 21,
+    "firstChapter": 107,
+    "lastChapter": 107,
+    "chapterCount": 1,
+    "topLabels": [
+      "司馬懿",
+      "曹爽",
+      "蔣濟",
+      "尹大目",
+      "辛憲英",
+      "仲達",
+      "許允",
+      "陳泰"
+    ],
+    "sourceRefs": [
+      "107#p3",
+      "107#p9"
+    ]
+  }
+}

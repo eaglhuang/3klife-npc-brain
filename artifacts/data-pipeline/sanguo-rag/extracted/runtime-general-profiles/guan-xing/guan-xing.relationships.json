@@ -1,0 +1,71 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "guan-xing",
+  "displayName": "關興",
+  "generatedAt": "2026-05-21T09:52:27+00:00",
+  "relationshipCount": 2,
+  "typeCounts": {
+    "battlefield_contact": 1,
+    "parent_child": 1
+  },
+  "anchors": [
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "parent_child",
+      "typeLabel": "親子",
+      "originalTypes": [
+        "parent_child"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "077#next-generation"
+      ],
+      "edgeConfidence": 0.9,
+      "edgeStrength": 0.85,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "stable-bootstrap-seed"
+    },
+    {
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "093#p4",
+        "094#p5"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "越吉心疑，未敢輕進。雅丹丞相曰：「此諸葛亮詭計，虛設疑兵耳。可以攻之。」越吉引。各引一軍埋伏去訖；然後點三萬軍，帶了姜維、張翼、關興、張苞，親自來到馬岱寨中"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

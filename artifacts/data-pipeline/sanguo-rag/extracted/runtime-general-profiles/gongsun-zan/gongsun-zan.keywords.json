@@ -1,0 +1,511 @@
+{
+  "keywordVersion": "general_runtime_keywords_v1",
+  "generalId": "gongsun-zan",
+  "displayName": "公孫瓚",
+  "generatedAt": "2026-05-21T09:22:08+00:00",
+  "categories": {
+    "activity": [
+      {
+        "keywordKey": "activity.appoint_office",
+        "label": "任官受封",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "appoint_office"
+      },
+      {
+        "keywordKey": "activity.family_duty",
+        "label": "家族責任",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family_duty"
+      },
+      {
+        "keywordKey": "activity.serve_army",
+        "label": "serve_army",
+        "category": "activity",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "serve_army"
+      }
+    ],
+    "affect": [
+      {
+        "keywordKey": "affect.family_affection",
+        "label": "家族情感",
+        "category": "affect",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family_affection"
+      }
+    ],
+    "aptitude": [
+      {
+        "keywordKey": "aptitude.martial_weapon",
+        "label": "武器戰鬥",
+        "category": "aptitude",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "martial_weapon"
+      }
+    ],
+    "choice": [
+      {
+        "keywordKey": "choice.chooses_frontline_action",
+        "label": "親赴前線",
+        "category": "choice",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "chooses_frontline_action"
+      }
+    ],
+    "decision": [
+      {
+        "keywordKey": "decision.prefers_battle",
+        "label": "偏好戰鬥",
+        "category": "decision",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "prefers_battle"
+      }
+    ],
+    "event": [
+      {
+        "keywordKey": "event.core-source-packet-guan-yu-007-p6",
+        "label": "結義兄弟",
+        "category": "event",
+        "sourceRefs": [
+          "007#p6"
+        ],
+        "confidence": 0.72,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "平原：stableKnowledgeBootstrap:sworn_sibling",
+        "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-007-p6-007-p6"
+      },
+      {
+        "keywordKey": "event.generic-battle-002-p7",
+        "label": "公孫瓚又表陳玄德前...",
+        "category": "event",
+        "sourceRefs": [
+          "002#p7"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "涿郡：公孫瓚又表陳玄德前功，薦爲別部司馬，守平原縣令。",
+        "eventId": "romance.reviewed-a.liu-bei-generic-battle-002-p7-002-p7"
+      },
+      {
+        "keywordKey": "event.generic-battle-005-p14",
+        "label": "結義兄弟",
+        "category": "event",
+        "sourceRefs": [
+          "005#p14"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "虎牢關：stableKnowledgeBootstrap:sworn_sibling",
+        "eventId": "romance.reviewed-a.guan-yu-generic-battle-005-p14-005-p14"
+      },
+      {
+        "keywordKey": "event.generic-battle-005-p16",
+        "label": "「今失了上將華雄，...",
+        "category": "event",
+        "sourceRefs": [
+          "005#p16"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "汜水關：儒曰：「今失了上將華雄，賊勢浩大。",
+        "eventId": "romance.reviewed-a.cao-cao-generic-battle-005-p16-005-p16"
+      },
+      {
+        "keywordKey": "event.generic-battle-005-p17",
+        "label": "卓自將十五萬，同李...",
+        "category": "event",
+        "sourceRefs": [
+          "005#p17"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "虎牢關：卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。",
+        "eventId": "romance.reviewed-a.lu-bu-generic-battle-005-p17-005-p17"
+      },
+      {
+        "keywordKey": "event.generic-battle-005-p18",
+        "label": "呂布架隔遮攔不定，...",
+        "category": "event",
+        "sourceRefs": [
+          "005#p18"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "虎牢關：呂布架隔遮攔不定，看著玄德面上，虛刺一戟，玄德急閃。",
+        "eventId": "romance.reviewed-a.liu-bei-generic-battle-005-p18-005-p18"
+      },
+      {
+        "keywordKey": "event.generic-battle-007-p4",
+        "label": "公孫瓚初得趙雲，不...",
+        "category": "event",
+        "sourceRefs": [
+          "007#p4"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "盤河橋：公孫瓚初得趙雲，不知心腹，令其另領一軍在後。",
+        "eventId": "romance.reviewed-a.zhao-yun-generic-battle-007-p4-007-p4"
+      },
+      {
+        "keywordKey": "event.generic-battle-007-p5",
+        "label": "公孫瓚初得趙雲，不...",
+        "category": "event",
+        "sourceRefs": [
+          "007#p5"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "界橋：公孫瓚初得趙雲，不知心腹，令其另領一軍在後。",
+        "eventId": "romance.reviewed-a.zhao-yun-generic-battle-007-p5-007-p5"
+      },
+      {
+        "keywordKey": "event.generic-battle-007-p6",
+        "label": "」眾軍士齊心死戰，...",
+        "category": "event",
+        "sourceRefs": [
+          "007#p6"
+        ],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "平原：」眾軍士齊心死戰，趙雲衝突不入，紹兵大隊掩至，顏良亦引軍來到，兩路并殺。",
+        "eventId": "romance.reviewed-a.zhao-yun-generic-battle-007-p6-007-p6"
+      },
+      {
+        "keywordKey": "event.repair.full-roster-global-repush-r15-evidence-recovery-r1-precision-a1.zhao-yun.generic-battle-…",
+        "label": "？」言未畢，文醜策...",
+        "category": "event",
+        "sourceRefs": [
+          "007#p4"
+        ],
+        "confidence": 0.77,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "fullLabel": "盤河橋：？」言未畢，文醜策馬挺槍，直殺上橋。公孫瓚就橋邊與文醜交鋒。戰不到十餘合，瓚抵",
+        "eventId": "romance.reviewed-a.yuan-shao-repair-full-roster-global-repush-r15-evidence-recovery-r1-precision-a1-zhao-yun-generic-battle-007-p4"
+      }
+    ],
+    "identity": [
+      {
+        "keywordKey": "identity.u4f2f-572d",
+        "label": "伯圭",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "identity.u516c-5b6b-74da",
+        "label": "公孫瓚",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "title.u3010-516c-5b6b-74da-3011",
+        "label": "【公孫瓚】",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      }
+    ],
+    "item": [
+      {
+        "keywordKey": "item.green-dragon-blade",
+        "label": "青龍刀",
+        "category": "item",
+        "sourceRefs": [
+          "005#p18"
+        ],
+        "confidence": 0.8,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      }
+    ],
+    "location": [
+      {
+        "keywordKey": "location.u5e73-539f",
+        "label": "平原",
+        "category": "location",
+        "sourceRefs": [
+          "007#p6"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u6c5c-6c34-95dc",
+        "label": "汜水關",
+        "category": "location",
+        "sourceRefs": [
+          "005#p16"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u6dbf-90e1",
+        "label": "涿郡",
+        "category": "location",
+        "sourceRefs": [
+          "002#p7"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u754c-6a4b",
+        "label": "界橋",
+        "category": "location",
+        "sourceRefs": [
+          "007#p5"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u76e4-6cb3-6a4b",
+        "label": "盤河橋",
+        "category": "location",
+        "sourceRefs": [
+          "007#p4"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      },
+      {
+        "keywordKey": "location.u864e-7262-95dc",
+        "label": "虎牢關",
+        "category": "location",
+        "sourceRefs": [
+          "005#p14",
+          "005#p16",
+          "005#p17",
+          "005#p18"
+        ],
+        "confidence": 0.86,
+        "uiLabelMaxChars": 12,
+        "retired": false
+      }
+    ],
+    "person": [
+      {
+        "keywordKey": "person.liu-bei",
+        "label": "劉備",
+        "category": "person",
+        "sourceRefs": [
+          "002#p7"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "liu-bei"
+      },
+      {
+        "keywordKey": "person.wen-chou",
+        "label": "文醜",
+        "category": "person",
+        "sourceRefs": [
+          "007#p4"
+        ],
+        "confidence": 0.84,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "wen-chou"
+      },
+      {
+        "keywordKey": "person.yuan-shao",
+        "label": "袁紹",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:wikisource-sanguozhi:candidate-card:9ae36d461761a45218b0",
+          "ext-card:wikisource-sanguozhi:candidate-card:d40b2e207085d8b15de3"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "yuan-shao"
+      },
+      {
+        "keywordKey": "person.zhao-yun",
+        "label": "趙雲",
+        "category": "person",
+        "sourceRefs": [
+          "007#p6"
+        ],
+        "confidence": 0.74,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhao-yun"
+      }
+    ],
+    "personality": [
+      {
+        "keywordKey": "personality.direct_force",
+        "label": "直接用武",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "direct_force"
+      },
+      {
+        "keywordKey": "personality.family-bound",
+        "label": "重家族與結義",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "family-bound"
+      },
+      {
+        "keywordKey": "personality.martial",
+        "label": "武勇",
+        "category": "personality",
+        "sourceRefs": [],
+        "confidence": 0.78,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "stable-profile",
+        "rawTag": "martial"
+      }
+    ],
+    "relationship": [
+      {
+        "keywordKey": "relationship.liu-bei.battlefield_contact",
+        "label": "劉備-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "002#p7"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "liu-bei",
+        "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.wen-chou.battlefield_contact",
+        "label": "文醜-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "007#p4"
+        ],
+        "confidence": 0.82,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "wen-chou",
+        "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.wen-chou.enemy_rival",
+        "label": "文醜-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "007#p4"
+        ],
+        "confidence": 0.84,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "wen-chou",
+        "relationshipType": "enemy_rival"
+      },
+      {
+        "keywordKey": "relationship.yuan-shao.spouse",
+        "label": "袁紹-夫妻姻親",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:wikisource-sanguozhi:candidate-card:9ae36d461761a45218b0",
+          "ext-card:wikisource-sanguozhi:candidate-card:d40b2e207085d8b15de3"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "yuan-shao",
+        "relationshipType": "spouse"
+      },
+      {
+        "keywordKey": "relationship.zhao-yun.battlefield_contact",
+        "label": "趙雲-戰場接觸",
+        "category": "relationship",
+        "sourceRefs": [
+          "007#p6"
+        ],
+        "confidence": 0.74,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "zhao-yun",
+        "relationshipType": "battlefield_contact"
+      }
+    ]
+  },
+  "categoryCounts": {
+    "activity": 3,
+    "affect": 1,
+    "aptitude": 1,
+    "choice": 1,
+    "decision": 1,
+    "event": 10,
+    "identity": 3,
+    "item": 1,
+    "location": 6,
+    "person": 4,
+    "personality": 3,
+    "relationship": 5
+  }
+}

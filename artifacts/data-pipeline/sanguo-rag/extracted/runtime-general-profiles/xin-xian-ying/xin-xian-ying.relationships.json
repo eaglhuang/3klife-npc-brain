@@ -1,0 +1,45 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "xin-xian-ying",
+  "displayName": "辛憲英",
+  "generatedAt": "2026-05-21T09:52:29+00:00",
+  "relationshipCount": 1,
+  "typeCounts": {
+    "enemy_rival": 1
+  },
+  "anchors": [
+    {
+      "targetId": "sima-yi",
+      "targetName": "司馬懿",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:0e54b37b6ff1a4bccb56"
+      ],
+      "edgeConfidence": 0.82,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "正敘司馬懿殺曹爽，忽有辛憲英為弟畫策一段文字"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    }
+  ],
+  "rejectedRelationshipEdges": [],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

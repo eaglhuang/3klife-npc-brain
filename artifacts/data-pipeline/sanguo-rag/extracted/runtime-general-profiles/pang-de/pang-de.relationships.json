@@ -1,0 +1,167 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "pang-de",
+  "displayName": "龐德",
+  "generatedAt": "2026-05-21T09:27:27+00:00",
+  "relationshipCount": 5,
+  "typeCounts": {
+    "battlefield_contact": 1,
+    "betrayal_surrender": 1,
+    "enemy_rival": 3
+  },
+  "anchors": [
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "betrayal_surrender",
+      "typeLabel": "背叛投降",
+      "originalTypes": [
+        "betrayal_surrender"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:79c9dda166452d1894fc",
+        "ext-card:wikisource-sanguozhi:candidate-card:88a971a2ed1673ecd905"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "帝使豫於陵屋畫 關羽 戰克、 龐德 憤怒、 禁 降服之狀"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "li-dian",
+      "targetName": "李典",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:3a20afeef60a236b8dd1",
+        "ext-card:wikisource-sanguozhi:candidate-card:fbde8eff90f40e75da81"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "文聘、執金吾臧霸、破虜將軍李典、立義將軍龐德、武猛校尉典韋於太祖廟庭"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "wen-pin",
+      "targetName": "文聘",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing",
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-sanguozhi:candidate-card:e960619742ba9931cd8a",
+        "ext-card:wikisource-sanguozhi:candidate-card:fbde8eff90f40e75da81"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "文聘、執金吾臧霸、破虜將軍李典、立義將軍龐德、武猛校尉典韋於太祖廟庭"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    },
+    {
+      "targetId": "chen-wu",
+      "targetName": "陳武",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "068#p8"
+      ],
+      "edgeConfidence": 0.84,
+      "edgeStrength": 0.72,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "source-grounded-strong",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
+    {
+      "targetId": "ma-chao",
+      "targetName": "馬超",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "059#p2"
+      ],
+      "edgeConfidence": 0.66,
+      "edgeStrength": 0.54,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
+      "evidenceRefs": [
+        "072#p9"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}
