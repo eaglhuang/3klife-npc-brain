@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import os
+import subprocess
+from pathlib import Path
 
 from fastapi.testclient import TestClient
 
@@ -9,11 +11,23 @@ from .main import create_app
 
 def main() -> None:
     os.environ["NPC_LLM_PROVIDER_ORDER"] = "deterministic"
+    os.environ["NPC_BRAIN_DEPLOY_API_KEY"] = "smoke-test-api-key"
     client = TestClient(create_app())
+    repo_root = Path(__file__).resolve().parents[1]
+    git_sha = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=repo_root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
 
     health = client.get("/healthz")
     assert health.status_code == 200, health.text
     assert health.json()["ok"] is True
+    assert health.json()["dataVersion"] == git_sha, health.json()
+    assert health.json()["deployment"]["dataVersion"] == git_sha, health.json()
+    service_headers = {"X-API-Key": os.environ["NPC_BRAIN_DEPLOY_API_KEY"]}
     supported_presets = health.json()["llm"]["supportedModelPresets"]
     supported_by_key = {preset["preset"]: preset for preset in supported_presets}
     assert "qwen2_5_7b" in supported_by_key, supported_presets
@@ -21,11 +35,11 @@ def main() -> None:
     assert "deepseek_r1_7b" in supported_by_key, supported_presets
     assert supported_by_key["deepseek_r1_7b"]["providerOrder"] == ["deepseek_reasoner"], supported_by_key["deepseek_r1_7b"]
 
-    contexts = client.get("/v1/npc/context-options", params={"generalId": "zhang-fei"})
+    contexts = client.get("/v1/npc/context-options", params={"generalId": "zhang-fei"}, headers=service_headers)
     assert contexts.status_code == 200, contexts.text
     assert contexts.json()["options"], "context options should not be empty"
 
-    keywords = client.get("/v1/npc/keyword-options", params={"generalId": "zhang-fei"})
+    keywords = client.get("/v1/npc/keyword-options", params={"generalId": "zhang-fei"}, headers=service_headers)
     assert keywords.status_code == 200, keywords.text
     keyword_payload = keywords.json()
     assert keyword_payload["categories"].get("event"), "event keyword options should not be empty"

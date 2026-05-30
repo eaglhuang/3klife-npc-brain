@@ -4,6 +4,7 @@ import json
 import os
 import re
 import hashlib
+import subprocess
 import time
 from concurrent.futures import TimeoutError as FutureTimeoutError
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -761,27 +762,30 @@ class NpcDialogueService:
     def _is_semver(self, value: str) -> bool:
         return bool(HEALTH_SEMVER_PATTERN.match(value))
 
+    def _read_repo_git_sha(self) -> str:
+        try:
+            completed = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=self.repo_root,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return ""
+        return completed.stdout.strip()
+
     def _resolve_health_data_version(self) -> tuple[str, str]:
-        configured = str(os.environ.get("NPC_DATA_VERSION_SEMVER") or "").strip()
-        if configured and self._is_semver(configured):
-            return configured, "env:NPC_DATA_VERSION_SEMVER"
+        for env_name in ("RENDER_GIT_COMMIT", "GITHUB_SHA", "BUILD_SHA"):
+            configured = str(os.environ.get(env_name) or "").strip()
+            if configured and re.fullmatch(r"[0-9a-fA-F]{7,40}", configured):
+                return configured.lower(), f"env:{env_name}"
 
-        version_cache_path = self.repo_root / ".atm/runtime/version-cache.json"
-        if version_cache_path.exists():
-            try:
-                payload = json.loads(version_cache_path.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError):
-                payload = {}
-            for key in ("dataVersion", "lastSeenFrameworkVersion", "specVersion"):
-                candidate = str(payload.get(key) or "").strip()
-                if candidate and self._is_semver(candidate):
-                    return candidate, f".atm/runtime/version-cache.json:{key}"
+        repo_sha = self._read_repo_git_sha()
+        if repo_sha and re.fullmatch(r"[0-9a-fA-F]{7,40}", repo_sha):
+            return repo_sha.lower(), "git:HEAD"
 
-        framework_env = str(os.environ.get("ATM_FRAMEWORK_VERSION") or "").strip()
-        if framework_env and self._is_semver(framework_env):
-            return framework_env, "env:ATM_FRAMEWORK_VERSION"
-
-        return "0.0.0", "fallback:0.0.0"
+        return "unknown", "fallback:unknown"
 
     def _extract_health_markers(self, payload: object) -> dict[str, str]:
         if not isinstance(payload, dict):

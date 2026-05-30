@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import re
 import subprocess
 import sys
 import time
@@ -15,11 +14,6 @@ from urllib.request import Request, urlopen
 DEFAULT_HEALTH_URL = "https://threeklife-npc-brain.onrender.com/healthz"
 ALLOWED_ARTIFACT_VERSION_KINDS = {"semver", "git-sha", "sha256", "opaque"}
 DEFAULT_ARTIFACT_VERSION_BASIS = "json-marker-path:v1-sorted"
-SEMVER_PATTERN = re.compile(
-    r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
-    r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
-    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
-)
 VERSION_MARKER_KEYS = (
     "schemaVersion",
     "dataVersion",
@@ -48,33 +42,28 @@ def post(url: str, timeout_seconds: int = 10) -> None:
         return
 
 
-def is_semver(text: str) -> bool:
-    return bool(SEMVER_PATTERN.match(text))
-
-
-def read_framework_semver(repo_root: Path) -> str:
-    cache_path = repo_root / ".atm/runtime/version-cache.json"
-    if not cache_path.exists():
-        return ""
+def read_repo_git_sha(repo_root: Path) -> str:
     try:
-        payload = json.loads(cache_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+        completed = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=repo_root,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError):
         return ""
-    for key in ("dataVersion", "lastSeenFrameworkVersion", "specVersion"):
-        value = str(payload.get(key) or "").strip()
-        if value and is_semver(value):
-            return value
-    return ""
+    return completed.stdout.strip()
 
 
 def resolve_expected_data_version(repo_root: Path, expected_version: str) -> tuple[str, str]:
     candidate = str(expected_version or "").strip()
-    if candidate and is_semver(candidate):
+    if candidate:
         return candidate, "arg:expected-data-version"
-    framework_semver = read_framework_semver(repo_root)
-    if framework_semver:
-        return framework_semver, ".atm/runtime/version-cache.json"
-    return candidate, "arg:expected-data-version-invalid"
+    repo_sha = read_repo_git_sha(repo_root)
+    if repo_sha:
+        return repo_sha, "git:HEAD"
+    return "", "missing:expected-data-version"
 
 
 def extract_version_metadata(payload: object) -> dict[str, str]:
@@ -112,12 +101,12 @@ def extract_version_metadata(payload: object) -> dict[str, str]:
 
 def evaluate_refresh(local_meta: dict[str, str], remote_meta: dict[str, str]) -> tuple[bool, str]:
     local_data_version = str(local_meta.get("dataVersion") or "").strip()
-    if not local_data_version or not is_semver(local_data_version):
-        return False, "local dataVersion is missing or not semver"
+    if not local_data_version:
+        return False, "local dataVersion is missing"
 
     remote_data_version = str(remote_meta.get("dataVersion") or "").strip()
-    if not remote_data_version or not is_semver(remote_data_version):
-        return False, "remote dataVersion is missing or not semver"
+    if not remote_data_version:
+        return False, "remote dataVersion is missing"
     if remote_data_version != local_data_version:
         return False, "dataVersion changed"
 
@@ -391,7 +380,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--expected-data-version",
         default="",
-        help="Expected semver dataVersion. Defaults to .atm/runtime/version-cache.json when available.",
+        help="Expected dataVersion. Defaults to repo git HEAD when omitted.",
     )
     parser.add_argument(
         "--artifact-version-kind",
