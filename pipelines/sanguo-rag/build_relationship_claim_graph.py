@@ -401,6 +401,18 @@ def edge_direct_pair_grounding(
         to_hit = earliest_alias_span(text, to_aliases)
         if from_hit is None or to_hit is None:
             continue
+        pair_start = min(from_hit[1][0], to_hit[1][0])
+        pair_end = max(from_hit[1][1], to_hit[1][1])
+        sentence_start, sentence_end = sentence_span_for_pair(text, pair_start, pair_end)
+        sentence = text[sentence_start:sentence_end]
+        if not sentence:
+            continue
+        if pair_end - pair_start > pair_cues.PAIR_CUE_MAX_SPAN:
+            continue
+        if has_clause_boundary(text[pair_start:pair_end]):
+            continue
+        if not re.search(r"見|問|曰|謂|命|令|召|拜|救|追|攻|戰|拒|降|託|送|迎|會|與|同|俱|隨|從|遣|報|諫|請|教|許|責|勸|謝|怒|笑|斬|殺|護", sentence):
+            continue
         return direct_pair_grounding_payload(
             from_alias=from_hit[0],
             from_span=from_hit[1],

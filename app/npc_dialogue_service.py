@@ -1253,6 +1253,7 @@ class NpcDialogueService:
     def build_scene_director(self, request: SceneDirectorRequest) -> SceneDirectorResponse:
         started_at = time.monotonic()
         profile = self.get_narrative_profile(request.generalId)
+        actor_aliases = self._actor_label_aliases(profile)
         target = self._select_narrative_target(profile.interactionTargets, request.targetId)
         target_invalid = bool(request.targetId and target is None)
         card = self._select_narrative_card(
@@ -1260,7 +1261,7 @@ class NpcDialogueService:
             request.evidenceId,
             request.angle,
             target,
-            actor_aliases=self._actor_label_aliases(profile),
+            actor_aliases=actor_aliases,
         )
         evidence_invalid = bool(request.evidenceId and not any(card_item.evidenceId == request.evidenceId for card_item in profile.evidenceCards))
         semantic_empty_reason = self._scene_pair_empty_reason(request.angle, card, target)
@@ -1268,6 +1269,16 @@ class NpcDialogueService:
         evidence_pack = self._resolve_evidence(request.generalId, None, [], requested_evidence_refs)
         resolved_evidence_refs = [item.evidenceRef for item in evidence_pack.resolvedEvidence]
         unresolved_evidence_refs = [ref for ref in evidence_pack.unresolvedEvidenceRefs if ref]
+        selection_issues = self._scene_selection_issues(
+            request=request,
+            profile=profile,
+            target=target,
+            card=card,
+            actor_aliases=actor_aliases,
+            requested_evidence_refs=requested_evidence_refs,
+            resolved_evidence_refs=resolved_evidence_refs,
+            unresolved_evidence_refs=unresolved_evidence_refs,
+        )
         has_scene_data = (
             card is not None
             and not target_invalid
@@ -1275,6 +1286,8 @@ class NpcDialogueService:
             and not semantic_empty_reason
             and not unresolved_evidence_refs
         )
+        if has_scene_data and any(issue in {"invalid_ref", "pair_mismatch", "angle_mismatch"} for issue in selection_issues):
+            has_scene_data = False
         data_status, fallback_reason = self._scene_data_status(
             requested_angle=request.angle,
             requested_target_id=request.targetId,
@@ -1288,6 +1301,10 @@ class NpcDialogueService:
         if unresolved_evidence_refs and data_status in {"direct", "angle_empty_filled", "target_empty_filled"}:
             data_status = "empty"
             fallback_reason = f"unresolvedEvidenceRefs={','.join(unresolved_evidence_refs[:3])}"
+        if not has_scene_data and data_status != "invalid_request":
+            data_status = "empty"
+            if not fallback_reason:
+                fallback_reason = f"selectionIssues={','.join(selection_issues[:3])}" if selection_issues else "data_missing"
         beats = self._build_scene_director_beats(profile, card, target, request.angle) if has_scene_data else self._build_empty_scene_director_beats()
         evidence_refs = requested_evidence_refs or sorted(set(beats.sourceRefs))
         evidence_resolution = SceneEvidenceResolution(
@@ -1426,6 +1443,7 @@ class NpcDialogueService:
             story_keywords=story_keywords,
             chorus_targets=chorus_targets,
             chorus_lines=chorus_lines,
+            selection_issues=selection_issues,
         )
         return SceneDirectorResponse(
             generalId=request.generalId,
@@ -1527,10 +1545,14 @@ class NpcDialogueService:
         story_generation: DialogueGenerationResult,
         chorus_target_count: int,
         chorus_lines: list[SceneChorusLine],
+        selection_issues: list[str] | None = None,
     ) -> list[str]:
         issues: list[str] = []
         if data_status == "empty" or source_coverage.unresolvedEvidenceRefCount > 0:
             issues.append("data_missing")
+        for issue in selection_issues or []:
+            if issue and issue not in issues:
+                issues.append(str(issue))
         story_provider = str(story_generation.provider or "").strip()
         if self.scene_cache_enabled and (
             story_provider == "history_cache"
@@ -1563,6 +1585,7 @@ class NpcDialogueService:
         story_keywords: list[dict[str, Any]],
         chorus_targets: list[NarrativeInteractionTarget],
         chorus_lines: list[SceneChorusLine],
+        selection_issues: list[str] | None = None,
     ) -> SceneDirectorDebugMetadata:
         source_coverage = self._scene_source_coverage(evidence_resolution, beats, story_generation, chorus_lines)
         return SceneDirectorDebugMetadata(
@@ -1575,6 +1598,7 @@ class NpcDialogueService:
                 story_generation=story_generation,
                 chorus_target_count=len(chorus_targets),
                 chorus_lines=chorus_lines,
+                selection_issues=selection_issues,
             ),
             seedQuality=self._scene_seed_quality(beats),
             sourceCoverage=source_coverage,
@@ -1653,6 +1677,42 @@ class NpcDialogueService:
             return "target_empty_filled", f"requestedTarget={requested_target_id}; resolvedTarget={target.targetId if target else '-'}"
         return "direct", None
 
+    def _scene_selection_issues(
+        self,
+        *,
+        request: SceneDirectorRequest,
+        profile: NarrativeProfileResponse,
+        target: NarrativeInteractionTarget | None,
+        card: NarrativeEvidenceCard | None,
+        actor_aliases: list[str],
+        requested_evidence_refs: list[str],
+        resolved_evidence_refs: list[str],
+        unresolved_evidence_refs: list[str],
+    ) -> list[str]:
+        issues: list[str] = []
+        if request.evidenceId and not any(card_item.evidenceId == request.evidenceId for card_item in profile.evidenceCards):
+            issues.append("invalid_ref")
+        if unresolved_evidence_refs and "invalid_ref" not in issues:
+            issues.append("invalid_ref")
+        grounded_target_cards = [
+            candidate
+            for candidate in profile.evidenceCards
+            if target is not None and self._card_matches_target(candidate, target) and self._card_source_matches_scene(candidate, target, actor_aliases)
+        ] if target is not None else []
+        if target is not None and card is None and target.sourceType == "relationship-edge":
+            issues.append("pair_mismatch")
+        if target is not None and card is not None and not self._card_source_matches_scene(card, target, actor_aliases):
+            issues.append("pair_mismatch")
+        if request.angle and card is not None and card.angle != request.angle:
+            issues.append("angle_mismatch")
+        if request.angle and card is None and grounded_target_cards:
+            issues.append("angle_mismatch")
+        if card is not None and len([ref for ref in card.sourceRefs if ref]) < 2:
+            issues.append("evidence_context_short")
+        if not requested_evidence_refs and not resolved_evidence_refs and card is not None:
+            issues.append("evidence_context_short")
+        return list(dict.fromkeys(issues))
+
     def _scene_pair_empty_reason(
         self,
         requested_angle: str | None,
@@ -1692,27 +1752,27 @@ class NpcDialogueService:
             for card in cards
             if self._card_matches_target(card, target) and self._card_source_matches_scene(card, target, actor_aliases)
         ] if target is not None else []
-        if angle:
-            for card in target_cards or cards:
-                if card.angle != angle:
-                    continue
-                if target is not None:
-                    if card in target_cards:
-                        return card
-                    continue
-                if self._card_source_matches_scene(card, target, actor_aliases):
-                    return card
-        if target_cards:
-            return sorted(
-                target_cards,
-                key=lambda card: (
-                    0 if card.sourceType == "runtime-relationship-edge" else 1,
-                    -self._coerce_float(card.confidence, default=0.0),
-                    -len(card.sourceRefs or []),
-                    str(card.evidenceId or ""),
-                ),
-            )[0]
         if target is not None:
+            if angle:
+                for card in target_cards:
+                    if card.angle == angle:
+                        return card
+                return None
+            if target_cards:
+                return sorted(
+                    target_cards,
+                    key=lambda card: (
+                        0 if card.sourceType == "runtime-relationship-edge" else 1,
+                        -self._coerce_float(card.confidence, default=0.0),
+                        -len(card.sourceRefs or []),
+                        str(card.evidenceId or ""),
+                    ),
+                )[0]
+            return None
+        if angle:
+            for card in cards:
+                if card.angle == angle and self._card_source_matches_scene(card, target, actor_aliases):
+                    return card
             return None
         return cards[0] if cards else None
 
@@ -1788,7 +1848,7 @@ class NpcDialogueService:
             has_actor = any(alias and alias in sentence for alias in actor_aliases)
             has_target = any(alias and alias in sentence for alias in target_aliases)
             if has_actor and has_target:
-                return True
+                return self._source_window_has_interaction_signal(sentence)
             if has_actor:
                 actor_indexes.append(index)
             if has_target:
@@ -2090,6 +2150,7 @@ class NpcDialogueService:
     ) -> list[NarrativeEvidenceCard]:
         if not target:
             return [card] if card else []
+        actor_aliases = self._actor_label_aliases(profile)
         target_refs = set(target.evidenceRefs)
         target_aliases = self._target_aliases_for_interaction(target)
         requested_angle = angle or (card.angle if card else None)
@@ -2127,31 +2188,26 @@ class NpcDialogueService:
             candidate_refs = set(candidate.sourceRefs)
             source_text = self._card_source_text(candidate)
             mentions_target = any(alias and alias in source_text for alias in target_aliases)
-            near_primary = bool(
-                primary_refs
-                and candidate_refs
-                and self._source_refs_are_near(candidate_refs, primary_refs, radius=3)
-            )
+            strict_scene_match = self._card_source_matches_scene(candidate, target, actor_aliases)
             if (
                 primary_refs
                 and candidate.evidenceId != (card.evidenceId if card else None)
                 and not (candidate_refs & primary_refs)
-                and not near_primary
             ):
                 if not (
                     allow_target_context_expansion
                     and target.targetId in candidate.relatedTargetIds
-                    and bool(candidate_refs & target_refs)
-                    and mentions_target
+                    and bool(candidate_refs & primary_refs)
+                    and strict_scene_match
                     and candidate.sourceType != "runtime-relationship-edge"
                 ):
                     continue
             is_related = (
                 candidate.evidenceId == (card.evidenceId if card else None)
-                or (target.targetId in candidate.relatedTargetIds and mentions_target)
-                or (bool(candidate_refs & target_refs) and mentions_target)
-                or (near_primary and (mentions_target or target.targetId in candidate.relatedTargetIds))
-                or mentions_target
+                or (target.targetId in candidate.relatedTargetIds and strict_scene_match)
+                or (bool(candidate_refs & primary_refs) and strict_scene_match)
+                or (bool(candidate_refs & target_refs) and strict_scene_match and not primary_refs)
+                or (mentions_target and strict_scene_match)
             )
             if not is_related:
                 continue
