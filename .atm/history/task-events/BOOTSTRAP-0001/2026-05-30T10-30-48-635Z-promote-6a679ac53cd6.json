@@ -1,0 +1,15 @@
+{
+  "schemaId": "atm.taskTransition.v1",
+  "specVersion": "0.1.0",
+  "transitionId": "2026-05-30T10-30-48-635Z-promote-6a679ac53cd6",
+  "taskId": "BOOTSTRAP-0001",
+  "action": "promote",
+  "actorId": "vs-code-gpt-5.4-mini",
+  "sessionId": null,
+  "fromStatus": "reserved",
+  "toStatus": "ready",
+  "taskPath": ".atm/history/tasks/BOOTSTRAP-0001.json",
+  "taskSha256": "sha256:8180eec0faed03359d71d71b9b9003a43ab6855ebcac8de325b6321550dac734",
+  "createdAt": "2026-05-30T10:30:48.635Z",
+  "command": "node atm.mjs tasks promote"
+}

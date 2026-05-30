@@ -487,8 +487,17 @@ def build_target_projections(*, general_id: str, source: dict[str, Any], source_
     return projections
 
 
-def build_angle_target_links(story_beats: list[dict[str, Any]], source_highlights: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def build_angle_target_links(
+    story_beats: list[dict[str, Any]],
+    source_highlights: list[dict[str, Any]],
+    identities: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
     links: dict[tuple[str, str, str], dict[str, Any]] = {}
+
+    def target_is_female(target_id: str) -> bool:
+        identity = identities.get(target_id) or {}
+        gender = str(identity.get("gender") or "").strip().lower()
+        return gender in {"f", "female", "woman", "women", "女", "女性"} or gender.startswith("fem")
 
     def add_link(*, angle: str, target_id: str, source_ref: Any, source_id: Any, source_type: str, projection: dict[str, Any] | None = None) -> None:
         cleaned_angle = str(angle or "").strip() or "source_highlight"
@@ -496,6 +505,8 @@ def build_angle_target_links(story_beats: list[dict[str, Any]], source_highlight
         cleaned_source_ref = str(source_ref or "").strip()
         cleaned_source_id = str(source_id or "").strip()
         if not cleaned_target_id:
+            return
+        if cleaned_angle == "female_interaction" and not target_is_female(cleaned_target_id):
             return
         key = (cleaned_target_id, cleaned_source_ref or cleaned_source_id, source_type)
         existing = links.get(key)
@@ -627,6 +638,12 @@ def refine_relationship_type(edge: dict[str, Any], general_id: str) -> tuple[str
     quote = str(edge.get("sourceQuote") or "")
     refs = " ".join(str(ref) for ref in edge.get("evidenceRefs") or [])
     reasons: list[str] = []
+    intimidation_terms = ("勒住馬", "速退", "退兵", "中計", "又中諸葛亮之計")
+    strategy_terms = ("計策", "謀策", "奇計", "奇謀")
+    oath_terms = ("結義", "誓同生死", "盟誓", "桃園")
+    family_guardian_terms = ("二嫂嫂", "甘夫人", "阿斗", "家眷", "付託")
+    loyal_oath_terms = ("忠義", "盟約", "託付", "付託", "守義", "相托", "託孤")
+    battle_ally_terms = ("並肩", "同戰", "協戰", "共戰", "援護", "救援", "同袍", "護主")
     if is_stable_relationship_edge(edge):
         reasons.append("stable_relationship_baseline")
         return original or "relationship", reasons
@@ -639,29 +656,26 @@ def refine_relationship_type(edge: dict[str, Any], general_id: str) -> tuple[str
             return "battlefield_contact", reasons
         reasons.append("source_graph_refined_type")
         return original, reasons
-    if target == "cao-cao" and any(term in quote for term in ["勒住馬", "速退", "又中諸葛亮之計"]):
+    if any(term in quote for term in intimidation_terms):
         reasons.append("enemy_retreat_or_intimidation_terms")
         return "intimidates_enemy", reasons
-    if target == "zhuge-liang" and "計" in quote:
+    if any(term in quote for term in strategy_terms):
         reasons.append("strategy_context_terms")
         return "strategy_pressure", reasons
-    if original == "confronts" or target in {"xiahou-dun", "cao-ren", "pang-de", "wen-chou", "yan-liang", "lu-bu"}:
+    if original == "confronts":
         reasons.append("battlefield_opponent_target")
         return "battlefield_opponent", reasons
-    if original == "sworn_sibling" or (target in {"liu-bei", "zhang-fei"} and any(term in quote for term in ["結義", "誓同生死", "盟誓"])):
+    if original == "sworn_sibling" or any(term in quote for term in oath_terms):
         reasons.append("oath_or_sworn_sibling_terms")
         return "sworn_sibling", reasons
-    if target in {"liu-bei", "mi-shi", "gan-shi", "liu-shan"} and any(term in quote for term in ["二嫂嫂", "甘夫人", "阿斗", "家眷", "付託"]):
+    if any(term in quote for term in family_guardian_terms):
         reasons.append("family_guardian_terms")
         return "protects_family", reasons
-    if target == "liu-bei" and any(term in quote for term in ["結義", "盟誓", "桃園", "誓同生死"]):
+    if any(term in quote for term in loyal_oath_terms):
         reasons.append("liu_bei_core_oath_relation")
         return "loyal_oath", reasons
-    if target == "liu-bei" and ("025#" in refs or "073#" in refs or "007#" in refs):
-        reasons.append("liu_bei_oath_context")
-        return "loyal_oath", reasons
-    if target == "zhang-fei":
-        reasons.append("zhang_fei_battle_ally_context")
+    if original == "battle_ally" or any(term in quote for term in battle_ally_terms):
+        reasons.append("battle_ally_context_terms")
         return "battle_ally", reasons
     reasons.append("coarse_edge_fallback")
     return "battlefield_contact", reasons
@@ -919,7 +933,7 @@ def build_persona(
             source_type="sourceHighlight",
         )
         source_highlights.append(source_highlight)
-    angle_target_links = build_angle_target_links(story_beats, source_highlights)
+    angle_target_links = build_angle_target_links(story_beats, source_highlights, identities)
     all_target_projections = [
         projection
         for source in [*story_beats, *source_highlights]

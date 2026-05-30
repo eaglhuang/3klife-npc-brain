@@ -38,12 +38,6 @@ class RuntimeProfileStore:
         )
         self.allow_remote_persona_fallback = self._env_flag("NPC_PERSONA_REMOTE_FALLBACK_ENABLED", default=False)
         self.allow_remote_runtime_fallback = self._env_flag("NPC_RUNTIME_REMOTE_FALLBACK_ENABLED", default=False)
-        self._ready_events_cache: list[dict] | None = None
-        self._ready_events_cache_mtime: float | None = None
-        self._source_event_packets_cache: list[dict] | None = None
-        self._source_event_packets_cache_mtime: float | None = None
-        self._remote_persona_card_cache: dict[str, dict | None] = {}
-        self._remote_runtime_json_cache: dict[tuple[str, str], dict | None] = {}
 
     def read_api_fixture(self, filename: str) -> dict:
         path = self.artifact_root / filename
@@ -84,13 +78,8 @@ class RuntimeProfileStore:
 
     def load_ready_events(self) -> list[dict]:
         path = self.event_root / "events.jsonl"
-        current_mtime = path.stat().st_mtime if path.exists() else None
-        if self._ready_events_cache is not None and self._ready_events_cache_mtime == current_mtime:
-            return self._ready_events_cache
         if not path.exists():
-            self._ready_events_cache = []
-            self._ready_events_cache_mtime = None
-            return self._ready_events_cache
+            return []
         events: list[dict] = []
         for line in path.read_text(encoding="utf-8").splitlines():
             if not line.strip():
@@ -98,19 +87,12 @@ class RuntimeProfileStore:
             payload = json.loads(line)
             if payload.get("reviewStatus") == "ready":
                 events.append(payload)
-        self._ready_events_cache = events
-        self._ready_events_cache_mtime = current_mtime
         return events
 
     def load_source_event_packets(self) -> list[dict]:
         path = self.artifact_root.parent / "source-event-packets" / "source-event-packets.jsonl"
-        current_mtime = path.stat().st_mtime if path.exists() else None
-        if self._source_event_packets_cache is not None and self._source_event_packets_cache_mtime == current_mtime:
-            return self._source_event_packets_cache
         if not path.exists():
-            self._source_event_packets_cache = []
-            self._source_event_packets_cache_mtime = None
-            return self._source_event_packets_cache
+            return []
         packets: list[dict] = []
         for line in path.read_text(encoding="utf-8").splitlines():
             if not line.strip():
@@ -118,8 +100,6 @@ class RuntimeProfileStore:
             payload = json.loads(line)
             if isinstance(payload, dict):
                 packets.append(payload)
-        self._source_event_packets_cache = packets
-        self._source_event_packets_cache_mtime = current_mtime
         return packets
 
     def list_runtime_general_ids(self) -> list[str]:
@@ -149,25 +129,16 @@ class RuntimeProfileStore:
         return path if path.is_absolute() else self.repo_root / path
 
     def _read_remote_runtime_json(self, general_id: str, suffix: str) -> dict | None:
-        cache_key = (general_id, suffix)
-        if cache_key in self._remote_runtime_json_cache:
-            return self._remote_runtime_json_cache[cache_key]
-        payload = self._read_remote_json_file(
+        return self._read_remote_json_file(
             self.runtime_profile_remote_base_url,
             f"{general_id}/{general_id}.{suffix}.json",
         )
-        self._remote_runtime_json_cache[cache_key] = payload
-        return payload
 
     def _read_remote_persona_card(self, general_id: str) -> dict | None:
-        if general_id in self._remote_persona_card_cache:
-            return self._remote_persona_card_cache[general_id]
-        payload = self._read_remote_json_file(
+        return self._read_remote_json_file(
             self.persona_remote_base_url,
             f"{general_id}.persona.json",
         )
-        self._remote_persona_card_cache[general_id] = payload
-        return payload
 
     def _read_remote_json_file(self, base_url: str, relative_path: str) -> dict | None:
         if not base_url:

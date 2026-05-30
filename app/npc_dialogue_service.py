@@ -11,7 +11,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
-from threading import Lock
 from typing import Any
 
 from pydantic import BaseModel, Field, model_validator
@@ -105,11 +104,7 @@ SUPPORTED_LOCALES = set(LOCALE_INSTRUCTIONS.keys())
 SUPPORTED_SPEECH_CONTEXT_MODES = set(SPEECH_CONTEXT_INSTRUCTIONS.keys())
 DEFAULT_LLM_MODEL_PRESET = "fallback_chain"
 DEFAULT_SCENE_DIRECTOR_TOTAL_TIMEOUT_MS = 14000
-HARD_RELATIONSHIP_PAIR_TYPES: dict[frozenset[str], str] = {
-    frozenset({"liu-bei", "guan-yu"}): "sworn_sibling",
-    frozenset({"liu-bei", "zhang-fei"}): "sworn_sibling",
-    frozenset({"guan-yu", "zhang-fei"}): "sworn_sibling",
-}
+HARD_RELATIONSHIP_PAIR_TYPES: dict[frozenset[str], str] = {}
 TARGET_ID_NAME_COLLISIONS: dict[str, dict[str, str]] = {
     "zhang-bao": {
         "張寶": "zhang-bao-enemy",
@@ -119,26 +114,6 @@ TARGET_ID_NAME_COLLISIONS: dict[str, dict[str, str]] = {
     },
 }
 YELLOW_TURBAN_TARGET_IDS = {"zhang-bao-enemy", "zhang-jiao", "zhang-liang"}
-YELLOW_TURBAN_CONTEXT_TERMS = (
-    "黃巾",
-    "黄巾",
-    "張角",
-    "张角",
-    "張梁",
-    "张梁",
-    "張寶",
-    "张宝",
-    "地公將軍",
-    "地公将军",
-    "賊",
-    "贼",
-    "對壘",
-    "对垒",
-    "追襲",
-    "追袭",
-    "死戰",
-    "死战",
-)
 LLM_MODEL_PRESETS = {
     "fallback_chain": {
         "label": "Fallback Chain",
@@ -283,7 +258,7 @@ def apply_npc_dialogue_runtime_service_governance(repo_root: Path) -> None:
     global DEFAULT_STABLE_RELATIONSHIP_SOURCE_LAYERS, DEFAULT_A_CANON_RELATIONSHIP_GRADES
     global LLM_MODEL_PRESETS, SUPPORTED_LLM_MODEL_PRESETS
     global HARD_RELATIONSHIP_PAIR_TYPES, TARGET_ID_NAME_COLLISIONS
-    global YELLOW_TURBAN_TARGET_IDS, YELLOW_TURBAN_CONTEXT_TERMS
+    global YELLOW_TURBAN_TARGET_IDS
 
     policy = _read_optional_governance_json(repo_root, "NPC_DIALOGUE_RUNTIME_SERVICE_POLICY", "policies/policy-npc-dialogue-runtime-service.json", "Policy_NpcDialogueRuntimeService_P1")
     preset_rows = _read_optional_governance_jsonl(repo_root, "NPC_DIALOGUE_LLM_MODEL_PRESETS", "catalogs/catalog-npc-dialogue-llm-model-presets.jsonl")
@@ -333,9 +308,6 @@ def apply_npc_dialogue_runtime_service_governance(repo_root: Path) -> None:
         target_ids = by_name.get("YELLOW_TURBAN_TARGET_IDS", {}).get("value")
         if isinstance(target_ids, list) and target_ids:
             YELLOW_TURBAN_TARGET_IDS = {str(item) for item in target_ids if str(item).strip()}
-        context_terms = by_name.get("YELLOW_TURBAN_CONTEXT_TERMS", {}).get("value")
-        if isinstance(context_terms, list) and context_terms:
-            YELLOW_TURBAN_CONTEXT_TERMS = tuple(str(item) for item in context_terms if str(item).strip())
 
 
 class ContextOption(BaseModel):
@@ -646,6 +618,7 @@ class SceneDirectorResponse(BaseModel):
     isEmpty: bool = False
     fallbackReason: str | None = None
     emptyReason: str | None = None
+    diagnostics: list[str] = Field(default_factory=list)
     evidenceResolution: SceneEvidenceResolution = Field(default_factory=SceneEvidenceResolution)
     beats: SceneDirectorBeats
     storyText: str
@@ -700,37 +673,18 @@ class NpcDialogueService:
         self.runtime_profile_root = self.store.runtime_profile_root
         self.event_root = self.store.event_root
         self.history_cache_path = self._resolve_path(Path(os.environ.get("NPC_LLM_HISTORY_CACHE_PATH") or DEFAULT_HISTORY_CACHE_PATH))
+        self.history_cache_enabled = _env_flag("NPC_LLM_HISTORY_CACHE_ENABLED", default=True)
         self.provider_router = provider_router or DialogueProviderRouter()
         self.evidence_resolver = EvidenceResolver(self.store)
         self.scene_image_renderer = GeminiSceneImageRenderer(cache_root=self.repo_root / "local/npc-scene-image-cache")
         self.scene_cache_enabled = _env_flag("NPC_SCENE_CACHE_ENABLED", default=False)
         self._roster_index_cache: dict[str, dict[str, Any]] | None = None
+        self._source_event_packet_cache: list[dict[str, Any]] | None = None
+        self._baihua_passage_cache: list[dict[str, Any]] | None = None
         self._chapter_paragraph_cache: dict[str, list[str]] = {}
-        self._source_event_packet_cache: dict[str, dict[str, Any]] | None = None
-        self._baihua_passage_cache: dict[tuple[str, int], str] | None = None
-        self._scene_chorus_cache: dict[str, SceneChorusLine] = {}
-        self._scene_chorus_cache_lock = Lock()
         self._health_artifact_cache: dict[str, Any] | None = None
-        self._health_artifact_cache_at: float = 0.0
-        self._health_artifact_cache_ttl_seconds = max(
-            1,
-            int(os.environ.get("NPC_HEALTH_ARTIFACT_CACHE_TTL_SECONDS") or DEFAULT_HEALTH_ARTIFACT_CACHE_TTL_SECONDS),
-        )
-        if not self.scene_cache_enabled:
-            self._clear_scene_cache(reason="scene-cache-disabled")
-
-    def _clear_scene_cache(self, reason: str = "manual") -> None:
-        try:
-            self._scene_chorus_cache.clear()
-            if self.history_cache_path.exists():
-                self.history_cache_path.unlink()
-            log_debug_event(
-                "scene_cache.cleared",
-                reason=reason,
-                path=str(self.history_cache_path),
-            )
-        except OSError as exc:
-            log_debug_event("scene_cache.clear-failed", path=str(self.history_cache_path), error=str(exc))
+        self._health_artifact_cache_at = 0.0
+        self._health_artifact_cache_ttl_seconds = DEFAULT_HEALTH_ARTIFACT_CACHE_TTL_SECONDS
 
     def _load_relationship_runtime_canon_policy(self) -> dict[str, Any]:
         candidates = [self.repo_root / DEFAULT_RELATIONSHIP_RUNTIME_CANON_POLICY_LOCAL_PATH]
@@ -1458,6 +1412,7 @@ class NpcDialogueService:
             isEmpty=is_empty,
             fallbackReason=fallback_reason,
             emptyReason=empty_reason if is_empty else None,
+            diagnostics=list(debug_metadata.diagnosticIssues),
             evidenceResolution=evidence_resolution,
             beats=beats,
             storyText=story_generation.text,
@@ -1554,7 +1509,7 @@ class NpcDialogueService:
             if issue and issue not in issues:
                 issues.append(str(issue))
         story_provider = str(story_generation.provider or "").strip()
-        if self.scene_cache_enabled and (
+        if self.history_cache_enabled and (
             story_provider == "history_cache"
             or source_coverage.unresolvedEvidenceRefCount > 0
             or (source_coverage.usedEvidenceRefCount > 0 and source_coverage.storyUsedEvidenceRefCount == 0)
@@ -1754,9 +1709,17 @@ class NpcDialogueService:
         ] if target is not None else []
         if target is not None:
             if angle:
-                for card in target_cards:
-                    if card.angle == angle:
-                        return card
+                matching_angle_cards = [card for card in target_cards if card.angle == angle]
+                if matching_angle_cards:
+                    return sorted(
+                        matching_angle_cards,
+                        key=lambda card: (
+                            0 if card.sourceType == "runtime-relationship-edge" else 1,
+                            -self._coerce_float(card.confidence, default=0.0),
+                            -len(card.sourceRefs or []),
+                            str(card.evidenceId or ""),
+                        ),
+                    )[0]
                 return None
             if target_cards:
                 return sorted(
@@ -1784,12 +1747,11 @@ class NpcDialogueService:
         if card is None or target is None:
             return card is not None
         related_target_ids = set(card.relatedTargetIds or [])
-        source_mentions_target = self._card_source_mentions_target(card, target)
         if target.targetId in related_target_ids:
-            return source_mentions_target
+            return True
         # Some Render payloads omit relatedTargetIds on otherwise grounded cards.
         # Fall back to the source text itself so directly named pairs can still surface.
-        return source_mentions_target
+        return self._card_source_mentions_target(card, target)
 
     def _card_source_mentions_target(
         self,
@@ -1819,14 +1781,24 @@ class NpcDialogueService:
         actor_aliases = actor_aliases or []
         if (
             card.sourceType == "runtime-relationship-edge"
-            and self._coerce_float(card.confidence, default=0.0) >= 0.9
             and target is not None
             and target.targetId in set(card.relatedTargetIds or [])
         ):
             return True
         units = self._card_match_text_units(card)
         if target_aliases and actor_aliases:
-            return self._card_pair_grounded_in_source(card, target_aliases, actor_aliases)
+            if self._card_pair_grounded_in_source(card, target_aliases, actor_aliases):
+                return True
+            if (
+                card.sourceType == "runtime-relationship-edge"
+                and target is not None
+                and target.targetId in set(card.relatedTargetIds or [])
+                and (
+                    self._card_source_mentions_any(card, target_aliases)
+                    or self._card_source_mentions_any(card, actor_aliases)
+                )
+            ):
+                return True
         if target_aliases:
             return any(any(alias and alias in unit for alias in target_aliases) for unit in units)
         if actor_aliases:
@@ -2510,9 +2482,10 @@ class NpcDialogueService:
         target: NarrativeInteractionTarget | None,
         actor_aliases: list[str],
     ) -> str:
-        options: list[tuple[float, str]] = []
-        primary_options: list[tuple[float, str]] = []
+        options: list[tuple[float, int, str]] = []
+        primary_options: list[tuple[float, int, str]] = []
         target_aliases = self._target_aliases_for_interaction(target) if target else []
+        order = 0
         for index, candidate in enumerate(candidate_cards):
             for value in [candidate.summary, candidate.quote, self._source_context_for_refs(candidate.sourceRefs), candidate.title]:
                 cleaned = self._clean_source_fragment(str(value or ""), target, actor_aliases, max_chars=120)
@@ -2527,15 +2500,16 @@ class NpcDialogueService:
                         score += 24.0
                     if re.match(r"^[雲肅瑜亮操權備飛羽]故意", cleaned):
                         score -= 18.0
-                    option = (score, cleaned)
+                    option = (score, order, cleaned)
                     if index == 0:
                         primary_options.append(option)
                     options.append(option)
+                    order += 1
         if primary_options:
-            return sorted(primary_options, key=lambda item: (-item[0], item[1]))[0][1]
+            return sorted(primary_options, key=lambda item: (-item[0], item[1]))[0][2]
         if not options:
             return ""
-        return sorted(options, key=lambda item: (-item[0], item[1]))[0][1]
+        return sorted(options, key=lambda item: (-item[0], item[1]))[0][2]
 
     def _first_dialogue_seed(
         self,
@@ -2972,7 +2946,8 @@ class NpcDialogueService:
         if cleaned and not self._is_weak_scene_seed_text(cleaned):
             return cleaned
         target_aliases = self._target_aliases_for_interaction(target) if target else []
-        candidates: list[tuple[int, str]] = []
+        candidates: list[tuple[int, int, str]] = []
+        order = 0
         for sentence in self._split_source_sentences(source_text):
             normalized = self._normalize_source_sentence(sentence, target, actor_aliases)
             if not self._is_readable_source_sentence(normalized):
@@ -2986,10 +2961,11 @@ class NpcDialogueService:
                 score += 12
             if re.search(r"stableKnowledgeBootstrap|^[a-zA-Z_]", normalized):
                 score -= 40
-            candidates.append((score, normalized))
+            candidates.append((score, order, normalized))
+            order += 1
         if not candidates:
             return ""
-        return sorted(candidates, key=lambda item: (-item[0], item[1]))[0][1]
+        return sorted(candidates, key=lambda item: (-item[0], item[1]))[0][2]
 
     def _extract_quoted_dialogue(self, quote: str) -> str:
         text = str(quote or "").strip()
@@ -3627,7 +3603,7 @@ class NpcDialogueService:
                 "allowDeterministicFallback": True,
             }
         base_order = list(preset_config.get("providerOrder") or self.provider_router.provider_order or [])
-        provider_order = ["history_cache"] if self.scene_cache_enabled else []
+        provider_order = ["history_cache"] if self.history_cache_enabled else []
         preferred = ["gemini_flash", "gemini_flash_lite", "gemini"] if render_mode == "data_first" else ["gemini_flash", "gemini", "gemini_flash_lite"]
         for provider_name in [*preferred, *base_order]:
             if provider_name in {"history_cache", "deterministic"}:
@@ -3750,21 +3726,6 @@ class NpcDialogueService:
                 evidenceRefs=sorted(set((card.sourceRefs if card else []) + target.evidenceRefs))[:12],
                 providerTrace=["scene_director.chorus.data_first_deterministic"],
             )
-        cache_key = self._scene_chorus_cache_key(
-            request,
-            profile,
-            target,
-            main_target,
-            card,
-            beats,
-            story_text,
-            speaker_context,
-        )
-        with self._scene_chorus_cache_lock:
-            cached = self._scene_chorus_cache.get(cache_key)
-        if cached is not None:
-            return cached.model_copy(deep=True)
-
         evidence_refs = sorted(set((card.sourceRefs if card else []) + target.evidenceRefs))
         selected_keywords = self._scene_chorus_keywords(profile, target, main_target, beats, speaker_context)
         grounding_terms = self._scene_chorus_grounding_terms(main_target, beats, story_text)
@@ -3891,8 +3852,6 @@ class NpcDialogueService:
             qualityWarnings=list(generation.qualityWarnings),
             evidenceRefs=evidence_refs[:12],
         )
-        with self._scene_chorus_cache_lock:
-            self._scene_chorus_cache[cache_key] = line.model_copy(deep=True)
         return line
 
     def _build_scene_chorus_lines(
@@ -4007,6 +3966,7 @@ class NpcDialogueService:
             "angle": card.angle if card else request.angle,
             "locale": request.locale,
             "maxChars": request.maxChorusChars,
+            "profileSnapshot": self._scene_profile_cache_snapshot(profile),
             "seed": {
                 "memoryText": beats.memoryText,
                 "emotionText": beats.emotionText,
@@ -4073,6 +4033,7 @@ class NpcDialogueService:
             "sceneGrounding": self._scene_chorus_grounding_terms(main_target, beats, story_text)[:8],
             "storyText": self._clean_seed_text(story_text, max_chars=320),
             "sourceRefs": beats.sourceRefs,
+            "profileSnapshot": self._scene_profile_cache_snapshot(profile),
         }
         raw = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         return f"scene-chorus:{hashlib.sha1(raw.encode('utf-8')).hexdigest()}"
@@ -4080,7 +4041,7 @@ class NpcDialogueService:
     def _scene_chorus_provider_config(self, llm_model_preset: str) -> dict[str, Any]:
         preset_config = LLM_MODEL_PRESETS.get(llm_model_preset, LLM_MODEL_PRESETS[DEFAULT_LLM_MODEL_PRESET])
         base_order = list(preset_config.get("providerOrder") or self.provider_router.provider_order or [])
-        provider_order = ["history_cache"] if self.scene_cache_enabled else []
+        provider_order = ["history_cache"] if self.history_cache_enabled else []
         preferred = ["gemini_flash", "gemini_flash_lite", "gemini"]
         for provider_name in preferred:
             if provider_name not in provider_order:
@@ -4240,47 +4201,18 @@ class NpcDialogueService:
 
     def _extract_persona_anchor_terms(self, text: str) -> list[str]:
         raw = str(text or "")
-        candidates = [
-            "江東",
-            "主君",
-            "形勢",
-            "人心",
-            "務實",
-            "審勢",
-            "婚盟",
-            "宗室",
-            "內母",
-            "面子",
-            "家線",
-            "家室",
-            "家眷",
-            "阿斗",
-            "孩子",
-            "生路",
-            "犧牲",
-            "長坂坡",
-            "自主",
-            "鋒性",
-            "帶兵",
-            "騎射",
-            "重義",
-            "豪烈",
-            "直率",
-            "沉穩",
-            "威嚴",
-            "少言",
-            "軍師",
-            "謀定",
-            "謹慎應對",
-        ]
-        mapped_traits = self._humanize_tag_list(re.split(r"[\s,、]+", raw))
         values: list[str] = []
-        for candidate in candidates:
-            if candidate and candidate in raw and candidate not in values:
-                values.append(candidate)
-        for item in re.split(r"[、,\s]+", mapped_traits):
-            if item and item not in {"符合三國語境", "謹慎應對"} and item not in values:
-                values.append(item)
+        for source_text in [raw, self._humanize_tag_list(re.split(r"[\s,、]+", raw))]:
+            for item in re.split(r"[、,\s]+", str(source_text or "")):
+                candidate = item.strip()
+                if not candidate or candidate in {"符合三國語境", "謹慎應對"}:
+                    continue
+                if len(candidate) < 2:
+                    continue
+                if candidate not in values:
+                    values.append(candidate)
+                if len(values) >= 8:
+                    return values
         return values[:8]
 
     def _speaker_persona_anchor_terms(self, speaker_context: dict[str, Any]) -> list[str]:
@@ -4294,30 +4226,36 @@ class NpcDialogueService:
         ]
         return [str(item).strip() for item in fallback_values if str(item).strip()][:3]
 
+    def _scene_profile_cache_snapshot(self, profile: NarrativeProfileResponse) -> dict[str, Any]:
+        persona = profile.persona if isinstance(profile.persona, dict) else {}
+        relationship_summary = persona.get("relationshipSummary") if isinstance(persona.get("relationshipSummary"), dict) else {}
+        return {
+            "generalId": profile.generalId,
+            "personaVersion": str(persona.get("personaVersion") or ""),
+            "personaGeneratedAt": str(persona.get("generatedAt") or ""),
+            "relationshipVersion": str(relationship_summary.get("relationshipVersion") or ""),
+            "relationshipCount": len(profile.relationshipEdges or []),
+            "activitySeedCount": len(profile.activitySeeds or []),
+            "interactionTargetCount": len(profile.interactionTargets or []),
+            "keywordCategoryCount": len(profile.keywords or {}),
+        }
+
     def _speaker_archetype(self, text: str, target: NarrativeInteractionTarget) -> str:
-        raw = str(text or "")
-        if target.relationshipType in {"spouse", "lover"} or any(token in raw for token in ["姻親", "家室", "夫人"]):
+        relationship_type = str(target.relationshipType or "").strip()
+        if relationship_type in {"spouse", "lover"}:
             return "marriage_mediator"
-        if target.relationshipType in {"parent_child", "sibling", "protects_family"}:
+        if relationship_type in {"parent_child", "sibling", "protects_family"}:
             return "family_line"
-        if any(token in raw for token in ["婚盟", "宗室", "內母", "面子"]):
-            return "marriage_mediator"
-        if any(token in raw for token in ["長坂坡", "犧牲感", "犧牲", "生路讓給", "井底"]):
-            return "family_sacrifice"
-        if any(token in raw for token in ["家線", "不成額外的負擔", "顛沛", "阿斗"]):
-            return "family_line"
-        if any(token in raw for token in ["生路", "犧牲", "嬰孩", "孩子", "長坂坡"]):
-            return "family_sacrifice"
-        if any(token in raw for token in ["江東", "主君", "審勢", "務實", "形勢", "governance-minded", "strategic"]):
-            return "jiangdong_ruler"
-        if any(token in raw for token in ["豪烈", "直率", "戰場威壓", "direct_force", "martial"]):
-            return "martial_direct"
-        if any(token in raw for token in ["沉穩", "威嚴", "少言", "重義", "sworn_sibling", "loyal_oath"]):
+        if relationship_type in {"battle_ally", "loyal_oath", "sworn_sibling"}:
             return "oath_guardian"
+        if relationship_type in {"enemy_rival", "battlefield_opponent"}:
+            return "rival_observer"
+        if relationship_type in {"ruler_subject", "political_contact"}:
+            return "jiangdong_ruler"
         if target.femaleFocus:
             return "family_witness"
-        if target.relationshipType in {"enemy_rival", "battlefield_opponent"}:
-            return "rival_observer"
+        if relationship_type in {"battlefield_contact", "mentor_student", "mentor"}:
+            return "martial_direct"
         return "measured_observer"
 
     def _speaker_persona_summary(self, speaker_context: dict[str, Any]) -> str:
@@ -4343,25 +4281,27 @@ class NpcDialogueService:
     ) -> str:
         archetype = str(speaker_context.get("archetype") or "")
         guidance_map = {
-            "marriage_mediator": "從情分、家室、去留與話裡分寸來說話",
-            "family_sacrifice": "從代價、生路先後與誰該先被護住來說話",
-            "family_line": "從宗支、血脈、家人安危與延續來說話",
-            "jiangdong_ruler": "從形勢、名分、利害與節奏來說話",
-            "martial_direct": "從戰機、氣勢、進退與誰來斷後來說話",
-            "oath_guardian": "從義氣、補位、共擔與守住同伴來說話",
-            "family_witness": "從情分、去留與眼前安危來說話",
-            "rival_observer": "從破綻、代價與可趁之機來說話",
-            "measured_observer": "先點出眼前一幕，再給克制而明確的判斷",
+            "marriage_mediator": "從關係、去留與分寸來說話",
+            "family_sacrifice": "從代價、先後與誰先被護住來說話",
+            "family_line": "從家人、承接與延續來說話",
+            "jiangdong_ruler": "從形勢、名分與節奏來說話",
+            "martial_direct": "從戰機、氣勢與進退來說話",
+            "oath_guardian": "從義氣、補位與共同承擔來說話",
+            "family_witness": "從情分、去留與安危來說話",
+            "rival_observer": "從破綻、代價與勝負手來說話",
+            "measured_observer": "先點出眼前一幕，再給出克制判斷",
         }
         if archetype in guidance_map:
             return guidance_map[archetype]
-        if target.relationshipType in {"sworn_sibling", "battle_ally", "loyal_oath"}:
+        relationship_type = str(target.relationshipType or "").strip()
+        if relationship_type in {"sworn_sibling", "battle_ally", "loyal_oath"}:
             return "從義氣、補位與共同承擔來說話"
-        if target.relationshipType in {"enemy_rival", "battlefield_opponent"}:
+        if relationship_type in {"enemy_rival", "battlefield_opponent"}:
             return "從破綻、代價與勝負手來說話"
         if target.femaleFocus:
             return "從情分、去留與身邊人的安危來說話"
-        return "先點出此刻看見了什麼，再給出屬於此人的判斷"
+        anchors = "、".join(self._speaker_persona_anchor_terms(speaker_context)[:3])
+        return anchors or str(target.targetId or "")
 
     def _scene_chorus_grounding_terms(
         self,
@@ -4690,19 +4630,6 @@ class NpcDialogueService:
             normalized_term = self._normalize_grounding_match_text(raw_term)
             if normalized_term and normalized_term in normalized_text:
                 return True
-        family_markers = ["家小", "家眷", "主母", "幼主", "二嫂", "嫂嫂", "母親", "父親"]
-        source_text = " ".join(
-            str(item or "").strip()
-            for item in [
-                (beats.sceneSeeds or {}).get("event"),
-                beats.sceneText,
-                beats.memoryText,
-                story_text,
-            ]
-            if str(item or "").strip()
-        )
-        if any(marker in cleaned for marker in family_markers) and any(marker in source_text for marker in family_markers):
-            return True
         return False
 
     def _normalize_grounding_match_text(self, text: str) -> str:
@@ -4887,18 +4814,31 @@ class NpcDialogueService:
                     or len(token) < 2
                     or token in values
                     or self._contains_internal_symbolic_token(token)
+                    or token in {"符合三國語境", "謹慎應對"}
                 ):
                     continue
                 values.append(token)
         if values:
             return values[:4]
+        relationship_type = str(target.relationshipType or "").strip()
+        if relationship_type in {"spouse", "lover", "parent_child", "sibling", "protects_family"}:
+            return ["情分", "安危"]
         if target.femaleFocus:
             return ["情分", "安危"]
-        if target.relationshipType in {"sworn_sibling", "battle_ally", "loyal_oath"}:
+        if relationship_type in {"sworn_sibling", "battle_ally", "loyal_oath"}:
             return ["義氣", "補位"]
-        if target.relationshipType in {"enemy_rival", "battlefield_opponent"}:
+        if relationship_type in {"enemy_rival", "battlefield_opponent"}:
             return ["破綻", "代價"]
-        return ["分寸"]
+        fallback_terms = [
+            token
+            for token in [
+                relationship_type,
+                speaker_context.get("archetype"),
+                *(self._speaker_persona_anchor_terms(speaker_context)[:2]),
+            ]
+            if str(token or "").strip()
+        ]
+        return fallback_terms[:4] if fallback_terms else [str(target.targetId or "")]
 
     def _rewrite_scene_chorus_from_fallback(
         self,
@@ -5486,11 +5426,7 @@ class NpcDialogueService:
 
     def _edge_points_to_yellow_turban_enemy(self, edge: dict[str, Any]) -> bool:
         target_id = str(edge.get("targetId") or "").strip()
-        if target_id in YELLOW_TURBAN_TARGET_IDS:
-            return True
-        text = self._runtime_edge_source_text(edge)
-        label = str(edge.get("targetName") or "")
-        return any(term in f"{label} {text}" for term in YELLOW_TURBAN_CONTEXT_TERMS)
+        return target_id in YELLOW_TURBAN_TARGET_IDS
 
     def _hard_relationship_override(
         self,

@@ -52,6 +52,15 @@ def main() -> None:
             renderMode="data_first",
         )
     )
+    non_liubei_scene = service.build_scene_director(
+        SceneDirectorRequest(
+            generalId="liu-bei",
+            angle="people",
+            targetId="huang-zhong",
+            llmModelPreset="fallback_chain",
+            renderMode="data_first",
+        )
+    )
     invalid_scene = service.build_scene_director(
         SceneDirectorRequest(
             generalId="liu-bei",
@@ -92,11 +101,14 @@ def main() -> None:
     assert response.speechContextMode == "inner_monologue", "dialogue response should echo speech context mode"
     assert response.llmModelPreset == "fallback_chain", "dialogue response should echo model preset"
     assert response.rejectedKeywordKeys == ["unknown-key"], "unknown keyword should be rejected explicitly"
-    assert fallback_target_labels.get("zhang-fei") == "撘菟?", "target labels should preserve human-readable names even when roster names are slugs"
+    assert fallback_target_labels.get("zhang-fei") == "張飛", "target labels should preserve human-readable names even when roster names are slugs"
     assert "??" not in persona.safeFallbackLine, "zhang-fei fallback line must not use guan-yu self-name"
     assert resolved_scene.dataStatus in {"direct", "angle_empty_filled", "target_empty_filled"}, "liu-bei/zhang-fei scene should resolve to a non-empty scene"
     assert not resolved_scene.isEmpty, "liu-bei/zhang-fei scene should produce non-empty director beats"
     assert resolved_scene.beats.sceneText or resolved_scene.storyText, "resolved scene should include at least one grounded narrative field"
+    assert non_liubei_scene.dataStatus in {"direct", "angle_empty_filled", "target_empty_filled"}, "non-Liu Bei scene should resolve to a non-empty scene"
+    assert not non_liubei_scene.isEmpty, "non-Liu Bei scene should produce non-empty director beats"
+    assert non_liubei_scene.beats.sceneText or non_liubei_scene.storyText, "non-Liu Bei scene should include at least one grounded narrative field"
     assert invalid_scene.dataStatus == "invalid_request", "invalid target should be rejected explicitly"
     assert invalid_scene.isEmpty, "invalid target should not produce scene content"
     assert invalid_scene.beats.sceneText == "", "invalid target should not invent scene text"

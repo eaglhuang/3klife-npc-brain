@@ -1,0 +1,15 @@
+{
+  "schemaId": "atm.taskTransition.v1",
+  "specVersion": "0.1.0",
+  "transitionId": "2026-05-30T10-33-06-955Z-reserve-dc2a117640aa",
+  "taskId": "BOOTSTRAP-0001",
+  "action": "reserve",
+  "actorId": "vs-code-gpt-5.4-mini",
+  "sessionId": null,
+  "fromStatus": "open",
+  "toStatus": "reserved",
+  "taskPath": ".atm/history/tasks/BOOTSTRAP-0001.json",
+  "taskSha256": "sha256:859d8680e6ace2f080e2d35690eb68ac53dc34c403928022989a8d2b93faab4c",
+  "createdAt": "2026-05-30T10:33:06.955Z",
+  "command": "node atm.mjs tasks reserve"
+}

@@ -2,7 +2,7 @@
   "schemaVersion": "atm.workItem.v0.1",
   "id": "BOOTSTRAP-0001",
   "title": "Bootstrap ATM in 3klife-npc-brain",
-  "status": "open",
+  "status": "running",
   "taskKind": "bootstrap",
   "repositoryKind": "generic-repository",
   "summary": "Establish the default ATM bootstrap pack, verify the host workflow, and leave initial evidence for the next agent run.",
@@ -18,5 +18,25 @@
     ".atm/runtime/default-guards.json"
   ],
   "evidencePath": ".atm/history/evidence/BOOTSTRAP-0001.json",
-  "nextPrompt": "Read README.md if present, then run \"node atm.mjs next --json\" from the repository root. If the result includes ATM_USER_NOTICE or evidence.userNotice, show it to the user before executing the returned next action. Use .atm/history/tasks/BOOTSTRAP-0001.json, .atm/runtime/profile/default.md, and .atm/history/evidence/BOOTSTRAP-0001.json only as supporting runtime state."
+  "nextPrompt": "Read README.md if present, then run \"node atm.mjs next --json\" from the repository root. If the result includes ATM_USER_NOTICE or evidence.userNotice, show it to the user before executing the returned next action. Use .atm/history/tasks/BOOTSTRAP-0001.json, .atm/runtime/profile/default.md, and .atm/history/evidence/BOOTSTRAP-0001.json only as supporting runtime state.",
+  "owner": "vs-code-gpt-5.4-mini",
+  "reservedAt": "2026-05-30T10:33:06.954Z",
+  "lastTransitionId": "2026-05-30T10-33-07-520Z-claim-0396f2f58e16",
+  "lastTransitionAt": "2026-05-30T10:33:07.520Z",
+  "ledgerContractVersion": "task-ledger/v1",
+  "promotedAt": "2026-05-30T10:33:07.242Z",
+  "claim": {
+    "actorId": "vs-code-gpt-5.4-mini",
+    "leaseId": "lease-d4dce646a402",
+    "claimedAt": "2026-05-30T10:33:07.516Z",
+    "heartbeatAt": "2026-05-30T10:33:07.516Z",
+    "ttlSeconds": 1800,
+    "files": [
+      "app/npc_dialogue_service.py"
+    ],
+    "state": "active"
+  },
+  "startedAt": "2026-05-30T10:32:26.183Z",
+  "startedByActor": "vs-code-gpt-5.4-mini",
+  "startedBySessionId": "session-20260530103307-vs-code-gpt-5.4-mini-BOOTSTRAP-0001-ed1a356622"
 }
