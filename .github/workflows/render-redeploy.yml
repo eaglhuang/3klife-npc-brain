@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - scripts/**
+      - artifacts/data-pipeline/sanguo-rag/extracted/persona-cards/**
+      - artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles/**
   schedule:
     # Daily 03:00 UTC, which is 11:00 in Asia/Taipei.
     - cron: "0 3 * * *"
