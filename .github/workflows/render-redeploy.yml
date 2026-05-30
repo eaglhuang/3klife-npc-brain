@@ -1,6 +1,9 @@
-name: Render Scheduled Redeploy
+name: Render Auto Redeploy
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     # Daily 03:00 UTC, which is 11:00 in Asia/Taipei.
     - cron: "0 3 * * *"
