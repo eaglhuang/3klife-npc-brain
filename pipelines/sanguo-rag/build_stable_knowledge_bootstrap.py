@@ -111,6 +111,24 @@ def parse_args() -> argparse.Namespace:
 BASIC_PROFILE_CUE_RULES: dict[str, Any] = {}
 
 
+def resolve_existing_path(path_text: str | Path) -> Path:
+    path = Path(path_text)
+    if path.is_absolute():
+        return path
+
+    search_roots = [
+        REPO_ROOT,
+        REPO_ROOT.parent,
+        REPO_ROOT.parent / "3KLife",
+        REPO_ROOT.parent / "3klife-npc-brain",
+    ]
+    for root in search_roots:
+        candidate = (root / path).resolve()
+        if candidate.exists():
+            return candidate
+    return (REPO_ROOT / path).resolve()
+
+
 def apply_stable_bootstrap_governance(governance_root: str | Path | None) -> None:
     bundle = load_stable_bootstrap_governance(governance_root)
     policy = bundle["policy"]
@@ -1339,18 +1357,35 @@ def main() -> None:
     output_root = Path(args.output_root)
     ensure_output_root(output_root, args.overwrite)
 
-    people = load_people(Path(args.generals), Path(args.manual_roster))
+    generals_path = resolve_existing_path(args.generals)
+    manual_roster_path = resolve_existing_path(args.manual_roster)
+    alias_report_path = resolve_existing_path(args.alias_report)
+    observed_mentions_path = resolve_existing_path(args.observed_mentions)
+    observed_summary_path = resolve_existing_path(args.observed_summary)
+    events_summary_path = resolve_existing_path(args.events_summary)
+    relationship_claim_graph_path = resolve_existing_path(args.relationship_claim_graph)
+    manifest_path = resolve_existing_path(args.__dict__["8book_manifest"])
+
+    args.generals = str(generals_path)
+    args.manual_roster = str(manual_roster_path)
+    args.alias_report = str(alias_report_path)
+    args.observed_mentions = str(observed_mentions_path)
+    args.observed_summary = str(observed_summary_path)
+    args.events_summary = str(events_summary_path)
+    args.relationship_claim_graph = str(relationship_claim_graph_path)
+    args.__dict__["8book_manifest"] = str(manifest_path)
+
+    people = load_people(generals_path, manual_roster_path)
     name_index = build_name_index(people)
-    alias_report = read_json(Path(args.alias_report)) if Path(args.alias_report).exists() else {}
-    observed_summary = read_json(Path(args.observed_summary)) if Path(args.observed_summary).exists() else {}
-    observed_mentions = load_observed_mentions(Path(args.observed_mentions))
-    events_summary = read_json(Path(args.events_summary)) if Path(args.events_summary).exists() else {}
-    manifest_path = Path(args.__dict__["8book_manifest"])
+    alias_report = read_json(alias_report_path) if alias_report_path.exists() else {}
+    observed_summary = read_json(observed_summary_path) if observed_summary_path.exists() else {}
+    observed_mentions = load_observed_mentions(observed_mentions_path)
+    events_summary = read_json(events_summary_path) if events_summary_path.exists() else {}
     white_manifest = read_json(manifest_path) if manifest_path.exists() else {}
 
     relationship_edges, missing_relationships = build_relationship_edges(name_index)
     seen_relationships = {edge_key(edge) for edge in relationship_edges}
-    a_canon_edges, missing_claim_graph = load_a_canon_claim_edges(Path(args.relationship_claim_graph))
+    a_canon_edges, missing_claim_graph = load_a_canon_claim_edges(relationship_claim_graph_path)
     a_canon_parent_child_directions = parent_child_direction_index(a_canon_edges)
     for edge in a_canon_edges:
         direction_conflict = parent_child_direction_conflict(edge, relationship_edges, a_canon_parent_child_directions)

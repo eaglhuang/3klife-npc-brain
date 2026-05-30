@@ -169,8 +169,9 @@ def run_step(name: str, cmd: list[str], *, timeout_seconds: int) -> dict[str, An
 
 def runtime_existing_ids(runtime_root: Path) -> list[str]:
     if not runtime_root.exists():
-        return []
-    return sorted(path.name for path in runtime_root.iterdir() if path.is_dir())
+        return list(DEFAULT_GENERAL_IDS)
+    existing_ids = sorted(path.name for path in runtime_root.iterdir() if path.is_dir())
+    return list(dict.fromkeys([*DEFAULT_GENERAL_IDS, *existing_ids]))
 
 
 def all_general_ids() -> list[str]:
