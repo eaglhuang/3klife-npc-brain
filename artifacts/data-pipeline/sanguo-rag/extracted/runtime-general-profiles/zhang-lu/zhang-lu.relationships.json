@@ -1,0 +1,90 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "zhang-lu",
+  "displayName": "張魯",
+  "generatedAt": "2026-06-01T15:25:14+00:00",
+  "relationshipCount": 2,
+  "typeCounts": {
+    "enemy_rival": 1,
+    "patron_client": 1
+  },
+  "anchors": [
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-060#p1;window=5"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
+      "sourceQuotes": [
+        "主公可以派我給朝廷送去貢品，我趁機勸曹操出兵討伐張魯。”劉璋大喜，準備了珠錦綺，派張鬆作為使者去了。"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "yang-ang",
+      "targetName": "楊昂",
+      "type": "patron_client",
+      "typeLabel": "提攜投靠",
+      "originalTypes": [
+        "patron_client"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:db871aaebb509c5bb6ed"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "張魯使弟衛與將楊昂等據陽平關，橫山築城十餘裏，攻之不能拔，乃引軍還"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "sun-quan",
+      "targetName": "孫權",
+      "type": "battlefield_contact",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "062#p20"
+      ],
+      "sourceQuote": "。」玄德問何人。達曰：「此人曾在荊州劉表部下爲中郎將，乃南郡枝江人，姓霍，名。後路，吾進退不得，當如之何？」龐統謂孟達曰：「公乃蜀中人，多知地理，去守葭萌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

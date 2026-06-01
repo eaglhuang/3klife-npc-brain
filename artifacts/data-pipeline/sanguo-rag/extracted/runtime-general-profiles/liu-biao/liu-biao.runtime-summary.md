@@ -2,12 +2,12 @@
 
 - General ID: `liu-biao`
 - Display Name: `劉表`
-- Generated At: `2026-05-21T09:52:25+00:00`
+- Generated At: `2026-06-01T15:25:09+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `11`
-- Relationships: `5`
-- Rejected Relationship Edges: `3`
+- Ready Events: `3`
+- Relationships: `3`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,16 +17,16 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `4`
-- `event`: `8`
+- `event`: `2`
 - `identity`: `3`
-- `location`: `4`
-- `person`: `5`
+- `location`: `1`
+- `person`: `3`
 - `personality`: `3`
-- `relationship`: `5`
+- `relationship`: `3`
 
 ## Relationship Types
 
-- `enemy_rival`: `3`
+- `enemy_rival`: `1`
 - `parent_child`: `2`
 
 ## Outputs

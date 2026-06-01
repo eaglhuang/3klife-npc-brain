@@ -2,19 +2,43 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "le-jin",
   "displayName": "樂進",
-  "generatedAt": "2026-06-01T08:31:41+00:00",
-  "relationshipCount": 1,
+  "generatedAt": "2026-06-01T15:25:08+00:00",
+  "relationshipCount": 2,
   "typeCounts": {
-    "battlefield_contact": 1
+    "battlefield_contact": 1,
+    "battlefield_opponent": 1
   },
   "anchors": [
+    {
+      "targetId": "gan-ning",
+      "targetName": "甘寧",
+      "type": "battlefield_opponent",
+      "typeLabel": "戰場對手",
+      "originalTypes": [
+        "confronts"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "067#p12"
+      ],
+      "edgeConfidence": 0.84,
+      "edgeStrength": 0.72,
+      "sourceQuotes": [],
+      "refinementReasons": [
+        "battlefield_opponent_target"
+      ],
+      "reviewStatus": "source-grounded-strong",
+      "sourceLayer": "mao-hant-observed-mentions"
+    },
     {
       "targetId": "zhang-liao",
       "targetName": "張遼",
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -26,173 +50,13 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
     }
   ],
-  "rejectedRelationshipEdges": [
-    {
-      "targetId": "gan-ning",
-      "targetName": "甘寧",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "067#p12"
-      ],
-      "sourceQuote": null,
-      "rejectionReasons": [
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p14"
-      ],
-      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p14"
-      ],
-      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yu-jin",
-      "targetName": "于禁",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "sourceQuote": "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後",
-      "rejectionReasons": [
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yu-jin",
-      "targetName": "于禁",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "sourceQuote": "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後",
-      "rejectionReasons": [
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dian-wei",
-      "targetName": "典韋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p4"
-      ],
-      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dian-wei",
-      "targetName": "典韋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p4"
-      ],
-      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    }
-  ],
+  "rejectedRelationshipEdges": [],
   "taxonomyPolicy": {
     "commands": "not exported as final type; refined into semantic runtime labels when possible",
     "fallbackType": "battlefield_contact",

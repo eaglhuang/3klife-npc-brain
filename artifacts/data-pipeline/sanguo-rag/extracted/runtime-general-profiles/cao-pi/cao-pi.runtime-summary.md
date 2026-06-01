@@ -2,11 +2,11 @@
 
 - General ID: `cao-pi`
 - Display Name: `曹丕`
-- Generated At: `2026-05-21T09:27:27+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:05+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `1`
-- Relationships: `3`
+- Ready Events: `0`
+- Relationships: `1`
 - Rejected Relationship Edges: `1`
 - Review Backlog: `0`
 
@@ -15,17 +15,14 @@
 - `activity`: `2`
 - `affect`: `1`
 - `decision`: `1`
-- `event`: `1`
 - `identity`: `2`
-- `location`: `1`
-- `person`: `3`
+- `person`: `1`
 - `personality`: `2`
-- `relationship`: `3`
+- `relationship`: `1`
 
 ## Relationship Types
 
-- `enemy_rival`: `1`
-- `parent_child`: `2`
+- `parent_child`: `1`
 
 ## Outputs
 

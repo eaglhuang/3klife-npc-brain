@@ -2,12 +2,12 @@
 
 - General ID: `sun-ce`
 - Display Name: `孫策`
-- Generated At: `2026-05-21T09:52:26+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:11+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `5`
-- Relationships: `12`
-- Rejected Relationship Edges: `4`
+- Ready Events: `0`
+- Relationships: `5`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,21 +17,17 @@
 - `aptitude`: `3`
 - `choice`: `3`
 - `decision`: `3`
-- `event`: `4`
 - `identity`: `3`
-- `location`: `4`
-- `person`: `8`
+- `person`: `5`
 - `personality`: `7`
-- `relationship`: `12`
+- `relationship`: `5`
 
 ## Relationship Types
 
 - `battlefield_contact`: `2`
-- `betrayal_surrender`: `1`
-- `enemy_rival`: `5`
+- `enemy_rival`: `1`
 - `parent_child`: `1`
 - `sibling`: `1`
-- `spouse`: `2`
 
 ## Outputs
 

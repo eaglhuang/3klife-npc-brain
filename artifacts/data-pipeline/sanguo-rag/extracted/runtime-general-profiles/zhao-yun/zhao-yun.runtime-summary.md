@@ -2,12 +2,12 @@
 
 - General ID: `zhao-yun`
 - Display Name: `趙雲`
-- Generated At: `2026-05-21T09:52:24+00:00`
+- Generated At: `2026-06-01T15:25:15+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `None`
-- Ready Events: `43`
+- Completion: `79.13`
+- Ready Events: `15`
 - Relationships: `5`
-- Rejected Relationship Edges: `6`
+- Rejected Relationship Edges: `1`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,9 +17,9 @@
 - `aptitude`: `4`
 - `choice`: `5`
 - `decision`: `5`
-- `event`: `34`
+- `event`: `14`
 - `identity`: `4`
-- `location`: `12`
+- `location`: `8`
 - `person`: `4`
 - `personality`: `7`
 - `relationship`: `5`

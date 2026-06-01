@@ -2,11 +2,11 @@
 
 - General ID: `zhang-he`
 - Display Name: `張郃`
-- Generated At: `2026-05-21T09:52:26+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:14+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
 - Ready Events: `3`
-- Relationships: `5`
+- Relationships: `0`
 - Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
@@ -20,14 +20,10 @@
 - `event`: `3`
 - `identity`: `3`
 - `location`: `2`
-- `person`: `5`
 - `personality`: `4`
-- `relationship`: `5`
 
 ## Relationship Types
 
-- `betrayal_surrender`: `2`
-- `enemy_rival`: `3`
 
 ## Outputs
 

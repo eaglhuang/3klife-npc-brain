@@ -9,7 +9,7 @@
   "title": "【關銀屏】",
   "gender": "女",
   "baseFaction": "shu",
-  "generatedAt": "2026-05-21T09:52:29+00:00",
+  "generatedAt": "2026-06-01T15:25:07+00:00",
   "runtimeReadiness": {
     "status": "thin-but-testable",
     "canonicalWrites": false,
@@ -93,45 +93,422 @@
         "work_role"
       ],
       "relatedGeneralIds": [
+        "bu-zhi",
+        "cao-cao",
+        "cao-ren",
+        "gu-yong",
         "guan-yu",
         "liu-bei",
         "man-chong",
         "sun-quan",
+        "zhang-zhao",
         "zhuge-jin"
       ],
       "targetLinkTrace": [
         {
+          "targetId": "bu-zhi",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "cao-cao",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "cao-ren",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "gu-yong",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
           "targetId": "guan-yu",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "liu-bei",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "man-chong",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "sun-quan",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "zhang-zhao",
+          "sources": [
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "zhuge-jin",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         }
       ],
-      "confidence": 0.72
+      "confidence": 0.72,
+      "targetProjections": [
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "bu-zhi",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "cao-cao",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "cao-ren",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "gu-yong",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "guan-yu",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "liu-bei",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "man-chong",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "sun-quan",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "zhang-zhao",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "zhuge-jin",
+          "sourceType": "storyBeat",
+          "sourceRef": "073#p9",
+          "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        }
+      ]
     }
   ],
   "sourceHighlights": [
@@ -151,27 +528,406 @@
       ],
       "example": "一面使人過江探雲長動靜，方可行事。」諸葛瑾曰：「某聞雲長自到荊州，劉備娶與妻室",
       "relatedGeneralIds": [
+        "bu-zhi",
+        "cao-cao",
+        "cao-ren",
+        "gu-yong",
         "guan-yu",
         "liu-bei",
+        "man-chong",
+        "sun-quan",
+        "zhang-zhao",
         "zhuge-jin"
       ],
       "targetLinkTrace": [
         {
+          "targetId": "bu-zhi",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "cao-cao",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "cao-ren",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "gu-yong",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
           "targetId": "guan-yu",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "liu-bei",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "man-chong",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "sun-quan",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "zhang-zhao",
+          "sources": [
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "zhuge-jin",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "bu-zhi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "cao-cao",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "cao-ren",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "gu-yong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "guan-yu",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "liu-bei",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "man-chong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "sun-quan",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "zhang-zhao",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "guan-yin-ping",
+          "targetId": "zhuge-jin",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "073#p9",
+          "sourceId": "073#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -180,513 +936,1027 @@
   "angleTargetLinks": [
     {
       "angleFamily": "activity_seed",
-      "targetId": "guan-yu",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "bu-zhi",
       "sourceRef": "073#p9",
       "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "liu-bei",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-cao",
       "sourceRef": "073#p9",
       "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "man-chong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-ren",
       "sourceRef": "073#p9",
       "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "sun-quan",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "gu-yong",
       "sourceRef": "073#p9",
       "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "guan-yu",
       "sourceRef": "073#p9",
       "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "man-chong",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "sun-quan",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "man-chong",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "sun-quan",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "man-chong",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "sun-quan",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "man-chong",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "sun-quan",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "man-chong",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "sun-quan",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "man-chong",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "sun-quan",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "man-chong",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "sun-quan",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "man-chong",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "sun-quan",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
-      "sourceType": "storyBeat"
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "guan-yu",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "liu-bei",
       "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
+      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "liu-bei",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "man-chong",
       "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
+      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhuge-jin",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "sun-quan",
       "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
+      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
-      "angleFamily": "affect_story",
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "zhang-zhao",
+      "sourceRef": "073#p9",
+      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "zhuge-jin",
+      "sourceRef": "073#p9",
+      "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+      "sourceType": "storyBeat",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "bu-zhi",
+      "sourceRef": "073#p9",
+      "sourceId": "073#p9",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-cao",
+      "sourceRef": "073#p9",
+      "sourceId": "073#p9",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-ren",
+      "sourceRef": "073#p9",
+      "sourceId": "073#p9",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "gu-yong",
+      "sourceRef": "073#p9",
+      "sourceId": "073#p9",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "guan-yu",
       "sourceRef": "073#p9",
       "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
-      "angleFamily": "affect_story",
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "liu-bei",
       "sourceRef": "073#p9",
       "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
-      "angleFamily": "affect_story",
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "man-chong",
+      "sourceRef": "073#p9",
+      "sourceId": "073#p9",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "sun-quan",
+      "sourceRef": "073#p9",
+      "sourceId": "073#p9",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "zhang-zhao",
+      "sourceRef": "073#p9",
+      "sourceId": "073#p9",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "zhuge-jin",
       "sourceRef": "073#p9",
       "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "guan-yu",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "liu-bei",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhuge-jin",
-      "sourceRef": "073#p9",
-      "sourceId": "073#p9",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     }
   ],
   "targetLinking": {
     "version": "deterministic_source_link_v1",
-    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
-    "linkCount": 72
+    "focusProjectionVersion": "runtime_focus_projection_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference; insufficient links emit upstreamFeedback instead of downstream backfill",
+    "linkCount": 20,
+    "sceneEligibleLinkCount": 0,
+    "upstreamFeedbackRequiredCount": 20,
+    "missingDataPolicy": "Downstream must never invent missing person, relationship, event, or mood facts. When a target is only weakly linked, emit upstreamFeedback and keep sceneEligible=false.",
+    "upstreamFeedback": [
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "bu-zhi",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "cao-cao",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "cao-ren",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "gu-yong",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "guan-yu",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "liu-bei",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "man-chong",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "sun-quan",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "zhang-zhao",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-073-p9-073-p9",
+        "sourceType": "storyBeat",
+        "targetId": "zhuge-jin",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "bu-zhi",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-cao",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-ren",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "gu-yong",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "guan-yu",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "liu-bei",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "man-chong",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "sun-quan",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhang-zhao",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "073#p9",
+        "sourceId": "073#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhuge-jin",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      }
+    ]
   },
   "relationshipSummary": {
     "typeCounts": {},

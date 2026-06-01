@@ -2,44 +2,13 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "zhang-fei",
   "displayName": "張飛",
-  "generatedAt": "2026-06-01T08:31:41+00:00",
-  "relationshipCount": 5,
+  "generatedAt": "2026-06-01T15:25:14+00:00",
+  "relationshipCount": 3,
   "typeCounts": {
     "battlefield_contact": 2,
-    "parent_child": 1,
-    "sworn_sibling": 2
+    "parent_child": 1
   },
   "anchors": [
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "sworn_sibling",
-      "typeLabel": "結義兄弟",
-      "originalTypes": [
-        "sworn_sibling"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "028#p5",
-        "ext-card:wikisource-romance:candidate-card:4f6f4bd4ec3681945c19",
-        "ext-card:wikisource-romance:candidate-card:55fb43d96aea8ea126be"
-      ],
-      "edgeConfidence": 0.9,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危",
-        "看我殺了負義的人，然後請嫂嫂入城。」甘夫人曰：「二叔因不知你等下落，故暫時棲身"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline",
-        "oath_or_sworn_sibling_terms"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
     {
       "targetId": "zhang-bao",
       "targetName": "張苞",
@@ -69,7 +38,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "incoming",
@@ -84,7 +53,7 @@
         "：「吾已取樊城多時矣！」眾驚視之，乃關雲長也。仁大驚，撥馬便走。雲長追殺過來。。船渡河，岸上一彪軍殺到，爲首大將，乃張飛也。曹仁死戰，李典保護曹仁下船渡河。"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "accepted-review-candidate",
       "sourceLayer": null
@@ -111,41 +80,86 @@
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "sworn_sibling",
+      "originalType": "sworn_sibling",
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:55fb43d96aea8ea126be"
+      ],
+      "sourceQuote": "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危",
+      "rejectionReasons": [
+        "kinship_without_pair_relation_signal"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "sworn_sibling",
+      "originalType": "sworn_sibling",
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:4f6f4bd4ec3681945c19"
+      ],
+      "sourceQuote": "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危",
+      "rejectionReasons": [
+        "kinship_without_pair_relation_signal"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "guan-yu",
       "targetName": "關羽",
       "type": "sworn_sibling",
-      "typeLabel": "結義兄弟",
-      "originalTypes": [
-        "sworn_sibling"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
+      "originalType": "sworn_sibling",
       "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:4f6f4bd4ec3681945c19",
         "ext-card:wikisource-romance:candidate-card:f58d7b902cdbdaefd2ef"
       ],
-      "edgeConfidence": 0.69,
-      "edgeStrength": 0.57,
-      "sourceQuotes": [
-        "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危"
+      "sourceQuote": "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危",
+      "rejectionReasons": [
+        "kinship_without_pair_relation_signal"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    }
-  ],
-  "rejectedRelationshipEdges": [
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "sworn_sibling",
+      "originalType": "sworn_sibling",
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:4f6f4bd4ec3681945c19"
+      ],
+      "sourceQuote": "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危",
+      "rejectionReasons": [
+        "kinship_without_pair_relation_signal"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "070#p2"
       ],
@@ -154,15 +168,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "070#p2"
       ],
@@ -171,465 +186,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "001#p20"
-      ],
-      "sourceQuote": "光燭天。急引兵來時，賊已敗散。玄德見皇甫嵩、朱雋，具道盧植之意。嵩曰：「張梁、",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "001#p20"
-      ],
-      "sourceQuote": "光燭天。急引兵來時，賊已敗散。玄德見皇甫嵩、朱雋，具道盧植之意。嵩曰：「張梁、",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p18"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dong-zhuo",
-      "targetName": "董卓",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p16"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "hua-xiong",
-      "targetName": "華雄",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p16"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "gongsun-zan",
-      "targetName": "公孫瓚",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p18"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "gongsun-zan",
-      "targetName": "公孫瓚",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p18"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p18"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p2"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p2"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-bao-enemy",
-      "targetName": "張寶",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-bao-enemy",
-      "targetName": "張寶",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhu-jun-han",
-      "targetName": "朱雋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhu-jun-han",
-      "targetName": "朱雋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-bao-enemy",
-      "targetName": "張寶",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p8"
-      ],
-      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p8"
-      ],
-      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "016#p11"
-      ],
-      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "016#p11"
-      ],
-      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "wei-xu",
-      "targetName": "魏續",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "016#p11"
-      ],
-      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "wei-xu",
-      "targetName": "魏續",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "016#p11"
-      ],
-      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yu-jin",
-      "targetName": "于禁",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p8"
-      ],
-      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

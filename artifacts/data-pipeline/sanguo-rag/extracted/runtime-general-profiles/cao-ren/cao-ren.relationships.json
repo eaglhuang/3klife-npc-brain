@@ -2,7 +2,7 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "cao-ren",
   "displayName": "曹仁",
-  "generatedAt": "2026-06-01T08:31:41+00:00",
+  "generatedAt": "2026-06-01T15:25:05+00:00",
   "relationshipCount": 4,
   "typeCounts": {
     "battlefield_contact": 2,
@@ -65,8 +65,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "patron_client",
-        "ruler_subject",
+        "commands",
         "protects"
       ],
       "directions": [
@@ -81,7 +80,6 @@
       "edgeStrength": 0.62,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted",
         "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
@@ -93,7 +91,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -105,7 +103,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -116,7 +114,7 @@
       "targetId": "cao-cao",
       "targetName": "曹操",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "006#p7"
       ],
@@ -125,15 +123,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "cao-cao",
       "targetName": "曹操",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "019#p3"
       ],
@@ -142,15 +141,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "guan-yu",
       "targetName": "關羽",
       "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "originalType": "commands",
       "evidenceRefs": [
         "073#p9"
       ],
@@ -159,15 +159,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "guan-yu",
       "targetName": "關羽",
       "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "originalType": "commands",
       "evidenceRefs": [
         "073#p9"
       ],
@@ -176,62 +177,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dong-zhuo",
-      "targetName": "董卓",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "006#p6"
-      ],
-      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p13"
-      ],
-      "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p13"
-      ],
-      "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

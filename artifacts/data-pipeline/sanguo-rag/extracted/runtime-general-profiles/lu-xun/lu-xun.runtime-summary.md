@@ -2,9 +2,9 @@
 
 - General ID: `lu-xun`
 - Display Name: `陸遜`
-- Generated At: `2026-05-15T17:33:43+00:00`
+- Generated At: `2026-06-01T15:25:10+00:00`
 - Runtime Status: `thin-but-testable`
-- Completion: `36.75`
+- Completion: `None`
 - Ready Events: `0`
 - Relationships: `0`
 - Rejected Relationship Edges: `0`

@@ -2,7 +2,7 @@
 
 - General ID: `guan-xing`
 - Display Name: `關興`
-- Generated At: `2026-05-21T09:52:27+00:00`
+- Generated At: `2026-06-01T15:25:07+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
 - Ready Events: `4`

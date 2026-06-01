@@ -2,7 +2,7 @@
 
 - General ID: `xiao-qiao`
 - Display Name: `小喬`
-- Generated At: `2026-05-21T09:52:28+00:00`
+- Generated At: `2026-06-01T15:25:13+00:00`
 - Runtime Status: `thin-but-testable`
 - Completion: `None`
 - Ready Events: `0`

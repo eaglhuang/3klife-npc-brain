@@ -2,12 +2,12 @@
 
 - General ID: `cao-cao`
 - Display Name: `曹操`
-- Generated At: `2026-06-01T08:31:40+00:00`
+- Generated At: `2026-06-01T15:25:05+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `None`
-- Ready Events: `126`
-- Relationships: `19`
-- Rejected Relationship Edges: `58`
+- Completion: `98.31`
+- Ready Events: `5`
+- Relationships: `12`
+- Rejected Relationship Edges: `22`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,20 +17,19 @@
 - `aptitude`: `5`
 - `choice`: `6`
 - `decision`: `5`
-- `event`: `68`
+- `event`: `4`
 - `identity`: `5`
-- `item`: `1`
-- `location`: `18`
-- `person`: `18`
+- `location`: `4`
+- `person`: `11`
 - `personality`: `9`
-- `relationship`: `19`
+- `relationship`: `12`
 
 ## Relationship Types
 
-- `battlefield_contact`: `6`
+- `battlefield_contact`: `3`
 - `betrayal_surrender`: `1`
 - `enemy_rival`: `4`
-- `parent_child`: `5`
+- `parent_child`: `1`
 - `patron_client`: `3`
 
 ## Outputs

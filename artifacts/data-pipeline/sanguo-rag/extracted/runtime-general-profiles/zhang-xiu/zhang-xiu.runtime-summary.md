@@ -2,11 +2,11 @@
 
 - General ID: `zhang-xiu`
 - Display Name: `張繡`
-- Generated At: `2026-05-21T09:22:09+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `42.71`
-- Ready Events: `4`
-- Relationships: `3`
+- Generated At: `2026-06-01T15:25:15+00:00`
+- Runtime Status: `thin-but-testable`
+- Completion: `None`
+- Ready Events: `0`
+- Relationships: `0`
 - Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
@@ -17,16 +17,11 @@
 - `aptitude`: `1`
 - `choice`: `1`
 - `decision`: `1`
-- `event`: `2`
 - `identity`: `2`
-- `location`: `2`
-- `person`: `3`
 - `personality`: `4`
-- `relationship`: `3`
 
 ## Relationship Types
 
-- `enemy_rival`: `3`
 
 ## Outputs
 

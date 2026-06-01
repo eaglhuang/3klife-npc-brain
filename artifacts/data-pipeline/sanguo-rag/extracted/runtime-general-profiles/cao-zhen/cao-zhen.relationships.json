@@ -2,70 +2,19 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "cao-zhen",
   "displayName": "曹真",
-  "generatedAt": "2026-05-21T09:27:27+00:00",
-  "relationshipCount": 3,
+  "generatedAt": "2026-06-01T15:25:05+00:00",
+  "relationshipCount": 1,
   "typeCounts": {
-    "battlefield_contact": 1,
-    "enemy_rival": 2
+    "battlefield_contact": 1
   },
   "anchors": [
-    {
-      "targetId": "romance-person-8a31-660c",
-      "targetName": "許昌",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:f459be55bfa2c189d7da"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "太和中，遣曹真從子午道伐蜀，車駕東幸許昌"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "zhuge-liang",
-      "targetName": "諸葛亮",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:3a94cd27f624d975cff9"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "十二月，諸葛亮圍陳倉，曹真遣將軍費曜等拒之"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
     {
       "targetId": "wen-pin",
       "targetName": "文聘",
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "patron_client"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -77,7 +26,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"

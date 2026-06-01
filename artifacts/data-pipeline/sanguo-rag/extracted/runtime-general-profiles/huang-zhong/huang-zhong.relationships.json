@@ -2,19 +2,70 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "huang-zhong",
   "displayName": "黃忠",
-  "generatedAt": "2026-05-21T09:52:25+00:00",
-  "relationshipCount": 3,
+  "generatedAt": "2026-06-01T15:25:07+00:00",
+  "relationshipCount": 5,
   "typeCounts": {
-    "battlefield_contact": 3
+    "battlefield_contact": 3,
+    "enemy_rival": 2
   },
   "anchors": [
+    {
+      "targetId": "romance-person-5b6b-4ef2",
+      "targetName": "孫仲",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-053#p0;window=1"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
+      "sourceQuotes": [
+        "# 第五十三回 關雲長義釋黃漢升 孫仲謀大戰張文遠"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "zhang-liao",
+      "targetName": "張遼",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-053#p0;window=1"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
+      "sourceQuotes": [
+        "# 第五十三回 關雲長義釋黃漢升 孫仲謀大戰張文遠"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "mentor_student"
+        "commands"
       ],
       "directions": [
         "outgoing",
@@ -29,7 +80,7 @@
         "重賞魏延。玄德設宴款待彭羕。忽報荊州諸葛亮軍師特遣馬良奉書至此。玄德召入問之。。延。交馬不數合，被魏延活捉去了。比及吳蘭，雷同來接應時，又被黃忠一軍殺來。魏"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "accepted-review-candidate",
       "sourceLayer": null
@@ -63,8 +114,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "mentor_student",
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -77,7 +127,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -88,7 +138,7 @@
       "targetId": "wei-yan",
       "targetName": "魏延",
       "type": "battlefield_contact",
-      "originalType": "mentor_student",
+      "originalType": "commands",
       "evidenceRefs": [
         "064#p3"
       ],
@@ -97,15 +147,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
+      "type": "battlefield_opponent",
+      "originalType": "confronts",
       "evidenceRefs": [
         "064#p4"
       ],
@@ -114,15 +165,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "battlefield_opponent_target"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "062#p20"
       ],
@@ -131,15 +183,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
+      "type": "battlefield_opponent",
+      "originalType": "confronts",
       "evidenceRefs": [
         "062#p18"
       ],
@@ -148,8 +201,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "battlefield_opponent_target"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

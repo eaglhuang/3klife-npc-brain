@@ -2,7 +2,7 @@
   "keywordVersion": "general_runtime_keywords_v1",
   "generalId": "sun-shang-xiang",
   "displayName": "孫尚香",
-  "generatedAt": "2026-05-21T09:52:28+00:00",
+  "generatedAt": "2026-06-01T15:25:12+00:00",
   "categories": {
     "activity": [
       {
@@ -113,86 +113,6 @@
         "rawTag": "prefers_diplomacy"
       }
     ],
-    "event": [
-      {
-        "keywordKey": "event.female-interaction-055-p10",
-        "label": "夫妻",
-        "category": "event",
-        "sourceRefs": [
-          "055#p10"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "東吳：stableKnowledgeBootstrap:spouse",
-        "eventId": "romance.reviewed-a.sun-shang-xiang-female-interaction-055-p10-055-p10"
-      },
-      {
-        "keywordKey": "event.female-interaction-055-p2",
-        "label": "夫妻",
-        "category": "event",
-        "sourceRefs": [
-          "055#p2"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "東吳：stableKnowledgeBootstrap:spouse",
-        "eventId": "romance.reviewed-a.sun-shang-xiang-female-interaction-055-p2-055-p2"
-      },
-      {
-        "keywordKey": "event.female-interaction-055-p6",
-        "label": "夫妻",
-        "category": "event",
-        "sourceRefs": [
-          "055#p6"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "東吳：stableKnowledgeBootstrap:spouse",
-        "eventId": "romance.reviewed-a.sun-shang-xiang-female-interaction-055-p6-055-p6"
-      },
-      {
-        "keywordKey": "event.female-interaction-055-p9",
-        "label": "夫妻",
-        "category": "event",
-        "sourceRefs": [
-          "055#p9"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "東吳：stableKnowledgeBootstrap:spouse",
-        "eventId": "romance.reviewed-a.sun-shang-xiang-female-interaction-055-p9-055-p9"
-      },
-      {
-        "keywordKey": "event.female-interaction-061-p5",
-        "label": "準備下船隻。只今便...",
-        "category": "event",
-        "sourceRefs": [
-          "061#p5"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "荊州：準備下船隻。只今便請夫人上車出城。」孫夫人聽知母病危急，如何不慌？便將七歲孩子",
-        "eventId": "romance.reviewed-a.sun-shang-xiang-female-interaction-061-p5-061-p5"
-      },
-      {
-        "keywordKey": "event.female-interaction-082-p2",
-        "label": "非吳侯之過也。今呂...",
-        "category": "event",
-        "sourceRefs": [
-          "082#p2"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "東吳：非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
-        "eventId": "romance.reviewed-a.sun-shang-xiang-female-interaction-082-p2-082-p2"
-      }
-    ],
     "identity": [
       {
         "keywordKey": "identity.u5b6b-4ec1",
@@ -235,45 +155,13 @@
         "sourceLayer": "identity"
       }
     ],
-    "location": [
-      {
-        "keywordKey": "location.u6771-5433",
-        "label": "東吳",
-        "category": "location",
-        "sourceRefs": [
-          "055#p10",
-          "055#p2",
-          "055#p6",
-          "055#p9",
-          "082#p2"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      },
-      {
-        "keywordKey": "location.u834a-5dde",
-        "label": "荊州",
-        "category": "location",
-        "sourceRefs": [
-          "061#p5"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      }
-    ],
     "person": [
       {
         "keywordKey": "person.liu-bei",
         "label": "劉備",
         "category": "person",
         "sourceRefs": [
-          "054#marriage-alliance",
-          "055#p10",
-          "055#p6",
-          "055#p7",
-          "055#p9"
+          "054#marriage-alliance"
         ],
         "confidence": 0.94,
         "uiLabelMaxChars": 12,
@@ -329,22 +217,6 @@
     ],
     "relationship": [
       {
-        "keywordKey": "relationship.liu-bei.battlefield_contact",
-        "label": "劉備-戰場接觸",
-        "category": "relationship",
-        "sourceRefs": [
-          "055#p10",
-          "055#p6",
-          "055#p7",
-          "055#p9"
-        ],
-        "confidence": 0.9,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "liu-bei",
-        "relationshipType": "battlefield_contact"
-      },
-      {
         "keywordKey": "relationship.liu-bei.spouse",
         "label": "劉備-夫妻姻親",
         "category": "relationship",
@@ -365,11 +237,9 @@
     "aptitude": 1,
     "choice": 1,
     "decision": 2,
-    "event": 6,
     "identity": 4,
-    "location": 2,
     "person": 1,
     "personality": 4,
-    "relationship": 2
+    "relationship": 1
   }
 }

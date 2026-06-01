@@ -9,7 +9,7 @@
   "title": "【蔡琰】",
   "gender": "女",
   "baseFaction": "enemy",
-  "generatedAt": "2026-05-21T09:52:28+00:00",
+  "generatedAt": "2026-06-01T15:25:04+00:00",
   "runtimeReadiness": {
     "status": "thin-but-testable",
     "canonicalWrites": false,
@@ -104,50 +104,93 @@
             "aliasMatch"
           ]
         }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "cai-yan",
+          "targetId": "romance-person-694a-4fee",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "071#p4",
+          "sourceId": "071#p4",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment"
+          ],
+          "traceSources": [
+            "aliasMatch"
+          ],
+          "linkAuthority": "alias_match_only",
+          "sceneEligible": false,
+          "supplementalEligible": false,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        }
       ]
     }
   ],
   "angleTargetLinks": [
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment"
+      ],
       "targetId": "romance-person-694a-4fee",
       "sourceRef": "071#p4",
       "sourceId": "071#p4",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "romance-person-694a-4fee",
-      "sourceRef": "071#p4",
-      "sourceId": "071#p4",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "romance-person-694a-4fee",
-      "sourceRef": "071#p4",
-      "sourceId": "071#p4",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "romance-person-694a-4fee",
-      "sourceRef": "071#p4",
-      "sourceId": "071#p4",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "romance-person-694a-4fee",
-      "sourceRef": "071#p4",
-      "sourceId": "071#p4",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "alias_match_only",
+      "linkAuthorities": [
+        "alias_match_only"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     }
   ],
   "targetLinking": {
     "version": "deterministic_source_link_v1",
-    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
-    "linkCount": 5
+    "focusProjectionVersion": "runtime_focus_projection_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference; insufficient links emit upstreamFeedback instead of downstream backfill",
+    "linkCount": 1,
+    "sceneEligibleLinkCount": 0,
+    "upstreamFeedbackRequiredCount": 1,
+    "missingDataPolicy": "Downstream must never invent missing person, relationship, event, or mood facts. When a target is only weakly linked, emit upstreamFeedback and keep sceneEligible=false.",
+    "upstreamFeedback": [
+      {
+        "sourceRef": "071#p4",
+        "sourceId": "071#p4",
+        "sourceType": "sourceHighlight",
+        "targetId": "romance-person-694a-4fee",
+        "traceSources": [
+          "aliasMatch"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      }
+    ]
   },
   "relationshipSummary": {
     "typeCounts": {},

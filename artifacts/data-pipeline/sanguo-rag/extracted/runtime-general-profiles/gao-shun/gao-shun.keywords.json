@@ -1,0 +1,64 @@
+{
+  "keywordVersion": "general_runtime_keywords_v1",
+  "generalId": "gao-shun",
+  "displayName": "高順",
+  "generatedAt": "2026-06-01T15:25:07+00:00",
+  "categories": {
+    "identity": [
+      {
+        "keywordKey": "identity.u9ad8-9806",
+        "label": "高順",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.95,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      },
+      {
+        "keywordKey": "title.u3010-9ad8-9806-3011",
+        "label": "【高順】",
+        "category": "identity",
+        "sourceRefs": [],
+        "confidence": 0.9,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "sourceLayer": "identity"
+      }
+    ],
+    "person": [
+      {
+        "keywordKey": "person.liu-bei",
+        "label": "劉備",
+        "category": "person",
+        "sourceRefs": [
+          "ext-card:gutenberg-sanguozhi:candidate-card:2bb782cca61adeab6c4d"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "liu-bei"
+      }
+    ],
+    "relationship": [
+      {
+        "keywordKey": "relationship.liu-bei.enemy_rival",
+        "label": "劉備-敵對競爭",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:gutenberg-sanguozhi:candidate-card:2bb782cca61adeab6c4d"
+        ],
+        "confidence": 0.88,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "liu-bei",
+        "relationshipType": "enemy_rival"
+      }
+    ]
+  },
+  "categoryCounts": {
+    "identity": 2,
+    "person": 1,
+    "relationship": 1
+  }
+}

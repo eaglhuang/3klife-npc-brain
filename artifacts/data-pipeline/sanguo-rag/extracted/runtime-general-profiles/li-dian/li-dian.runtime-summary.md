@@ -2,12 +2,12 @@
 
 - General ID: `li-dian`
 - Display Name: `李典`
-- Generated At: `2026-06-01T08:31:41+00:00`
+- Generated At: `2026-06-01T15:25:08+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `26`
+- Ready Events: `2`
 - Relationships: `1`
-- Rejected Relationship Edges: `2`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -15,9 +15,9 @@
 - `activity`: `4`
 - `affect`: `1`
 - `decision`: `2`
-- `event`: `19`
+- `event`: `2`
 - `identity`: `3`
-- `location`: `6`
+- `location`: `2`
 - `person`: `1`
 - `personality`: `3`
 - `relationship`: `1`

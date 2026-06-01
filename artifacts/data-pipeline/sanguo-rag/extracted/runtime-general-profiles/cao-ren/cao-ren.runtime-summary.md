@@ -2,12 +2,12 @@
 
 - General ID: `cao-ren`
 - Display Name: `曹仁`
-- Generated At: `2026-06-01T08:31:41+00:00`
+- Generated At: `2026-06-01T15:25:05+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `21`
+- Ready Events: `3`
 - Relationships: `4`
-- Rejected Relationship Edges: `7`
+- Rejected Relationship Edges: `4`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,9 +17,9 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `1`
-- `event`: `11`
+- `event`: `3`
 - `identity`: `3`
-- `location`: `6`
+- `location`: `3`
 - `person`: `4`
 - `personality`: `4`
 - `relationship`: `4`

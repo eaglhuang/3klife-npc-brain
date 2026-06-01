@@ -2,7 +2,7 @@
 
 - General ID: `gan-ning`
 - Display Name: `甘寧`
-- Generated At: `2026-05-21T09:27:28+00:00`
+- Generated At: `2026-06-01T15:25:06+00:00`
 - Runtime Status: `thin-but-testable`
 - Completion: `None`
 - Ready Events: `0`
@@ -24,7 +24,7 @@
 
 ## Relationship Types
 
-- `enemy_rival`: `1`
+- `battlefield_opponent`: `1`
 
 ## Outputs
 

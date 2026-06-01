@@ -2,12 +2,12 @@
 
 - General ID: `xun-yu`
 - Display Name: `荀彧`
-- Generated At: `2026-05-21T09:27:28+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:13+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `22`
-- Relationships: `2`
-- Rejected Relationship Edges: `1`
+- Ready Events: `0`
+- Relationships: `0`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,17 +17,11 @@
 - `aptitude`: `3`
 - `choice`: `3`
 - `decision`: `3`
-- `event`: `11`
 - `identity`: `3`
-- `location`: `5`
-- `person`: `2`
 - `personality`: `8`
-- `relationship`: `2`
 
 ## Relationship Types
 
-- `enemy_rival`: `1`
-- `ruler_subject`: `1`
 
 ## Outputs
 

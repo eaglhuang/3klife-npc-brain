@@ -2,12 +2,12 @@
 
 - General ID: `wei-yan`
 - Display Name: `魏延`
-- Generated At: `2026-05-21T09:52:24+00:00`
+- Generated At: `2026-06-01T15:25:12+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `None`
-- Ready Events: `20`
+- Completion: `77.22`
+- Ready Events: `18`
 - Relationships: `7`
-- Rejected Relationship Edges: `22`
+- Rejected Relationship Edges: `19`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,9 +17,9 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `3`
-- `event`: `17`
+- `event`: `15`
 - `identity`: `3`
-- `location`: `5`
+- `location`: `4`
 - `person`: `7`
 - `personality`: `6`
 - `relationship`: `7`
@@ -27,7 +27,7 @@
 ## Relationship Types
 
 - `battlefield_contact`: `5`
-- `betrayal_surrender`: `1`
+- `battlefield_opponent`: `1`
 - `enemy_rival`: `1`
 
 ## Outputs

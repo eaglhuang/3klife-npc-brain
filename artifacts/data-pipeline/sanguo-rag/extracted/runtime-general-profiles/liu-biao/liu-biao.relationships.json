@@ -2,10 +2,10 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "liu-biao",
   "displayName": "劉表",
-  "generatedAt": "2026-05-21T09:52:25+00:00",
-  "relationshipCount": 5,
+  "generatedAt": "2026-06-01T15:25:09+00:00",
+  "relationshipCount": 3,
   "typeCounts": {
-    "enemy_rival": 3,
+    "enemy_rival": 1,
     "parent_child": 2
   },
   "anchors": [
@@ -56,31 +56,6 @@
       "sourceLayer": "stable-bootstrap-seed"
     },
     {
-      "targetId": "liu-zhang",
-      "targetName": "劉璋",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:8b17b2bba4c283212da5"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "江表傳曰：策被詔敕，與司空曹公、衛將軍董承、益州牧劉璋等並力討袁術、劉表"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
       "targetId": "sun-jian",
       "targetName": "孫堅",
       "type": "enemy_rival",
@@ -94,34 +69,6 @@
       ],
       "evidenceRefs": [
         "ext-card:wikisource-houhanshu:candidate-card:0bbd9451b7294764ca36",
-        "ext-card:wikisource-romance:candidate-card:4dc4f967f94575668071"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "本是劉表求救于袁紹，却弄出劉表殺孫堅，則一變",
-        "袁術遣將孫堅攻劉表於襄陽，堅戰歿"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "yuan-shu",
-      "targetName": "袁術",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-houhanshu:candidate-card:ddd9397dc1eae98400cf",
         "ext-card:wikisource-houhanshu:candidate-card:dec234eef983cd6e7263"
       ],
       "edgeConfidence": 0.88,
@@ -136,59 +83,7 @@
       "sourceLayer": "claim-graph-a-history"
     }
   ],
-  "rejectedRelationshipEdges": [
-    {
-      "targetId": "cai-shi",
-      "targetName": "蔡氏",
-      "type": "battlefield_contact",
-      "originalType": "spouse",
-      "evidenceRefs": [
-        "035#p6"
-      ],
-      "sourceQuote": "罵曰：「汝焉敢害吾弟！」命推出斬之。蔡夫人出，哭求免死，表怒猶未息。孫乾告曰：",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "coarse_edge_fallback"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "cai-shi",
-      "targetName": "蔡氏",
-      "type": "battlefield_contact",
-      "originalType": "spouse",
-      "evidenceRefs": [
-        "040#p7"
-      ],
-      "sourceQuote": "遺囑，令玄德輔佐長子劉琦爲荊州之主。蔡夫人聞之大怒，關上內門，使蔡瑁、張允二人",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "coarse_edge_fallback"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "cai-shi",
-      "targetName": "蔡氏",
-      "type": "battlefield_contact",
-      "originalType": "spouse",
-      "evidenceRefs": [
-        "040#p10"
-      ],
-      "sourceQuote": "生見教極是。但須稟告母親知道。」只見蔡夫人從屏後轉出，謂琮曰：「既是仲宣、公悌",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "coarse_edge_fallback"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    }
-  ],
+  "rejectedRelationshipEdges": [],
   "taxonomyPolicy": {
     "commands": "not exported as final type; refined into semantic runtime labels when possible",
     "fallbackType": "battlefield_contact",

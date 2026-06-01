@@ -2,11 +2,11 @@
 
 - General ID: `lu-meng`
 - Display Name: `呂蒙`
-- Generated At: `2026-05-21T09:27:28+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:09+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `1`
-- Relationships: `2`
+- Ready Events: `0`
+- Relationships: `1`
 - Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
@@ -17,17 +17,14 @@
 - `aptitude`: `1`
 - `choice`: `2`
 - `decision`: `2`
-- `event`: `1`
 - `identity`: `3`
-- `location`: `1`
-- `person`: `2`
+- `person`: `1`
 - `personality`: `6`
-- `relationship`: `2`
+- `relationship`: `1`
 
 ## Relationship Types
 
 - `battlefield_contact`: `1`
-- `mentor_student`: `1`
 
 ## Outputs
 

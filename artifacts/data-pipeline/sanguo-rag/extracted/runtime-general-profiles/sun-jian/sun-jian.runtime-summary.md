@@ -2,12 +2,12 @@
 
 - General ID: `sun-jian`
 - Display Name: `孫堅`
-- Generated At: `2026-05-21T09:52:28+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:11+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `12`
-- Relationships: `10`
-- Rejected Relationship Edges: `10`
+- Ready Events: `0`
+- Relationships: `3`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,19 +17,15 @@
 - `aptitude`: `3`
 - `choice`: `3`
 - `decision`: `3`
-- `event`: `7`
 - `identity`: `3`
-- `location`: `6`
-- `person`: `7`
+- `person`: `3`
 - `personality`: `6`
-- `relationship`: `10`
+- `relationship`: `3`
 
 ## Relationship Types
 
-- `battlefield_contact`: `1`
-- `enemy_rival`: `5`
+- `enemy_rival`: `1`
 - `parent_child`: `2`
-- `spouse`: `2`
 
 ## Outputs
 

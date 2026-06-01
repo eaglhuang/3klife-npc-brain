@@ -2,7 +2,7 @@
   "keywordVersion": "general_runtime_keywords_v1",
   "generalId": "ma-chao",
   "displayName": "馬超",
-  "generatedAt": "2026-05-21T09:52:26+00:00",
+  "generatedAt": "2026-06-01T15:25:10+00:00",
   "categories": {
     "activity": [
       {
@@ -191,28 +191,17 @@
     ],
     "person": [
       {
-        "keywordKey": "person.han-sui",
-        "label": "韓遂",
+        "keywordKey": "person.liu-bei",
+        "label": "劉備",
         "category": "person",
         "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:bfee7a893a20240b7613"
+          "sgyy-baihua#chapter-065#p0;window=1",
+          "sgyy-baihua#chapter-065#p9;window=7"
         ],
-        "confidence": 0.88,
+        "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
-        "relatedGeneralId": "han-sui"
-      },
-      {
-        "keywordKey": "person.ma-teng",
-        "label": "馬騰",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:wikisource-romance:candidate-card:9bad8fa5d3bf68d5d8d3"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "ma-teng"
+        "relatedGeneralId": "liu-bei"
       },
       {
         "keywordKey": "person.pang-de",
@@ -225,19 +214,6 @@
         "uiLabelMaxChars": 12,
         "retired": false,
         "relatedGeneralId": "pang-de"
-      },
-      {
-        "keywordKey": "person.romance-person-97cb-5eb7",
-        "label": "韋康",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:wikisource-houhanshu:candidate-card:053512bdde5136c877d1",
-          "ext-card:wikisource-houhanshu:candidate-card:3538cb4edd2181ce442d"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "romance-person-97cb-5eb7"
       },
       {
         "keywordKey": "person.zhao-ang",
@@ -311,29 +287,29 @@
     ],
     "relationship": [
       {
-        "keywordKey": "relationship.han-sui.enemy_rival",
-        "label": "韓遂-敵對競爭",
+        "keywordKey": "relationship.liu-bei.betrayal_surrender",
+        "label": "劉備-背叛投降",
         "category": "relationship",
         "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:bfee7a893a20240b7613"
+          "sgyy-baihua#chapter-065#p9;window=7"
         ],
-        "confidence": 0.88,
+        "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
-        "relatedGeneralId": "han-sui",
-        "relationshipType": "enemy_rival"
+        "relatedGeneralId": "liu-bei",
+        "relationshipType": "betrayal_surrender"
       },
       {
-        "keywordKey": "relationship.ma-teng.enemy_rival",
-        "label": "馬騰-敵對競爭",
+        "keywordKey": "relationship.liu-bei.enemy_rival",
+        "label": "劉備-敵對競爭",
         "category": "relationship",
         "sourceRefs": [
-          "ext-card:wikisource-romance:candidate-card:9bad8fa5d3bf68d5d8d3"
+          "sgyy-baihua#chapter-065#p0;window=1"
         ],
-        "confidence": 0.82,
+        "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
-        "relatedGeneralId": "ma-teng",
+        "relatedGeneralId": "liu-bei",
         "relationshipType": "enemy_rival"
       },
       {
@@ -350,22 +326,8 @@
         "relationshipType": "battlefield_contact"
       },
       {
-        "keywordKey": "relationship.romance-person-97cb-5eb7.enemy_rival",
-        "label": "韋康-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-houhanshu:candidate-card:053512bdde5136c877d1",
-          "ext-card:wikisource-houhanshu:candidate-card:3538cb4edd2181ce442d"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "romance-person-97cb-5eb7",
-        "relationshipType": "enemy_rival"
-      },
-      {
-        "keywordKey": "relationship.zhao-ang.alliance_oath",
-        "label": "趙昂-盟約同盟",
+        "keywordKey": "relationship.zhao-ang.battlefield_contact",
+        "label": "趙昂-戰場接觸",
         "category": "relationship",
         "sourceRefs": [
           "064#p17"
@@ -374,7 +336,7 @@
         "uiLabelMaxChars": 12,
         "retired": false,
         "relatedGeneralId": "zhao-ang",
-        "relationshipType": "alliance_oath"
+        "relationshipType": "battlefield_contact"
       }
     ]
   },
@@ -385,8 +347,8 @@
     "choice": 3,
     "decision": 2,
     "identity": 3,
-    "person": 5,
+    "person": 3,
     "personality": 5,
-    "relationship": 5
+    "relationship": 4
   }
 }

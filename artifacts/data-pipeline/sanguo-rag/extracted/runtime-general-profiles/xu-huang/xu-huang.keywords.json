@@ -2,7 +2,7 @@
   "keywordVersion": "general_runtime_keywords_v1",
   "generalId": "xu-huang",
   "displayName": "徐晃",
-  "generatedAt": "2026-05-21T09:52:26+00:00",
+  "generatedAt": "2026-06-01T15:25:13+00:00",
   "categories": {
     "activity": [
       {
@@ -100,32 +100,6 @@
         "retired": false,
         "fullLabel": "下邳：stableKnowledgeBootstrap:sworn_sibling",
         "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-025-p2-025-p2"
-      },
-      {
-        "keywordKey": "event.generic-battle-014-p10",
-        "label": "便令許褚出馬與徐晃...",
-        "category": "event",
-        "sourceRefs": [
-          "014#p10"
-        ],
-        "confidence": 0.78,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "洛陽：便令許褚出馬與徐晃交鋒。",
-        "eventId": "romance.reviewed-a.xu-zhu-generic-battle-014-p10-014-p10"
-      },
-      {
-        "keywordKey": "event.generic-battle-014-p9",
-        "label": "便令許褚出馬與徐晃...",
-        "category": "event",
-        "sourceRefs": [
-          "014#p9"
-        ],
-        "confidence": 0.78,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "陽城：便令許褚出馬與徐晃交鋒。",
-        "eventId": "romance.reviewed-a.xu-zhu-generic-battle-014-p9-014-p9"
       }
     ],
     "identity": [
@@ -171,55 +145,20 @@
         "confidence": 0.86,
         "uiLabelMaxChars": 12,
         "retired": false
-      },
-      {
-        "keywordKey": "location.u6d1b-967d",
-        "label": "洛陽",
-        "category": "location",
-        "sourceRefs": [
-          "014#p10"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      },
-      {
-        "keywordKey": "location.u967d-57ce",
-        "label": "陽城",
-        "category": "location",
-        "sourceRefs": [
-          "014#p9"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
       }
     ],
     "person": [
       {
-        "keywordKey": "person.cao-cao",
-        "label": "曹操",
+        "keywordKey": "person.guan-yu",
+        "label": "關羽",
         "category": "person",
         "sourceRefs": [
-          "067#p3",
-          "071#p19"
+          "sgyy-baihua#chapter-076#p0;window=1"
         ],
-        "confidence": 0.74,
+        "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
-        "relatedGeneralId": "cao-cao"
-      },
-      {
-        "keywordKey": "person.liu-bei",
-        "label": "劉備",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:ceb0248f6c321ec3e3b1"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "liu-bei"
+        "relatedGeneralId": "guan-yu"
       },
       {
         "keywordKey": "person.xu-zhu",
@@ -232,18 +171,6 @@
         "uiLabelMaxChars": 12,
         "retired": false,
         "relatedGeneralId": "xu-zhu"
-      },
-      {
-        "keywordKey": "person.zhang-he",
-        "label": "張郃",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:199d07359c887ded639b"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "zhang-he"
       }
     ],
     "personality": [
@@ -283,35 +210,21 @@
     ],
     "relationship": [
       {
-        "keywordKey": "relationship.cao-cao.battlefield_contact",
-        "label": "曹操-戰場接觸",
+        "keywordKey": "relationship.guan-yu.enemy_rival",
+        "label": "關羽-敵對競爭",
         "category": "relationship",
         "sourceRefs": [
-          "067#p3",
-          "071#p19"
+          "sgyy-baihua#chapter-076#p0;window=1"
         ],
-        "confidence": 0.74,
+        "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
-        "relatedGeneralId": "cao-cao",
-        "relationshipType": "battlefield_contact"
-      },
-      {
-        "keywordKey": "relationship.liu-bei.enemy_rival",
-        "label": "劉備-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:ceb0248f6c321ec3e3b1"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "liu-bei",
+        "relatedGeneralId": "guan-yu",
         "relationshipType": "enemy_rival"
       },
       {
-        "keywordKey": "relationship.xu-zhu.enemy_rival",
-        "label": "許褚-敵對競爭",
+        "keywordKey": "relationship.xu-zhu.battlefield_opponent",
+        "label": "許褚-戰場對手",
         "category": "relationship",
         "sourceRefs": [
           "014#p9"
@@ -320,20 +233,7 @@
         "uiLabelMaxChars": 12,
         "retired": false,
         "relatedGeneralId": "xu-zhu",
-        "relationshipType": "enemy_rival"
-      },
-      {
-        "keywordKey": "relationship.zhang-he.enemy_rival",
-        "label": "張郃-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:199d07359c887ded639b"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "zhang-he",
-        "relationshipType": "enemy_rival"
+        "relationshipType": "battlefield_opponent"
       }
     ]
   },
@@ -341,11 +241,11 @@
     "activity": 2,
     "affect": 3,
     "decision": 2,
-    "event": 3,
+    "event": 1,
     "identity": 3,
-    "location": 3,
-    "person": 4,
+    "location": 1,
+    "person": 2,
     "personality": 3,
-    "relationship": 4
+    "relationship": 2
   }
 }

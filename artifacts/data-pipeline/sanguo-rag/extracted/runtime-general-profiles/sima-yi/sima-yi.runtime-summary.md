@@ -2,11 +2,11 @@
 
 - General ID: `sima-yi`
 - Display Name: `司馬懿`
-- Generated At: `2026-05-21T09:52:25+00:00`
+- Generated At: `2026-06-01T15:25:11+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
 - Ready Events: `1`
-- Relationships: `4`
+- Relationships: `3`
 - Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
@@ -20,13 +20,13 @@
 - `event`: `1`
 - `identity`: `3`
 - `location`: `1`
-- `person`: `4`
+- `person`: `3`
 - `personality`: `7`
-- `relationship`: `4`
+- `relationship`: `3`
 
 ## Relationship Types
 
-- `enemy_rival`: `2`
+- `enemy_rival`: `1`
 - `parent_child`: `2`
 
 ## Outputs

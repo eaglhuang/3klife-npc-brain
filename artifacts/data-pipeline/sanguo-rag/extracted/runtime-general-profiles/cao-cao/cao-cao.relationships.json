@@ -2,41 +2,16 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "cao-cao",
   "displayName": "曹操",
-  "generatedAt": "2026-06-01T08:31:40+00:00",
-  "relationshipCount": 19,
+  "generatedAt": "2026-06-01T15:25:05+00:00",
+  "relationshipCount": 12,
   "typeCounts": {
-    "battlefield_contact": 6,
+    "battlefield_contact": 3,
     "betrayal_surrender": 1,
     "enemy_rival": 4,
-    "parent_child": 5,
+    "parent_child": 1,
     "patron_client": 3
   },
   "anchors": [
-    {
-      "targetId": "cao-ang",
-      "targetName": "曹昂",
-      "type": "parent_child",
-      "typeLabel": "親子",
-      "originalTypes": [
-        "parent_child"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "sgyy-baihua#chapter-016#p16;window=2"
-      ],
-      "edgeConfidence": 0.95,
-      "edgeStrength": 0.9,
-      "sourceQuotes": [
-        "賊兵一箭射來，正中馬眼，馬撲倒在地。曹操的大兒子曹昂，立刻把自己的馬送給曹操。"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
     {
       "targetId": "cao-hong",
       "targetName": "曹洪",
@@ -55,56 +30,6 @@
       "edgeStrength": 0.9,
       "sourceQuotes": [
         "管輅說：“大王不能輕舉妄動因為來年春天許都必然會發生火災。”曹操見管輅的預言屢次應驗所以不敢輕舉妄動留在鄴郡派遣曹洪領兵五萬前往協助夏侯淵和張合共同守衛東川；又派遣夏侯惇領兵三萬在許都附近巡邏警戒以防不測；同時命令長史王必總督禦林軍馬。"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "cao-pi",
-      "targetName": "曹丕",
-      "type": "parent_child",
-      "typeLabel": "親子",
-      "originalTypes": [
-        "parent_child"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "sgyy-baihua#chapter-068#p19;window=3"
-      ],
-      "edgeConfidence": 0.95,
-      "edgeStrength": 0.9,
-      "sourceQuotes": [
-        "曹操聽後大笑並決定立長子曹丕為世子。冬十月魏王宮建成後曹操派人到各地收集奇花異果種植在後花園中，並派遣使者到吳地要求孫權進貢溫州的柑子。"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "cao-zhi",
-      "targetName": "曹植",
-      "type": "parent_child",
-      "typeLabel": "親子",
-      "originalTypes": [
-        "parent_child"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "sgyy-baihua#chapter-044#p4;window=2"
-      ],
-      "edgeConfidence": 0.95,
-      "edgeStrength": 0.9,
-      "sourceQuotes": [
-        "”孔明說：“曹操而兒子曹植，字子建，很會寫詩。曹操曾經叫他寫了一首《銅雀台賦》，詩中就是說要娶二喬。"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -316,88 +241,12 @@
       "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "battlefield_contact",
-      "typeLabel": "戰場接觸",
-      "originalTypes": [
-        "mentor_student"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "011#p13"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "不足慮也。」教且安營下寨，再作商議。呂布知曹操回兵已過滕縣，召副將薛蘭、李封"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "accepted-review-candidate",
-      "sourceLayer": null
-    },
-    {
-      "targetId": "romance-person-66f9-5d69",
-      "targetName": "曹嵩",
-      "type": "parent_child",
-      "typeLabel": "親子",
-      "originalTypes": [
-        "parent_child"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "generals.parentsSummary:cao-cao"
-      ],
-      "edgeConfidence": 0.78,
-      "edgeStrength": 0.85,
-      "sourceQuotes": [],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "generals-parent-summary"
-    },
-    {
-      "targetId": "xu-huang",
-      "targetName": "徐晃",
-      "type": "battlefield_contact",
-      "typeLabel": "戰場接觸",
-      "originalTypes": [
-        "protects",
-        "ruler_subject"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "067#p3",
-        "071#p19"
-      ],
-      "edgeConfidence": 0.74,
-      "edgeStrength": 0.62,
-      "sourceQuotes": [],
-      "refinementReasons": [
-        "coarse_edge_fallback",
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "source-grounded-review",
-      "sourceLayer": "mao-hant-observed-mentions"
-    },
-    {
       "targetId": "zhang-liao",
       "targetName": "張遼",
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject",
+        "commands",
         "protects"
       ],
       "directions": [
@@ -413,7 +262,6 @@
       "edgeStrength": 0.62,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted",
         "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
@@ -425,7 +273,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -437,7 +285,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -448,7 +296,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -460,31 +308,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "source-grounded-review",
-      "sourceLayer": "mao-hant-observed-mentions"
-    },
-    {
-      "targetId": "yu-jin",
-      "targetName": "于禁",
-      "type": "battlefield_contact",
-      "typeLabel": "戰場接觸",
-      "originalTypes": [
-        "ruler_subject"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "074#p2",
-        "074#p3"
-      ],
-      "edgeConfidence": 0.66,
-      "edgeStrength": 0.54,
-      "sourceQuotes": [],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -492,10 +316,83 @@
   ],
   "rejectedRelationshipEdges": [
     {
+      "targetId": "cao-pi",
+      "targetName": "曹丕",
+      "type": "parent_child",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-068#p19;window=3"
+      ],
+      "sourceQuote": "曹操聽後大笑並決定立長子曹丕為世子。冬十月魏王宮建成後曹操派人到各地收集奇花異果種植在後花園中，並派遣使者到吳地要求孫權進貢溫州的柑子。",
+      "rejectionReasons": [
+        "kinship_without_pair_relation_signal"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-zhi",
+      "targetName": "曹植",
+      "type": "parent_child",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-044#p4;window=2"
+      ],
+      "sourceQuote": "”孔明說：“曹操而兒子曹植，字子建，很會寫詩。曹操曾經叫他寫了一首《銅雀台賦》，詩中就是說要娶二喬。",
+      "rejectionReasons": [
+        "kinship_without_pair_relation_signal"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-ang",
+      "targetName": "曹昂",
+      "type": "parent_child",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-016#p16;window=2"
+      ],
+      "sourceQuote": "賊兵一箭射來，正中馬眼，馬撲倒在地。曹操的大兒子曹昂，立刻把自己的馬送給曹操。",
+      "rejectionReasons": [
+        "kinship_without_pair_relation_signal"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "romance-person-66f9-5d69",
+      "targetName": "曹嵩",
+      "type": "parent_child",
+      "originalType": "parent_child",
+      "evidenceRefs": [
+        "generals.parentsSummary:cao-cao"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "kinship_without_pair_relation_signal",
+        "kinship_without_explicit_pair_bound_evidence"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
       "targetId": "cao-ren",
       "targetName": "曹仁",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "006#p7"
       ],
@@ -504,42 +401,45 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "xiahou-yuan",
       "targetName": "夏侯淵",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "006#p7"
       ],
       "sourceQuote": null,
       "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "blacklist:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xiahou-yuan|cao-cao",
         "conflicts_with_stable_relationship_without_direct_pair_evidence",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "sun-qian",
-      "targetName": "孫乾",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
-      "evidenceRefs": [
-        "019#p3"
-      ],
-      "sourceQuote": null,
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "blacklist:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xiahou-yuan|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -547,7 +447,7 @@
       "targetId": "cao-ren",
       "targetName": "曹仁",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "019#p3"
       ],
@@ -556,32 +456,70 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
-      "targetId": "xu-huang",
-      "targetName": "徐晃",
+      "targetId": "sun-qian",
+      "targetName": "孫乾",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
-        "030#p7"
+        "019#p3"
       ],
       "sourceQuote": null,
       "rejectionReasons": [
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "xu-huang",
+      "targetName": "徐晃",
+      "type": "battlefield_contact",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "030#p7"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhang-liao",
       "targetName": "張遼",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "032#p11"
       ],
@@ -591,7 +529,81 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "xu-huang",
+      "targetName": "徐晃",
+      "type": "battlefield_contact",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "050#p8"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-hong",
+      "targetName": "曹洪",
+      "type": "battlefield_contact",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "059#p7"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|cao-hong",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|cao-hong",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|cao-hong",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|cao-hong",
+        "blacklist:relationship|battlefield_contact|cao-hong|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-hong|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|cao-hong|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|cao-hong|cao-cao",
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|cao-hong",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|cao-hong",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|cao-hong",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|cao-hong",
+        "blacklist:relationship|battlefield_contact|cao-hong|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-hong|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|cao-hong|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|cao-hong|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -599,52 +611,69 @@
       "targetId": "xu-huang",
       "targetName": "徐晃",
       "type": "battlefield_contact",
-      "originalType": "mentor_student",
+      "originalType": "protects",
       "evidenceRefs": [
-        "050#p8"
+        "067#p3"
       ],
       "sourceQuote": null,
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
-      "targetId": "cao-hong",
-      "targetName": "曹洪",
+      "targetId": "xu-huang",
+      "targetName": "徐晃",
       "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "originalType": "commands",
       "evidenceRefs": [
-        "059#p7"
+        "071#p19"
       ],
       "sourceQuote": null,
       "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "cao-hong",
-      "targetName": "曹洪",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "059#p7"
-      ],
-      "sourceQuote": null,
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -652,7 +681,7 @@
       "targetId": "xu-zhu",
       "targetName": "許褚",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "072#p5"
       ],
@@ -661,15 +690,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "pang-de",
       "targetName": "龐德",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "072#p9"
       ],
@@ -678,105 +708,86 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yu-jin",
+      "targetName": "于禁",
+      "type": "battlefield_contact",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "074#p2"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|yu-jin",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|yu-jin",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|yu-jin",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|yu-jin",
+        "blacklist:relationship|battlefield_contact|yu-jin|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|yu-jin|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|yu-jin|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|yu-jin|cao-cao"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|yu-jin",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|yu-jin",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|yu-jin",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|yu-jin",
+        "blacklist:relationship|battlefield_contact|yu-jin|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|yu-jin|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|yu-jin|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|yu-jin|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
-      "targetId": "zhang-bao-enemy",
-      "targetName": "張寶",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
+      "targetId": "yu-jin",
+      "targetName": "于禁",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
-        "001#p18"
+        "074#p3"
       ],
-      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
+      "sourceQuote": null,
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|yu-jin",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|yu-jin",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|yu-jin",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|yu-jin",
+        "blacklist:relationship|battlefield_contact|yu-jin|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|yu-jin|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|yu-jin|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|yu-jin|cao-cao"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-liang-enemy",
-      "targetName": "張梁",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "001#p18"
-      ],
-      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-bao-enemy",
-      "targetName": "張寶",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "001#p18"
-      ],
-      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-liang-enemy",
-      "targetName": "張梁",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-liang-enemy",
-      "targetName": "張梁",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|yu-jin",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|yu-jin",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|yu-jin",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|yu-jin",
+        "blacklist:relationship|battlefield_contact|yu-jin|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|yu-jin|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|yu-jin|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|yu-jin|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "guan-yu",
       "targetName": "關羽",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "type": "intimidates_enemy",
+      "originalType": "commands",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -786,15 +797,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "enemy_retreat_or_intimidation_terms"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "guan-yu",
       "targetName": "關羽",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "type": "intimidates_enemy",
+      "originalType": "commands",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -804,15 +816,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "enemy_retreat_or_intimidation_terms"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhuge-liang",
       "targetName": "諸葛亮",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "type": "intimidates_enemy",
+      "originalType": "commands",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -821,15 +834,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "enemy_retreat_or_intimidation_terms"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhuge-liang",
       "targetName": "諸葛亮",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "type": "intimidates_enemy",
+      "originalType": "commands",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -838,675 +852,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "enemy_retreat_or_intimidation_terms"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-liang-enemy",
-      "targetName": "張梁",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "001#p18"
-      ],
-      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "kong-rong",
-      "targetName": "孔融",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "011#p6"
-      ],
-      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "kong-rong",
-      "targetName": "孔融",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "011#p6"
-      ],
-      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dian-wei",
-      "targetName": "典韋",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "012#p5"
-      ],
-      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-jue",
-      "targetName": "張角",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "001#p18"
-      ],
-      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yuan-shao",
-      "targetName": "袁紹",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "003#p6"
-      ],
-      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yuan-shu",
-      "targetName": "袁術",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "003#p6"
-      ],
-      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yuan-shao",
-      "targetName": "袁紹",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "003#p6"
-      ],
-      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yuan-shu",
-      "targetName": "袁術",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "003#p6"
-      ],
-      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "huangfu-song",
-      "targetName": "皇甫嵩",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "huangfu-song",
-      "targetName": "皇甫嵩",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "002#p3"
-      ],
-      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "006#p7"
-      ],
-      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "006#p7"
-      ],
-      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "xiahou-dun",
-      "targetName": "夏侯惇",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p2"
-      ],
-      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "xiahou-dun",
-      "targetName": "夏侯惇",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p2"
-      ],
-      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yu-jin",
-      "targetName": "于禁",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "010#p7"
-      ],
-      "sourceQuote": "熟嫻，武藝出眾，命爲點軍司馬。一日，夏侯惇引一大漢來見，操問何人，惇曰：「此乃",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yu-jin",
-      "targetName": "于禁",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "010#p7"
-      ],
-      "sourceQuote": "熟嫻，武藝出眾，命爲點軍司馬。一日，夏侯惇引一大漢來見，操問何人，惇曰：「此乃",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "011#p13"
-      ],
-      "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "011#p13"
-      ],
-      "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
-      "evidenceRefs": [
-        "011#p13"
-      ],
-      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
-      "evidenceRefs": [
-        "011#p13"
-      ],
-      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dian-wei",
-      "targetName": "典韋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dian-wei",
-      "targetName": "典韋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "011#p8"
-      ],
-      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "011#p8"
-      ],
-      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p6"
-      ],
-      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "011#p6"
-      ],
-      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "016#p13"
-      ],
-      "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "016#p12"
-      ],
-      "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "016#p12"
-      ],
-      "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dian-wei",
-      "targetName": "典韋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p4"
-      ],
-      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dian-wei",
-      "targetName": "典韋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p4"
-      ],
-      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "sun-qian",
-      "targetName": "孫乾",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "016#p12"
-      ],
-      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "016#p12"
-      ],
-      "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dian-wei",
-      "targetName": "典韋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p5"
-      ],
-      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "dian-wei",
-      "targetName": "典韋",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p5"
-      ],
-      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "cai-shi",
-      "targetName": "蔡氏",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "040#p11"
-      ],
-      "sourceQuote": "生見教極是。但須稟告母親知道。」只見蔡夫人從屏後轉出，謂琮曰：「既是仲宣、公悌",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "cai-shi",
-      "targetName": "蔡氏",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "040#p11"
-      ],
-      "sourceQuote": "生見教極是。但須稟告母親知道。」只見蔡夫人從屏後轉出，謂琮曰：「既是仲宣、公悌",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

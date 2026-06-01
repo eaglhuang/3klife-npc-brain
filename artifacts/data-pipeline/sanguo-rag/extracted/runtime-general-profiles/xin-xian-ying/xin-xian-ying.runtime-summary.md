@@ -2,11 +2,11 @@
 
 - General ID: `xin-xian-ying`
 - Display Name: `辛憲英`
-- Generated At: `2026-05-21T09:52:29+00:00`
+- Generated At: `2026-06-01T15:25:13+00:00`
 - Runtime Status: `thin-but-testable`
 - Completion: `None`
 - Ready Events: `0`
-- Relationships: `1`
+- Relationships: `0`
 - Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
@@ -18,13 +18,10 @@
 - `choice`: `1`
 - `decision`: `1`
 - `identity`: `3`
-- `person`: `1`
 - `personality`: `2`
-- `relationship`: `1`
 
 ## Relationship Types
 
-- `enemy_rival`: `1`
 
 ## Outputs
 

@@ -2,84 +2,58 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "ma-chao",
   "displayName": "馬超",
-  "generatedAt": "2026-05-21T09:52:26+00:00",
-  "relationshipCount": 5,
+  "generatedAt": "2026-06-01T15:25:10+00:00",
+  "relationshipCount": 4,
   "typeCounts": {
-    "alliance_oath": 1,
-    "battlefield_contact": 1,
-    "enemy_rival": 3
+    "battlefield_contact": 2,
+    "betrayal_surrender": 1,
+    "enemy_rival": 1
   },
   "anchors": [
     {
-      "targetId": "han-sui",
-      "targetName": "韓遂",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "betrayal_surrender",
+      "typeLabel": "背叛投降",
       "originalTypes": [
-        "enemy_rival"
+        "betrayal_surrender"
       ],
       "directions": [
+        "incoming",
         "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:bfee7a893a20240b7613"
+        "sgyy-baihua#chapter-065#p9;window=7"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "〉 太祖後與韓遂、馬超戰於渭南，超等索割地以和，并求任子"
+        "”劉璋一聽，大驚失色，諸侯聽說是馬超歸降了劉備，一起來攻成都，全都又驚又怕，再不敢說抵抗。於是劉璋決定投降。"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "romance-person-97cb-5eb7",
-      "targetName": "韋康",
+      "targetId": "liu-bei",
+      "targetName": "劉備",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
         "enemy_rival"
       ],
       "directions": [
-        "outgoing",
         "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-houhanshu:candidate-card:053512bdde5136c877d1",
-        "ext-card:wikisource-houhanshu:candidate-card:3538cb4edd2181ce442d"
+        "sgyy-baihua#chapter-065#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "八月，馬超破涼州，殺刺史韋康"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "ma-teng",
-      "targetName": "馬騰",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:9bad8fa5d3bf68d5d8d3"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "本是馬騰與昭烈同事，又弄出馬超攻昭烈，則一變"
+        "# 第六十五回 馬超大戰葭萌關 劉備自領益州牧"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -93,7 +67,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -105,7 +79,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -113,10 +87,10 @@
     {
       "targetId": "zhao-ang",
       "targetName": "趙昂",
-      "type": "alliance_oath",
-      "typeLabel": "盟約同盟",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
       "originalTypes": [
-        "alliance_oath"
+        "allies"
       ],
       "directions": [
         "outgoing"
@@ -128,7 +102,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"

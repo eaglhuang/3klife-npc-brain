@@ -2,9 +2,9 @@
 
 - General ID: `fa-zheng`
 - Display Name: `法正`
-- Generated At: `2026-05-15T17:33:42+00:00`
+- Generated At: `2026-06-01T15:25:06+00:00`
 - Runtime Status: `thin-but-testable`
-- Completion: `37.55`
+- Completion: `None`
 - Ready Events: `0`
 - Relationships: `1`
 - Rejected Relationship Edges: `0`
