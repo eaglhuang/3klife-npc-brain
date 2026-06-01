@@ -2,11 +2,11 @@
 
 - General ID: `cao-ren`
 - Display Name: `曹仁`
-- Generated At: `2026-05-21T09:52:25+00:00`
+- Generated At: `2026-06-01T08:31:41+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
 - Ready Events: `21`
-- Relationships: `6`
+- Relationships: `4`
 - Rejected Relationship Edges: `7`
 - Review Backlog: `0`
 
@@ -20,14 +20,14 @@
 - `event`: `11`
 - `identity`: `3`
 - `location`: `6`
-- `person`: `6`
+- `person`: `4`
 - `personality`: `4`
-- `relationship`: `6`
+- `relationship`: `4`
 
 ## Relationship Types
 
 - `battlefield_contact`: `2`
-- `enemy_rival`: `4`
+- `enemy_rival`: `2`
 
 ## Outputs
 

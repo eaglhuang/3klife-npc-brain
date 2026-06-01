@@ -2,11 +2,11 @@
 
 - General ID: `li-dian`
 - Display Name: `李典`
-- Generated At: `2026-05-21T09:52:27+00:00`
+- Generated At: `2026-06-01T08:31:41+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `21`
-- Relationships: `7`
+- Ready Events: `26`
+- Relationships: `1`
 - Rejected Relationship Edges: `2`
 - Review Backlog: `0`
 
@@ -15,19 +15,16 @@
 - `activity`: `4`
 - `affect`: `1`
 - `decision`: `2`
-- `event`: `14`
+- `event`: `19`
 - `identity`: `3`
 - `location`: `6`
-- `person`: `6`
+- `person`: `1`
 - `personality`: `3`
-- `relationship`: `7`
+- `relationship`: `1`
 
 ## Relationship Types
 
 - `battlefield_contact`: `1`
-- `battlefield_opponent`: `1`
-- `enemy_rival`: `4`
-- `ruler_subject`: `1`
 
 ## Outputs
 

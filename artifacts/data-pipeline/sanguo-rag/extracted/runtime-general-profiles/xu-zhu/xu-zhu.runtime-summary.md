@@ -2,12 +2,12 @@
 
 - General ID: `xu-zhu`
 - Display Name: `許褚`
-- Generated At: `2026-05-21T09:52:27+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T08:31:42+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
 - Ready Events: `9`
-- Relationships: `2`
-- Rejected Relationship Edges: `2`
+- Relationships: `0`
+- Rejected Relationship Edges: `3`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -20,14 +20,10 @@
 - `event`: `8`
 - `identity`: `3`
 - `location`: `6`
-- `person`: `2`
 - `personality`: `4`
-- `relationship`: `2`
 
 ## Relationship Types
 
-- `enemy_rival`: `1`
-- `ruler_subject`: `1`
 
 ## Outputs
 

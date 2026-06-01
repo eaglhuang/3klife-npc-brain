@@ -88,5 +88,149 @@
       "decisionSnapshotHash": "sha256:59620ebb830fb63517e5414125ca6d09b53ec3067501e19fccad17656e7481d0",
       "queueStatus": "approved"
     }
+  },
+  {
+    "schemaId": "atm.evidence.humanReviewDecision",
+    "specVersion": "0.1.0",
+    "migration": {
+      "strategy": "none",
+      "fromVersion": null,
+      "notes": "Human review decision evidence contract."
+    },
+    "evidenceId": "human-review.guided-legacy-atomize-guidance-20260601060233-3c15dd7171.approve",
+    "workItemId": "LEGACY-GUIDED-ATOMIZE",
+    "evidenceKind": "review",
+    "evidenceType": "human-review-decision",
+    "summary": "Human review approve for guided-legacy-atomize-guidance-20260601060233-3c15dd7171.",
+    "artifactPaths": [
+      ".atm/history/reports/upgrade-proposals.json",
+      ".atm/history/reports/upgrade-proposals.md"
+    ],
+    "createdAt": "2026-06-01T09:10:47.891Z",
+    "producedBy": "Codex reviewer",
+    "reproducibility": {
+      "replayable": true,
+      "replayCommand": [
+        "node",
+        "scripts/validate-human-review.ts"
+      ],
+      "inputs": [
+        ".atm/history/reports/upgrade-proposals.json"
+      ],
+      "expectedArtifacts": [
+        ".atm/history/reports/upgrade-proposals.json",
+        ".atm/history/reports/upgrade-proposals.md"
+      ],
+      "notes": "Replay the human review decision against the queue snapshot and decision hash."
+    },
+    "details": {
+      "proposalId": "guided-legacy-atomize-guidance-20260601060233-3c15dd7171",
+      "atomId": "LEGACY-GUIDED-ATOMIZE",
+      "decision": "approve",
+      "reason": "Approve leaf-only atomize for _check_manifest_resume: candidate ranking, source inventory, police family, and human review packet are all in place; trunk orchestration stays untouched and rollback instructions are explicit.",
+      "queuePath": ".atm/history/reports/upgrade-proposals.json",
+      "projectionPath": ".atm/history/reports/upgrade-proposals.md",
+      "decisionSnapshotHash": "sha256:e93daf2d7bf770cbad989ea9659157b25b0476bcc8ce1a0e19539afe0b96bcd8",
+      "queueStatus": "approved"
+    },
+    "dataVersion": "0.1.0",
+    "artifactVersion": "0.1.0",
+    "artifactVersionKind": "semver"
+  },
+  {
+    "schemaId": "atm.evidence.humanReviewDecision",
+    "specVersion": "0.1.0",
+    "migration": {
+      "strategy": "none",
+      "fromVersion": null,
+      "notes": "Human review decision evidence contract."
+    },
+    "evidenceId": "human-review.guided-legacy-atomize-guidance-20260601093106-d18a5f226c.approve",
+    "workItemId": "LEGACY-GUIDED-ATOMIZE",
+    "evidenceKind": "review",
+    "evidenceType": "human-review-decision",
+    "summary": "Human review approve for guided-legacy-atomize-guidance-20260601093106-d18a5f226c.",
+    "artifactPaths": [
+      ".atm/history/reports/upgrade-proposals.json",
+      ".atm/history/reports/upgrade-proposals.md"
+    ],
+    "createdAt": "2026-06-01T09:31:49.559Z",
+    "producedBy": "ATM reviewer",
+    "reproducibility": {
+      "replayable": true,
+      "replayCommand": [
+        "node",
+        "scripts/validate-human-review.ts"
+      ],
+      "inputs": [
+        ".atm/history/reports/upgrade-proposals.json"
+      ],
+      "expectedArtifacts": [
+        ".atm/history/reports/upgrade-proposals.json",
+        ".atm/history/reports/upgrade-proposals.md"
+      ],
+      "notes": "Replay the human review decision against the queue snapshot and decision hash."
+    },
+    "details": {
+      "proposalId": "guided-legacy-atomize-guidance-20260601093106-d18a5f226c",
+      "atomId": "LEGACY-GUIDED-ATOMIZE",
+      "decision": "approve",
+      "reason": "default_governance_root is a leaf helper with riskLevel=low, fanOut=0, and the guidance session explicitly marks resolve_governance_root / read_governance_json / read_governance_jsonl / load_stable_bootstrap_governance as trunk no-touch zones. The dry-run proposal only needs human review to proceed, and rollback instructions are explicit.",
+      "queuePath": ".atm/history/reports/upgrade-proposals.json",
+      "projectionPath": ".atm/history/reports/upgrade-proposals.md",
+      "decisionSnapshotHash": "sha256:7e70dfb5171dbf29dc1d84adbb6482538c90497ff25f914d431d8eaf0e2d7721",
+      "queueStatus": "approved"
+    },
+    "dataVersion": "0.1.0",
+    "artifactVersion": "0.1.0",
+    "artifactVersionKind": "semver"
+  },
+  {
+    "schemaId": "atm.evidence.humanReviewDecision",
+    "specVersion": "0.1.0",
+    "migration": {
+      "strategy": "none",
+      "fromVersion": null,
+      "notes": "Human review decision evidence contract."
+    },
+    "evidenceId": "human-review.guided-legacy-atomize-guidance-20260601095645-9de64a6e92.approve",
+    "workItemId": "LEGACY-GUIDED-ATOMIZE",
+    "evidenceKind": "review",
+    "evidenceType": "human-review-decision",
+    "summary": "Human review approve for guided-legacy-atomize-guidance-20260601095645-9de64a6e92.",
+    "artifactPaths": [
+      ".atm/history/reports/upgrade-proposals.json",
+      ".atm/history/reports/upgrade-proposals.md"
+    ],
+    "createdAt": "2026-06-01T09:57:41.785Z",
+    "producedBy": "ATM reviewer",
+    "reproducibility": {
+      "replayable": true,
+      "replayCommand": [
+        "node",
+        "scripts/validate-human-review.ts"
+      ],
+      "inputs": [
+        ".atm/history/reports/upgrade-proposals.json"
+      ],
+      "expectedArtifacts": [
+        ".atm/history/reports/upgrade-proposals.json",
+        ".atm/history/reports/upgrade-proposals.md"
+      ],
+      "notes": "Replay the human review decision against the queue snapshot and decision hash."
+    },
+    "details": {
+      "proposalId": "guided-legacy-atomize-guidance-20260601095645-9de64a6e92",
+      "atomId": "LEGACY-GUIDED-ATOMIZE",
+      "decision": "approve",
+      "reason": "_path is a pure leaf helper with low risk and fanOut=1. The guided route still keeps resolve_governance_root, read_governance_json, read_governance_jsonl, and load_stable_bootstrap_governance as trunk no-touch zones, so this dry-run stays within the approved leaf boundary and remains rollback-friendly.",
+      "queuePath": ".atm/history/reports/upgrade-proposals.json",
+      "projectionPath": ".atm/history/reports/upgrade-proposals.md",
+      "decisionSnapshotHash": "sha256:e885d2d6fc33c7a91bbe00dac1694c6c42007dea9c5ca91eda6402ea490bb4e3",
+      "queueStatus": "approved"
+    },
+    "dataVersion": "0.1.0",
+    "artifactVersion": "0.1.0",
+    "artifactVersionKind": "semver"
   }
 ]

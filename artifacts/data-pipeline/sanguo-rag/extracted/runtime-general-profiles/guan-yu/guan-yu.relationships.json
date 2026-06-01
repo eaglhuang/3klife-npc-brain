@@ -2,50 +2,15 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "guan-yu",
   "displayName": "關羽",
-  "generatedAt": "2026-05-30T07:39:09+00:00",
-  "relationshipCount": 12,
+  "generatedAt": "2026-06-01T08:30:33+00:00",
+  "relationshipCount": 10,
   "typeCounts": {
-    "battle_ally": 1,
-    "enemy_rival": 4,
+    "battlefield_contact": 2,
+    "enemy_rival": 3,
     "parent_child": 2,
-    "sibling": 1,
-    "strategy_pressure": 1,
     "sworn_sibling": 3
   },
   "anchors": [
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "sworn_sibling",
-      "typeLabel": "結義兄弟",
-      "originalTypes": [
-        "sworn_sibling"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "007#p6",
-        "025#p2",
-        "073#p9",
-        "ext-card:wikisource-romance:candidate-card:55fb43d96aea8ea126be",
-        "sgyy-baihua#chapter-026#p7;window=7"
-      ],
-      "edgeConfidence": 0.95,
-      "edgeStrength": 0.9,
-      "sourceQuotes": [
-        "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危",
-        "陳震拿出一封信，交給關羽。一看，是劉備寫的信，內容大致是：“我和你，自從桃園結義以來，誓同生死，現在兩下分開，還望能夠再次相聚。",
-        "弓箭手數十騎，乘馬出觀，呵呵大笑：「公孫瓚無能之輩！」正說之間，忽見趙雲沖到面。至，顏良亦引軍來到，兩路并殺。趙雲保公孫瓚殺透重圍，回到界橋。紹驅兵大進，復趕"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline",
-        "oath_or_sworn_sibling_terms"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
     {
       "targetId": "xu-huang",
       "targetName": "徐晃",
@@ -72,34 +37,6 @@
       "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "zhang-fei",
-      "targetName": "張飛",
-      "type": "sworn_sibling",
-      "typeLabel": "結義兄弟",
-      "originalTypes": [
-        "sworn_sibling"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:cd0dba7472ff24cc03b2",
-        "sgyy-baihua#chapter-001#p21;window=1"
-      ],
-      "edgeConfidence": 0.95,
-      "edgeStrength": 0.9,
-      "sourceQuotes": [
-        "於是到了張飛的莊子，進了桃園，桃花盛開，春意盎然。他們擺下酒肉祭品，焚了高香，劉備說：“我劉備，還有關羽、張飛，以年齒排序，雖然不是同姓，但是誌趣相結，從此結為兄弟，戮力同心，上報國家，下安鄉黨。",
-        "」玄德曰：「此關羽，張飛，備結義兄弟也"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
       "targetId": "zhang-liao",
       "targetName": "張遼",
       "type": "enemy_rival",
@@ -117,31 +54,6 @@
       "edgeStrength": 0.9,
       "sourceQuotes": [
         "# 第五十三回 關雲長義釋黃漢升 孫仲謀大戰張文遠"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "zhao-yun",
-      "targetName": "趙雲",
-      "type": "sibling",
-      "typeLabel": "手足",
-      "originalTypes": [
-        "sibling"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "sgyy-baihua#chapter-028#p15;window=5"
-      ],
-      "edgeConfidence": 0.95,
-      "edgeStrength": 0.9,
-      "sourceQuotes": [
-        "於是殺牛宰馬，先拜謝天地，然後慰勞軍隊。劉備見兄弟們又重新相聚，還多了一個趙雲，關羽又得了關平、周倉兩人，非常高興，一連宴飲了好幾天。"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -198,6 +110,41 @@
       "sourceLayer": "stable-bootstrap-seed"
     },
     {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "sworn_sibling",
+      "typeLabel": "結義兄弟",
+      "originalTypes": [
+        "sworn_sibling"
+      ],
+      "directions": [
+        "incoming",
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "005#p14",
+        "007#p6",
+        "025#p2",
+        "028#p5",
+        "073#p9",
+        "ext-card:wikisource-romance:candidate-card:55fb43d96aea8ea126be",
+        "ext-card:wikisource-romance:candidate-card:f58d7b902cdbdaefd2ef"
+      ],
+      "edgeConfidence": 0.9,
+      "edgeStrength": 0.7,
+      "sourceQuotes": [
+        "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危",
+        "弓箭手數十騎，乘馬出觀，呵呵大笑：「公孫瓚無能之輩！」正說之間，忽見趙雲沖到面。至，顏良亦引軍來到，兩路并殺。趙雲保公孫瓚殺透重圍，回到界橋。紹驅兵大進，復趕",
+        "一面使人過江探雲長動靜，方可行事。」諸葛瑾曰：「某聞雲長自到荊州，劉備娶與妻室。。」孫權用其謀，先送滿寵回許都；卻遣諸葛瑾爲使，投荊州來。入城見雲長，禮畢。雲"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline",
+        "oath_or_sworn_sibling_terms"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
       "targetId": "guan-ping",
       "targetName": "關平",
       "type": "parent_child",
@@ -250,10 +197,10 @@
     {
       "targetId": "zhang-fei",
       "targetName": "張飛",
-      "type": "battle_ally",
-      "typeLabel": "戰場同袍",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
       "originalTypes": [
-        "commands"
+        "ruler_subject"
       ],
       "directions": [
         "outgoing",
@@ -268,7 +215,7 @@
         "：「吾已取樊城多時矣！」眾驚視之，乃關雲長也。仁大驚，撥馬便走。雲長追殺過來。。船渡河，岸上一彪軍殺到，爲首大將，乃張飛也。曹仁死戰，李典保護曹仁下船渡河。"
       ],
       "refinementReasons": [
-        "zhang_fei_battle_ally_context"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "accepted-review-candidate",
       "sourceLayer": null
@@ -276,10 +223,10 @@
     {
       "targetId": "zhuge-liang",
       "targetName": "諸葛亮",
-      "type": "strategy_pressure",
-      "typeLabel": "策略牽制",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
       "originalTypes": [
-        "commands"
+        "patron_client"
       ],
       "directions": [
         "outgoing",
@@ -294,29 +241,31 @@
         "等到漢津，已有船隻伺候，雲長請玄德并甘夫人、阿斗至船中坐定。雲長問曰：「二嫂嫂。見雲長，即勒住馬，回顧眾將曰：「又中諸葛亮之計也！」傳令大軍速退。雲長追趕十數"
       ],
       "refinementReasons": [
-        "strategy_context_terms"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "accepted-review-candidate",
       "sourceLayer": null
     },
     {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "targetId": "zhang-fei",
+      "targetName": "張飛",
+      "type": "sworn_sibling",
+      "typeLabel": "結義兄弟",
       "originalTypes": [
-        "enemy_rival"
+        "sworn_sibling"
       ],
       "directions": [
-        "outgoing"
+        "outgoing",
+        "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:753828c01a532c7944ec"
+        "ext-card:wikisource-romance:candidate-card:4f6f4bd4ec3681945c19",
+        "ext-card:wikisource-romance:candidate-card:f58d7b902cdbdaefd2ef"
       ],
-      "edgeConfidence": 0.77,
-      "edgeStrength": 0.65,
+      "edgeConfidence": 0.69,
+      "edgeStrength": 0.57,
       "sourceQuotes": [
-        "雲長見了，把馬一拍，舞八十二斤青龍偃月刀，來夾攻呂布"
+        "」次日，於桃園中，備下烏牛白馬祭禮等項，三人焚香再拜而說誓曰：「念劉備、關羽、張飛，雖然異姓，既結為兄弟，則同心協力，救困扶危"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -330,7 +279,7 @@
       "targetId": "liu-bei",
       "targetName": "劉備",
       "type": "battlefield_contact",
-      "originalType": "commands",
+      "originalType": "ruler_subject",
       "evidenceRefs": [
         "036#p5"
       ],
@@ -340,15 +289,15 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "cao-cao",
       "targetName": "曹操",
-      "type": "intimidates_enemy",
-      "originalType": "commands",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -358,15 +307,15 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "enemy_retreat_or_intimidation_terms"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "cao-cao",
       "targetName": "曹操",
-      "type": "intimidates_enemy",
-      "originalType": "commands",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -376,15 +325,15 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "enemy_retreat_or_intimidation_terms"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "cao-ren",
       "targetName": "曹仁",
-      "type": "battlefield_opponent",
-      "originalType": "commands",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "073#p9"
       ],
@@ -393,15 +342,15 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "battlefield_opponent_target"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "cao-ren",
       "targetName": "曹仁",
-      "type": "battlefield_opponent",
-      "originalType": "commands",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "073#p9"
       ],
@@ -410,41 +359,151 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "battlefield_opponent_target"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "xiahou-dun",
       "targetName": "夏侯惇",
-      "type": "battlefield_opponent",
-      "originalType": "confronts",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
       "evidenceRefs": [
         "025#p2"
       ],
       "sourceQuote": "曰：「汝且說我那三罪？」遼曰：「當初劉使君與兄結義之時，誓同生死。今使君方敗，。復得，豈不負當年之盟誓乎？其罪一也。劉使君以家眷付託於兄，兄今戰死，二夫人無所",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
-        "battlefield_opponent_target"
+        "source_graph_refined_type"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "xiahou-dun",
       "targetName": "夏侯惇",
-      "type": "battlefield_opponent",
-      "originalType": "confronts",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
       "evidenceRefs": [
         "025#p2"
       ],
       "sourceQuote": "曰：「汝且說我那三罪？」遼曰：「當初劉使君與兄結義之時，誓同生死。今使君方敗，。復得，豈不負當年之盟誓乎？其罪一也。劉使君以家眷付託於兄，兄今戰死，二夫人無所",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
-        "battlefield_opponent_target"
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "hua-xiong",
+      "targetName": "華雄",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "005#p15"
+      ],
+      "sourceQuote": "。」紹問：「現居何職？」瓚曰：「跟隨劉玄德充馬弓手。」帳上袁術大喝曰：「汝欺吾",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "hua-xiong",
+      "targetName": "華雄",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "005#p15"
+      ],
+      "sourceQuote": "。」紹問：「現居何職？」瓚曰：「跟隨劉玄德充馬弓手。」帳上袁術大喝曰：「汝欺吾",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "005#p18"
+      ],
+      "sourceQuote": "議間，呂布復引兵搦戰。八路諸侯齊出。公孫瓚揮槊親戰呂布。戰不數合，瓚敗走，呂布",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "005#p18"
+      ],
+      "sourceQuote": "議間，呂布復引兵搦戰。八路諸侯齊出。公孫瓚揮槊親戰呂布。戰不數合，瓚敗走，呂布",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-liao",
+      "targetName": "張遼",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "016#p11"
+      ],
+      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-liao",
+      "targetName": "張遼",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "016#p11"
+      ],
+      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
       ],
       "reviewStatus": "rejected-runtime-export"
     }

@@ -4,20 +4,16 @@ import json
 from pathlib import Path
 from typing import Any
 
-from repo_layout import resolve_npc_brain_root, resolve_repo_root
+from repo_layout import resolve_repo_root
+from sanguo_governance_defaults import DEFAULT_GOVERNANCE_ROOT, default_governance_root  # re-export for compatibility
+from sanguo_governance_paths import _path  # re-export for compatibility
 
 
 REPO_ROOT = resolve_repo_root(__file__)
-NPC_BRAIN_ROOT = resolve_npc_brain_root(REPO_ROOT)
-DEFAULT_GOVERNANCE_ROOT = NPC_BRAIN_ROOT / "data/sanguo"
 
 
 class SanguoGovernanceError(ValueError):
     pass
-
-
-def default_governance_root() -> Path:
-    return DEFAULT_GOVERNANCE_ROOT
 
 
 def resolve_governance_root(path_text: str | Path | None) -> Path:
@@ -27,10 +23,6 @@ def resolve_governance_root(path_text: str | Path | None) -> Path:
     if path.is_absolute():
         return path.resolve()
     return (REPO_ROOT / path).resolve()
-
-
-def _path(root: Path, section: str, filename: str) -> Path:
-    return (root / section / filename).resolve()
 
 
 def read_governance_json(path: Path, *, required_id: str | None = None) -> dict[str, Any]:

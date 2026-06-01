@@ -2,64 +2,33 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "lu-bu",
   "displayName": "呂布",
-  "generatedAt": "2026-05-21T09:52:24+00:00",
-  "relationshipCount": 20,
+  "generatedAt": "2026-06-01T08:31:41+00:00",
+  "relationshipCount": 9,
   "typeCounts": {
+    "adoptive_parent_child": 2,
     "battlefield_contact": 4,
-    "enemy_rival": 12,
-    "parent_child": 2,
-    "ruler_subject": 1,
-    "sibling": 1
+    "enemy_rival": 2,
+    "spouse": 1
   },
   "anchors": [
     {
-      "targetId": "cao-ren",
-      "targetName": "曹仁",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "spouse",
+      "typeLabel": "夫妻姻親",
       "originalTypes": [
-        "enemy_rival"
+        "spouse"
       ],
       "directions": [
-        "incoming",
-        "outgoing"
+        "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:a163bc846375a642e641",
-        "ext-card:wikisource-sanguozhi:candidate-card:f17093cf94ad10c3876f"
+        "sgyy-baihua#chapter-013#p2;window=10"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "復從攻 張繡 於 穰 ，禽 呂布 於 下邳 ，別與 史渙 、 曹仁 攻 眭固 於 射犬 ，破斬之"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "dong-zhuo",
-      "targetName": "董卓",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:018299f1daab7e584efc",
-        "ext-card:wikisource-sanguozhi:candidate-card:a31d766234743631cf58"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "」董卓未及回言，呂布飛馬直殺過來",
-        "董卓敗，濟與李傕等擊呂布，為卓報仇"
+        "呂布又讓自己的妻子兒女來拜見劉備。劉備再三謙讓。"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -68,65 +37,37 @@
       "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "wang-yun",
-      "targetName": "王允",
+      "targetId": "tao-qian",
+      "targetName": "陶謙",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
         "enemy_rival"
       ],
       "directions": [
-        "outgoing",
-        "incoming"
+        "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:010f065b470a2740dcda",
-        "ext-card:wikisource-sanguozhi:candidate-card:4efb0282293737ebe458"
+        "sgyy-baihua#chapter-012#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "夏四月，司徒王允與呂布共殺卓",
-        "〉 夏四月，司徒王允與呂布共殺卓"
+        "# 第十二回 陶恭祖三讓徐州 曹孟穗大戰呂布"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "zhang-xiu",
-      "targetName": "張繡",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:82186061c9924ebbe003"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "從征 張繡 於 安衆 ，圍 呂布 於 下邳 ，破別將，擊 眭固 於 射犬 ，攻 劉備 於 沛 ，皆破之，拜討寇校尉"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
       "targetId": "ding-yuan",
       "targetName": "丁原",
-      "type": "parent_child",
-      "typeLabel": "親子",
+      "type": "adoptive_parent_child",
+      "typeLabel": "adoptive_parent_child",
       "originalTypes": [
-        "parent_child"
+        "adoptive_parent_child"
       ],
       "directions": [
         "incoming"
@@ -146,10 +87,10 @@
     {
       "targetId": "dong-zhuo",
       "targetName": "董卓",
-      "type": "parent_child",
-      "typeLabel": "親子",
+      "type": "adoptive_parent_child",
+      "typeLabel": "adoptive_parent_child",
       "originalTypes": [
-        "parent_child"
+        "adoptive_parent_child"
       ],
       "directions": [
         "incoming"
@@ -193,31 +134,6 @@
       "sourceLayer": null
     },
     {
-      "targetId": "cao-cao",
-      "targetName": "曹操",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:5db87eb1a0dd872dda29"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "卻說曹操攻城，兩月不下，忽報：「河內太守張揚出兵東市，欲救呂布"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
       "targetId": "hou-cheng",
       "targetName": "侯成",
       "type": "battlefield_contact",
@@ -243,82 +159,6 @@
       "sourceLayer": null
     },
     {
-      "targetId": "hou-cheng",
-      "targetName": "侯成",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "accepted-review-candidate",
-      "sourceLayer": null
-    },
-    {
-      "targetId": "le-jin",
-      "targetName": "樂進",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "accepted-review-candidate",
-      "sourceLayer": null
-    },
-    {
-      "targetId": "li-jue",
-      "targetName": "李傕",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:9c1547328157bf7ee826"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "李傕、郭汜知之，遂斬龐舒，寫書與張揚，教殺呂布"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
       "targetId": "liu-bei",
       "targetName": "劉備",
       "type": "enemy_rival",
@@ -331,143 +171,13 @@
         "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:5c27caa877271113de06",
+        "ext-card:wikisource-romance:candidate-card:24606d73f75a7e67a65c",
         "ext-card:wikisource-romance:candidate-card:af45035ff966cb4cc181"
       ],
       "edgeConfidence": 0.82,
       "edgeStrength": 0.7,
       "sourceQuotes": [
-        "」遂不聽昱言，以兵三千，糧萬斛，送與玄德，使往豫州到任，進兵屯小沛，招集原散之兵，攻呂布",
         "操親提大軍，與玄德來戰呂布"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "sibling",
-      "typeLabel": "手足",
-      "originalTypes": [
-        "sibling"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:013c6cfffc626e2bd18d"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "臨行，令玄德仍屯兵小沛，與呂布結為兄弟，互相救助，再無相侵"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "romance-person-5f35-52f3",
-      "targetName": "張勳",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:f2e3cbbc05505c8c4ecf"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "張勳軍到，料敵呂布不過，且退二十里屯住，待四下兵接應"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "xiahou-dun",
-      "targetName": "夏侯惇",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "006#p7",
-        "ext-card:wikisource-romance:candidate-card:4c27095343ce903af844"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "夏侯惇抵敵呂布不住，飛馬回陣",
-        "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline",
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "yan-liang",
-      "targetName": "顏良",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:d50dfbbd16c007bac332"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "操駭然，回顧呂布舊將宋憲曰：「吾聞汝乃呂布部下猛將，今可與顏良一戰"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "yu-jin",
-      "targetName": "于禁",
-      "type": "ruler_subject",
-      "typeLabel": "君臣主從",
-      "originalTypes": [
-        "ruler_subject"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:7611e18f6ebd410e0c20"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "操即分呂布一軍在左，玄德一軍在右，自統大軍居中，令夏侯惇、于禁為先鋒"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -586,7 +296,8 @@
       ],
       "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -603,7 +314,8 @@
       ],
       "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -638,7 +350,8 @@
       ],
       "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -655,7 +368,8 @@
       ],
       "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -690,7 +404,8 @@
       ],
       "sourceQuote": "軍亂竄，敗走三十餘里，折軍大半。來見呂布，布大怒，曰：「汝何挫吾銳氣！」遂斬",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -707,7 +422,8 @@
       ],
       "sourceQuote": "軍亂竄，敗走三十餘里，折軍大半。來見呂布，布大怒，曰：「汝何挫吾銳氣！」遂斬",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -843,7 +559,8 @@
       ],
       "sourceQuote": "東將軍，特賜印綬。又出操私書。王則在呂布面前，極道曹公相敬之意，布大喜。忽報",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -860,7 +577,9 @@
       ],
       "sourceQuote": "卓怒，引軍同李儒出迎。兩陣對圓，只見呂布頂束髮金冠，披百花戰袍，擐唐猊鎧甲，",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -877,7 +596,9 @@
       ],
       "sourceQuote": "卓怒，引軍同李儒出迎。兩陣對圓，只見呂布頂束髮金冠，披百花戰袍，擐唐猊鎧甲，",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -894,7 +615,8 @@
       ],
       "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -911,7 +633,8 @@
       ],
       "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -962,7 +685,8 @@
       ],
       "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -979,7 +703,8 @@
       ],
       "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -996,7 +721,8 @@
       ],
       "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1013,7 +739,8 @@
       ],
       "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1030,7 +757,8 @@
       ],
       "sourceQuote": "議間，呂布復引兵搦戰。八路諸侯齊出。公孫瓚揮槊親戰呂布。戰不數合，瓚敗走，呂布",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1047,7 +775,8 @@
       ],
       "sourceQuote": "議間，呂布復引兵搦戰。八路諸侯齊出。公孫瓚揮槊親戰呂布。戰不數合，瓚敗走，呂布",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1064,7 +793,8 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1081,7 +811,8 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1098,7 +829,25 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "le-jin",
+      "targetName": "樂進",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p15"
+      ],
+      "sourceQuote": "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後",
+      "rejectionReasons": [
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1115,7 +864,8 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1132,7 +882,8 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1149,7 +900,8 @@
       ],
       "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1166,7 +918,8 @@
       ],
       "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1183,7 +936,6 @@
       ],
       "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
       "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
@@ -1201,7 +953,6 @@
       ],
       "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
       "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
@@ -1219,7 +970,6 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
@@ -1237,7 +987,6 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
@@ -1273,7 +1022,8 @@
       ],
       "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1290,7 +1040,42 @@
       ],
       "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "hou-cheng",
+      "targetName": "侯成",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p15"
+      ],
+      "sourceQuote": "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後",
+      "rejectionReasons": [
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "hou-cheng",
+      "targetName": "侯成",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p15"
+      ],
+      "sourceQuote": "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後",
+      "rejectionReasons": [
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1307,7 +1092,8 @@
       ],
       "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1324,7 +1110,8 @@
       ],
       "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1359,7 +1146,8 @@
       ],
       "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1376,7 +1164,8 @@
       ],
       "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1574,16 +1363,16 @@
       "reviewStatus": "rejected-runtime-export"
     },
     {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
+      "targetId": "xiahou-dun",
+      "targetName": "夏侯惇",
       "type": "enemy_rival",
       "originalType": "enemy_rival",
       "evidenceRefs": [
-        "014#p11"
+        "006#p7"
       ],
-      "sourceQuote": "」彧曰：「可暗令人往袁術處通問，報說劉備上密表，要略南郡。術聞之必怒而攻備。",
+      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -1600,7 +1389,26 @@
       ],
       "sourceQuote": "」彧曰：「可暗令人往袁術處通問，報說劉備上密表，要略南郡。術聞之必怒而攻備。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "014#p11"
+      ],
+      "sourceQuote": "」彧曰：「可暗令人往袁術處通問，報說劉備上密表，要略南郡。術聞之必怒而攻備。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"

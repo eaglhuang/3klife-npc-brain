@@ -196,6 +196,32 @@ class DeterministicTemplateProvider:
 
     def generate(self, package: DialoguePromptPackage) -> DialogueGenerationResult:
         resolved_refs = [evidence.evidenceRef for evidence in package.resolvedEvidence]
+        selected_task = str((package.selectedContext or {}).get("task") or "").strip()
+        if selected_task == "scene-script-pack-v2":
+            # [已過時] Deterministic structured scene output is an emergency
+            # fallback only. The normal scene-director path is live llm_script_v2.
+            text = self._generate_scene_script_pack_v2_text(package)
+            return DialogueGenerationResult(
+                text=text,
+                provider=self.name,
+                model=None,
+                generationMode="deterministic-template-v1+scene-script-pack-v2",
+                fallbackUsed=True,
+                usedEvidenceRefs=resolved_refs,
+                qualityWarnings=["scene_script_pack_v2_deterministic_fallback"],
+            )
+        if selected_task == "scene-chorus-batch-v2":
+            # [已過時] Deterministic chorus output is only for provider outages.
+            text = self._generate_scene_chorus_batch_v2_text(package)
+            return DialogueGenerationResult(
+                text=text,
+                provider=self.name,
+                model=None,
+                generationMode="deterministic-template-v1+scene-chorus-batch-v2",
+                fallbackUsed=True,
+                usedEvidenceRefs=resolved_refs,
+                qualityWarnings=["scene_chorus_batch_v2_deterministic_fallback"],
+            )
         return DialogueGenerationResult(
             text=package.deterministicText[: package.maxChars],
             provider=self.name,
@@ -204,6 +230,183 @@ class DeterministicTemplateProvider:
             fallbackUsed=not bool(resolved_refs),
             usedEvidenceRefs=resolved_refs,
         )
+
+    def _first_text(self, *values: object) -> str:
+        for value in values:
+            text = " ".join(str(value or "").split()).strip()
+            if text:
+                return text
+        return ""
+
+    def _scene_seed_text(self, selected_context: dict | None) -> str:
+        scene_seeds = (selected_context or {}).get("sceneSeeds") if isinstance(selected_context, dict) else {}
+        if not isinstance(scene_seeds, dict):
+            scene_seeds = {}
+        people: list[str] = []
+        for item in scene_seeds.get("people") or []:
+            if not isinstance(item, dict):
+                continue
+            label = self._first_text(item.get("label"), item.get("id"))
+            if label:
+                people.append(label)
+        objects = [self._first_text(item) for item in (scene_seeds.get("objects") or [])]
+        pieces = [
+            self._first_text(scene_seeds.get("event")),
+            self._first_text(scene_seeds.get("time")),
+            self._first_text(scene_seeds.get("place")),
+            self._first_text(scene_seeds.get("emotion")),
+            "、".join(people),
+            "、".join(item for item in objects if item),
+        ]
+        return "；".join(piece for piece in pieces if piece)
+
+    def _fit_sentence(self, text: str, minimum: int = 16, maximum: int = 110) -> str:
+        cleaned = re.sub(r"\s+", " ", str(text or "")).strip()
+        if not cleaned:
+            return ""
+        if len(cleaned) > maximum:
+            cleaned = cleaned[:maximum]
+        if len(cleaned) < minimum:
+            return cleaned
+        for punctuation in "。！？!?；;":
+            index = cleaned.rfind(punctuation)
+            if minimum <= index + 1 <= maximum:
+                return cleaned[: index + 1]
+        return cleaned
+
+    def _structured_persona_anchor_text(self, package: DialoguePromptPackage) -> str:
+        voice_style = [str(item).strip() for item in (package.personaCardSubset.get("voiceStyle") or []) if str(item).strip()]
+        traits = [str(item).strip() for item in (package.personaCardSubset.get("personalityTraits") or []) if str(item).strip()]
+        return "、".join([*voice_style[:2], *traits[:2]])
+
+    def _generate_scene_script_pack_v2_text(self, package: DialoguePromptPackage) -> str:
+        selected_context = package.selectedContext or {}
+        persona_name = self._first_text(package.personaCardSubset.get("displayName"), package.personaCardSubset.get("name"), package.generalId)
+        target = selected_context.get("activeTarget") if isinstance(selected_context, dict) else {}
+        target_name = self._first_text(target.get("label") if isinstance(target, dict) else None, target.get("targetId") if isinstance(target, dict) else None, "對方")
+        short_term = self._first_text((package.memoryContext or {}).get("shortTerm"), (package.memoryContext or {}).get("playerProfile"))
+        long_term = self._first_text((package.memoryContext or {}).get("longTerm"), (package.memoryContext or {}).get("directorInstructions"))
+        seed_text = self._scene_seed_text(selected_context)
+        seed_focus = self._first_text(seed_text, short_term, long_term)
+        memory_text = self._fit_sentence(f"{persona_name}想起{target_name}與這一幕的牽連，{seed_focus}", minimum=18, maximum=54)
+        emotion_text = self._fit_sentence(f"他心裡先沉下來，再把牽掛與責任一併收住。", minimum=14, maximum=44)
+        dialogue_text = self._fit_sentence(f"{target_name}，這一路我不會讓你再獨自承擔。", minimum=14, maximum=40)
+        intent_text = self._fit_sentence(f"接下來他要把眼前這件事安排穩，再往前推進。", minimum=14, maximum=44)
+        story_text = self._fit_sentence(
+            f"{persona_name}站在{self._first_text(selected_context.get('sceneFacts', {}).get('place'), selected_context.get('sceneSeeds', {}).get('place'), '眼前的場面')}，"
+            f"看著{target_name}與眾人，想起{self._first_text(seed_text, short_term)}，"
+            f"心裡的牽掛與責任慢慢攏在一起。他先壓住急切，分辨誰在身旁、事從何起、此刻天時地利又落在哪裡；"
+            f"再把那件牽動眾人的物事收進眼底，讓悲喜不外露，只化成一句能安人心的承諾。"
+            f"於是他向{target_name}點頭，決定先把眼前這樁事安穩下來，再帶眾人往下一步走。",
+            minimum=180,
+            maximum=240,
+        )
+        payload = {
+            "memoryText": memory_text or persona_name,
+            "emotionText": emotion_text or "心裡先穩住，再慢慢想下一步。",
+            "dialogueText": dialogue_text or f"{target_name}，先把眼前這件事守住。",
+            "intentText": intent_text or "接下來先把局面收穩，再往前走。",
+            "storyText": story_text or f"{persona_name}與{target_name}對望，先把局面穩住。",
+            "usedSeedKeys": [
+                key
+                for key, value in {
+                    "people": self._first_text(seed_text),
+                    "event": self._first_text((package.selectedContext or {}).get("sceneSeeds", {}).get("event") if isinstance(package.selectedContext, dict) else ""),
+                    "time": self._first_text((package.selectedContext or {}).get("sceneSeeds", {}).get("time") if isinstance(package.selectedContext, dict) else ""),
+                    "place": self._first_text((package.selectedContext or {}).get("sceneSeeds", {}).get("place") if isinstance(package.selectedContext, dict) else ""),
+                    "objects": self._first_text((package.selectedContext or {}).get("sceneSeeds", {}).get("objects") if isinstance(package.selectedContext, dict) else ""),
+                    "emotion": self._first_text((package.selectedContext or {}).get("sceneSeeds", {}).get("emotion") if isinstance(package.selectedContext, dict) else ""),
+                }.items()
+                if value
+            ],
+            "usedPersonaAnchors": [anchor for anchor in [persona_name, target_name, self._structured_persona_anchor_text(package)] if anchor],
+            "violations": [],
+        }
+        return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+
+    def _speaker_seed_focus(self, speaker: dict, selected_context: dict | None) -> str:
+        scene_grounding = selected_context.get("sceneGrounding") if isinstance(selected_context, dict) else []
+        if isinstance(scene_grounding, list):
+            for item in scene_grounding:
+                text = self._first_text(item)
+                if text:
+                    return text
+        focus_hint = self._first_text(speaker.get("focusHint"), speaker.get("seedHint"), speaker.get("voiceHook"))
+        if focus_hint:
+            return focus_hint
+        seed_text = self._scene_seed_text(selected_context)
+        return seed_text or "這一幕"
+
+    def _generate_scene_chorus_batch_v2_text(self, package: DialoguePromptPackage) -> str:
+        selected_context = package.selectedContext or {}
+        speakers = selected_context.get("speakers") if isinstance(selected_context, dict) else []
+        if not isinstance(speakers, list):
+            speakers = []
+        scene_script = self._first_text(selected_context.get("sceneScript"), (package.memoryContext or {}).get("shortTerm"))
+        scene_seed_text = self._scene_seed_text(selected_context)
+        chorus_lines: list[dict[str, object]] = []
+        templates = [
+            "先把局面看清，再決定要不要出手。",
+            "這件事不能只看表面，得先把牽連理順。",
+            "若讓這股氣先亂，後面就更難收拾。",
+            "話要說重一點，但動作得先穩住。",
+        ]
+        for index, speaker in enumerate(speakers[:4]):
+            if not isinstance(speaker, dict):
+                continue
+            target_id = self._first_text(speaker.get("targetId"), f"speaker-{index + 1}")
+            label = self._first_text(speaker.get("label"), target_id)
+            role = self._first_text(speaker.get("role"), "路人")
+            seed_focus = self._speaker_seed_focus(speaker, selected_context)
+            guidance = self._first_text(speaker.get("guidance"))
+            voice_hook = self._first_text(speaker.get("voiceHook"), speaker.get("voiceTag"))
+            traits = [self._first_text(item) for item in (speaker.get("personalityTraits") or []) if self._first_text(item)]
+            voice_style = [self._first_text(item) for item in (speaker.get("voiceStyle") or []) if self._first_text(item)]
+            template = templates[index % len(templates)]
+            if index == 0 and guidance:
+                template = f"{seed_focus}要先穩住，別急著下定論。"
+            elif index == 1 and voice_hook:
+                template = f"{voice_hook}裡藏著提醒，得先把{self._fit_sentence(seed_focus, 2, 18)}看明白。"
+            elif index == 2 and traits:
+                template = f"{traits[0]}的人看這幕，最怕{self._fit_sentence(seed_focus, 2, 18)}先散掉。"
+            elif index == 3 and voice_style:
+                template = f"{voice_style[0]}一出手，最好先替{self._fit_sentence(seed_focus, 2, 18)}留條路。"
+            line_text = self._fit_sentence(f"{template}", minimum=12, maximum=72)
+            if not line_text:
+                line_text = templates[index % len(templates)]
+            chorus_lines.append(
+                {
+                    "targetId": target_id,
+                    "label": label,
+                    "role": role,
+                    "text": line_text,
+                    "usedSeedKeys": [key for key, value in {
+                        "sceneScript": scene_script,
+                        "sceneSeed": seed_focus,
+                        "voiceHook": voice_hook,
+                        "guidance": guidance,
+                    }.items() if value],
+                    "usedPersonaAnchors": [anchor for anchor in [voice_hook, *traits[:2], *voice_style[:2]] if anchor],
+                    "voiceTag": self._first_text(voice_hook, *traits, *voice_style, role),
+                    "violations": [],
+                }
+            )
+        if not chorus_lines:
+            chorus_lines = [
+                {
+                    "targetId": f"speaker-{index + 1}",
+                    "label": f"speaker-{index + 1}",
+                    "role": "路人",
+                    "text": template,
+                    "usedSeedKeys": [key for key, value in {"sceneScript": scene_script, "sceneSeed": scene_seed_text}.items() if value],
+                    "usedPersonaAnchors": [],
+                    "voiceTag": "",
+                    "violations": [],
+                }
+                for index, template in enumerate(templates[:4])
+            ]
+        payload = {"chorusLines": chorus_lines[:4]}
+        return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
 
 
 class MockDialogueProvider:
@@ -257,7 +460,12 @@ class GeminiDialogueProvider:
             raise ProviderUnavailableError("gemini:no-api-key")
         tone_mode = str(package.toneMode or "").strip().lower()
         selected_task = str((package.selectedContext or {}).get("task") or "").strip()
-        allow_memory_only = tone_mode == "narrative_fusion" or selected_task in {"chorus-line", "chorus-line-rewrite"}
+        allow_memory_only = tone_mode == "narrative_fusion" or selected_task in {
+            "chorus-line",
+            "chorus-line-rewrite",
+            "scene-script-pack-v2",
+            "scene-chorus-batch-v2",
+        }
         if not package.resolvedEvidence and not allow_memory_only:
             raise ProviderUnavailableError("gemini:no-resolved-evidence")
 
@@ -294,8 +502,9 @@ class GeminiDialogueProvider:
         )
         quality_warnings = [f"repaired:{warning}" for warning in original_warnings[:4]] if repair_used else []
 
+        final_text = dialogue_text if self._is_structured_scene_task(package) else self._compact_dialogue_text(dialogue_text, package.maxChars)
         return DialogueGenerationResult(
-            text=self._compact_dialogue_text(dialogue_text, package.maxChars),
+            text=final_text,
             provider=self.name,
             model=self.model,
             generationMode="gemini-json-v2+persona-card+repair-guard",
@@ -395,13 +604,13 @@ class GeminiDialogueProvider:
         package: DialoguePromptPackage,
     ) -> tuple[dict, str, list[str], list[str]]:
         parsed = self._parse_json_text(response_text)
-        dialogue_text = self._extract_dialogue_text(parsed)
+        dialogue_text = self._extract_structured_scene_text(parsed, package) if self._is_structured_scene_task(package) else self._extract_dialogue_text(parsed)
         if not dialogue_text:
             raise ProviderOutputError(f"{self.name}:empty-text")
         used_keyword_keys = self._extract_used_keyword_keys(parsed, package)
-        if not self._matches_selected_keyword_focus(dialogue_text, package, used_keyword_keys):
+        if not self._is_structured_scene_task(package) and not self._matches_selected_keyword_focus(dialogue_text, package, used_keyword_keys):
             raise ProviderOutputError(f"{self.name}:missing-keyword-focus")
-        if self._violates_taboos(dialogue_text, package):
+        if not self._is_structured_scene_task(package) and self._violates_taboos(dialogue_text, package):
             raise ProviderOutputError(f"{self.name}:taboo-violation")
 
         allowed_refs = {evidence.evidenceRef for evidence in package.resolvedEvidence}
@@ -415,13 +624,14 @@ class GeminiDialogueProvider:
             original_prompt: dict | str = json.loads(self._build_prompt(package))
         except json.JSONDecodeError:
             original_prompt = self._build_prompt(package)[:6000]
+        structured_task = self._is_structured_scene_task(package)
         payload = {
-            "task": "Repair or regenerate the previous Gemini output into a valid NPC dialogue JSON object.",
+            "task": "Repair or regenerate the previous Gemini output into the requested scene JSON object." if structured_task else "Repair or regenerate the previous Gemini output into a valid NPC dialogue JSON object.",
             "blockingIssues": warnings,
             "previousOutput": raw_text[:1600],
             "repairRules": [
                 "Return exactly one JSON object and no markdown.",
-                "The JSON object must contain top-level text, usedKeywordKeys, usedEvidenceRefs, usedPersonaAnchors, safetyFallbackUsed, and violations.",
+                "Follow originalPrompt.outputContract exactly." if structured_task else "The JSON object must contain top-level text, usedKeywordKeys, usedEvidenceRefs, usedPersonaAnchors, safetyFallbackUsed, and violations.",
                 "If previousOutput is partial or invalid, regenerate from originalPrompt instead of copying the broken format.",
                 "Keep the same speakerGeneralId, locale, speechContextMode, selectedKeywords, and resolvedEvidence intent.",
                 "Do not add unsupported historical facts.",
@@ -437,6 +647,51 @@ class GeminiDialogueProvider:
         nested_format = parsed.get("format")
         if isinstance(nested_format, dict):
             return str(nested_format.get("text") or "").strip()
+        return ""
+
+    def _is_structured_scene_task(self, package: DialoguePromptPackage) -> bool:
+        selected_task = str((package.selectedContext or {}).get("task") or "").strip()
+        return selected_task in {"scene-script-pack-v2", "scene-chorus-batch-v2"}
+
+    def _extract_structured_scene_text(self, parsed: dict, package: DialoguePromptPackage) -> str:
+        selected_task = str((package.selectedContext or {}).get("task") or "").strip()
+        if selected_task == "scene-script-pack-v2":
+            payload = {
+                "memoryText": str(parsed.get("memoryText") or "").strip(),
+                "emotionText": str(parsed.get("emotionText") or "").strip(),
+                "dialogueText": str(parsed.get("dialogueText") or "").strip(),
+                "intentText": str(parsed.get("intentText") or "").strip(),
+                "storyText": str(parsed.get("storyText") or "").strip(),
+                "usedSeedKeys": parsed.get("usedSeedKeys") if isinstance(parsed.get("usedSeedKeys"), list) else [],
+                "usedPersonaAnchors": parsed.get("usedPersonaAnchors") if isinstance(parsed.get("usedPersonaAnchors"), list) else [],
+                "violations": parsed.get("violations") if isinstance(parsed.get("violations"), list) else [],
+            }
+            if not any(payload[key] for key in ["memoryText", "emotionText", "dialogueText", "intentText", "storyText"]):
+                return ""
+            return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        if selected_task == "scene-chorus-batch-v2":
+            raw_lines = parsed.get("chorusLines")
+            if not isinstance(raw_lines, list):
+                raw_lines = []
+            lines: list[dict] = []
+            for raw_line in raw_lines:
+                if not isinstance(raw_line, dict):
+                    continue
+                lines.append(
+                    {
+                        "targetId": str(raw_line.get("targetId") or "").strip(),
+                        "label": str(raw_line.get("label") or "").strip(),
+                        "role": str(raw_line.get("role") or "").strip(),
+                        "text": str(raw_line.get("text") or "").strip(),
+                        "usedSeedKeys": raw_line.get("usedSeedKeys") if isinstance(raw_line.get("usedSeedKeys"), list) else [],
+                        "usedPersonaAnchors": raw_line.get("usedPersonaAnchors") if isinstance(raw_line.get("usedPersonaAnchors"), list) else [],
+                        "voiceTag": str(raw_line.get("voiceTag") or "").strip(),
+                        "violations": raw_line.get("violations") if isinstance(raw_line.get("violations"), list) else [],
+                    }
+                )
+            if not lines:
+                return ""
+            return json.dumps({"chorusLines": lines}, ensure_ascii=False, separators=(",", ":"))
         return ""
 
     def _build_prompt(self, package: DialoguePromptPackage) -> str:
@@ -456,6 +711,114 @@ class GeminiDialogueProvider:
             }
             for evidence in package.resolvedEvidence[:5]
         ]
+        selected_task = str((package.selectedContext or {}).get("task") or "").strip()
+        if selected_task == "scene-script-pack-v2":
+            payload = {
+                "task": "Generate a structured protagonist scene script pack for a Three Kingdoms memory theatre.",
+                "hardRules": [
+                    "Return JSON only and no markdown.",
+                    "Use only personaCardSubset, selectedContext, selectedKeywords, resolvedEvidence, and draftFragments.",
+                    "The protagonist is selectedContext.mainActor; the counterpart is selectedContext.activeTarget. Do not swap their actions or emotions.",
+                    "First write four clear protagonist beats: remembered fact, inner emotional shift, one line to the counterpart, and next intended action.",
+                    "Then write one natural zh-TW short theatre paragraph of 180-220 Traditional Chinese characters that a character can perform.",
+                    "If storyText would fall under 180 characters, add one grounded clause about the immediate consequence or next action before returning.",
+                    "The storyText must be a natural performable paragraph, not a seed dump or field-by-field summary.",
+                    "Outside quoted speech, keep one stable third-person narration centered on selectedContext.mainActor; do not switch between the protagonist name, 我, and 他 inside narration.",
+                    "Prefer one fixed narrator anchor outside quotes, ideally selectedContext.mainActor.displayName, and keep that anchor stable through the whole paragraph.",
+                    "Outside quoted speech, selectedContext.activeTarget must keep one canonical name; do not switch back and forth between alternate forms such as personal name and title.",
+                    "Do not let adjacent sentences restate the same beat with near-duplicate wording such as 剛相見 / 方才相見; compress repeated clauses into one sharper progression.",
+                    "End storyText on a concrete move, constraint, or decision in the current scene, not on abstract template phrases about 情分, 命運, 去路, or vague feelings alone.",
+                    "The six scene elements must feel woven into one advancing scene; if an element is only name-dropped but does not help the scene move, rewrite it more naturally.",
+                    "The six elements in sceneSeeds are people, event, time, place, object, and emotion; storyText should naturally integrate at least 4 of them, and ideally 5-6.",
+                    "Do not stitch those elements together with semicolons, slashes, labels, bullets, or summary-style field names such as people/event/time/place/objects/emotion.",
+                    "usedSeedKeys must list only the elements that are actually shown or clearly implied inside storyText.",
+                    "Do not output a field-by-field summary, labels, bullets, metadata, sourceRef, runtime, or analysis phrasing.",
+                    "Do not use placeholders such as 此人, 主角, 某人, or parenthetical role labels like （主角）.",
+                    "Keep the voice compatible with personaCardSubset voiceStyle and personalityTraits.",
+                    "For zh-TW output, do not mix English words, pinyin, simplified Chinese, mojibake, code fragments, or slash artifacts.",
+                ],
+                "speakerIdentityGuard": self._speaker_identity_guard(package),
+                "localeDirective": {
+                    "locale": package.locale,
+                    "languageLabel": locale_instruction["label"],
+                    "instruction": locale_instruction["instruction"],
+                },
+                "personaCardSubset": package.personaCardSubset,
+                "selectedContext": package.selectedContext,
+                "selectedKeywords": package.selectedKeywords,
+                "keywordDirective": {
+                    "mustReflectSelectedKeyword": bool(selected_keyword_labels),
+                    "preferredLabels": selected_keyword_labels,
+                    "selectedKeywordCount": len(selected_keyword_labels),
+                },
+                "draftFragments": {
+                    "sceneDraft": str((package.memoryContext or {}).get("shortTerm") or "").strip(),
+                    "seedSummary": str((package.memoryContext or {}).get("longTerm") or "").strip(),
+                    "relationshipDraft": str((package.memoryContext or {}).get("playerProfile") or "").strip(),
+                    "directorInstructions": str((package.memoryContext or {}).get("promises") or "").strip(),
+                },
+                "resolvedEvidence": evidence_payload,
+                "outputContract": {
+                    "language": package.locale,
+                    "format": {
+                        "memoryText": "string, one protagonist sentence for 想起什麼",
+                        "emotionText": "string, one protagonist sentence for 心裡怎麼變",
+                        "dialogueText": "string, one quoted or speakable line to activeTarget",
+                        "intentText": "string, one protagonist sentence for 接下來想做什麼",
+                        "storyText": "string, 180-220 Traditional Chinese characters, natural performable paragraph, third-person outside quotes, stable actor/target naming, no repeated adjacent beat, actionable ending",
+                        "usedSeedKeys": ["only the seed elements that are actually shown or clearly implied in storyText"],
+                        "usedPersonaAnchors": ["string"],
+                        "violations": [],
+                    },
+                },
+            }
+            return json.dumps(payload, ensure_ascii=False)
+        if selected_task == "scene-chorus-batch-v2":
+            payload = {
+                "task": "Generate four distinct bystander reaction lines for a Three Kingdoms memory theatre.",
+                "hardRules": [
+                    "Return JSON only and no markdown.",
+                    "Return exactly one chorusLines array with exactly the speakers listed in selectedContext.speakers, preserving each targetId.",
+                    "Each line must be spoken from that speaker's persona, relationship, and voice anchors.",
+                    "Use each speaker's guidance, focusHint, and seedHint as stance; do not copy raw tags or metadata into the line.",
+                    "Each line must react to sceneScript and at least one concrete sceneSeed; do not restate the seed as a flat summary.",
+                    "Each line must include at least one exact token from selectedContext.sceneGrounding or the speaker focus/seed hints; prefer the most specific grounding term available.",
+                    "Keep each line within 24-72 zh-TW characters and make it a complete, speakable reaction.",
+                    "The four lines must not share the same sentence skeleton or generic advice.",
+                    "Do not mention the speaker's own name in the line.",
+                    "Do not begin with narration markers such as 卻說, 且說, 只見, 此時, 正行間, 忽然, or 原來.",
+                    "Do not use placeholders such as 此人, 主角, 某人, or parenthetical role labels like （主角）.",
+                    "For zh-TW output, do not mix English words, pinyin, simplified Chinese, mojibake, code fragments, or slash artifacts.",
+                ],
+                "speakerIdentityGuard": self._speaker_identity_guard(package),
+                "localeDirective": {
+                    "locale": package.locale,
+                    "languageLabel": locale_instruction["label"],
+                    "instruction": locale_instruction["instruction"],
+                },
+                "mainActorPersonaSubset": package.personaCardSubset,
+                "selectedContext": package.selectedContext,
+                "selectedKeywords": package.selectedKeywords,
+                "resolvedEvidence": evidence_payload,
+                "outputContract": {
+                    "language": package.locale,
+                    "format": {
+                        "chorusLines": [
+                            {
+                                "targetId": "must equal one selectedContext.speakers[].targetId",
+                                "label": "speaker display label",
+                                "role": "relationship role",
+                                "text": "24-72 zh-TW characters, one speakable line",
+                                "usedSeedKeys": ["event or place or objects or emotion"],
+                                "usedPersonaAnchors": ["string"],
+                                "voiceTag": "string",
+                                "violations": [],
+                            }
+                        ]
+                    },
+                },
+            }
+            return json.dumps(payload, ensure_ascii=False)
         if tone_mode == "narrative_fusion":
             draft_fragments = {
                 "sceneDraft": str((package.memoryContext or {}).get("shortTerm") or "").strip(),
@@ -960,7 +1323,13 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
 
     def generate(self, package: DialoguePromptPackage) -> DialogueGenerationResult:
         tone_mode = str(package.toneMode or "").strip().lower()
-        allow_memory_only = tone_mode == "narrative_fusion"
+        selected_task = str((package.selectedContext or {}).get("task") or "").strip()
+        allow_memory_only = tone_mode == "narrative_fusion" or selected_task in {
+            "chorus-line",
+            "chorus-line-rewrite",
+            "scene-script-pack-v2",
+            "scene-chorus-batch-v2",
+        }
         if not package.resolvedEvidence and not allow_memory_only:
             raise ProviderUnavailableError("local_llama:no-resolved-evidence")
 
@@ -986,7 +1355,7 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             response_text = self._request_local_llama(self._build_local_request(package, repair_prompt), package, repair_prompt, repair=True)
             parsed, dialogue_text, used_keyword_keys, used_refs = self._parse_and_validate_local_response(response_text, package)
 
-        final_warnings = self._quality_warnings(dialogue_text, package)
+        final_warnings = [] if self._is_structured_scene_task(package) else self._quality_warnings(dialogue_text, package)
         if final_warnings:
             raise ProviderOutputError(f"local_llama:quality:{','.join(final_warnings)}")
 
@@ -1002,7 +1371,7 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             textPreview=_preview_text(dialogue_text),
         )
         return DialogueGenerationResult(
-            text=self._compact_dialogue_text(dialogue_text, package.maxChars),
+            text=dialogue_text if self._is_structured_scene_task(package) else self._compact_dialogue_text(dialogue_text, package.maxChars),
             provider=self.name,
             model=self.model,
             generationMode="local-llama-json-v2+persona-card+quality-guard",
@@ -1101,13 +1470,13 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
 
     def _parse_and_validate_local_response(self, response_text: str, package: DialoguePromptPackage) -> tuple[dict, str, list[str], list[str]]:
         parsed = self._parse_json_text(response_text)
-        dialogue_text = self._extract_dialogue_text(parsed)
+        dialogue_text = self._extract_structured_scene_text(parsed, package) if self._is_structured_scene_task(package) else self._extract_dialogue_text(parsed)
         if not dialogue_text:
             raise ProviderOutputError("local_llama:empty-text")
         used_keyword_keys = self._extract_used_keyword_keys(parsed, package)
-        if not self._matches_selected_keyword_focus(dialogue_text, package, used_keyword_keys):
+        if not self._is_structured_scene_task(package) and not self._matches_selected_keyword_focus(dialogue_text, package, used_keyword_keys):
             raise ProviderOutputError("local_llama:missing-keyword-focus")
-        if self._violates_taboos(dialogue_text, package):
+        if not self._is_structured_scene_task(package) and self._violates_taboos(dialogue_text, package):
             raise ProviderOutputError("local_llama:taboo-violation")
 
         allowed_refs = {evidence.evidenceRef for evidence in package.resolvedEvidence}
@@ -1117,12 +1486,14 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
         return parsed, dialogue_text, used_keyword_keys, used_refs
 
     def _build_repair_prompt(self, package: DialoguePromptPackage, raw_text: str, warnings: list[str]) -> str:
+        structured_task = self._is_structured_scene_task(package)
         payload = {
-            "task": "Repair the previous local LLM output so it becomes a valid in-character NPC dialogue JSON object.",
+            "task": "Repair the previous local LLM output so it follows the requested scene JSON contract." if structured_task else "Repair the previous local LLM output so it becomes a valid in-character NPC dialogue JSON object.",
             "blockingIssues": warnings,
             "previousOutput": raw_text[:1200],
             "repairRules": [
                 "Return JSON only.",
+                "Follow originalPrompt.outputContract exactly." if structured_task else "Keep the same single-line dialogue JSON contract.",
                 "Keep the same speakerGeneralId, locale, speechContextMode, selectedKeywords, and resolvedEvidence intent.",
                 "Fix wrong speaker identity, mixed language, gibberish artifacts, and invalid format.",
                 "Do not add unsupported historical facts.",
@@ -1198,6 +1569,7 @@ class DeepSeekReasoningDialogueProvider(LocalLlamaDialogueProvider):
 
 class DialogueHistoryCacheProvider:
     name = "history_cache"
+    structured_scene_tasks = {"scene-script-pack-v2", "scene-chorus-batch-v2"}
 
     def __init__(self, cache_path: str | None = None) -> None:
         self.cache_path = Path(cache_path or os.environ.get("NPC_LLM_HISTORY_CACHE_PATH") or DEFAULT_HISTORY_CACHE_PATH)
@@ -1224,8 +1596,10 @@ class DialogueHistoryCacheProvider:
             keywordKeys=best_entry.get("keywordKeys"),
             textPreview=_preview_text(text),
         )
+        selected_task = str((package.selectedContext or {}).get("task") or "")
+        cached_text = text if selected_task in self.structured_scene_tasks else text[: package.maxChars]
         return DialogueGenerationResult(
-            text=text[: package.maxChars],
+            text=cached_text,
             provider=self.name,
             model="local-jsonl-history",
             generationMode="dialogue-history-cache-v1",
@@ -1239,6 +1613,11 @@ class DialogueHistoryCacheProvider:
         evidence_refs = {evidence.evidenceRef for evidence in package.resolvedEvidence}
         selected_context_key = str((package.selectedContext or {}).get("contextKey") or "")
         selected_task = str((package.selectedContext or {}).get("task") or "")
+        requested_speaker_ids = [
+            str(speaker.get("targetId") or "").strip()
+            for speaker in ((package.selectedContext or {}).get("speakers") or [])
+            if isinstance(speaker, dict) and str(speaker.get("targetId") or "").strip()
+        ]
         best_entry: dict | None = None
         best_score = 0
         for entry in self._iter_entries():
@@ -1248,6 +1627,22 @@ class DialogueHistoryCacheProvider:
                 continue
             if str(entry.get("speechContextMode") or DEFAULT_SPEECH_CONTEXT_MODE) != package.speechContextMode:
                 continue
+            if selected_task in self.structured_scene_tasks:
+                if str(entry.get("task") or "") != selected_task:
+                    continue
+                if int(entry.get("cacheSchemaVersion") or 0) < 3:
+                    continue
+                if bool(entry.get("fallbackUsed")):
+                    continue
+                warnings = [str(code or "") for code in entry.get("qualityWarnings", [])]
+                if any(code.endswith("_rejected") or "fallback" in code or "deprecated" in code for code in warnings):
+                    continue
+                if selected_context_key and str(entry.get("contextKey") or "") != selected_context_key:
+                    continue
+                if selected_task == "scene-chorus-batch-v2":
+                    entry_speaker_ids = [str(item or "").strip() for item in entry.get("speakerIds", []) if str(item or "").strip()]
+                    if requested_speaker_ids and entry_speaker_ids != requested_speaker_ids:
+                        continue
             if selected_task == "chorus-line":
                 if str(entry.get("task") or "") != "chorus-line":
                     continue

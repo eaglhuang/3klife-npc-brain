@@ -59,30 +59,29 @@ def _emit_convergence_manifest(
         return None
 
 
-def _check_manifest_resume(
-    *,
-    baseline_manifest: dict[str, Any],
-    repo_root: Path,
-    strict: bool,
-) -> bool:
-    """Scan a prior run's evidence manifest for resume safety (SANGUO-RAGOPS-0603).
+def _baseline_manifest_paths(baseline_manifest: dict[str, Any]) -> dict[str, Any]:
+    paths = baseline_manifest.get("paths")
+    return paths if isinstance(paths, dict) else baseline_manifest
 
-    Returns True if safe to resume (or manifest not found / scan skipped).
-    Returns False (and prints warnings) when hash mismatches or missing files
-    are detected in strict mode.
-    """
-    paths = baseline_manifest.get("paths") if isinstance(baseline_manifest.get("paths"), dict) else baseline_manifest
-    manifest_path_text = str(paths.get("evidenceManifestPath") or "").strip() if isinstance(paths, dict) else ""
-    if not manifest_path_text:
-        return True
+
+def _manifest_resume_path_text(paths: dict[str, Any]) -> str:
+    return str(paths.get("evidenceManifestPath") or "").strip()
+
+
+def _resolve_manifest_resume_path(manifest_path_text: str, repo_root: Path) -> Path:
+    manifest_path = Path(manifest_path_text)
+    if not manifest_path.is_absolute():
+        manifest_path = (repo_root / manifest_path_text).resolve()
+    return manifest_path
+
+
+def _scan_manifest_resume(manifest_path_text: str, *, repo_root: Path, strict: bool) -> bool:
     try:
         from convergence_manifest_helper import (  # type: ignore[import]
-            ConvergenceManifestError,
             scan_prior_convergence_manifest,
         )
-        manifest_path = Path(manifest_path_text)
-        if not manifest_path.is_absolute():
-            manifest_path = (repo_root / manifest_path_text).resolve()
+
+        manifest_path = _resolve_manifest_resume_path(manifest_path_text, repo_root)
         report = scan_prior_convergence_manifest(manifest_path, repo_root=repo_root, verify_sha256=True)
         if report.ok:
             print(
@@ -105,6 +104,25 @@ def _check_manifest_resume(
     except Exception as exc:  # pragma: no cover
         print(f"[run_full_roster_convergence_loop] manifest resume scan error (non-fatal): {exc}")
         return True
+
+
+def _check_manifest_resume(
+    *,
+    baseline_manifest: dict[str, Any],
+    repo_root: Path,
+    strict: bool,
+) -> bool:
+    """Scan a prior run's evidence manifest for resume safety (SANGUO-RAGOPS-0603).
+
+    Returns True if safe to resume (or manifest not found / scan skipped).
+    Returns False (and prints warnings) when hash mismatches or missing files
+    are detected in strict mode.
+    """
+    paths = _baseline_manifest_paths(baseline_manifest)
+    manifest_path_text = _manifest_resume_path_text(paths)
+    if not manifest_path_text:
+        return True
+    return _scan_manifest_resume(manifest_path_text, repo_root=repo_root, strict=strict)
 
 
 def _build_convergence_repo_seam(repo_root: Path) -> Any:

@@ -2,65 +2,28 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "xu-zhu",
   "displayName": "許褚",
-  "generatedAt": "2026-05-21T09:52:27+00:00",
-  "relationshipCount": 2,
-  "typeCounts": {
-    "enemy_rival": 1,
-    "ruler_subject": 1
-  },
-  "anchors": [
-    {
-      "targetId": "xiahou-dun",
-      "targetName": "夏侯惇",
-      "type": "ruler_subject",
-      "typeLabel": "君臣主從",
-      "originalTypes": [
-        "ruler_subject"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:48424f63bd81538ec0ea",
-        "ext-card:wikisource-sanguozhi:candidate-card:1ddf3621bb06babb44f5"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "武皇帝意沮，便欲拔軍截山而還，遣故大將軍夏侯惇、將軍許褚呼山上兵還"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
+  "generatedAt": "2026-06-01T08:31:42+00:00",
+  "relationshipCount": 0,
+  "typeCounts": {},
+  "anchors": [],
+  "rejectedRelationshipEdges": [
     {
       "targetId": "xu-huang",
       "targetName": "徐晃",
       "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
+      "originalType": "enemy_rival",
       "evidenceRefs": [
         "014#p9"
       ],
-      "edgeConfidence": 0.84,
-      "edgeStrength": 0.72,
-      "sourceQuotes": [],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "enemy_rival_without_pair_conflict_signal"
+      ],
       "refinementReasons": [
         "source_graph_refined_type"
       ],
-      "reviewStatus": "source-grounded-strong",
-      "sourceLayer": "mao-hant-observed-mentions"
-    }
-  ],
-  "rejectedRelationshipEdges": [
+      "reviewStatus": "rejected-runtime-export"
+    },
     {
       "targetId": "cao-cao",
       "targetName": "曹操",
@@ -88,7 +51,8 @@
       ],
       "sourceQuote": "；范成、董昭爲洛陽令；滿寵爲許都令；夏侯惇、夏侯淵、曹仁、曹洪皆爲將軍；呂虔、",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"

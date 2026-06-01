@@ -2,214 +2,12 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "le-jin",
   "displayName": "樂進",
-  "generatedAt": "2026-05-21T09:27:27+00:00",
-  "relationshipCount": 9,
+  "generatedAt": "2026-06-01T08:31:41+00:00",
+  "relationshipCount": 1,
   "typeCounts": {
-    "battlefield_contact": 1,
-    "enemy_rival": 6,
-    "ruler_subject": 2
+    "battlefield_contact": 1
   },
   "anchors": [
-    {
-      "targetId": "guan-yu",
-      "targetName": "關羽",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:2ee2e6558f644c909def",
-        "ext-card:wikisource-sanguozhi:candidate-card:aafbaacf7b150a964262"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "〉 與樂進討關羽於尋口，有功，進封延壽亭侯，加討逆將軍"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "sun-quan",
-      "targetName": "孫權",
-      "type": "ruler_subject",
-      "typeLabel": "君臣主從",
-      "originalTypes": [
-        "ruler_subject"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:d2586d15ea8e1714953f"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "太祖 旣征 孫權 還，使 遼 與 樂進 、 李典 等將七千餘人屯 合肥"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "zhang-liao",
-      "targetName": "張遼",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:2b13bbf25348fe9b8a20"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "與張遼、樂進屯合肥，孫權率眾圍之，遼欲奉教出戰"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "gan-ning",
-      "targetName": "甘寧",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "067#p12"
-      ],
-      "edgeConfidence": 0.84,
-      "edgeStrength": 0.72,
-      "sourceQuotes": [],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "source-grounded-strong",
-      "sourceLayer": "mao-hant-observed-mentions"
-    },
-    {
-      "targetId": "cao-cao",
-      "targetName": "曹操",
-      "type": "ruler_subject",
-      "typeLabel": "君臣主從",
-      "originalTypes": [
-        "ruler_subject"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:dd0fd173ce23bfa73cf7"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "」曹操壯之，點兵五萬，使于禁、樂進為副將，次日便行"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "li-dian",
-      "targetName": "李典",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:346acc0dcc6635fbaa00"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "左邊夏侯惇、夏侯淵，右邊李典、樂進齊到，六員將共攻呂布"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "accepted-review-candidate",
-      "sourceLayer": null
-    },
-    {
-      "targetId": "yu-jin",
-      "targetName": "于禁",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "011#p15"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "accepted-review-candidate",
-      "sourceLayer": null
-    },
     {
       "targetId": "zhang-liao",
       "targetName": "張遼",
@@ -236,16 +34,16 @@
   ],
   "rejectedRelationshipEdges": [
     {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
+      "targetId": "gan-ning",
+      "targetName": "甘寧",
       "type": "enemy_rival",
       "originalType": "enemy_rival",
       "evidenceRefs": [
-        "011#p14"
+        "067#p12"
       ],
-      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
+      "sourceQuote": null,
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -262,7 +60,26 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p14"
+      ],
+      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -279,7 +96,8 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -296,7 +114,42 @@
       ],
       "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p15"
+      ],
+      "sourceQuote": "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後",
+      "rejectionReasons": [
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yu-jin",
+      "targetName": "于禁",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p15"
+      ],
+      "sourceQuote": "續、侯成趕來，當頭呂布親自引軍來到。于禁、樂進雙戰呂布不住。操望北而行，山後",
+      "rejectionReasons": [
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -313,7 +166,8 @@
       ],
       "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -330,7 +184,8 @@
       ],
       "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"

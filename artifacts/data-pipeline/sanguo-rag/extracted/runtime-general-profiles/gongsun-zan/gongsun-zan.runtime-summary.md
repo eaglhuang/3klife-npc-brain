@@ -2,12 +2,12 @@
 
 - General ID: `gongsun-zan`
 - Display Name: `公孫瓚`
-- Generated At: `2026-05-21T09:22:08+00:00`
+- Generated At: `2026-05-31T11:12:19+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `51.9`
-- Ready Events: `22`
-- Relationships: `5`
-- Rejected Relationship Edges: `8`
+- Completion: `None`
+- Ready Events: `1`
+- Relationships: `2`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,19 +17,17 @@
 - `aptitude`: `1`
 - `choice`: `1`
 - `decision`: `1`
-- `event`: `10`
+- `event`: `1`
 - `identity`: `3`
-- `item`: `1`
-- `location`: `6`
-- `person`: `4`
+- `location`: `1`
+- `person`: `2`
 - `personality`: `3`
-- `relationship`: `5`
+- `relationship`: `2`
 
 ## Relationship Types
 
-- `battlefield_contact`: `3`
-- `enemy_rival`: `1`
-- `spouse`: `1`
+- `battlefield_contact`: `1`
+- `battlefield_opponent`: `1`
 
 ## Outputs
 

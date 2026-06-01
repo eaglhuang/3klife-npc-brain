@@ -2,120 +2,62 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "cao-ren",
   "displayName": "曹仁",
-  "generatedAt": "2026-05-21T09:52:25+00:00",
-  "relationshipCount": 6,
+  "generatedAt": "2026-06-01T08:31:41+00:00",
+  "relationshipCount": 4,
   "typeCounts": {
     "battlefield_contact": 2,
-    "enemy_rival": 4
+    "enemy_rival": 2
   },
   "anchors": [
     {
-      "targetId": "guan-yu",
-      "targetName": "關羽",
+      "targetId": "zhou-yu",
+      "targetName": "周瑜",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
         "enemy_rival"
       ],
       "directions": [
-        "outgoing",
-        "incoming"
+        "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:98be30f0540e34488329",
-        "ext-card:wikisource-sanguozhi:candidate-card:b90beda3c2ab167bae00"
+        "sgyy-baihua#chapter-051#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "關羽圍襄陽，寵助征南將軍曹仁屯樊城拒之，而左將軍于禁等軍以霖雨水長爲羽所沒"
+        "# 第五十一回 曹仁大戰東吳兵 孔明一氣周公瑾"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
         "enemy_rival"
       ],
       "directions": [
-        "outgoing",
-        "incoming"
+        "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:a163bc846375a642e641",
-        "ext-card:wikisource-sanguozhi:candidate-card:f17093cf94ad10c3876f"
+        "sgyy-baihua#chapter-051#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "復從攻 張繡 於 穰 ，禽 呂布 於 下邳 ，別與 史渙 、 曹仁 攻 眭固 於 射犬 ，破斬之"
+        "# 第五十一回 曹仁大戰東吳兵 孔明一氣周公瑾"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "yu-jin",
-      "targetName": "于禁",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:6d1b5cb3d37c76ffafe4",
-        "ext-card:wikisource-sanguozhi:candidate-card:b90beda3c2ab167bae00"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "關羽圍襄陽，寵助征南將軍曹仁屯樊城拒之，而左將軍于禁等軍以霖雨水長爲羽所沒"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "zhang-xiu",
-      "targetName": "張繡",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:a163bc846375a642e641",
-        "ext-card:wikisource-sanguozhi:candidate-card:d801def6e761270916cf"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "復從攻 張繡 於 穰 ，禽 呂布 於 下邳 ，別與 史渙 、 曹仁 攻 眭固 於 射犬 ，破斬之"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
       "targetId": "li-dian",
@@ -214,7 +156,6 @@
       ],
       "sourceQuote": "一面使人過江探雲長動靜，方可行事。」諸葛瑾曰：「某聞雲長自到荊州，劉備娶與妻室。。」孫權用其謀，先送滿寵回許都；卻遣諸葛瑾爲使，投荊州來。入城見雲長，禮畢。雲",
       "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
@@ -232,7 +173,6 @@
       ],
       "sourceQuote": "一面使人過江探雲長動靜，方可行事。」諸葛瑾曰：「某聞雲長自到荊州，劉備娶與妻室。。」孫權用其謀，先送滿寵回許都；卻遣諸葛瑾爲使，投荊州來。入城見雲長，禮畢。雲",
       "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
@@ -250,7 +190,8 @@
       ],
       "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -267,7 +208,8 @@
       ],
       "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"
@@ -284,7 +226,8 @@
       ],
       "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
       ],
       "refinementReasons": [
         "source_graph_refined_type"

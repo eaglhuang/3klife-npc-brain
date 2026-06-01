@@ -49,7 +49,7 @@ def main() -> None:
             angle="people",
             targetId="zhang-fei",
             llmModelPreset="fallback_chain",
-            renderMode="data_first",
+            renderMode="llm_script_v2",
         )
     )
     non_liubei_scene = service.build_scene_director(
@@ -58,7 +58,7 @@ def main() -> None:
             angle="people",
             targetId="huang-zhong",
             llmModelPreset="fallback_chain",
-            renderMode="data_first",
+            renderMode="llm_script_v2",
         )
     )
     invalid_scene = service.build_scene_director(
@@ -67,7 +67,7 @@ def main() -> None:
             angle="emotion",
             targetId="not-real",
             llmModelPreset="fallback_chain",
-            renderMode="data_first",
+            renderMode="llm_script_v2",
         )
     )
     if workspace_runtime_root.exists():
@@ -106,6 +106,7 @@ def main() -> None:
     assert resolved_scene.dataStatus in {"direct", "angle_empty_filled", "target_empty_filled"}, "liu-bei/zhang-fei scene should resolve to a non-empty scene"
     assert not resolved_scene.isEmpty, "liu-bei/zhang-fei scene should produce non-empty director beats"
     assert resolved_scene.beats.sceneText or resolved_scene.storyText, "resolved scene should include at least one grounded narrative field"
+    assert resolved_scene.storyGenerationMode != "data_first-deterministic-deprecated", "scene smoke should use llm_script_v2, not the [已過時] data_first route"
     assert non_liubei_scene.dataStatus in {"direct", "angle_empty_filled", "target_empty_filled"}, "non-Liu Bei scene should resolve to a non-empty scene"
     assert not non_liubei_scene.isEmpty, "non-Liu Bei scene should produce non-empty director beats"
     assert non_liubei_scene.beats.sceneText or non_liubei_scene.storyText, "non-Liu Bei scene should include at least one grounded narrative field"

@@ -2,13 +2,12 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "cao-cao",
   "displayName": "曹操",
-  "generatedAt": "2026-05-30T07:39:09+00:00",
-  "relationshipCount": 24,
+  "generatedAt": "2026-06-01T08:31:40+00:00",
+  "relationshipCount": 19,
   "typeCounts": {
-    "alliance_oath": 1,
-    "battlefield_contact": 5,
-    "betrayal_surrender": 3,
-    "enemy_rival": 7,
+    "battlefield_contact": 6,
+    "betrayal_surrender": 1,
+    "enemy_rival": 4,
     "parent_child": 5,
     "patron_client": 3
   },
@@ -114,32 +113,6 @@
       "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "jia-xu",
-      "targetName": "賈詡",
-      "type": "betrayal_surrender",
-      "typeLabel": "背叛投降",
-      "originalTypes": [
-        "betrayal_surrender"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "sgyy-baihua#chapter-016#p13;window=1"
-      ],
-      "edgeConfidence": 0.95,
-      "edgeStrength": 0.9,
-      "sourceQuotes": [
-        "聽到曹操來打，賈詡就勸張繡投降曹操算了。張繡的軍隊不算多，感覺打不過曹操，於是出城投降。"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
       "targetId": "sun-quan",
       "targetName": "孫權",
       "type": "enemy_rival",
@@ -226,38 +199,12 @@
         "outgoing"
       ],
       "evidenceRefs": [
-        "sgyy-baihua#chapter-060#p1;window=4"
+        "sgyy-baihua#chapter-060#p1;window=5"
       ],
       "edgeConfidence": 0.95,
       "edgeStrength": 0.9,
       "sourceQuotes": [
-        "” 張鬆說：“要想讓張魯不要進攻西川，就該求救於曹操。主公可以派我給朝廷送去貢品，我趁機勸曹操出兵討伐張魯。"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "zhang-xiu",
-      "targetName": "張繡",
-      "type": "betrayal_surrender",
-      "typeLabel": "背叛投降",
-      "originalTypes": [
-        "betrayal_surrender"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "sgyy-baihua#chapter-016#p13;window=1"
-      ],
-      "edgeConfidence": 0.95,
-      "edgeStrength": 0.9,
-      "sourceQuotes": [
-        "聽到曹操來打，賈詡就勸張繡投降曹操算了。張繡的軍隊不算多，感覺打不過曹操，於是出城投降。"
+        "主公可以派我給朝廷送去貢品，我趁機勸曹操出兵討伐張魯。”劉璋大喜，準備了珠錦綺，派張鬆作為使者去了。"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -342,31 +289,6 @@
       "sourceLayer": "stable-bootstrap-seed"
     },
     {
-      "targetId": "gao-shun",
-      "targetName": "高順",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:71edce73844235c58f7f"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "曹操自引軍馬來迎，正逢高順，三軍混戰"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
       "targetId": "guan-yu",
       "targetName": "關羽",
       "type": "enemy_rival",
@@ -394,81 +316,30 @@
       "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
       "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:d851441119341bc6adb7"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "」二人施禮畢，紹曰：「鄭尚書有書來，令我起兵助劉備，攻曹操"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "romance-person-97d3-80e4",
-      "targetName": "韓胤",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:3e8acf88066de36b85d6"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "卻聞布已將韓胤解赴許都，為曹操所斬，乃大怒"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "yuan-shao",
-      "targetName": "袁紹",
-      "type": "alliance_oath",
-      "typeLabel": "盟約同盟",
-      "originalTypes": [
-        "alliance_oath"
+        "mentor_student"
       ],
       "directions": [
         "outgoing",
         "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:a70adde2d511623f07fa",
-        "ext-card:wikisource-romance:candidate-card:c0ec564e533b90b8960c"
+        "011#p13"
       ],
       "edgeConfidence": 0.82,
       "edgeStrength": 0.7,
       "sourceQuotes": [
-        "時袁紹得操矯詔，乃聚麾下文武，引兵三萬，離渤海來與曹操會盟"
+        "不足慮也。」教且安營下寨，再作商議。呂布知曹操回兵已過滕縣，召副將薛蘭、李封"
       ],
       "refinementReasons": [
-        "stable_relationship_baseline"
+        "non_stable_authority_type_demoted"
       ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
+      "reviewStatus": "accepted-review-candidate",
+      "sourceLayer": null
     },
     {
       "targetId": "romance-person-66f9-5d69",
@@ -500,7 +371,7 @@
       "typeLabel": "戰場接觸",
       "originalTypes": [
         "protects",
-        "commands"
+        "ruler_subject"
       ],
       "directions": [
         "incoming",
@@ -514,7 +385,8 @@
       "edgeStrength": 0.62,
       "sourceQuotes": [],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "coarse_edge_fallback",
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -525,7 +397,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "commands",
+        "ruler_subject",
         "protects"
       ],
       "directions": [
@@ -541,6 +413,7 @@
       "edgeStrength": 0.62,
       "sourceQuotes": [],
       "refinementReasons": [
+        "non_stable_authority_type_demoted",
         "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
@@ -552,7 +425,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "commands"
+        "ruler_subject"
       ],
       "directions": [
         "outgoing"
@@ -564,7 +437,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -575,7 +448,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "commands"
+        "ruler_subject"
       ],
       "directions": [
         "outgoing"
@@ -587,7 +460,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -598,7 +471,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "commands"
+        "ruler_subject"
       ],
       "directions": [
         "outgoing"
@@ -611,7 +484,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -621,8 +494,8 @@
     {
       "targetId": "cao-ren",
       "targetName": "曹仁",
-      "type": "battlefield_opponent",
-      "originalType": "commands",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
       "evidenceRefs": [
         "006#p7"
       ],
@@ -631,7 +504,7 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "battlefield_opponent_target"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -639,7 +512,7 @@
       "targetId": "xiahou-yuan",
       "targetName": "夏侯淵",
       "type": "battlefield_contact",
-      "originalType": "commands",
+      "originalType": "ruler_subject",
       "evidenceRefs": [
         "006#p7"
       ],
@@ -649,24 +522,7 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "cao-ren",
-      "targetName": "曹仁",
-      "type": "battlefield_opponent",
-      "originalType": "commands",
-      "evidenceRefs": [
-        "019#p3"
-      ],
-      "sourceQuote": null,
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "battlefield_opponent_target"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -674,7 +530,7 @@
       "targetId": "sun-qian",
       "targetName": "孫乾",
       "type": "battlefield_contact",
-      "originalType": "commands",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "019#p3"
       ],
@@ -683,7 +539,24 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-ren",
+      "targetName": "曹仁",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "019#p3"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -691,7 +564,7 @@
       "targetId": "xu-huang",
       "targetName": "徐晃",
       "type": "battlefield_contact",
-      "originalType": "commands",
+      "originalType": "ruler_subject",
       "evidenceRefs": [
         "030#p7"
       ],
@@ -700,15 +573,15 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhang-liao",
       "targetName": "張遼",
-      "type": "battlefield_contact",
-      "originalType": "commands",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
       "evidenceRefs": [
         "032#p11"
       ],
@@ -718,7 +591,7 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "source_graph_refined_type"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -726,7 +599,7 @@
       "targetId": "xu-huang",
       "targetName": "徐晃",
       "type": "battlefield_contact",
-      "originalType": "commands",
+      "originalType": "mentor_student",
       "evidenceRefs": [
         "050#p8"
       ],
@@ -735,7 +608,7 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -743,7 +616,7 @@
       "targetId": "cao-hong",
       "targetName": "曹洪",
       "type": "battlefield_contact",
-      "originalType": "commands",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "059#p7"
       ],
@@ -753,7 +626,25 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-hong",
+      "targetName": "曹洪",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "059#p7"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -761,7 +652,7 @@
       "targetId": "xu-zhu",
       "targetName": "許褚",
       "type": "battlefield_contact",
-      "originalType": "commands",
+      "originalType": "ruler_subject",
       "evidenceRefs": [
         "072#p5"
       ],
@@ -770,15 +661,15 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "pang-de",
       "targetName": "龐德",
-      "type": "battlefield_opponent",
-      "originalType": "commands",
+      "type": "betrayal_surrender",
+      "originalType": "betrayal_surrender",
       "evidenceRefs": [
         "072#p9"
       ],
@@ -787,7 +678,97 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "battlefield_opponent_target"
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-bao-enemy",
+      "targetName": "張寶",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "001#p18"
+      ],
+      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-liang-enemy",
+      "targetName": "張梁",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "001#p18"
+      ],
+      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-bao-enemy",
+      "targetName": "張寶",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "001#p18"
+      ],
+      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-liang-enemy",
+      "targetName": "張梁",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "002#p3"
+      ],
+      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-liang-enemy",
+      "targetName": "張梁",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "002#p3"
+      ],
+      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -795,7 +776,7 @@
       "targetId": "guan-yu",
       "targetName": "關羽",
       "type": "battlefield_contact",
-      "originalType": "commands",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -805,7 +786,7 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -813,7 +794,7 @@
       "targetId": "guan-yu",
       "targetName": "關羽",
       "type": "battlefield_contact",
-      "originalType": "commands",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -823,15 +804,15 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "coarse_edge_fallback"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhuge-liang",
       "targetName": "諸葛亮",
-      "type": "strategy_pressure",
-      "originalType": "commands",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -840,15 +821,15 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "strategy_context_terms"
+        "non_stable_authority_type_demoted"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhuge-liang",
       "targetName": "諸葛亮",
-      "type": "strategy_pressure",
-      "originalType": "commands",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -857,7 +838,674 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "strategy_context_terms"
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-liang-enemy",
+      "targetName": "張梁",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "001#p18"
+      ],
+      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "kong-rong",
+      "targetName": "孔融",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "011#p6"
+      ],
+      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "kong-rong",
+      "targetName": "孔融",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "011#p6"
+      ],
+      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "dian-wei",
+      "targetName": "典韋",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "012#p5"
+      ],
+      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "zhang-jue",
+      "targetName": "張角",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "001#p18"
+      ],
+      "sourceQuote": "今圍賊在此，賊弟張梁、張寶在潁川，與皇甫嵩、朱雋對壘。汝可引本部人馬，我更助汝",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yuan-shao",
+      "targetName": "袁紹",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "003#p6"
+      ],
+      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yuan-shu",
+      "targetName": "袁術",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "003#p6"
+      ],
+      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yuan-shao",
+      "targetName": "袁紹",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "003#p6"
+      ],
+      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yuan-shu",
+      "targetName": "袁術",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "003#p6"
+      ],
+      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "huangfu-song",
+      "targetName": "皇甫嵩",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "002#p3"
+      ],
+      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "huangfu-song",
+      "targetName": "皇甫嵩",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "002#p3"
+      ],
+      "sourceQuote": "。朱雋引兵圍住陽城攻打，一面差人打探皇甫嵩消息。探子回報，且說：「皇甫嵩大獲勝",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "006#p7"
+      ],
+      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "006#p7"
+      ],
+      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "xiahou-dun",
+      "targetName": "夏侯惇",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "012#p2"
+      ],
+      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "xiahou-dun",
+      "targetName": "夏侯惇",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "012#p2"
+      ],
+      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yu-jin",
+      "targetName": "于禁",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "010#p7"
+      ],
+      "sourceQuote": "熟嫻，武藝出眾，命爲點軍司馬。一日，夏侯惇引一大漢來見，操問何人，惇曰：「此乃",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yu-jin",
+      "targetName": "于禁",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "010#p7"
+      ],
+      "sourceQuote": "熟嫻，武藝出眾，命爲點軍司馬。一日，夏侯惇引一大漢來見，操問何人，惇曰：「此乃",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "011#p13"
+      ],
+      "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "011#p13"
+      ],
+      "sourceQuote": "命斬來使，一面竭力攻城。郭嘉諫曰：「劉備遠來救援，先禮後兵；主公當用好言答之",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "011#p13"
+      ],
+      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "battlefield_contact",
+      "originalType": "patron_client",
+      "evidenceRefs": [
+        "011#p13"
+      ],
+      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "dian-wei",
+      "targetName": "典韋",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p15"
+      ],
+      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "dian-wei",
+      "targetName": "典韋",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p15"
+      ],
+      "sourceQuote": "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "011#p8"
+      ],
+      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "011#p8"
+      ],
+      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p6"
+      ],
+      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "011#p6"
+      ],
+      "sourceQuote": "如潮似浪擁將出來。當頭一員大將，乃是于禁，勒馬大叫：「何處狂徒！往那裏去！」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "016#p13"
+      ],
+      "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "battlefield_contact",
+      "originalType": "ruler_subject",
+      "evidenceRefs": [
+        "016#p12"
+      ],
+      "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence"
+      ],
+      "refinementReasons": [
+        "non_stable_authority_type_demoted"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "016#p12"
+      ],
+      "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "dian-wei",
+      "targetName": "典韋",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "012#p4"
+      ],
+      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "dian-wei",
+      "targetName": "典韋",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "012#p4"
+      ],
+      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "sun-qian",
+      "targetName": "孫乾",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "016#p12"
+      ],
+      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "lu-bu",
+      "targetName": "呂布",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "016#p12"
+      ],
+      "sourceQuote": "兵十五萬，親討張繡，分軍三路而行，以夏侯惇爲先鋒。軍馬至淯水下寨。賈詡勸張繡曰",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "dian-wei",
+      "targetName": "典韋",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "012#p5"
+      ],
+      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "dian-wei",
+      "targetName": "典韋",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "012#p5"
+      ],
+      "sourceQuote": "鳴鑼爲號，便可進兵。某當獻門。」操撥夏侯惇引軍在左，曹洪引軍在右，自己引夏侯淵",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cai-shi",
+      "targetName": "蔡氏",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "040#p11"
+      ],
+      "sourceQuote": "生見教極是。但須稟告母親知道。」只見蔡夫人從屏後轉出，謂琮曰：「既是仲宣、公悌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cai-shi",
+      "targetName": "蔡氏",
+      "type": "enemy_rival",
+      "originalType": "enemy_rival",
+      "evidenceRefs": [
+        "040#p11"
+      ],
+      "sourceQuote": "生見教極是。但須稟告母親知道。」只見蔡夫人從屏後轉出，謂琮曰：「既是仲宣、公悌",
+      "rejectionReasons": [
+        "semantic_relationship_without_direct_pair_evidence",
+        "enemy_rival_without_pair_conflict_signal"
+      ],
+      "refinementReasons": [
+        "source_graph_refined_type"
       ],
       "reviewStatus": "rejected-runtime-export"
     }
