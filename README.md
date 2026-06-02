@@ -1,27 +1,5 @@
 <!-- doc_id: doc_server_service_0001 -->
 # NPC Brain Service
-
-
-<!-- ATM README ENTRY:START -->
-
-## AI Agent Entry
-
-> **ATM = AI Atomic Framework** (`@ai-atomic-framework`) — 本 repo 使用此框架進行代碼改造治理。
-> ATM 不只是 task manager：它管理的是 Atom（最小代碼單元）、Map（依賴藍圖）與 Guidance Session（改造工作許可）的完整生命週期。
-> 每個 task card 生命週期：`reserve → promote → claim → close`（close 前必須附 evidence JSON）。
-
-After reading this repository overview, run:
-
-```bash
-node atm.mjs next --json
-```
-
-If the result includes an `ATM_USER_NOTICE` message or `evidence.userNotice`, show it to the user in natural language before running the returned next action.
-
-After an onboarding or refresh command succeeds, return to the user original request and continue the actual work.
-
-<!-- ATM README ENTRY:END -->
-
 > 文件使用原則：
 > - 本文假設你正在使用 standalone `3klife-npc-brain` repo。
 > - `<repo-root>` 代表你自己 clone 下來的專案根目錄。
