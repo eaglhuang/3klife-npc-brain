@@ -7,7 +7,7 @@
 
 > 本文中的 `<repo-root>` 代表你自己 clone 下來的專案根目錄。
 
-3klife-npc-brain 是獨立的 NPC brain 服務 repo。它不再放在 3KLife monorepo 下面；Cocos / 3KLife 只需要透過 HTTP 呼叫這個服務。
+3klife-npc-brain 是獨立的 NPC brain 服務 repo。Cocos / 3KLife / 三國人物小劇場 只需要透過 HTTP 呼叫這個服務。
 
 如果你是第一次進這個 repo，建議先看 [最短啟動路徑](./文件/最短啟動路徑.md)。
 
@@ -92,7 +92,7 @@ docker exec 3klife-npc-brain-dev python -B pipelines/sanguo-rag/run_sanguo_gover
 ## 文件入口
 
 - [開發啟動與煙霧測試](./文件/開發啟動與煙霧測試.md)
-- [LangGraph Studio 與部署](./文件/LangGraph Studio 與部署.md)
+- [LangGraph Studio 與部署](./文件/LangGraph%20Studio%20與部署.md)
 - [向量檢索與資料入庫](./文件/向量檢索與資料入庫.md)
-- [資料契約與 Cocos 串接](./文件/資料契約與 Cocos 串接.md)
+- [資料契約與 Cocos 串接](./文件/資料契約與%20Cocos%20串接.md)
 - [三國人物資料推進流程](./文件/三國人物資料推進流程.md)
