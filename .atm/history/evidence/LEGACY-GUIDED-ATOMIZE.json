@@ -232,5 +232,101 @@
     "dataVersion": "0.1.0",
     "artifactVersion": "0.1.0",
     "artifactVersionKind": "semver"
+  },
+  {
+    "schemaId": "atm.evidence.humanReviewDecision",
+    "specVersion": "0.1.0",
+    "migration": {
+      "strategy": "none",
+      "fromVersion": null,
+      "notes": "Human review decision evidence contract."
+    },
+    "evidenceId": "human-review.guided-legacy-atomize-guidance-20260601113406-eee7e8a84b.reject",
+    "workItemId": "LEGACY-GUIDED-ATOMIZE",
+    "evidenceKind": "review",
+    "evidenceType": "human-review-decision",
+    "summary": "Human review reject for guided-legacy-atomize-guidance-20260601113406-eee7e8a84b.",
+    "artifactPaths": [
+      ".atm/history/reports/upgrade-proposals.json",
+      ".atm/history/reports/upgrade-proposals.md"
+    ],
+    "createdAt": "2026-06-01T15:28:45.737Z",
+    "producedBy": "ATM reviewer",
+    "reproducibility": {
+      "replayable": true,
+      "replayCommand": [
+        "node",
+        "scripts/validate-human-review.ts"
+      ],
+      "inputs": [
+        ".atm/history/reports/upgrade-proposals.json"
+      ],
+      "expectedArtifacts": [
+        ".atm/history/reports/upgrade-proposals.json",
+        ".atm/history/reports/upgrade-proposals.md"
+      ],
+      "notes": "Replay the human review decision against the queue snapshot and decision hash."
+    },
+    "details": {
+      "proposalId": "guided-legacy-atomize-guidance-20260601113406-eee7e8a84b",
+      "atomId": "LEGACY-GUIDED-ATOMIZE",
+      "decision": "reject",
+      "reason": "proposal target parse_args does not match actual kinship/spouse surfaces",
+      "queuePath": ".atm/history/reports/upgrade-proposals.json",
+      "projectionPath": ".atm/history/reports/upgrade-proposals.md",
+      "decisionSnapshotHash": "sha256:1d9f96853d9e8ea3f5fedf4a069b57a00fe0d0efb0dcb67203bf705896496e72",
+      "queueStatus": "rejected"
+    },
+    "dataVersion": "0.1.0",
+    "artifactVersion": "0.1.0",
+    "artifactVersionKind": "semver"
+  },
+  {
+    "schemaId": "atm.evidence.humanReviewDecision",
+    "specVersion": "0.1.0",
+    "migration": {
+      "strategy": "none",
+      "fromVersion": null,
+      "notes": "Human review decision evidence contract."
+    },
+    "evidenceId": "human-review.guided-legacy-atomize-guidance-20260601154432-1a2ff2fd1d.reject",
+    "workItemId": "LEGACY-GUIDED-ATOMIZE",
+    "evidenceKind": "review",
+    "evidenceType": "human-review-decision",
+    "summary": "Human review reject for guided-legacy-atomize-guidance-20260601154432-1a2ff2fd1d.",
+    "artifactPaths": [
+      ".atm/history/reports/upgrade-proposals.json",
+      ".atm/history/reports/upgrade-proposals.md"
+    ],
+    "createdAt": "2026-06-01T16:11:13.737Z",
+    "producedBy": "ATM reviewer",
+    "reproducibility": {
+      "replayable": true,
+      "replayCommand": [
+        "node",
+        "scripts/validate-human-review.ts"
+      ],
+      "inputs": [
+        ".atm/history/reports/upgrade-proposals.json"
+      ],
+      "expectedArtifacts": [
+        ".atm/history/reports/upgrade-proposals.json",
+        ".atm/history/reports/upgrade-proposals.md"
+      ],
+      "notes": "Replay the human review decision against the queue snapshot and decision hash."
+    },
+    "details": {
+      "proposalId": "guided-legacy-atomize-guidance-20260601154432-1a2ff2fd1d",
+      "atomId": "LEGACY-GUIDED-ATOMIZE",
+      "decision": "reject",
+      "reason": "proposal target _required_rule_value is a rule-loading helper and does not represent the spouse/kinship pair-bound correction surface",
+      "queuePath": ".atm/history/reports/upgrade-proposals.json",
+      "projectionPath": ".atm/history/reports/upgrade-proposals.md",
+      "decisionSnapshotHash": "sha256:922b59c897bf4577a7c3958df14ba73572cf0a47fa5c13a68cf276958f0b96f8",
+      "queueStatus": "rejected"
+    },
+    "dataVersion": "0.1.0",
+    "artifactVersion": "0.1.0",
+    "artifactVersionKind": "semver"
   }
 ]

@@ -934,6 +934,45 @@ def sibling_rank_sentence_cue(
     )
 
 
+def spouse_subject_bound_pair_cue(
+    *,
+    rel_type: str,
+    left: str,
+    right: str,
+    left_span: tuple[int, int],
+    right_span: tuple[int, int],
+    edge: dict[str, Any],
+    text: str,
+) -> dict[str, Any] | None:
+    if rel_type != "spouse":
+        return None
+    pair_start = min(left_span[0], right_span[0])
+    pair_end = max(left_span[1], right_span[1])
+    sentence_start, sentence_end = sentence_span_for_pair(text, pair_start, pair_end)
+    if sentence_end - sentence_start > pair_cues.PAIR_CUE_SENTENCE_MAX_SPAN:
+        return None
+    if has_clause_boundary(text[pair_start:pair_end]):
+        return None
+    sentence = text[sentence_start:sentence_end]
+    if not relationship_types.spouse_supports_pair_binding(sentence):
+        return None
+    cue = term_span(sentence, relationship_types.spouse_binding_terms(), offset=sentence_start)
+    if cue is None:
+        return None
+    return pair_relation_cue_payload(
+        rel_type="spouse",
+        binding="spouse-explicit-subject-cue",
+        from_alias=left,
+        to_alias=right,
+        from_span=left_span,
+        to_span=right_span,
+        cue=cue,
+        text=text,
+        source_claim_type=edge.get("sourceClaimType"),
+        source_claim_scopes=edge.get("sourceClaimScopes"),
+    )
+
+
 def kinship_subject_bound_pair_cue(
     *,
     rel_type: str,
@@ -944,6 +983,16 @@ def kinship_subject_bound_pair_cue(
     edge: dict[str, Any],
     text: str,
 ) -> dict[str, Any] | None:
+    if rel_type == "spouse":
+        return spouse_subject_bound_pair_cue(
+            rel_type=rel_type,
+            left=left,
+            right=right,
+            left_span=left_span,
+            right_span=right_span,
+            edge=edge,
+            text=text,
+        )
     if rel_type == "sworn_sibling":
         return sworn_sibling_sentence_cue(
             left=left,
@@ -1092,6 +1141,8 @@ def edge_pair_relation_cue_evidence(
                         )
                         if relation_cue is not None:
                             return cue_with_segment_metadata(relation_cue, segment)
+                        if rel_type == "spouse":
+                            continue
                         if relationship_type_family(rel_type) == "authority":
                             continue
                         if pair_end - pair_start > pair_cues.PAIR_CUE_MAX_SPAN:
@@ -1404,6 +1455,7 @@ def normalize_edge_to_claim(
     pair_relation_cue: dict[str, Any] | None = None
     pair_relation_signal = False
     enemy_context_guard = False
+    kinship_binding_supported = relationship_types.kinship_pair_binding_supported(refined_type, edge_text(normalized))
     pair_relation_cue = edge_pair_relation_cue_evidence(normalized, alias_index, refined_type)
     pair_relation_signal = pair_relation_cue is not None
     if not pair_relation_signal:
@@ -1432,12 +1484,33 @@ def normalize_edge_to_claim(
             "pairRelationRequired": pair_relation_required,
             "pairRelationCue": pair_relation_cue,
             "enemyContextGuard": enemy_context_guard,
+            "kinshipBindingSupported": kinship_binding_supported,
         }
     if profile["sourceLayer"] in STABLE_BASELINE_LAYERS:
         direct_pair = True
         pair_relation_signal = True
         pair_relation_required = False
         enemy_context_guard = False
+    if profile["sourceLayer"] not in STABLE_BASELINE_LAYERS and refined_type in relationship_types.KINSHIP_RELATIONSHIP_TYPES:
+        if not pair_relation_signal or not kinship_binding_supported:
+            return None, {
+                "reason": "kinship-missing-explicit-pair-bound-evidence",
+                "fromId": from_id,
+                "toId": to_id,
+                "type": refined_type,
+                "sourceFile": source_file,
+                "evidenceRefs": list(normalized.get("evidenceRefs") or []),
+                "sourceLayer": profile["sourceLayer"],
+                "sourceFamily": profile["sourceFamily"],
+                "promotionTrace": ["missing-kinship-explicit-pair-bound-evidence"],
+                "directPairSignal": direct_pair,
+                "directPairGrounding": direct_pair_grounding,
+                "pairRelationSignal": pair_relation_signal,
+                "pairRelationRequired": pair_relation_required,
+                "pairRelationCue": pair_relation_cue,
+                "enemyContextGuard": enemy_context_guard,
+                "kinshipBindingSupported": kinship_binding_supported,
+            }
     claim_grade, promotion_trace = grade_claim(
         normalized,
         profile,
