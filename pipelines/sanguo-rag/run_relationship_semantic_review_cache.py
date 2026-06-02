@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import relationship_type_refinement as relationship_types
 from repo_layout import resolve_repo_root
 from reviewer_adapters import resolve_reviewer_adapter
 from versioning import build_version_metadata
@@ -887,6 +888,14 @@ def support_previews(row: dict[str, Any]) -> list[dict[str, Any]]:
     return result
 
 
+def review_kinship_pair_binding_allowed(relationship_type: str, sentence: str) -> bool:
+    relationship_types.ensure_relationship_type_refinement_rules_loaded()
+    normalized_type = str(relationship_type or "").strip()
+    if not normalized_type or normalized_type not in relationship_types.KINSHIP_RELATIONSHIP_TYPES:
+        return True
+    return relationship_types.kinship_pair_binding_supported(normalized_type, sentence)
+
+
 def direction_check_instruction(relationship_type: str) -> str:
     if relationship_type == "parent_child":
         return "必須逐字確認方向：fromId/fromName 是父母或親長，toId/toName 是子女或晚輩；若原文是「A之子B」，正確方向是 A -> B，反向必須判為不支持。"
@@ -1020,6 +1029,8 @@ def build_review_units(
             continue
         for preview in support_previews(row):
             sentence = compact_text(preview.get("quote") or preview.get("originalSentence"))
+            if not review_kinship_pair_binding_allowed(str(row.get("relationshipType") or ""), sentence):
+                continue
             base_unit_id = cache_unit_id(prompt_version, sentence)
             quality_score = sentence_quality_score(sentence)
             if trust_key in candidate_seen_by_sentence[base_unit_id]:
@@ -1440,6 +1451,8 @@ def relation_structure_gate(
         return False, "from-span-missing-accepted-alias-anchor"
     if not to_anchor:
         return False, "to-span-missing-accepted-alias-anchor"
+    if not review_kinship_pair_binding_allowed(relationship_type, source_sentence):
+        return False, "kinship-missing-explicit-pair-bound-evidence"
     if cue_span:
         from_start = first_span_start(source_sentence, from_anchor)
         to_start = first_span_start(source_sentence, to_anchor)
@@ -1997,8 +2010,9 @@ def main() -> int:
     )
 
     rows = read_jsonl(fact_check_path)
-    focus_general_ids_path = resolve_path(args.focus_general_ids_file) if str(args.focus_general_ids_file).strip() else Path("")
-    focus_general_ids = load_focus_general_ids(focus_general_ids_path) if focus_general_ids_path else set()
+    focus_general_ids_path_text = str(args.focus_general_ids_file).strip()
+    focus_general_ids_path = resolve_path(focus_general_ids_path_text) if focus_general_ids_path_text else None
+    focus_general_ids = load_focus_general_ids(focus_general_ids_path) if focus_general_ids_path is not None else set()
     human_decisions_path_text = str(inputs.get("humanReviewDecisionsPath") or "").strip()
     human_decisions_path = resolve_path(human_decisions_path_text) if human_decisions_path_text else Path("")
     human_sets = read_human_decision_sets(human_decisions_path, policy) if human_decisions_path_text else {"whitelist": set(), "blacklist": set(), "removed": set()}
@@ -2019,6 +2033,13 @@ def main() -> int:
     for unit in units:
         unit.update(version_metadata)
     cache = load_cache(cache_path)
+    if not focus_general_ids:
+        allowed_unit_ids = {
+            str(unit.get("semanticReviewUnitId") or "").strip()
+            for unit in units
+            if str(unit.get("semanticReviewUnitId") or "").strip()
+        }
+        cache = {unit_id: row for unit_id, row in cache.items() if unit_id in allowed_unit_ids}
     queued = [unit for unit in units if unit_needs_review(unit, cache)]
     page_shape_policy = semantic_page_shape_policy(policy)
     suppressed_units = [unit for unit in queued if bool_value(unit.get("pageShapeSuppressed"))]
@@ -2085,7 +2106,7 @@ def main() -> int:
         "canonicalWrites": False,
         "policyPath": repo_relative(policy_path),
         "factCheckPath": repo_relative(fact_check_path),
-        "focusGeneralIdsFile": repo_relative(focus_general_ids_path) if focus_general_ids_path.exists() else "",
+        "focusGeneralIdsFile": repo_relative(focus_general_ids_path) if focus_general_ids_path is not None else "",
         "focusGeneralIdCount": len(focus_general_ids),
         "sourceFactCheckRowCount": source_row_count,
         "scopedFactCheckRowCount": len(rows),

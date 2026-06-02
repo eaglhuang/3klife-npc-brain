@@ -31,6 +31,69 @@ ADOPTIVE_PARENT_CHILD_TERMS: list[str] = []
 SIBLING_TERMS: list[str] = []
 SWORN_SIBLING_TERMS: list[str] = []
 
+SPOUSE_PLAN_CONTEXT_TERMS: tuple[str, ...] = (
+    "許嫁",
+    "許配",
+    "欲嫁",
+    "欲娶",
+    "求婚",
+    "婚配計",
+    "婚配計策",
+    "婚計",
+    "婚策",
+    "媒合",
+    "媒妁",
+    "說親",
+    "議婚",
+    "訂婚",
+    "婚約",
+    "轉嫁",
+    "轉配",
+    "獻與",
+    "送與",
+    "許婚",
+)
+SPOUSE_FAMILY_CONTEXT_TERMS: tuple[str, ...] = (
+    "妻子兒女",
+    "妻子",
+    "妻兒",
+    "妻小",
+    "家眷",
+    "家屬",
+    "家人",
+    "家口",
+    "眷屬",
+    "夫人",
+    "婦人",
+    "內人",
+    "後妻",
+    "前妻",
+    "妾",
+    "小妾",
+    "側室",
+    "正室",
+    "女眷",
+    "兒女",
+    "子女",
+    "家小",
+    "其妻",
+    "其夫",
+)
+SPOUSE_EXPLICIT_BINDING_EXTRAS: tuple[str, ...] = (
+    "為妻",
+    "為夫",
+    "嫁為",
+    "娶為",
+    "納為",
+    "配為",
+    "結為夫妻",
+    "結為夫婦",
+    "成為夫妻",
+    "成為夫婦",
+    "作妻",
+    "作夫",
+)
+
 
 _RELATIONSHIP_TYPE_REFINEMENT_RULES_LOADED = False
 
@@ -134,6 +197,48 @@ def contains_any(text: str, terms: list[str]) -> bool:
     return any(term in text for term in terms)
 
 
+def spouse_binding_terms() -> list[str]:
+    ensure_relationship_type_refinement_rules_loaded()
+    blocked_terms = {"婚", "嫁", "娶", "納", "配", "以女妻", "女妻之"}
+    terms = [term for term in SPOUSE_DIRECT_BINDING_TERMS if len(term) > 1 and term not in blocked_terms]
+    terms.extend(SPOUSE_EXPLICIT_BINDING_EXTRAS)
+    return sorted(set(terms), key=lambda item: (-len(item), item))
+
+
+def spouse_supports_pair_binding(text: str) -> bool:
+    compact = compact_text(text)
+    if not compact:
+        return False
+    if contains_any(compact, list(SPOUSE_PLAN_CONTEXT_TERMS)):
+        return False
+    if contains_any(compact, spouse_binding_terms()):
+        return True
+    if contains_any(compact, list(SPOUSE_FAMILY_CONTEXT_TERMS)):
+        return False
+    return False
+
+
+def kinship_pair_binding_supported(relation_type: str, text: str) -> bool:
+    ensure_relationship_type_refinement_rules_loaded()
+    compact = compact_text(text)
+    if not compact:
+        return False
+    normalized = str(relation_type or "").strip()
+    if normalized == "spouse":
+        return spouse_supports_pair_binding(compact)
+    if normalized == "parent_child":
+        terms = [term for term in PARENT_CHILD_TERMS if len(term) > 1]
+        return contains_any(compact, terms)
+    if normalized == "adoptive_parent_child":
+        terms = [term for term in ADOPTIVE_PARENT_CHILD_TERMS if len(term) > 1]
+        return contains_any(compact, terms)
+    if normalized == "sibling":
+        return contains_any(compact, SIBLING_TERMS)
+    if normalized == "sworn_sibling":
+        return contains_any(compact, SWORN_SIBLING_TERMS)
+    return False
+
+
 def ruler_subject_authority_terms() -> list[str]:
     pair_cues.ensure_relationship_claim_pair_cue_rules_loaded()
     return list(pair_cues.PAIR_CUE_AUTHORITY_DIRECT_TERMS)
@@ -174,16 +279,13 @@ def refine_relationship_type(edge: dict[str, Any], fallback_text: str = "") -> t
     if contains_any(text, SWORN_SIBLING_TERMS):
         reasons.append("sworn_sibling_terms")
         return "sworn_sibling", reasons
-    if (
-        contains_any(text, SPOUSE_TERMS)
-        and contains_any(text, SPOUSE_PARENT_CHILD_CONTEXT_TERMS)
-        and not contains_any(text, SPOUSE_DIRECT_BINDING_TERMS)
-    ):
-        reasons.append("spouse_parent_child_context_guard")
-        return original_type or "relationship", reasons
     if contains_any(text, SPOUSE_TERMS):
-        reasons.append("spouse_terms")
-        return "spouse", reasons
+        if spouse_supports_pair_binding(text):
+            reasons.append("spouse_terms")
+            return "spouse", reasons
+        reasons.append("spouse_context_rejected")
+        if original_type == "spouse":
+            return "relationship", reasons
     if contains_any(text, ADOPTIVE_PARENT_CHILD_TERMS):
         reasons.append("adoptive_parent_child_terms")
         return "adoptive_parent_child", reasons
