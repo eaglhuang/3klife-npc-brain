@@ -2,12 +2,12 @@
 
 - General ID: `zhen-ji`
 - Display Name: `甄姬`
-- Generated At: `2026-05-21T09:52:28+00:00`
+- Generated At: `2026-06-01T15:25:15+00:00`
 - Runtime Status: `thin-but-testable`
 - Completion: `None`
 - Ready Events: `0`
 - Relationships: `0`
-- Rejected Relationship Edges: `0`
+- Rejected Relationship Edges: `2`
 - Review Backlog: `0`
 
 ## Keyword Categories

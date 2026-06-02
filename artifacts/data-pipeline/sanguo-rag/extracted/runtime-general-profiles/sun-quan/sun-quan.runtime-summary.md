@@ -2,12 +2,12 @@
 
 - General ID: `sun-quan`
 - Display Name: `孫權`
-- Generated At: `2026-05-21T09:52:24+00:00`
+- Generated At: `2026-06-01T15:25:12+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `None`
-- Ready Events: `24`
-- Relationships: `21`
-- Rejected Relationship Edges: `25`
+- Completion: `85.35`
+- Ready Events: `12`
+- Relationships: `12`
+- Rejected Relationship Edges: `8`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,21 +17,20 @@
 - `aptitude`: `4`
 - `choice`: `5`
 - `decision`: `5`
-- `event`: `20`
+- `event`: `11`
 - `identity`: `3`
-- `location`: `4`
-- `person`: `20`
+- `location`: `2`
+- `person`: `12`
 - `personality`: `10`
-- `relationship`: `21`
+- `relationship`: `12`
 
 ## Relationship Types
 
 - `battlefield_contact`: `4`
-- `enemy_rival`: `9`
+- `enemy_rival`: `3`
 - `parent_child`: `2`
-- `ruler_subject`: `4`
+- `ruler_subject`: `2`
 - `sibling`: `1`
-- `spouse`: `1`
 
 ## Outputs
 

@@ -2,10 +2,10 @@
 
 - General ID: `ma-dai`
 - Display Name: `馬岱`
-- Generated At: `2026-05-21T09:52:27+00:00`
+- Generated At: `2026-06-01T15:25:10+00:00`
 - Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `4`
+- Ready Events: `2`
 - Relationships: `0`
 - Rejected Relationship Edges: `0`
 - Review Backlog: `0`
@@ -15,9 +15,9 @@
 - `activity`: `4`
 - `affect`: `1`
 - `decision`: `1`
-- `event`: `4`
+- `event`: `2`
 - `identity`: `2`
-- `location`: `2`
+- `location`: `1`
 - `personality`: `3`
 
 ## Relationship Types

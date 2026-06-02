@@ -2,83 +2,31 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "yan-liang",
   "displayName": "顏良",
-  "generatedAt": "2026-05-21T09:22:09+00:00",
-  "relationshipCount": 4,
+  "generatedAt": "2026-06-01T15:25:13+00:00",
+  "relationshipCount": 2,
   "typeCounts": {
     "battlefield_contact": 1,
-    "enemy_rival": 3
+    "ruler_subject": 1
   },
   "anchors": [
     {
-      "targetId": "guo-tu",
-      "targetName": "郭圖",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "targetId": "yuan-shao",
+      "targetName": "袁紹",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
       "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:50cf06a28244b2e5827d"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "二月，紹遣郭圖、淳于瓊、顏良攻東郡太守劉延于白馬，紹引兵至黎陽，將渡河"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "wen-chou",
-      "targetName": "文醜",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:52c39472efdf11d2801a",
-        "ext-card:gutenberg-sanguozhi:candidate-card:8e72393f389e76dc65d5"
-      ],
-      "edgeConfidence": 0.87,
-      "edgeStrength": 0.75,
-      "sourceQuotes": [
-        "顏良、文醜，一夫之勇耳，可一戰而禽也"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
+        "ruler_subject"
       ],
       "directions": [
         "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:d50dfbbd16c007bac332"
+        "ext-card:wikisource-romance:candidate-card:7dc2a3fc458b3c810ca3"
       ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
+      "edgeConfidence": 0.8,
+      "edgeStrength": 0.68,
       "sourceQuotes": [
-        "操駭然，回顧呂布舊將宋憲曰：「吾聞汝乃呂布部下猛將，今可與顏良一戰"
+        "袁紹令顏良、文醜為先鋒，各引弓弩手一千，亦分作左右兩隊"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -92,7 +40,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -104,48 +52,13 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
     }
   ],
-  "rejectedRelationshipEdges": [
-    {
-      "targetId": "zhao-yun",
-      "targetName": "趙雲",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "007#p6"
-      ],
-      "sourceQuote": "如羽翼。馬五千餘匹，大半皆是白馬。因公孫瓚曾與羌人戰，盡選白馬爲先鋒，號爲「白",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhao-yun",
-      "targetName": "趙雲",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "007#p6"
-      ],
-      "sourceQuote": "如羽翼。馬五千餘匹，大半皆是白馬。因公孫瓚曾與羌人戰，盡選白馬爲先鋒，號爲「白",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    }
-  ],
+  "rejectedRelationshipEdges": [],
   "taxonomyPolicy": {
     "commands": "not exported as final type; refined into semantic runtime labels when possible",
     "fallbackType": "battlefield_contact",

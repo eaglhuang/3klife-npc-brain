@@ -2,12 +2,12 @@
 
 - General ID: `xiahou-yuan`
 - Display Name: `夏侯淵`
-- Generated At: `2026-06-01T08:31:42+00:00`
+- Generated At: `2026-06-01T15:25:13+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `19`
+- Ready Events: `1`
 - Relationships: `1`
-- Rejected Relationship Edges: `2`
+- Rejected Relationship Edges: `1`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,9 +17,9 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `1`
-- `event`: `14`
+- `event`: `1`
 - `identity`: `3`
-- `location`: `3`
+- `location`: `1`
 - `person`: `1`
 - `personality`: `5`
 - `relationship`: `1`

@@ -2,7 +2,7 @@
   "keywordVersion": "general_runtime_keywords_v1",
   "generalId": "wei-yan",
   "displayName": "魏延",
-  "generatedAt": "2026-05-21T09:52:24+00:00",
+  "generatedAt": "2026-06-01T15:25:12+00:00",
   "categories": {
     "activity": [
       {
@@ -341,32 +341,6 @@
         "retired": false,
         "fullLabel": "長安：孔明急上馬，有關興、張苞二將保護，殺出重圍。",
         "eventId": "romance.reviewed-a.zhuge-liang-core-source-packet-zhuge-liang-093-p4-093-p4"
-      },
-      {
-        "keywordKey": "event.female-interaction-090-p15",
-        "label": "此時王平、張翼已引...",
-        "category": "event",
-        "sourceRefs": [
-          "090#p15"
-        ],
-        "confidence": 0.81,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "南中：此時王平、張翼已引一軍趕到蠻寨中，將祝融夫人并一應老小皆活捉而來。孔明歸到寨中，",
-        "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15"
-      },
-      {
-        "keywordKey": "event.female-interaction-090-p7",
-        "label": "去。次日，蠻兵報入...",
-        "category": "event",
-        "sourceRefs": [
-          "090#p7"
-        ],
-        "confidence": 0.77,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "大寨：去。次日，蠻兵報入洞中，說趙雲搦戰。祝融夫人即上馬出迎。二人戰不數合，雲撥馬便走",
-        "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7"
       }
     ],
     "identity": [
@@ -414,17 +388,6 @@
         "retired": false
       },
       {
-        "keywordKey": "location.u5357-4e2d",
-        "label": "南中",
-        "category": "location",
-        "sourceRefs": [
-          "090#p15"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      },
-      {
         "keywordKey": "location.u5927-5be8",
         "label": "大寨",
         "category": "location",
@@ -433,7 +396,6 @@
           "070#p2",
           "087#p5",
           "087#p6",
-          "090#p7",
           "094#p5"
         ],
         "confidence": 0.86,
@@ -514,17 +476,16 @@
         "relatedGeneralId": "peng-yang"
       },
       {
-        "keywordKey": "person.wang-ping",
-        "label": "王平",
+        "keywordKey": "person.wen-pin",
+        "label": "文聘",
         "category": "person",
         "sourceRefs": [
-          "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:4e54f25f8f6a5053a3f4",
-          "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:d4ade73cf8c9fd5869cf"
+          "sgyy-baihua#chapter-041#p3;window=3"
         ],
-        "confidence": 0.82,
+        "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
-        "relatedGeneralId": "wang-ping"
+        "relatedGeneralId": "wen-pin"
       },
       {
         "keywordKey": "person.xiahou-ba",
@@ -623,8 +584,8 @@
     ],
     "relationship": [
       {
-        "keywordKey": "relationship.e-huan.enemy_rival",
-        "label": "鄂煥-敵對競爭",
+        "keywordKey": "relationship.e-huan.battlefield_opponent",
+        "label": "鄂煥-戰場對手",
         "category": "relationship",
         "sourceRefs": [
           "087#p5"
@@ -633,7 +594,7 @@
         "uiLabelMaxChars": 12,
         "retired": false,
         "relatedGeneralId": "e-huan",
-        "relationshipType": "enemy_rival"
+        "relationshipType": "battlefield_opponent"
       },
       {
         "keywordKey": "relationship.huang-zhong.battlefield_contact",
@@ -675,18 +636,17 @@
         "relationshipType": "battlefield_contact"
       },
       {
-        "keywordKey": "relationship.wang-ping.betrayal_surrender",
-        "label": "王平-背叛投降",
+        "keywordKey": "relationship.wen-pin.enemy_rival",
+        "label": "文聘-敵對競爭",
         "category": "relationship",
         "sourceRefs": [
-          "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:4e54f25f8f6a5053a3f4",
-          "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:d4ade73cf8c9fd5869cf"
+          "sgyy-baihua#chapter-041#p3;window=3"
         ],
-        "confidence": 0.82,
+        "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
-        "relatedGeneralId": "wang-ping",
-        "relationshipType": "betrayal_surrender"
+        "relatedGeneralId": "wen-pin",
+        "relationshipType": "enemy_rival"
       },
       {
         "keywordKey": "relationship.xiahou-ba.battlefield_contact",
@@ -724,9 +684,9 @@
     "aptitude": 2,
     "choice": 2,
     "decision": 3,
-    "event": 17,
+    "event": 15,
     "identity": 3,
-    "location": 5,
+    "location": 4,
     "person": 7,
     "personality": 6,
     "relationship": 7

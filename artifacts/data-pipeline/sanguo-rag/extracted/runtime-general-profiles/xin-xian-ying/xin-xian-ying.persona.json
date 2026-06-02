@@ -8,13 +8,13 @@
   "title": "【辛憲英】",
   "gender": "女",
   "baseFaction": "wei",
-  "generatedAt": "2026-05-21T09:52:29+00:00",
+  "generatedAt": "2026-06-01T15:25:13+00:00",
   "runtimeReadiness": {
     "status": "thin-but-testable",
     "canonicalWrites": false,
     "completionPercent": null,
     "readyEventCount": 0,
-    "relationshipCount": 1,
+    "relationshipCount": 0,
     "rejectedRelationshipEdgeCount": 0,
     "keywordCategoryCounts": {
       "activity": 2,
@@ -23,9 +23,7 @@
       "choice": 1,
       "decision": 1,
       "identity": 3,
-      "person": 1,
-      "personality": 2,
-      "relationship": 1
+      "personality": 2
     },
     "reviewBacklogCount": 0
   },
@@ -90,13 +88,122 @@
       ],
       "example": "與魯芝引數十騎，斬關奪門而出。人報知司馬懿。懿恐桓範亦走，急令人召之。範與其子",
       "relatedGeneralIds": [
+        "cao-shuang",
+        "chen-tai",
         "sima-yi"
       ],
       "targetLinkTrace": [
         {
+          "targetId": "cao-shuang",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "chen-tai",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
           "targetId": "sima-yi",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "xin-xian-ying",
+          "targetId": "cao-shuang",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "107#p3",
+          "sourceId": "107#p3",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "xin-xian-ying",
+          "targetId": "chen-tai",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "107#p3",
+          "sourceId": "107#p3",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "xin-xian-ying",
+          "targetId": "sima-yi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "107#p3",
+          "sourceId": "107#p3",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -122,7 +229,8 @@
         {
           "targetId": "cao-shuang",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         },
         {
@@ -134,7 +242,104 @@
         {
           "targetId": "sima-yi",
           "sources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "xin-xian-ying",
+          "targetId": "cao-shuang",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "107#p9",
+          "sourceId": "107#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "xin-xian-ying",
+          "targetId": "romance-person-8523-6fdf",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "107#p9",
+          "sourceId": "107#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
             "aliasMatch"
+          ],
+          "linkAuthority": "alias_match_only",
+          "sceneEligible": false,
+          "supplementalEligible": false,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "xin-xian-ying",
+          "targetId": "sima-yi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "107#p9",
+          "sourceId": "107#p9",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -143,216 +348,319 @@
   "angleTargetLinks": [
     {
       "angleFamily": "activity_seed",
-      "targetId": "sima-yi",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-shuang",
       "sourceRef": "107#p3",
       "sourceId": "107#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p3",
-      "sourceId": "107#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p3",
-      "sourceId": "107#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p3",
-      "sourceId": "107#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p3",
-      "sourceId": "107#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p3",
-      "sourceId": "107#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p3",
-      "sourceId": "107#p3",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "cao-shuang",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "chen-tai",
+      "sourceRef": "107#p3",
+      "sourceId": "107#p3",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "romance-person-8523-6fdf",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "sima-yi",
+      "sourceRef": "107#p3",
+      "sourceId": "107#p3",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "cao-shuang",
       "sourceRef": "107#p9",
       "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
-      "angleFamily": "affect_story",
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "romance-person-8523-6fdf",
       "sourceRef": "107#p9",
       "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "alias_match_only",
+      "linkAuthorities": [
+        "alias_match_only"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
-      "angleFamily": "affect_story",
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "sima-yi",
       "sourceRef": "107#p9",
       "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "cao-shuang",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "romance-person-8523-6fdf",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "cao-shuang",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "romance-person-8523-6fdf",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "cao-shuang",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "romance-person-8523-6fdf",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "cao-shuang",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "romance-person-8523-6fdf",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "sima-yi",
-      "sourceRef": "107#p9",
-      "sourceId": "107#p9",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     }
   ],
   "targetLinking": {
     "version": "deterministic_source_link_v1",
-    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
-    "linkCount": 25
-  },
-  "relationshipSummary": {
-    "typeCounts": {
-      "enemy_rival": 1
-    },
-    "topAnchors": [
+    "focusProjectionVersion": "runtime_focus_projection_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference; insufficient links emit upstreamFeedback instead of downstream backfill",
+    "linkCount": 6,
+    "sceneEligibleLinkCount": 0,
+    "upstreamFeedbackRequiredCount": 6,
+    "missingDataPolicy": "Downstream must never invent missing person, relationship, event, or mood facts. When a target is only weakly linked, emit upstreamFeedback and keep sceneEligible=false.",
+    "upstreamFeedback": [
       {
+        "sourceRef": "107#p3",
+        "sourceId": "107#p3",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-shuang",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "107#p3",
+        "sourceId": "107#p3",
+        "sourceType": "sourceHighlight",
+        "targetId": "chen-tai",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "107#p3",
+        "sourceId": "107#p3",
+        "sourceType": "sourceHighlight",
         "targetId": "sima-yi",
-        "targetName": "司馬懿",
-        "type": "enemy_rival",
-        "typeLabel": "敵對競爭",
-        "originalTypes": [
-          "enemy_rival"
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
         ],
-        "directions": [
-          "incoming"
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "107#p9",
+        "sourceId": "107#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-shuang",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
         ],
-        "evidenceRefs": [
-          "ext-card:wikisource-romance:candidate-card:0e54b37b6ff1a4bccb56"
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "107#p9",
+        "sourceId": "107#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "romance-person-8523-6fdf",
+        "traceSources": [
+          "aliasMatch"
         ],
-        "edgeConfidence": 0.82,
-        "edgeStrength": 0.7,
-        "sourceQuotes": [
-          "正敘司馬懿殺曹爽，忽有辛憲英為弟畫策一段文字"
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "107#p9",
+        "sourceId": "107#p9",
+        "sourceType": "sourceHighlight",
+        "targetId": "sima-yi",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
         ],
-        "refinementReasons": [
-          "stable_relationship_baseline"
-        ],
-        "reviewStatus": "ready",
-        "sourceLayer": "claim-graph-a-romance"
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
       }
     ]
+  },
+  "relationshipSummary": {
+    "typeCounts": {},
+    "topAnchors": []
   },
   "reviewBacklog": [],
   "evidenceRefs": [],

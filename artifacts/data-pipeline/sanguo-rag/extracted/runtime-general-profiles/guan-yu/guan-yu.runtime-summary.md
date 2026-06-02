@@ -2,12 +2,12 @@
 
 - General ID: `guan-yu`
 - Display Name: `關羽`
-- Generated At: `2026-06-01T08:30:33+00:00`
+- Generated At: `2026-06-01T15:25:07+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `None`
-- Ready Events: `48`
-- Relationships: `10`
-- Rejected Relationship Edges: `13`
+- Completion: `86.56`
+- Ready Events: `7`
+- Relationships: `6`
+- Rejected Relationship Edges: `20`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,20 +17,18 @@
 - `aptitude`: `4`
 - `choice`: `4`
 - `decision`: `3`
-- `event`: `27`
+- `event`: `6`
 - `identity`: `5`
-- `item`: `1`
-- `location`: `11`
-- `person`: `8`
+- `location`: `6`
+- `person`: `6`
 - `personality`: `6`
-- `relationship`: `10`
+- `relationship`: `6`
 
 ## Relationship Types
 
-- `battlefield_contact`: `2`
+- `battlefield_contact`: `1`
 - `enemy_rival`: `3`
 - `parent_child`: `2`
-- `sworn_sibling`: `3`
 
 ## Outputs
 

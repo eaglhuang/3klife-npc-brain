@@ -2,7 +2,7 @@
 
 - General ID: `wang-yi`
 - Display Name: `王異`
-- Generated At: `2026-06-01T06:09:14+00:00`
+- Generated At: `2026-06-01T15:25:12+00:00`
 - Runtime Status: `thin-but-testable`
 - Completion: `None`
 - Ready Events: `0`
@@ -23,6 +23,6 @@
 
 ## Outputs
 
-- `persona`: `C:\Users\User\3klife-npc-brain\artifacts\data-pipeline\sanguo-rag\extracted\runtime-general-profiles\wang-yi\wang-yi.persona.json`
-- `keywords`: `C:\Users\User\3klife-npc-brain\artifacts\data-pipeline\sanguo-rag\extracted\runtime-general-profiles\wang-yi\wang-yi.keywords.json`
-- `relationships`: `C:\Users\User\3klife-npc-brain\artifacts\data-pipeline\sanguo-rag\extracted\runtime-general-profiles\wang-yi\wang-yi.relationships.json`
+- `persona`: `artifacts\data-pipeline\sanguo-rag\extracted\runtime-general-profiles\wang-yi\wang-yi.persona.json`
+- `keywords`: `artifacts\data-pipeline\sanguo-rag\extracted\runtime-general-profiles\wang-yi\wang-yi.keywords.json`
+- `relationships`: `artifacts\data-pipeline\sanguo-rag\extracted\runtime-general-profiles\wang-yi\wang-yi.relationships.json`

@@ -2,7 +2,7 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "wang-ping",
   "displayName": "王平",
-  "generatedAt": "2026-05-15T17:33:45+00:00",
+  "generatedAt": "2026-06-01T15:25:12+00:00",
   "relationshipCount": 0,
   "typeCounts": {},
   "anchors": [],
@@ -10,8 +10,8 @@
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "087#p5"
       ],
@@ -20,8 +20,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

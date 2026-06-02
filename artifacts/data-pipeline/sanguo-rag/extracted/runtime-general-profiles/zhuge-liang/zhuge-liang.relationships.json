@@ -2,116 +2,90 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "zhuge-liang",
   "displayName": "諸葛亮",
-  "generatedAt": "2026-05-21T09:52:23+00:00",
-  "relationshipCount": 17,
+  "generatedAt": "2026-06-01T15:25:16+00:00",
+  "relationshipCount": 15,
   "typeCounts": {
     "battlefield_contact": 11,
     "betrayal_surrender": 1,
-    "enemy_rival": 4,
-    "parent_child": 1
+    "enemy_rival": 2,
+    "patron_client": 1
   },
   "anchors": [
     {
-      "targetId": "romance-person-8af8-845b-77bb",
-      "targetName": "諸葛瞻",
-      "type": "parent_child",
-      "typeLabel": "親子",
-      "originalTypes": [
-        "parent_child"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "117#zhuge-family"
-      ],
-      "edgeConfidence": 0.92,
-      "edgeStrength": 0.85,
-      "sourceQuotes": [],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "stable-bootstrap-seed"
-    },
-    {
-      "targetId": "cao-zhen",
-      "targetName": "曹真",
+      "targetId": "cao-ren",
+      "targetName": "曹仁",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
         "enemy_rival"
       ],
       "directions": [
-        "outgoing"
+        "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:3a94cd27f624d975cff9"
+        "sgyy-baihua#chapter-051#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "十二月，諸葛亮圍陳倉，曹真遣將軍費曜等拒之"
+        "# 第五十一回 曹仁大戰東吳兵 孔明一氣周公瑾"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "liu-zhang",
-      "targetName": "劉璋",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "targetId": "jiang-wei",
+      "targetName": "姜維",
+      "type": "betrayal_surrender",
+      "typeLabel": "背叛投降",
       "originalTypes": [
-        "enemy_rival"
+        "betrayal_surrender"
       ],
       "directions": [
         "incoming",
         "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:710dbfb08b127cade2c1",
-        "ext-card:wikisource-sanguozhi:candidate-card:7f856613808ae0f8045d"
+        "sgyy-baihua#chapter-093#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "及先主入蜀，自葭萌還攻劉璋，時封年二十馀，有武藝，氣力過人，將兵俱與諸葛亮、張飛等溯流西上，所在戰克"
+        "# 第九十三回 薑伯約歸降孔明 武鄉侯罵死王朝"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "zhang-fei",
-      "targetName": "張飛",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "targetId": "meng-you",
+      "targetName": "孟優",
+      "type": "patron_client",
+      "typeLabel": "提攜投靠",
       "originalTypes": [
-        "enemy_rival"
+        "patron_client"
       ],
       "directions": [
-        "incoming",
         "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:2bf034e2a41617198930",
-        "ext-card:wikisource-sanguozhi:candidate-card:7f856613808ae0f8045d"
+        "sgyy-baihua#chapter-088#p20;window=3"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "及先主入蜀，自葭萌還攻劉璋，時封年二十馀，有武藝，氣力過人，將兵俱與諸葛亮、張飛等溯流西上，所在戰克"
+        "然後孔明才召見孟優入帳。孟優在帳下再拜說：“家兄孟獲感激丞相的活命之恩無法奉獻什麼就準備了一些金珠寶貝作為賞賜給軍隊的資費。"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
       "targetId": "guan-xing",
@@ -119,7 +93,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing",
@@ -135,36 +109,10 @@
         "越吉心疑，未敢輕進。雅丹丞相曰：「此諸葛亮詭計，虛設疑兵耳。可以攻之。」越吉引。各引一軍埋伏去訖；然後點三萬軍，帶了姜維、張翼、關興、張苞，親自來到馬岱寨中"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
-    },
-    {
-      "targetId": "guan-yu",
-      "targetName": "關羽",
-      "type": "battlefield_contact",
-      "typeLabel": "戰場接觸",
-      "originalTypes": [
-        "patron_client"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "042#p8"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "等到漢津，已有船隻伺候，雲長請玄德并甘夫人、阿斗至船中坐定。雲長問曰：「二嫂嫂。見雲長，即勒住馬，回顧眾將曰：「又中諸葛亮之計也！」傳令大軍速退。雲長追趕十數"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "accepted-review-candidate",
-      "sourceLayer": null
     },
     {
       "targetId": "jiang-wei",
@@ -172,8 +120,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject",
-        "mentor_student"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -189,7 +136,7 @@
         "卻說姜維回見馬遵曰：「趙雲敗去，孔明必然自來。在城上守禦。」分撥已定。卻說孔明因慮姜維，自爲前部，望天水郡進發。將到城邊，"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -197,10 +144,10 @@
     {
       "targetId": "liu-du",
       "targetName": "劉度",
-      "type": "betrayal_surrender",
-      "typeLabel": "背叛投降",
+      "type": "battlefield_contact",
+      "typeLabel": "戰場接觸",
       "originalTypes": [
-        "betrayal_surrender"
+        "commands"
       ],
       "directions": [
         "outgoing",
@@ -215,7 +162,7 @@
         "本寨，只見火光未滅，寨中突出一將，乃張翼德也。劉賢叫道榮：「不可入寨，卻去劫孔。，打破城池，滿門盡誅。劉賢回零陵見父劉度，備述孔明之德，勸父投降。度從之，遂"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -226,7 +173,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "incoming",
@@ -241,7 +188,7 @@
         "越吉心疑，未敢輕進。雅丹丞相曰：「此諸葛亮詭計，虛設疑兵耳。可以攻之。」越吉引。各引一軍埋伏去訖；然後點三萬軍，帶了姜維、張翼、關興、張苞，親自來到馬岱寨中"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "accepted-review-candidate",
       "sourceLayer": null
@@ -300,7 +247,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "patron_client"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -312,7 +259,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -323,7 +270,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "patron_client"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -335,7 +282,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -346,7 +293,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "mentor_student"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -358,7 +305,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -369,7 +316,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -381,7 +328,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -392,7 +339,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -406,7 +353,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -417,8 +364,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "patron_client",
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -432,7 +378,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -440,44 +386,132 @@
   ],
   "rejectedRelationshipEdges": [
     {
-      "targetId": "wei-yan",
-      "targetName": "魏延",
-      "type": "battlefield_contact",
-      "originalType": "mentor_student",
+      "targetId": "romance-person-8af8-845b-77bb",
+      "targetName": "諸葛瞻",
+      "type": "parent_child",
+      "originalType": "parent_child",
       "evidenceRefs": [
-        "087#p6"
+        "sgyy-baihua#chapter-117#p6;window=14"
       ],
-      "sourceQuote": "雍闓的人盡殺。」眾軍皆聞此言。少時，孔明令取雍闓的人到帳前問曰：「汝等皆是何。人部從？」眾僞曰：「高定部下人也。」孔明教皆免其死，與酒食賞勞，令人送出界首",
+      "sourceQuote": "這時有人來報，說是孔明的兒子諸葛瞻是大將，諸葛瞻的兒子諸葛尚是先鋒。車上坐的是木刻的孔明像。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "kinship_without_pair_relation_signal"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "sworn_sibling",
+      "originalType": "sworn_sibling",
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-051#p1;window=1"
+      ],
+      "sourceQuote": "孔明要斬關羽，劉備說：“從前我們三個人結義，說不能同日生，但願同日死。這次雲長雖然犯法，但我不忍違背從前的盟誓。",
+      "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|sworn_sibling|guan-yu|zhuge-liang",
+        "negativeCondition:relationship|sworn_sibling|guan-yu|zhuge-liang",
+        "blockedRelationship:relationship|sworn_sibling|guan-yu|zhuge-liang",
+        "blacklist:relationship|sworn_sibling|zhuge-liang|guan-yu",
+        "decisionOnlyBlacklist:relationship|sworn_sibling|zhuge-liang|guan-yu",
+        "negativeCondition:relationship|sworn_sibling|zhuge-liang|guan-yu",
+        "blockedRelationship:relationship|sworn_sibling|zhuge-liang|guan-yu",
+        "kinship_without_pair_relation_signal"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|sworn_sibling|guan-yu|zhuge-liang",
+        "negativeCondition:relationship|sworn_sibling|guan-yu|zhuge-liang",
+        "blockedRelationship:relationship|sworn_sibling|guan-yu|zhuge-liang",
+        "blacklist:relationship|sworn_sibling|zhuge-liang|guan-yu",
+        "decisionOnlyBlacklist:relationship|sworn_sibling|zhuge-liang|guan-yu",
+        "negativeCondition:relationship|sworn_sibling|zhuge-liang|guan-yu",
+        "blockedRelationship:relationship|sworn_sibling|zhuge-liang|guan-yu"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "intimidates_enemy",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "042#p8"
+      ],
+      "sourceQuote": "等到漢津，已有船隻伺候，雲長請玄德并甘夫人、阿斗至船中坐定。雲長問曰：「二嫂嫂。見雲長，即勒住馬，回顧眾將曰：「又中諸葛亮之計也！」傳令大軍速退。雲長追趕十數",
+      "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "decisionOnlyBlacklist:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "negativeCondition:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "blockedRelationship:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "blacklist:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "decisionOnlyBlacklist:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "negativeCondition:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "blockedRelationship:relationship|intimidates_enemy|zhuge-liang|guan-yu"
+      ],
+      "refinementReasons": [
+        "enemy_retreat_or_intimidation_terms"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "decisionOnlyBlacklist:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "negativeCondition:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "blockedRelationship:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "blacklist:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "decisionOnlyBlacklist:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "negativeCondition:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "blockedRelationship:relationship|intimidates_enemy|zhuge-liang|guan-yu"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "guan-yu",
+      "targetName": "關羽",
+      "type": "intimidates_enemy",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "042#p8"
+      ],
+      "sourceQuote": "等到漢津，已有船隻伺候，雲長請玄德并甘夫人、阿斗至船中坐定。雲長問曰：「二嫂嫂。見雲長，即勒住馬，回顧眾將曰：「又中諸葛亮之計也！」傳令大軍速退。雲長追趕十數",
+      "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "decisionOnlyBlacklist:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "negativeCondition:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "blockedRelationship:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "blacklist:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "decisionOnlyBlacklist:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "negativeCondition:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "blockedRelationship:relationship|intimidates_enemy|guan-yu|zhuge-liang"
+      ],
+      "refinementReasons": [
+        "enemy_retreat_or_intimidation_terms"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "decisionOnlyBlacklist:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "negativeCondition:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "blockedRelationship:relationship|intimidates_enemy|zhuge-liang|guan-yu",
+        "blacklist:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "decisionOnlyBlacklist:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "negativeCondition:relationship|intimidates_enemy|guan-yu|zhuge-liang",
+        "blockedRelationship:relationship|intimidates_enemy|guan-yu|zhuge-liang"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
-      "evidenceRefs": [
-        "070#p2"
-      ],
-      "sourceQuote": "軍師何故反送酒與他？」孔明笑曰：「主公與翼德做了許多年兄弟，還不知其爲人耶？。？翼德自來剛強，然前於收川之時，義釋嚴顏，此非勇夫所爲也。今與張郃相拒五十餘",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "wei-yan",
-      "targetName": "魏延",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "093#p5"
       ],
@@ -486,15 +520,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "093#p5"
       ],
@@ -503,32 +538,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "deng-zhi",
-      "targetName": "鄧芝",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "086#p6"
-      ],
-      "sourceQuote": "溫，設宴於城南郵亭之上，命眾官相送。孔明殷勤勸酒。正飲酒間，忽一人乘醉而入，。入，昂然長揖，入席就坐。溫怪之，乃問孔明曰：「此何人也？」孔明答曰：「姓秦，",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhao-yun",
       "targetName": "趙雲",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "052#p7"
       ],
@@ -537,15 +556,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "cao-cao",
       "targetName": "曹操",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "type": "intimidates_enemy",
+      "originalType": "commands",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -554,15 +574,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "enemy_retreat_or_intimidation_terms"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "cao-cao",
       "targetName": "曹操",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "type": "intimidates_enemy",
+      "originalType": "commands",
       "evidenceRefs": [
         "042#p8"
       ],
@@ -571,42 +592,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "enemy_retreat_or_intimidation_terms"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhu-rong-furen",
-      "targetName": "祝融夫人",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
-      "evidenceRefs": [
-        "090#p10"
-      ],
-      "sourceQuote": "主，因勸孟獲歸降，獲不從，今將孟獲并祝融夫人及宗黨數百餘人盡皆擒來，獻與丞相。」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhu-rong-furen",
-      "targetName": "祝融夫人",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
-      "evidenceRefs": [
-        "090#p10"
-      ],
-      "sourceQuote": "主，因勸孟獲歸降，獲不從，今將孟獲并祝融夫人及宗黨數百餘人盡皆擒來，獻與丞相。」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

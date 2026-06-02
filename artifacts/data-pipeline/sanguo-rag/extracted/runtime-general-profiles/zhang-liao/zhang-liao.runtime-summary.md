@@ -2,12 +2,12 @@
 
 - General ID: `zhang-liao`
 - Display Name: `張遼`
-- Generated At: `2026-05-21T09:52:25+00:00`
+- Generated At: `2026-06-01T15:25:14+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `26`
+- Ready Events: `2`
 - Relationships: `7`
-- Rejected Relationship Edges: `4`
+- Rejected Relationship Edges: `2`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,9 +17,9 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `1`
-- `event`: `12`
+- `event`: `2`
 - `identity`: `3`
-- `location`: `6`
+- `location`: `2`
 - `person`: `6`
 - `personality`: `4`
 - `relationship`: `7`

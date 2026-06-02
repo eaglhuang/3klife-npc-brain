@@ -1,0 +1,45 @@
+{
+  "relationshipVersion": "general_relationships_v1",
+  "generalId": "gao-shun",
+  "displayName": "高順",
+  "generatedAt": "2026-06-01T15:25:07+00:00",
+  "relationshipCount": 1,
+  "typeCounts": {
+    "enemy_rival": 1
+  },
+  "anchors": [
+    {
+      "targetId": "liu-bei",
+      "targetName": "劉備",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:gutenberg-sanguozhi:candidate-card:2bb782cca61adeab6c4d"
+      ],
+      "edgeConfidence": 0.88,
+      "edgeStrength": 0.76,
+      "sourceQuotes": [
+        "」 呂布複為袁術使高順攻劉備，公遣夏侯惇救之，不利"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-history"
+    }
+  ],
+  "rejectedRelationshipEdges": [],
+  "taxonomyPolicy": {
+    "commands": "not exported as final type; refined into semantic runtime labels when possible",
+    "fallbackType": "battlefield_contact",
+    "directPairGate": "semantic relationship edges must mention both endpoints unless they come from stable bootstrap",
+    "stableConflictPolicy": "stable relationship baseline types cannot be overwritten by indirect short evidence",
+    "commandPolicy": "command or dispatch evidence is battlefield contact unless a stable authority baseline or explicit lordship terms exist"
+  }
+}

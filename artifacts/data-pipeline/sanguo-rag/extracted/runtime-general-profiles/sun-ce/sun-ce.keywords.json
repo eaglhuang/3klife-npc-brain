@@ -2,7 +2,7 @@
   "keywordVersion": "general_runtime_keywords_v1",
   "generalId": "sun-ce",
   "displayName": "孫策",
-  "generatedAt": "2026-05-21T09:52:26+00:00",
+  "generatedAt": "2026-06-01T15:25:11+00:00",
   "categories": {
     "activity": [
       {
@@ -190,60 +190,6 @@
         "rawTag": "prefers_governance"
       }
     ],
-    "event": [
-      {
-        "keywordKey": "event.female-interaction-007-p11",
-        "label": "三子名翊，字叔弼；...",
-        "category": "event",
-        "sourceRefs": [
-          "007#p11"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "江邊：三子名翊，字叔弼；四子名匡，字季佐。吳夫人之妹，即爲孫堅次妻，亦生一子一女，子",
-        "eventId": "romance.reviewed-a.wu-guo-tai-female-interaction-007-p11-007-p11"
-      },
-      {
-        "keywordKey": "event.generic-battle-007-p11",
-        "label": "親子",
-        "category": "event",
-        "sourceRefs": [
-          "007#p11"
-        ],
-        "confidence": 0.78,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "襄陽：stableKnowledgeBootstrap:parent_child",
-        "eventId": "romance.reviewed-a.sun-jian-generic-battle-007-p11-007-p11"
-      },
-      {
-        "keywordKey": "event.generic-battle-015-p16",
-        "label": "「主公大兵一起，王...",
-        "category": "event",
-        "sourceRefs": [
-          "015#p16"
-        ],
-        "confidence": 0.78,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "大寨：周瑜進曰：「主公大兵一起，王朗必然出城來趕，可用奇兵勝之。",
-        "eventId": "romance.reviewed-a.zhou-yu-generic-battle-015-p16-015-p16"
-      },
-      {
-        "keywordKey": "event.generic-battle-016-p18",
-        "label": "操知布絕婚袁術，大...",
-        "category": "event",
-        "sourceRefs": [
-          "016#p18"
-        ],
-        "confidence": 0.78,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "青州：操知布絕婚袁術，大喜，遂斬韓胤於市曹。",
-        "eventId": "romance.reviewed-a.lu-bu-generic-battle-016-p18-016-p18"
-      }
-    ],
     "identity": [
       {
         "keywordKey": "identity.u4f2f-7b26",
@@ -276,52 +222,6 @@
         "sourceLayer": "identity"
       }
     ],
-    "location": [
-      {
-        "keywordKey": "location.u5927-5be8",
-        "label": "大寨",
-        "category": "location",
-        "sourceRefs": [
-          "015#p16"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      },
-      {
-        "keywordKey": "location.u6c5f-908a",
-        "label": "江邊",
-        "category": "location",
-        "sourceRefs": [
-          "007#p11"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      },
-      {
-        "keywordKey": "location.u8944-967d",
-        "label": "襄陽",
-        "category": "location",
-        "sourceRefs": [
-          "007#p11"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      },
-      {
-        "keywordKey": "location.u9752-5dde",
-        "label": "青州",
-        "category": "location",
-        "sourceRefs": [
-          "016#p18"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      }
-    ],
     "person": [
       {
         "keywordKey": "person.chen-wu",
@@ -348,39 +248,23 @@
         "relatedGeneralId": "cheng-pu"
       },
       {
-        "keywordKey": "person.romance-person-56b4-8c61",
-        "label": "嚴象",
+        "keywordKey": "person.romance-person-56b4-767d-864e",
+        "label": "嚴白虎",
         "category": "person",
         "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:7340b0a5edf4b83d7b39"
+          "sgyy-baihua#chapter-015#p0;window=1"
         ],
-        "confidence": 0.88,
+        "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
-        "relatedGeneralId": "romance-person-56b4-8c61"
-      },
-      {
-        "keywordKey": "person.romance-person-9673-862d",
-        "label": "陳蘭",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:7340b0a5edf4b83d7b39"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "romance-person-9673-862d"
+        "relatedGeneralId": "romance-person-56b4-767d-864e"
       },
       {
         "keywordKey": "person.sun-jian",
         "label": "孫堅",
         "category": "person",
         "sourceRefs": [
-          "007#jiangdong",
-          "ext-card:wikisource-houhanshu:candidate-card:b4e241b53cd9707804e9",
-          "ext-card:wikisource-houhanshu:candidate-card:f746ebf088e1933c5545",
-          "ext-card:wikisource-romance:candidate-card:3583e2b829ec3013c597",
-          "ext-card:wikisource-romance:candidate-card:b429229656415fdd2e25"
+          "007#jiangdong"
         ],
         "confidence": 0.96,
         "uiLabelMaxChars": 12,
@@ -392,39 +276,12 @@
         "label": "孫權",
         "category": "person",
         "sourceRefs": [
-          "029#jiangdong",
-          "ext-card:wikisource-romance:candidate-card:795784c2390671704281"
+          "029#jiangdong"
         ],
         "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
         "relatedGeneralId": "sun-quan"
-      },
-      {
-        "keywordKey": "person.wu-guo-tai",
-        "label": "吳國太",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:wikisource-romance:candidate-card:55649adf413621e96b95",
-          "ext-card:wikisource-romance:candidate-card:a57dc56e00d3e1906034"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "wu-guo-tai"
-      },
-      {
-        "keywordKey": "person.yuan-shu",
-        "label": "袁術",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:wikisource-houhanshu:candidate-card:649aed2dfbb73e6428f3",
-          "ext-card:wikisource-houhanshu:candidate-card:b4e241b53cd9707804e9"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "yuan-shu"
       }
     ],
     "personality": [
@@ -521,19 +378,6 @@
         "relationshipType": "battlefield_contact"
       },
       {
-        "keywordKey": "relationship.chen-wu.betrayal_surrender",
-        "label": "陳武-背叛投降",
-        "category": "relationship",
-        "sourceRefs": [
-          "015#p14"
-        ],
-        "confidence": 0.66,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "chen-wu",
-        "relationshipType": "betrayal_surrender"
-      },
-      {
         "keywordKey": "relationship.cheng-pu.battlefield_contact",
         "label": "程普-戰場接觸",
         "category": "relationship",
@@ -547,43 +391,16 @@
         "relationshipType": "battlefield_contact"
       },
       {
-        "keywordKey": "relationship.romance-person-56b4-8c61.enemy_rival",
-        "label": "嚴象-敵對競爭",
+        "keywordKey": "relationship.romance-person-56b4-767d-864e.enemy_rival",
+        "label": "嚴白虎-敵對競爭",
         "category": "relationship",
         "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:7340b0a5edf4b83d7b39"
+          "sgyy-baihua#chapter-015#p0;window=1"
         ],
-        "confidence": 0.88,
+        "confidence": 0.95,
         "uiLabelMaxChars": 12,
         "retired": false,
-        "relatedGeneralId": "romance-person-56b4-8c61",
-        "relationshipType": "enemy_rival"
-      },
-      {
-        "keywordKey": "relationship.romance-person-9673-862d.enemy_rival",
-        "label": "陳蘭-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-sanguozhi:candidate-card:7340b0a5edf4b83d7b39"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "romance-person-9673-862d",
-        "relationshipType": "enemy_rival"
-      },
-      {
-        "keywordKey": "relationship.sun-jian.enemy_rival",
-        "label": "孫堅-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-houhanshu:candidate-card:b4e241b53cd9707804e9",
-          "ext-card:wikisource-houhanshu:candidate-card:f746ebf088e1933c5545"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "sun-jian",
+        "relatedGeneralId": "romance-person-56b4-767d-864e",
         "relationshipType": "enemy_rival"
       },
       {
@@ -600,33 +417,6 @@
         "relationshipType": "parent_child"
       },
       {
-        "keywordKey": "relationship.sun-jian.spouse",
-        "label": "孫堅-夫妻姻親",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-romance:candidate-card:3583e2b829ec3013c597",
-          "ext-card:wikisource-romance:candidate-card:b429229656415fdd2e25"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "sun-jian",
-        "relationshipType": "spouse"
-      },
-      {
-        "keywordKey": "relationship.sun-quan.enemy_rival",
-        "label": "孫權-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-romance:candidate-card:795784c2390671704281"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "sun-quan",
-        "relationshipType": "enemy_rival"
-      },
-      {
         "keywordKey": "relationship.sun-quan.sibling",
         "label": "孫權-手足",
         "category": "relationship",
@@ -638,34 +428,6 @@
         "retired": false,
         "relatedGeneralId": "sun-quan",
         "relationshipType": "sibling"
-      },
-      {
-        "keywordKey": "relationship.wu-guo-tai.spouse",
-        "label": "吳國太-夫妻姻親",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-romance:candidate-card:55649adf413621e96b95",
-          "ext-card:wikisource-romance:candidate-card:a57dc56e00d3e1906034"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "wu-guo-tai",
-        "relationshipType": "spouse"
-      },
-      {
-        "keywordKey": "relationship.yuan-shu.enemy_rival",
-        "label": "袁術-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-houhanshu:candidate-card:649aed2dfbb73e6428f3",
-          "ext-card:wikisource-houhanshu:candidate-card:b4e241b53cd9707804e9"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "yuan-shu",
-        "relationshipType": "enemy_rival"
       }
     ]
   },
@@ -675,11 +437,9 @@
     "aptitude": 3,
     "choice": 3,
     "decision": 3,
-    "event": 4,
     "identity": 3,
-    "location": 4,
-    "person": 8,
+    "person": 5,
     "personality": 7,
-    "relationship": 12
+    "relationship": 5
   }
 }

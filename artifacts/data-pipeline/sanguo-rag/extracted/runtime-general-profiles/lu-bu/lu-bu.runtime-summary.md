@@ -2,12 +2,12 @@
 
 - General ID: `lu-bu`
 - Display Name: `呂布`
-- Generated At: `2026-06-01T08:31:41+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `None`
-- Ready Events: `77`
-- Relationships: `9`
-- Rejected Relationship Edges: `67`
+- Generated At: `2026-06-01T15:25:09+00:00`
+- Runtime Status: `thin-but-testable`
+- Completion: `64.31`
+- Ready Events: `0`
+- Relationships: `6`
+- Rejected Relationship Edges: `1`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,20 +17,16 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `1`
-- `event`: `32`
 - `identity`: `4`
-- `item`: `1`
-- `location`: `13`
-- `person`: `7`
+- `person`: `5`
 - `personality`: `5`
-- `relationship`: `9`
+- `relationship`: `6`
 
 ## Relationship Types
 
 - `adoptive_parent_child`: `2`
-- `battlefield_contact`: `4`
+- `battlefield_contact`: `2`
 - `enemy_rival`: `2`
-- `spouse`: `1`
 
 ## Outputs
 

@@ -2,7 +2,7 @@
 
 - General ID: `jiang-wei`
 - Display Name: `姜維`
-- Generated At: `2026-05-21T09:52:25+00:00`
+- Generated At: `2026-06-01T15:25:08+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
 - Ready Events: `5`
@@ -20,14 +20,14 @@
 - `event`: `5`
 - `identity`: `3`
 - `location`: `3`
-- `person`: `3`
+- `person`: `2`
 - `personality`: `5`
 - `relationship`: `3`
 
 ## Relationship Types
 
 - `battlefield_contact`: `2`
-- `enemy_rival`: `1`
+- `betrayal_surrender`: `1`
 
 ## Outputs
 

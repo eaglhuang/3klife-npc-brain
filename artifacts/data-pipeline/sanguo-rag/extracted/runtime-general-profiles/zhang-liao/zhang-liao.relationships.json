@@ -2,7 +2,7 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "zhang-liao",
   "displayName": "張遼",
-  "generatedAt": "2026-05-21T09:52:25+00:00",
+  "generatedAt": "2026-06-01T15:25:14+00:00",
   "relationshipCount": 7,
   "typeCounts": {
     "battlefield_contact": 2,
@@ -10,54 +10,104 @@
   },
   "anchors": [
     {
-      "targetId": "le-jin",
-      "targetName": "樂進",
+      "targetId": "cao-cao",
+      "targetName": "曹操",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
         "enemy_rival"
       ],
       "directions": [
-        "outgoing"
+        "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:2b13bbf25348fe9b8a20"
+        "sgyy-baihua#chapter-020#p1;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "與張遼、樂進屯合肥，孫權率眾圍之，遼欲奉教出戰"
+        "話說曹操舉劍要殺張遼，劉備從後麵拉住了他的胳膊，關羽則跪在麵前，說：“我素來知道張遼是個正直的人，應該留用，我願用性命擔保。”曹操就把劍扔了，笑說：“我也知道文遠正直，剛才是假裝的啊。"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "romance-person-9673-862d",
-      "targetName": "陳蘭",
+      "targetId": "guan-yu",
+      "targetName": "關羽",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
         "enemy_rival"
       ],
       "directions": [
-        "outgoing"
+        "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:a8f12a7fca92e1a5eef3"
+        "sgyy-baihua#chapter-053#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "後與 臧霸 等攻 梅成 ， 張遼 、 張郃 等討 陳蘭"
+        "# 第五十三回 關雲長義釋黃漢升 孫仲謀大戰張文遠"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "huang-zhong",
+      "targetName": "黃忠",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-053#p0;window=1"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
+      "sourceQuotes": [
+        "# 第五十三回 關雲長義釋黃漢升 孫仲謀大戰張文遠"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "romance-person-5b6b-4ef2",
+      "targetName": "孫仲",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-053#p0;window=1"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
+      "sourceQuotes": [
+        "# 第五十三回 關雲長義釋黃漢升 孫仲謀大戰張文遠"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
       "targetId": "sun-quan",
@@ -68,76 +118,21 @@
         "enemy_rival"
       ],
       "directions": [
-        "incoming",
-        "outgoing"
+        "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:2b13bbf25348fe9b8a20",
-        "ext-card:wikisource-sanguozhi:candidate-card:30b366708a2ad81fb153"
+        "sgyy-baihua#chapter-053#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "與張遼、樂進屯合肥，孫權率眾圍之，遼欲奉教出戰"
+        "# 第五十三回 關雲長義釋黃漢升 孫仲謀大戰張文遠"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "zhang-he",
-      "targetName": "張郃",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:a8f12a7fca92e1a5eef3",
-        "ext-card:wikisource-sanguozhi:candidate-card:eaa97c99b14a28c1eba9"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "後與 臧霸 等攻 梅成 ， 張遼 、 張郃 等討 陳蘭"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "xiahou-dun",
-      "targetName": "夏侯惇",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "011#p14"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "，雙槍齊舉。戰到三十餘合，勝負不分。夏侯惇拍馬便出助戰，呂佈陣上張遼截住廝殺。"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "accepted-review-candidate",
-      "sourceLayer": null
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
       "targetId": "cao-cao",
@@ -145,7 +140,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject",
+        "commands",
         "protects"
       ],
       "directions": [
@@ -161,7 +156,6 @@
       "edgeStrength": 0.62,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted",
         "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
@@ -173,7 +167,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -185,7 +179,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -196,7 +190,7 @@
       "targetId": "lu-bu",
       "targetName": "呂布",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "019#p10"
       ],
@@ -205,59 +199,28 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "cao-cao",
       "targetName": "曹操",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "032#p11"
       ],
       "sourceQuote": null,
       "rejectionReasons": [
+        "conflicts_with_stable_relationship_without_direct_pair_evidence",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "guan-yu",
-      "targetName": "關羽",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "016#p11"
-      ],
-      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "guan-yu",
-      "targetName": "關羽",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "016#p11"
-      ],
-      "sourceQuote": "至沛縣界首，被強寇劫去一半。打聽得乃劉備之弟張飛，詐妝山賊，搶劫馬匹去了。」",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

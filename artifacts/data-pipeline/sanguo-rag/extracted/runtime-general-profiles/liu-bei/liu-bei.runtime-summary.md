@@ -2,12 +2,12 @@
 
 - General ID: `liu-bei`
 - Display Name: `劉備`
-- Generated At: `2026-06-01T08:31:40+00:00`
+- Generated At: `2026-06-01T15:25:08+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `None`
-- Ready Events: `131`
-- Relationships: `23`
-- Rejected Relationship Edges: `68`
+- Completion: `100.0`
+- Ready Events: `26`
+- Relationships: `15`
+- Rejected Relationship Edges: `16`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,25 +17,22 @@
 - `aptitude`: `5`
 - `choice`: `6`
 - `decision`: `5`
-- `event`: `74`
+- `event`: `22`
 - `identity`: `3`
-- `item`: `1`
-- `location`: `19`
-- `person`: `17`
+- `location`: `8`
+- `person`: `12`
 - `personality`: `9`
-- `relationship`: `23`
+- `relationship`: `15`
 
 ## Relationship Types
 
-- `battlefield_contact`: `11`
+- `battlefield_contact`: `7`
 - `betrayal_surrender`: `1`
 - `enemy_rival`: `3`
 - `parent_child`: `1`
 - `patron_client`: `1`
-- `protects_family`: `1`
 - `ruler_subject`: `1`
-- `spouse`: `2`
-- `sworn_sibling`: `2`
+- `spouse`: `1`
 
 ## Outputs
 

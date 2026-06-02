@@ -9,7 +9,7 @@
   "title": "【黃月英】",
   "gender": "女",
   "baseFaction": "shu",
-  "generatedAt": "2026-05-21T09:52:29+00:00",
+  "generatedAt": "2026-06-01T15:25:07+00:00",
   "runtimeReadiness": {
     "status": "thin-but-testable",
     "canonicalWrites": false,
@@ -78,8 +78,13 @@
   "angleTargetLinks": [],
   "targetLinking": {
     "version": "deterministic_source_link_v1",
-    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
-    "linkCount": 0
+    "focusProjectionVersion": "runtime_focus_projection_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference; insufficient links emit upstreamFeedback instead of downstream backfill",
+    "linkCount": 0,
+    "sceneEligibleLinkCount": 0,
+    "upstreamFeedbackRequiredCount": 0,
+    "missingDataPolicy": "Downstream must never invent missing person, relationship, event, or mood facts. When a target is only weakly linked, emit upstreamFeedback and keep sceneEligible=false.",
+    "upstreamFeedback": []
   },
   "relationshipSummary": {
     "typeCounts": {},

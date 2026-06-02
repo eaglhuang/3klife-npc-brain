@@ -2,12 +2,12 @@
 
 - General ID: `diao-chan`
 - Display Name: `貂蟬`
-- Generated At: `2026-05-21T09:52:28+00:00`
+- Generated At: `2026-06-01T15:25:06+00:00`
 - Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `6`
+- Ready Events: `0`
 - Relationships: `0`
-- Rejected Relationship Edges: `12`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,9 +17,7 @@
 - `aptitude`: `3`
 - `choice`: `3`
 - `decision`: `3`
-- `event`: `4`
 - `identity`: `4`
-- `location`: `4`
 - `personality`: `5`
 
 ## Relationship Types

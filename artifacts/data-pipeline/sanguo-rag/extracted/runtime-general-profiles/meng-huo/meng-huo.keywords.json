@@ -2,7 +2,7 @@
   "keywordVersion": "general_runtime_keywords_v1",
   "generalId": "meng-huo",
   "displayName": "孟獲",
-  "generatedAt": "2026-05-21T09:52:27+00:00",
+  "generatedAt": "2026-06-01T15:25:10+00:00",
   "categories": {
     "activity": [
       {
@@ -76,60 +76,6 @@
         "rawTag": "prefers_battle"
       }
     ],
-    "event": [
-      {
-        "keywordKey": "event.female-interaction-090-p10",
-        "label": "「蠻王孟獲妻弟帶來...",
-        "category": "event",
-        "sourceRefs": [
-          "090#p10"
-        ],
-        "confidence": 0.76,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "南中：次日，孔明正要分兵緝擒孟獲，忽報：「蠻王孟獲妻弟帶來洞主，因勸孟獲歸降，獲不從，今將孟獲并祝融夫人及宗黨數百餘人盡皆擒來，獻與丞相。",
-        "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10"
-      },
-      {
-        "keywordKey": "event.female-interaction-090-p15",
-        "label": "此時王平、張翼已引...",
-        "category": "event",
-        "sourceRefs": [
-          "090#p15"
-        ],
-        "confidence": 0.81,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "南中：此時王平、張翼已引一軍趕到蠻寨中，將祝融夫人并一應老小皆活捉而來。孔明歸到寨中，",
-        "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15"
-      },
-      {
-        "keywordKey": "event.female-interaction-090-p6",
-        "label": "是一婦人，願與你出...",
-        "category": "event",
-        "sourceRefs": [
-          "090#p6"
-        ],
-        "confidence": 0.72,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "南中：是一婦人，願與你出戰。」獲視之，乃妻祝融夫人也。夫人世居南蠻，乃祝融氏之後，善使",
-        "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6"
-      },
-      {
-        "keywordKey": "event.female-interaction-090-p7",
-        "label": "去。次日，蠻兵報入...",
-        "category": "event",
-        "sourceRefs": [
-          "090#p7"
-        ],
-        "confidence": 0.77,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "大寨：去。次日，蠻兵報入洞中，說趙雲搦戰。祝融夫人即上馬出迎。二人戰不數合，雲撥馬便走",
-        "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7"
-      }
-    ],
     "identity": [
       {
         "keywordKey": "identity.u5b5f-7372",
@@ -152,32 +98,6 @@
         "sourceLayer": "identity"
       }
     ],
-    "location": [
-      {
-        "keywordKey": "location.u5357-4e2d",
-        "label": "南中",
-        "category": "location",
-        "sourceRefs": [
-          "090#p10",
-          "090#p15",
-          "090#p6"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      },
-      {
-        "keywordKey": "location.u5927-5be8",
-        "label": "大寨",
-        "category": "location",
-        "sourceRefs": [
-          "090#p7"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      }
-    ],
     "person": [
       {
         "keywordKey": "person.meng-you",
@@ -190,18 +110,6 @@
         "uiLabelMaxChars": 12,
         "retired": false,
         "relatedGeneralId": "meng-you"
-      },
-      {
-        "keywordKey": "person.zhu-rong-furen",
-        "label": "祝融夫人",
-        "category": "person",
-        "sourceRefs": [
-          "090#p10"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "zhu-rong-furen"
       }
     ],
     "personality": [
@@ -263,32 +171,6 @@
         "retired": false,
         "relatedGeneralId": "meng-you",
         "relationshipType": "battlefield_contact"
-      },
-      {
-        "keywordKey": "relationship.zhu-rong-furen.battlefield_contact",
-        "label": "祝融夫人-戰場接觸",
-        "category": "relationship",
-        "sourceRefs": [
-          "090#p10"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "zhu-rong-furen",
-        "relationshipType": "battlefield_contact"
-      },
-      {
-        "keywordKey": "relationship.zhu-rong-furen.betrayal_surrender",
-        "label": "祝融夫人-背叛投降",
-        "category": "relationship",
-        "sourceRefs": [
-          "090#p10"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "zhu-rong-furen",
-        "relationshipType": "betrayal_surrender"
       }
     ]
   },
@@ -296,11 +178,9 @@
     "activity": 4,
     "affect": 1,
     "decision": 1,
-    "event": 4,
     "identity": 2,
-    "location": 2,
-    "person": 2,
+    "person": 1,
     "personality": 4,
-    "relationship": 3
+    "relationship": 1
   }
 }

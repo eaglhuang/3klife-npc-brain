@@ -2,12 +2,12 @@
 
 - General ID: `xiahou-dun`
 - Display Name: `夏侯惇`
-- Generated At: `2026-06-01T08:31:41+00:00`
+- Generated At: `2026-06-01T15:25:12+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `35`
-- Relationships: `2`
-- Rejected Relationship Edges: `15`
+- Ready Events: `2`
+- Relationships: `1`
+- Rejected Relationship Edges: `2`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,16 +17,15 @@
 - `aptitude`: `1`
 - `choice`: `1`
 - `decision`: `2`
-- `event`: `23`
+- `event`: `2`
 - `identity`: `3`
-- `location`: `8`
-- `person`: `2`
+- `location`: `2`
+- `person`: `1`
 - `personality`: `2`
-- `relationship`: `2`
+- `relationship`: `1`
 
 ## Relationship Types
 
-- `battlefield_contact`: `1`
 - `ruler_subject`: `1`
 
 ## Outputs

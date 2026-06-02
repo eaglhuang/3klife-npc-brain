@@ -2,11 +2,11 @@
 
 - General ID: `lu-su`
 - Display Name: `魯肅`
-- Generated At: `2026-05-21T09:52:27+00:00`
+- Generated At: `2026-06-01T15:25:10+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
 - Ready Events: `5`
-- Relationships: `2`
+- Relationships: `1`
 - Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
@@ -20,14 +20,13 @@
 - `event`: `5`
 - `identity`: `3`
 - `location`: `1`
-- `person`: `2`
+- `person`: `1`
 - `personality`: `9`
-- `relationship`: `2`
+- `relationship`: `1`
 
 ## Relationship Types
 
 - `battlefield_contact`: `1`
-- `mentor_student`: `1`
 
 ## Outputs
 

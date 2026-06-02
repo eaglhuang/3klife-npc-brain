@@ -2,12 +2,12 @@
 
 - General ID: `cao-hong`
 - Display Name: `曹洪`
-- Generated At: `2026-05-21T09:52:27+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:05+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `19`
-- Relationships: `7`
-- Rejected Relationship Edges: `2`
+- Ready Events: `0`
+- Relationships: `2`
+- Rejected Relationship Edges: `1`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -15,18 +15,15 @@
 - `activity`: `3`
 - `affect`: `1`
 - `decision`: `1`
-- `event`: `11`
 - `identity`: `3`
-- `location`: `4`
-- `person`: `7`
+- `person`: `2`
 - `personality`: `3`
-- `relationship`: `7`
+- `relationship`: `2`
 
 ## Relationship Types
 
 - `battlefield_contact`: `1`
-- `enemy_rival`: `4`
-- `ruler_subject`: `2`
+- `patron_client`: `1`
 
 ## Outputs
 

@@ -2,7 +2,7 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "zhao-yun",
   "displayName": "趙雲",
-  "generatedAt": "2026-05-21T09:52:24+00:00",
+  "generatedAt": "2026-06-01T15:25:15+00:00",
   "relationshipCount": 5,
   "typeCounts": {
     "battlefield_contact": 4,
@@ -85,7 +85,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -97,7 +97,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -108,8 +108,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "patron_client",
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -123,7 +122,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -133,8 +132,8 @@
     {
       "targetId": "zhuge-liang",
       "targetName": "諸葛亮",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "052#p7"
       ],
@@ -143,95 +142,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "gongsun-zan",
-      "targetName": "公孫瓚",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "007#p5"
-      ],
-      "sourceQuote": "？」言未畢，文醜策馬挺槍，直殺上橋。公孫瓚就橋邊與文醜交鋒。戰不到十餘合，瓚抵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yan-liang",
-      "targetName": "顏良",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "007#p6"
-      ],
-      "sourceQuote": "如羽翼。馬五千餘匹，大半皆是白馬。因公孫瓚曾與羌人戰，盡選白馬爲先鋒，號爲「白",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yan-liang",
-      "targetName": "顏良",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "007#p6"
-      ],
-      "sourceQuote": "如羽翼。馬五千餘匹，大半皆是白馬。因公孫瓚曾與羌人戰，盡選白馬爲先鋒，號爲「白",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "041#p13"
-      ],
-      "sourceQuote": "趙雲便問二夫人消息。軍士曰：「恰纔見甘夫人披頭跣足，相隨一夥百姓婦女，投南而走",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "041#p13"
-      ],
-      "sourceQuote": "趙雲便問二夫人消息。軍士曰：「恰纔見甘夫人披頭跣足，相隨一夥百姓婦女，投南而走",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

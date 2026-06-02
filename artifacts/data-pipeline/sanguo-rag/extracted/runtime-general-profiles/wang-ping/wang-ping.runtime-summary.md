@@ -2,10 +2,10 @@
 
 - General ID: `wang-ping`
 - Display Name: `王平`
-- Generated At: `2026-05-15T17:33:45+00:00`
+- Generated At: `2026-06-01T15:25:12+00:00`
 - Runtime Status: `thin-but-testable`
-- Completion: `38.1`
-- Ready Events: `2`
+- Completion: `None`
+- Ready Events: `1`
 - Relationships: `0`
 - Rejected Relationship Edges: `1`
 - Review Backlog: `0`
@@ -15,9 +15,9 @@
 - `activity`: `3`
 - `affect`: `1`
 - `decision`: `1`
-- `event`: `2`
+- `event`: `1`
 - `identity`: `2`
-- `location`: `2`
+- `location`: `1`
 - `personality`: `3`
 
 ## Relationship Types

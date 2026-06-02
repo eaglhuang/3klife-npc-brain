@@ -2,12 +2,12 @@
 
 - General ID: `cheng-pu`
 - Display Name: `程普`
-- Generated At: `2026-05-21T09:27:28+00:00`
+- Generated At: `2026-06-01T15:25:05+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `9`
-- Relationships: `5`
-- Rejected Relationship Edges: `1`
+- Ready Events: `2`
+- Relationships: `3`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,18 +17,17 @@
 - `aptitude`: `1`
 - `choice`: `1`
 - `decision`: `1`
-- `event`: `6`
+- `event`: `2`
 - `identity`: `3`
-- `location`: `5`
-- `person`: `4`
+- `location`: `1`
+- `person`: `3`
 - `personality`: `3`
-- `relationship`: `5`
+- `relationship`: `3`
 
 ## Relationship Types
 
 - `battlefield_contact`: `2`
-- `enemy_rival`: `1`
-- `ruler_subject`: `2`
+- `ruler_subject`: `1`
 
 ## Outputs
 

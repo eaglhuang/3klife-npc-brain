@@ -2,16 +2,16 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "xu-huang",
   "displayName": "徐晃",
-  "generatedAt": "2026-05-21T09:52:26+00:00",
-  "relationshipCount": 4,
+  "generatedAt": "2026-06-01T15:25:13+00:00",
+  "relationshipCount": 2,
   "typeCounts": {
-    "battlefield_contact": 1,
-    "enemy_rival": 3
+    "battlefield_opponent": 1,
+    "enemy_rival": 1
   },
   "anchors": [
     {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
+      "targetId": "guan-yu",
+      "targetName": "關羽",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
@@ -21,51 +21,26 @@
         "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:ceb0248f6c321ec3e3b1"
+        "sgyy-baihua#chapter-076#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "以真爲征蜀護軍，督徐晃等破劉備别將高详於陽平"
+        "# 第七十六回 徐公明大戰沔水 關雲長敗走麥城"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "zhang-he",
-      "targetName": "張郃",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:199d07359c887ded639b"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "是時， 禁 與 張遼 、 樂進 、 張郃 、 徐晃 俱爲名將， 太祖 每征伐，咸遞行爲軍鋒，還爲後拒"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
       "targetId": "xu-zhu",
       "targetName": "許褚",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "type": "battlefield_opponent",
+      "typeLabel": "戰場對手",
       "originalTypes": [
-        "enemy_rival"
+        "confronts"
       ],
       "directions": [
         "incoming"
@@ -77,36 +52,9 @@
       "edgeStrength": 0.72,
       "sourceQuotes": [],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "battlefield_opponent_target"
       ],
       "reviewStatus": "source-grounded-strong",
-      "sourceLayer": "mao-hant-observed-mentions"
-    },
-    {
-      "targetId": "cao-cao",
-      "targetName": "曹操",
-      "type": "battlefield_contact",
-      "typeLabel": "戰場接觸",
-      "originalTypes": [
-        "protects",
-        "ruler_subject"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "067#p3",
-        "071#p19"
-      ],
-      "edgeConfidence": 0.74,
-      "edgeStrength": 0.62,
-      "sourceQuotes": [],
-      "refinementReasons": [
-        "coarse_edge_fallback",
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
     }
   ],
@@ -115,16 +63,35 @@
       "targetId": "cao-cao",
       "targetName": "曹操",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "030#p7"
       ],
       "sourceQuote": null,
       "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
@@ -132,33 +99,105 @@
       "targetId": "cao-cao",
       "targetName": "曹操",
       "type": "battlefield_contact",
-      "originalType": "mentor_student",
+      "originalType": "commands",
       "evidenceRefs": [
         "050#p8"
       ],
       "sourceQuote": null,
       "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     },
     {
-      "targetId": "xu-zhu",
-      "targetName": "許褚",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "battlefield_contact",
+      "originalType": "protects",
       "evidenceRefs": [
-        "014#p9"
+        "067#p3"
       ],
-      "sourceQuote": "；范成、董昭爲洛陽令；滿寵爲許都令；夏侯惇、夏侯淵、曹仁、曹洪皆爲將軍；呂虔、",
+      "sourceQuote": null,
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "battlefield_contact",
+      "originalType": "commands",
+      "evidenceRefs": [
+        "071#p19"
+      ],
+      "sourceQuote": null,
+      "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao"
+      ],
+      "refinementReasons": [
+        "coarse_edge_fallback"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xu-huang",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xu-huang",
+        "blacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xu-huang|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xu-huang|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xu-huang|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     }

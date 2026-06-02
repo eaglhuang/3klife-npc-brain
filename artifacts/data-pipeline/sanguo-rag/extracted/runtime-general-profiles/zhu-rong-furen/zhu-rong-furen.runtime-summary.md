@@ -2,12 +2,12 @@
 
 - General ID: `zhu-rong-furen`
 - Display Name: `祝融夫人`
-- Generated At: `2026-05-21T09:52:28+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:16+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `4`
-- Relationships: `2`
-- Rejected Relationship Edges: `5`
+- Ready Events: `0`
+- Relationships: `0`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,17 +17,11 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `2`
-- `event`: `4`
 - `identity`: `4`
-- `location`: `2`
-- `person`: `1`
 - `personality`: `5`
-- `relationship`: `2`
 
 ## Relationship Types
 
-- `battlefield_contact`: `1`
-- `betrayal_surrender`: `1`
 
 ## Outputs
 

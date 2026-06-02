@@ -2,7 +2,7 @@
   "keywordVersion": "general_runtime_keywords_v1",
   "generalId": "yan-liang",
   "displayName": "顏良",
-  "generatedAt": "2026-05-21T09:22:09+00:00",
+  "generatedAt": "2026-06-01T15:25:13+00:00",
   "categories": {
     "activity": [
       {
@@ -115,45 +115,6 @@
         "retired": false,
         "fullLabel": "平原：stableKnowledgeBootstrap:sworn_sibling",
         "eventId": "romance.reviewed-a.guan-yu-core-source-packet-guan-yu-007-p6-007-p6"
-      },
-      {
-        "keywordKey": "event.generic-battle-005-p14",
-        "label": "結義兄弟",
-        "category": "event",
-        "sourceRefs": [
-          "005#p14"
-        ],
-        "confidence": 0.78,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "虎牢關：stableKnowledgeBootstrap:sworn_sibling",
-        "eventId": "romance.reviewed-a.guan-yu-generic-battle-005-p14-005-p14"
-      },
-      {
-        "keywordKey": "event.generic-battle-007-p5",
-        "label": "公孫瓚初得趙雲，不...",
-        "category": "event",
-        "sourceRefs": [
-          "007#p5"
-        ],
-        "confidence": 0.78,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "界橋：公孫瓚初得趙雲，不知心腹，令其另領一軍在後。",
-        "eventId": "romance.reviewed-a.zhao-yun-generic-battle-007-p5-007-p5"
-      },
-      {
-        "keywordKey": "event.generic-battle-007-p6",
-        "label": "」眾軍士齊心死戰，...",
-        "category": "event",
-        "sourceRefs": [
-          "007#p6"
-        ],
-        "confidence": 0.78,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "fullLabel": "平原：」眾軍士齊心死戰，趙雲衝突不入，紹兵大隊掩至，顏良亦引軍來到，兩路并殺。",
-        "eventId": "romance.reviewed-a.zhao-yun-generic-battle-007-p6-007-p6"
       }
     ],
     "identity": [
@@ -189,76 +150,18 @@
         "confidence": 0.86,
         "uiLabelMaxChars": 12,
         "retired": false
-      },
-      {
-        "keywordKey": "location.u754c-6a4b",
-        "label": "界橋",
-        "category": "location",
-        "sourceRefs": [
-          "007#p5"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
-      },
-      {
-        "keywordKey": "location.u864e-7262-95dc",
-        "label": "虎牢關",
-        "category": "location",
-        "sourceRefs": [
-          "005#p14"
-        ],
-        "confidence": 0.86,
-        "uiLabelMaxChars": 12,
-        "retired": false
       }
     ],
     "person": [
-      {
-        "keywordKey": "person.guo-tu",
-        "label": "郭圖",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:gutenberg-sanguozhi:candidate-card:50cf06a28244b2e5827d"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "guo-tu"
-      },
-      {
-        "keywordKey": "person.lu-bu",
-        "label": "呂布",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:wikisource-romance:candidate-card:d50dfbbd16c007bac332"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "lu-bu"
-      },
-      {
-        "keywordKey": "person.wen-chou",
-        "label": "文醜",
-        "category": "person",
-        "sourceRefs": [
-          "ext-card:gutenberg-sanguozhi:candidate-card:52c39472efdf11d2801a",
-          "ext-card:gutenberg-sanguozhi:candidate-card:8e72393f389e76dc65d5"
-        ],
-        "confidence": 0.87,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "wen-chou"
-      },
       {
         "keywordKey": "person.yuan-shao",
         "label": "袁紹",
         "category": "person",
         "sourceRefs": [
-          "007#p5"
+          "007#p5",
+          "ext-card:wikisource-romance:candidate-card:7dc2a3fc458b3c810ca3"
         ],
-        "confidence": 0.66,
+        "confidence": 0.8,
         "uiLabelMaxChars": 12,
         "retired": false,
         "relatedGeneralId": "yuan-shao"
@@ -312,46 +215,6 @@
     ],
     "relationship": [
       {
-        "keywordKey": "relationship.guo-tu.enemy_rival",
-        "label": "郭圖-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:gutenberg-sanguozhi:candidate-card:50cf06a28244b2e5827d"
-        ],
-        "confidence": 0.88,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "guo-tu",
-        "relationshipType": "enemy_rival"
-      },
-      {
-        "keywordKey": "relationship.lu-bu.enemy_rival",
-        "label": "呂布-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:wikisource-romance:candidate-card:d50dfbbd16c007bac332"
-        ],
-        "confidence": 0.82,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "lu-bu",
-        "relationshipType": "enemy_rival"
-      },
-      {
-        "keywordKey": "relationship.wen-chou.enemy_rival",
-        "label": "文醜-敵對競爭",
-        "category": "relationship",
-        "sourceRefs": [
-          "ext-card:gutenberg-sanguozhi:candidate-card:52c39472efdf11d2801a",
-          "ext-card:gutenberg-sanguozhi:candidate-card:8e72393f389e76dc65d5"
-        ],
-        "confidence": 0.87,
-        "uiLabelMaxChars": 12,
-        "retired": false,
-        "relatedGeneralId": "wen-chou",
-        "relationshipType": "enemy_rival"
-      },
-      {
         "keywordKey": "relationship.yuan-shao.battlefield_contact",
         "label": "袁紹-戰場接觸",
         "category": "relationship",
@@ -363,6 +226,19 @@
         "retired": false,
         "relatedGeneralId": "yuan-shao",
         "relationshipType": "battlefield_contact"
+      },
+      {
+        "keywordKey": "relationship.yuan-shao.ruler_subject",
+        "label": "袁紹-君臣主從",
+        "category": "relationship",
+        "sourceRefs": [
+          "ext-card:wikisource-romance:candidate-card:7dc2a3fc458b3c810ca3"
+        ],
+        "confidence": 0.8,
+        "uiLabelMaxChars": 12,
+        "retired": false,
+        "relatedGeneralId": "yuan-shao",
+        "relationshipType": "ruler_subject"
       }
     ]
   },
@@ -372,11 +248,11 @@
     "aptitude": 1,
     "choice": 1,
     "decision": 1,
-    "event": 4,
+    "event": 1,
     "identity": 2,
-    "location": 3,
-    "person": 4,
+    "location": 1,
+    "person": 1,
     "personality": 4,
-    "relationship": 4
+    "relationship": 2
   }
 }

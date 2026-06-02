@@ -2,12 +2,12 @@
 
 - General ID: `yan-liang`
 - Display Name: `顏良`
-- Generated At: `2026-05-21T09:22:09+00:00`
+- Generated At: `2026-06-01T15:25:13+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `42.06`
-- Ready Events: `6`
-- Relationships: `4`
-- Rejected Relationship Edges: `2`
+- Completion: `None`
+- Ready Events: `1`
+- Relationships: `2`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,17 +17,17 @@
 - `aptitude`: `1`
 - `choice`: `1`
 - `decision`: `1`
-- `event`: `4`
+- `event`: `1`
 - `identity`: `2`
-- `location`: `3`
-- `person`: `4`
+- `location`: `1`
+- `person`: `1`
 - `personality`: `4`
-- `relationship`: `4`
+- `relationship`: `2`
 
 ## Relationship Types
 
 - `battlefield_contact`: `1`
-- `enemy_rival`: `3`
+- `ruler_subject`: `1`
 
 ## Outputs
 

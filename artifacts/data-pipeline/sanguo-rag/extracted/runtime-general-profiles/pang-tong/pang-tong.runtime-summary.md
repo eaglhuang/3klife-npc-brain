@@ -2,7 +2,7 @@
 
 - General ID: `pang-tong`
 - Display Name: `龐統`
-- Generated At: `2026-05-21T09:27:27+00:00`
+- Generated At: `2026-06-01T15:25:11+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
 - Ready Events: `3`

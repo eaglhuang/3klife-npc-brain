@@ -11,14 +11,14 @@
   "title": "【甄姬】",
   "gender": "女",
   "baseFaction": "wei",
-  "generatedAt": "2026-05-21T09:52:28+00:00",
+  "generatedAt": "2026-06-01T15:25:15+00:00",
   "runtimeReadiness": {
     "status": "thin-but-testable",
     "canonicalWrites": false,
     "completionPercent": null,
     "readyEventCount": 0,
     "relationshipCount": 0,
-    "rejectedRelationshipEdgeCount": 0,
+    "rejectedRelationshipEdgeCount": 2,
     "keywordCategoryCounts": {
       "activity": 1,
       "affect": 2,
@@ -89,20 +89,164 @@
       ],
       "example": "於前。操視之曰：「真吾兒婦也！」遂令曹丕納之。操既定冀州，親往袁紹墓下設祭，",
       "relatedGeneralIds": [
+        "cao-cao",
         "cao-pi",
+        "xu-you",
         "yuan-shao"
       ],
       "targetLinkTrace": [
         {
+          "targetId": "cao-cao",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
           "targetId": "cao-pi",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "xu-you",
+          "sources": [
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "yuan-shao",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "cao-cao",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "033#p3",
+          "sourceId": "033#p3",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "cao-pi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "033#p3",
+          "sourceId": "033#p3",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "xu-you",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "033#p3",
+          "sourceId": "033#p3",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "yuan-shao",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "033#p3",
+          "sourceId": "033#p3",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -120,13 +264,84 @@
       ],
       "example": "卻說曹丕見二婦人啼哭，拔劍欲斬之。忽見紅光滿",
       "relatedGeneralIds": [
-        "cao-pi"
+        "cao-pi",
+        "yuan-xi"
       ],
       "targetLinkTrace": [
         {
           "targetId": "cao-pi",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "yuan-xi",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "cao-pi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "033#p2",
+          "sourceId": "033#p2",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "yuan-xi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "033#p2",
+          "sourceId": "033#p2",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -145,33 +360,276 @@
       "example": "將軍曹真、鎮軍大將軍陳群、撫軍大將軍司馬懿三人入寢宮。丕喚曹睿至，指謂曹真等曰",
       "relatedGeneralIds": [
         "cao-rui",
+        "cao-xiu",
         "cao-zhen",
         "chen-qun",
-        "sima-yi"
+        "hua-xin",
+        "sima-yi",
+        "wang-lang"
       ],
       "targetLinkTrace": [
         {
           "targetId": "cao-rui",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "cao-xiu",
+          "sources": [
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "cao-zhen",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "chen-qun",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "hua-xin",
+          "sources": [
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "sima-yi",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "wang-lang",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "cao-rui",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p8",
+          "sourceId": "091#p8",
+          "angleFamilies": [
+            "activity_seed",
+            "battle",
+            "faction_timeline",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "cao-xiu",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p8",
+          "sourceId": "091#p8",
+          "angleFamilies": [
+            "activity_seed",
+            "battle",
+            "faction_timeline",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "cao-zhen",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p8",
+          "sourceId": "091#p8",
+          "angleFamilies": [
+            "activity_seed",
+            "battle",
+            "faction_timeline",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "chen-qun",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p8",
+          "sourceId": "091#p8",
+          "angleFamilies": [
+            "activity_seed",
+            "battle",
+            "faction_timeline",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "hua-xin",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p8",
+          "sourceId": "091#p8",
+          "angleFamilies": [
+            "activity_seed",
+            "battle",
+            "faction_timeline",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "sima-yi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p8",
+          "sourceId": "091#p8",
+          "angleFamilies": [
+            "activity_seed",
+            "battle",
+            "faction_timeline",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "wang-lang",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p8",
+          "sourceId": "091#p8",
+          "angleFamilies": [
+            "activity_seed",
+            "battle",
+            "faction_timeline",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -188,13 +646,150 @@
       ],
       "example": "甄夫人賜死，立郭貴妃爲後。因無出，養曹睿爲己子。雖甚愛之，不立爲嗣。睿年至十",
       "relatedGeneralIds": [
-        "cao-rui"
+        "cao-pi",
+        "cao-rui",
+        "yuan-shao",
+        "yuan-xi"
       ],
       "targetLinkTrace": [
         {
+          "targetId": "cao-pi",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
           "targetId": "cao-rui",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "yuan-shao",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "yuan-xi",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "cao-pi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p7",
+          "sourceId": "091#p7",
+          "angleFamilies": [
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "cao-rui",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p7",
+          "sourceId": "091#p7",
+          "angleFamilies": [
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "yuan-shao",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p7",
+          "sourceId": "091#p7",
+          "angleFamilies": [
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhen-ji",
+          "targetId": "yuan-xi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "091#p7",
+          "sourceId": "091#p7",
+          "angleFamilies": [
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -203,352 +798,842 @@
   "angleTargetLinks": [
     {
       "angleFamily": "activity_seed",
-      "targetId": "cao-pi",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-cao",
       "sourceRef": "033#p3",
       "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-pi",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "xu-you",
+      "sourceRef": "033#p3",
+      "sourceId": "033#p3",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "yuan-shao",
       "sourceRef": "033#p3",
       "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "cao-pi",
+      "sourceRef": "033#p2",
+      "sourceId": "033#p2",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "yuan-xi",
+      "sourceRef": "033#p2",
+      "sourceId": "033#p2",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-rui",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-xiu",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "cao-zhen",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "chen-qun",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "hua-xin",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "sima-yi",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "wang-lang",
+      "sourceRef": "091#p8",
+      "sourceId": "091#p8",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "affect_story",
+      "angleFamilies": [
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
       "targetId": "cao-pi",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
+      "sourceRef": "091#p7",
+      "sourceId": "091#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "affect_story",
-      "targetId": "yuan-shao",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "yuan-shao",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "yuan-shao",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "yuan-shao",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "yuan-shao",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "yuan-shao",
-      "sourceRef": "033#p3",
-      "sourceId": "033#p3",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "activity_seed",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p2",
-      "sourceId": "033#p2",
-      "sourceType": "sourceHighlight"
+      "angleFamilies": [
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "cao-rui",
+      "sourceRef": "091#p7",
+      "sourceId": "091#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "affect_story",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p2",
-      "sourceId": "033#p2",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p2",
-      "sourceId": "033#p2",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p2",
-      "sourceId": "033#p2",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p2",
-      "sourceId": "033#p2",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "cao-pi",
-      "sourceRef": "033#p2",
-      "sourceId": "033#p2",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "activity_seed",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "activity_seed",
-      "targetId": "cao-zhen",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "activity_seed",
-      "targetId": "chen-qun",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "activity_seed",
-      "targetId": "sima-yi",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "cao-zhen",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "chen-qun",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "sima-yi",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "cao-zhen",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "chen-qun",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "sima-yi",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "cao-zhen",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "chen-qun",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "sima-yi",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "cao-zhen",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "chen-qun",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "sima-yi",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "cao-zhen",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "chen-qun",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "sima-yi",
-      "sourceRef": "091#p8",
-      "sourceId": "091#p8",
-      "sourceType": "sourceHighlight"
+      "angleFamilies": [
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "yuan-shao",
+      "sourceRef": "091#p7",
+      "sourceId": "091#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "affect_story",
-      "targetId": "cao-rui",
+      "angleFamilies": [
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "yuan-xi",
       "sourceRef": "091#p7",
       "sourceId": "091#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p7",
-      "sourceId": "091#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p7",
-      "sourceId": "091#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p7",
-      "sourceId": "091#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "cao-rui",
-      "sourceRef": "091#p7",
-      "sourceId": "091#p7",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     }
   ],
   "targetLinking": {
     "version": "deterministic_source_link_v1",
-    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
-    "linkCount": 49
+    "focusProjectionVersion": "runtime_focus_projection_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference; insufficient links emit upstreamFeedback instead of downstream backfill",
+    "linkCount": 17,
+    "sceneEligibleLinkCount": 0,
+    "upstreamFeedbackRequiredCount": 17,
+    "missingDataPolicy": "Downstream must never invent missing person, relationship, event, or mood facts. When a target is only weakly linked, emit upstreamFeedback and keep sceneEligible=false.",
+    "upstreamFeedback": [
+      {
+        "sourceRef": "033#p3",
+        "sourceId": "033#p3",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-cao",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "033#p3",
+        "sourceId": "033#p3",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-pi",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "033#p3",
+        "sourceId": "033#p3",
+        "sourceType": "sourceHighlight",
+        "targetId": "xu-you",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "033#p3",
+        "sourceId": "033#p3",
+        "sourceType": "sourceHighlight",
+        "targetId": "yuan-shao",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "033#p2",
+        "sourceId": "033#p2",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-pi",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "033#p2",
+        "sourceId": "033#p2",
+        "sourceType": "sourceHighlight",
+        "targetId": "yuan-xi",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p8",
+        "sourceId": "091#p8",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-rui",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p8",
+        "sourceId": "091#p8",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-xiu",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p8",
+        "sourceId": "091#p8",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-zhen",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p8",
+        "sourceId": "091#p8",
+        "sourceType": "sourceHighlight",
+        "targetId": "chen-qun",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p8",
+        "sourceId": "091#p8",
+        "sourceType": "sourceHighlight",
+        "targetId": "hua-xin",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p8",
+        "sourceId": "091#p8",
+        "sourceType": "sourceHighlight",
+        "targetId": "sima-yi",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p8",
+        "sourceId": "091#p8",
+        "sourceType": "sourceHighlight",
+        "targetId": "wang-lang",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p7",
+        "sourceId": "091#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-pi",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p7",
+        "sourceId": "091#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-rui",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p7",
+        "sourceId": "091#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "yuan-shao",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "091#p7",
+        "sourceId": "091#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "yuan-xi",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      }
+    ]
   },
   "relationshipSummary": {
     "typeCounts": {},

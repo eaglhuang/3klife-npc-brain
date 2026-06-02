@@ -2,21 +2,46 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "wei-yan",
   "displayName": "魏延",
-  "generatedAt": "2026-05-21T09:52:24+00:00",
+  "generatedAt": "2026-06-01T15:25:12+00:00",
   "relationshipCount": 7,
   "typeCounts": {
     "battlefield_contact": 5,
-    "betrayal_surrender": 1,
+    "battlefield_opponent": 1,
     "enemy_rival": 1
   },
   "anchors": [
     {
-      "targetId": "e-huan",
-      "targetName": "鄂煥",
+      "targetId": "wen-pin",
+      "targetName": "文聘",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
         "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-041#p3;window=3"
+      ],
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
+      "sourceQuotes": [
+        "魏延與文聘交戰，手下士兵都戰死了，魏延於是撥馬就走，卻找不到劉備，於是去投奔長沙太守韓玄去了。"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "e-huan",
+      "targetName": "鄂煥",
+      "type": "battlefield_opponent",
+      "typeLabel": "戰場對手",
+      "originalTypes": [
+        "confronts"
       ],
       "directions": [
         "incoming"
@@ -28,7 +53,7 @@
       "edgeStrength": 0.72,
       "sourceQuotes": [],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "battlefield_opponent_target"
       ],
       "reviewStatus": "source-grounded-strong",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -39,7 +64,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "mentor_student"
+        "commands"
       ],
       "directions": [
         "incoming",
@@ -54,7 +79,7 @@
         "重賞魏延。玄德設宴款待彭羕。忽報荊州諸葛亮軍師特遣馬良奉書至此。玄德召入問之。。延。交馬不數合，被魏延活捉去了。比及吳蘭，雷同來接應時，又被黃忠一軍殺來。魏"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "accepted-review-candidate",
       "sourceLayer": null
@@ -65,7 +90,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "mentor_student"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -79,7 +104,7 @@
         "重賞魏延。玄德設宴款待彭羕。忽報荊州諸葛亮軍師特遣馬良奉書至此。玄德召入問之。。延。交馬不數合，被魏延活捉去了。比及吳蘭，雷同來接應時，又被黃忠一軍殺來。魏"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "accepted-review-candidate",
       "sourceLayer": null
@@ -90,7 +115,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "mentor_student"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -104,37 +129,10 @@
         "重賞魏延。玄德設宴款待彭羕。忽報荊州諸葛亮軍師特遣馬良奉書至此。玄德召入問之。。延。交馬不數合，被魏延活捉去了。比及吳蘭，雷同來接應時，又被黃忠一軍殺來。魏"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "accepted-review-candidate",
       "sourceLayer": null
-    },
-    {
-      "targetId": "wang-ping",
-      "targetName": "王平",
-      "type": "betrayal_surrender",
-      "typeLabel": "背叛投降",
-      "originalTypes": [
-        "betrayal_surrender"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:4e54f25f8f6a5053a3f4",
-        "ext-card:shuzi-sanguo-culture-character-compendium:candidate-card:d4ade73cf8c9fd5869cf"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "E 鄂焕 ：八十七回， 高定 将，使方天戟，为魏延、王平、张翼合擒，降，封益州牙将"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
     },
     {
       "targetId": "xiahou-ba",
@@ -142,7 +140,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing",
@@ -157,7 +155,7 @@
         "吐血數口，臥倒床上，謂魏延曰：「此是司馬懿料吾有病，故令人來試探虛實。汝可急出。」魏延領命，出帳上馬，引兵殺出寨來。夏侯霸見了魏延，慌忙引軍退走。延追趕二十餘"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "accepted-review-candidate",
       "sourceLayer": null
@@ -168,7 +166,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -182,7 +180,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -190,27 +188,10 @@
   ],
   "rejectedRelationshipEdges": [
     {
-      "targetId": "zhuge-liang",
-      "targetName": "諸葛亮",
-      "type": "battlefield_contact",
-      "originalType": "mentor_student",
-      "evidenceRefs": [
-        "087#p6"
-      ],
-      "sourceQuote": "雍闓的人盡殺。」眾軍皆聞此言。少時，孔明令取雍闓的人到帳前問曰：「汝等皆是何。人部從？」眾僞曰：「高定部下人也。」孔明教皆免其死，與酒食賞勞，令人送出界首",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
       "targetId": "e-huan",
       "targetName": "鄂煥",
       "type": "battlefield_contact",
-      "originalType": "mentor_student",
+      "originalType": "commands",
       "evidenceRefs": [
         "087#p5"
       ],
@@ -219,15 +200,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "e-huan",
       "targetName": "鄂煥",
       "type": "battlefield_contact",
-      "originalType": "mentor_student",
+      "originalType": "commands",
       "evidenceRefs": [
         "087#p5"
       ],
@@ -236,32 +218,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "e-huan",
-      "targetName": "鄂煥",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
-      "evidenceRefs": [
-        "087#p5"
-      ],
-      "sourceQuote": "，闓曰：「如何得鄂煥回也？」定曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之。曰：「諸葛亮以義放之。」闓曰：「此乃諸葛亮反間之計，欲令我兩人不和，故施此謀也",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "wang-ping",
       "targetName": "王平",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "087#p5"
       ],
@@ -270,15 +236,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "e-huan",
       "targetName": "鄂煥",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
+      "type": "battlefield_opponent",
+      "originalType": "confronts",
       "evidenceRefs": [
         "087#p5"
       ],
@@ -287,32 +254,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "battlefield_opponent_target"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhuge-liang",
-      "targetName": "諸葛亮",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
-      "evidenceRefs": [
-        "070#p2"
-      ],
-      "sourceQuote": "軍師何故反送酒與他？」孔明笑曰：「主公與翼德做了許多年兄弟，還不知其爲人耶？。？翼德自來剛強，然前於收川之時，義釋嚴顏，此非勇夫所爲也。今與張郃相拒五十餘",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhang-fei",
       "targetName": "張飛",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "070#p2"
       ],
@@ -321,15 +272,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhang-fei",
       "targetName": "張飛",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "070#p2"
       ],
@@ -338,15 +290,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "lei-tong",
       "targetName": "雷銅",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
+      "type": "battlefield_contact",
+      "originalType": "commands",
       "evidenceRefs": [
         "070#p2"
       ],
@@ -355,15 +308,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "jiang-wei",
       "targetName": "姜維",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "093#p5"
       ],
@@ -372,15 +326,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "jiang-wei",
       "targetName": "姜維",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "093#p5"
       ],
@@ -389,15 +344,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhuge-liang",
       "targetName": "諸葛亮",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "093#p5"
       ],
@@ -406,15 +362,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "zhuge-liang",
       "targetName": "諸葛亮",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "093#p5"
       ],
@@ -423,15 +380,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "liu-bei",
       "targetName": "劉備",
       "type": "battlefield_contact",
-      "originalType": "mentor_student",
+      "originalType": "commands",
       "evidenceRefs": [
         "064#p3"
       ],
@@ -440,15 +398,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "huang-zhong",
       "targetName": "黃忠",
       "type": "battlefield_contact",
-      "originalType": "mentor_student",
+      "originalType": "commands",
       "evidenceRefs": [
         "064#p3"
       ],
@@ -457,15 +416,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "lei-tong",
       "targetName": "雷銅",
       "type": "battlefield_contact",
-      "originalType": "mentor_student",
+      "originalType": "commands",
       "evidenceRefs": [
         "064#p3"
       ],
@@ -474,15 +434,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "huang-zhong",
       "targetName": "黃忠",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
+      "type": "battlefield_opponent",
+      "originalType": "confronts",
       "evidenceRefs": [
         "064#p4"
       ],
@@ -491,15 +452,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "battlefield_opponent_target"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "huang-zhong",
       "targetName": "黃忠",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "062#p20"
       ],
@@ -508,15 +470,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "liu-bei",
       "targetName": "劉備",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "062#p20"
       ],
@@ -525,15 +488,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "huang-zhong",
       "targetName": "黃忠",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
+      "type": "battlefield_opponent",
+      "originalType": "confronts",
       "evidenceRefs": [
         "062#p18"
       ],
@@ -542,15 +506,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "battlefield_opponent_target"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "liu-bei",
       "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
+      "type": "battlefield_opponent",
+      "originalType": "confronts",
       "evidenceRefs": [
         "062#p18"
       ],
@@ -559,8 +524,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "battlefield_opponent_target"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

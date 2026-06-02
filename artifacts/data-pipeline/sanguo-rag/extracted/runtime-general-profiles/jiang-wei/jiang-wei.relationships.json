@@ -2,39 +2,38 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "jiang-wei",
   "displayName": "姜維",
-  "generatedAt": "2026-05-21T09:52:25+00:00",
+  "generatedAt": "2026-06-01T15:25:08+00:00",
   "relationshipCount": 3,
   "typeCounts": {
     "battlefield_contact": 2,
-    "enemy_rival": 1
+    "betrayal_surrender": 1
   },
   "anchors": [
     {
-      "targetId": "deng-ai",
-      "targetName": "鄧艾",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "targetId": "zhuge-liang",
+      "targetName": "諸葛亮",
+      "type": "betrayal_surrender",
+      "typeLabel": "背叛投降",
       "originalTypes": [
-        "enemy_rival"
+        "betrayal_surrender"
       ],
       "directions": [
-        "incoming",
-        "outgoing"
+        "outgoing",
+        "incoming"
       ],
       "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:07d9204fbb6ba831bcdb",
-        "ext-card:gutenberg-sanguozhi:candidate-card:098072305e5acb809f64"
+        "sgyy-baihua#chapter-093#p0;window=1"
       ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
+      "edgeConfidence": 0.95,
+      "edgeStrength": 0.9,
       "sourceQuotes": [
-        "癸未，安西將軍鄧艾大破蜀大將姜維于上邽，詔曰：「兵未極武，醜虜摧破，斬首獲生，動以萬計，自頃戰克，無如此者"
+        "# 第九十三回 薑伯約歸降孔明 武鄉侯罵死王朝"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
       ],
       "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
+      "sourceLayer": "claim-graph-a-romance"
     },
     {
       "targetId": "zhuge-liang",
@@ -42,8 +41,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject",
-        "mentor_student"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -59,7 +57,7 @@
         "卻說姜維回見馬遵曰：「趙雲敗去，孔明必然自來。在城上守禦。」分撥已定。卻說孔明因慮姜維，自爲前部，望天水郡進發。將到城邊，"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -70,7 +68,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -82,7 +80,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -93,7 +91,7 @@
       "targetId": "wei-yan",
       "targetName": "魏延",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "093#p5"
       ],
@@ -102,15 +100,16 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     },
     {
       "targetId": "wei-yan",
       "targetName": "魏延",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "093#p5"
       ],
@@ -119,8 +118,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

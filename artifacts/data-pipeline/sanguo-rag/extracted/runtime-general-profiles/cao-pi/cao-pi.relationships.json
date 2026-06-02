@@ -2,36 +2,12 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "cao-pi",
   "displayName": "曹丕",
-  "generatedAt": "2026-05-21T09:27:27+00:00",
-  "relationshipCount": 3,
+  "generatedAt": "2026-06-01T15:25:05+00:00",
+  "relationshipCount": 1,
   "typeCounts": {
-    "enemy_rival": 1,
-    "parent_child": 2
+    "parent_child": 1
   },
   "anchors": [
-    {
-      "targetId": "cao-cao",
-      "targetName": "曹操",
-      "type": "parent_child",
-      "typeLabel": "親子",
-      "originalTypes": [
-        "parent_child"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "068#succession"
-      ],
-      "edgeConfidence": 0.95,
-      "edgeStrength": 0.85,
-      "sourceQuotes": [],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "stable-bootstrap-seed"
-    },
     {
       "targetId": "cao-rui",
       "targetName": "曹睿",
@@ -54,49 +30,25 @@
       ],
       "reviewStatus": "ready",
       "sourceLayer": "stable-bootstrap-seed"
-    },
-    {
-      "targetId": "yuan-tan",
-      "targetName": "袁譚",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:13e12031d1dc00fc7efa"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "正敘冀州廝殺，忽有袁譚失妻、曹丕納婦一段文字"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
     }
   ],
   "rejectedRelationshipEdges": [
     {
-      "targetId": "sun-shang-xiang",
-      "targetName": "孫尚香",
-      "type": "battlefield_contact",
-      "originalType": "patron_client",
+      "targetId": "cao-cao",
+      "targetName": "曹操",
+      "type": "parent_child",
+      "originalType": "parent_child",
       "evidenceRefs": [
-        "082#p2"
+        "sgyy-baihua#chapter-068#p19;window=3"
       ],
-      "sourceQuote": "非吳侯之過也。今呂蒙已死，冤仇已息。孫夫人一向思歸，今吳侯令臣爲使，願送歸夫人",
+      "sourceQuote": "曹操聽後大笑並決定立長子曹丕為世子。冬十月魏王宮建成後曹操派人到各地收集奇花異果種植在後花園中，並派遣使者到吳地要求孫權進貢溫州的柑子。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "kinship_without_pair_relation_signal"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "stable_relationship_baseline"
       ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

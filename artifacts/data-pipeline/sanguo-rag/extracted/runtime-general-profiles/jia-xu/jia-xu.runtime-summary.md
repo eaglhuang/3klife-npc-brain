@@ -2,11 +2,11 @@
 
 - General ID: `jia-xu`
 - Display Name: `賈詡`
-- Generated At: `2026-05-21T09:22:09+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `40.63`
-- Ready Events: `4`
-- Relationships: `2`
+- Generated At: `2026-06-01T15:25:08+00:00`
+- Runtime Status: `thin-but-testable`
+- Completion: `None`
+- Ready Events: `0`
+- Relationships: `0`
 - Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
@@ -17,17 +17,11 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `2`
-- `event`: `2`
 - `identity`: `3`
-- `location`: `2`
-- `person`: `2`
 - `personality`: `4`
-- `relationship`: `2`
 
 ## Relationship Types
 
-- `betrayal_surrender`: `1`
-- `ruler_subject`: `1`
 
 ## Outputs
 

@@ -2,12 +2,12 @@
 
 - General ID: `yuan-shu`
 - Display Name: `袁術`
-- Generated At: `2026-05-21T09:52:26+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:14+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `32`
-- Relationships: `13`
-- Rejected Relationship Edges: `7`
+- Ready Events: `0`
+- Relationships: `1`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,17 +17,13 @@
 - `aptitude`: `1`
 - `choice`: `1`
 - `decision`: `1`
-- `event`: `15`
 - `identity`: `3`
-- `location`: `9`
-- `person`: `12`
+- `person`: `1`
 - `personality`: `5`
-- `relationship`: `13`
+- `relationship`: `1`
 
 ## Relationship Types
 
-- `battlefield_contact`: `1`
-- `enemy_rival`: `11`
 - `ruler_subject`: `1`
 
 ## Outputs

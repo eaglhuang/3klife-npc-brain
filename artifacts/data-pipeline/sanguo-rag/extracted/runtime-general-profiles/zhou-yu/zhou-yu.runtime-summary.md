@@ -2,12 +2,12 @@
 
 - General ID: `zhou-yu`
 - Display Name: `周瑜`
-- Generated At: `2026-05-21T09:52:24+00:00`
+- Generated At: `2026-06-01T15:25:15+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `12`
-- Relationships: `5`
-- Rejected Relationship Edges: `5`
+- Ready Events: `5`
+- Relationships: `4`
+- Rejected Relationship Edges: `3`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,17 +17,18 @@
 - `aptitude`: `4`
 - `choice`: `5`
 - `decision`: `5`
-- `event`: `10`
+- `event`: `5`
 - `identity`: `3`
-- `location`: `3`
+- `location`: `1`
 - `person`: `4`
 - `personality`: `8`
-- `relationship`: `5`
+- `relationship`: `4`
 
 ## Relationship Types
 
-- `enemy_rival`: `3`
-- `ruler_subject`: `2`
+- `betrayal_surrender`: `1`
+- `enemy_rival`: `2`
+- `ruler_subject`: `1`
 
 ## Outputs
 

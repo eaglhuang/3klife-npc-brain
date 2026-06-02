@@ -2,12 +2,12 @@
 
 - General ID: `xu-huang`
 - Display Name: `徐晃`
-- Generated At: `2026-05-21T09:52:26+00:00`
+- Generated At: `2026-06-01T15:25:13+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `3`
-- Relationships: `4`
-- Rejected Relationship Edges: `3`
+- Ready Events: `1`
+- Relationships: `2`
+- Rejected Relationship Edges: `4`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -15,17 +15,17 @@
 - `activity`: `2`
 - `affect`: `3`
 - `decision`: `2`
-- `event`: `3`
+- `event`: `1`
 - `identity`: `3`
-- `location`: `3`
-- `person`: `4`
+- `location`: `1`
+- `person`: `2`
 - `personality`: `3`
-- `relationship`: `4`
+- `relationship`: `2`
 
 ## Relationship Types
 
-- `battlefield_contact`: `1`
-- `enemy_rival`: `3`
+- `battlefield_opponent`: `1`
+- `enemy_rival`: `1`
 
 ## Outputs
 

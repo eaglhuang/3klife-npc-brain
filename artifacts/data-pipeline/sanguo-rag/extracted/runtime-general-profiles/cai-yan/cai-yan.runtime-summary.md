@@ -2,7 +2,7 @@
 
 - General ID: `cai-yan`
 - Display Name: `蔡琰`
-- Generated At: `2026-05-21T09:52:28+00:00`
+- Generated At: `2026-06-01T15:25:04+00:00`
 - Runtime Status: `thin-but-testable`
 - Completion: `None`
 - Ready Events: `0`

@@ -2,33 +2,42 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "xu-zhu",
   "displayName": "許褚",
-  "generatedAt": "2026-06-01T08:31:42+00:00",
-  "relationshipCount": 0,
-  "typeCounts": {},
-  "anchors": [],
-  "rejectedRelationshipEdges": [
+  "generatedAt": "2026-06-01T15:25:13+00:00",
+  "relationshipCount": 1,
+  "typeCounts": {
+    "battlefield_opponent": 1
+  },
+  "anchors": [
     {
       "targetId": "xu-huang",
       "targetName": "徐晃",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
+      "type": "battlefield_opponent",
+      "typeLabel": "戰場對手",
+      "originalTypes": [
+        "confronts"
+      ],
+      "directions": [
+        "outgoing"
+      ],
       "evidenceRefs": [
         "014#p9"
       ],
-      "sourceQuote": null,
-      "rejectionReasons": [
-        "enemy_rival_without_pair_conflict_signal"
-      ],
+      "edgeConfidence": 0.84,
+      "edgeStrength": 0.72,
+      "sourceQuotes": [],
       "refinementReasons": [
-        "source_graph_refined_type"
+        "battlefield_opponent_target"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
+      "reviewStatus": "source-grounded-strong",
+      "sourceLayer": "mao-hant-observed-mentions"
+    }
+  ],
+  "rejectedRelationshipEdges": [
     {
       "targetId": "cao-cao",
       "targetName": "曹操",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "072#p5"
       ],
@@ -37,26 +46,9 @@
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "xu-huang",
-      "targetName": "徐晃",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "014#p9"
-      ],
-      "sourceQuote": "；范成、董昭爲洛陽令；滿寵爲許都令；夏侯惇、夏侯淵、曹仁、曹洪皆爲將軍；呂虔、",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
+      "trustZoneBlacklistMatches": [],
       "reviewStatus": "rejected-runtime-export"
     }
   ],

@@ -2,26 +2,23 @@
 
 - General ID: `wang-yun`
 - Display Name: `王允`
-- Generated At: `2026-05-21T09:22:06+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `45.75`
-- Ready Events: `3`
-- Relationships: `4`
-- Rejected Relationship Edges: `1`
+- Generated At: `2026-06-01T15:25:12+00:00`
+- Runtime Status: `thin-but-testable`
+- Completion: `None`
+- Ready Events: `0`
+- Relationships: `1`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
 
-- `event`: `3`
 - `identity`: `3`
-- `location`: `2`
-- `person`: `3`
-- `relationship`: `4`
+- `person`: `1`
+- `relationship`: `1`
 
 ## Relationship Types
 
 - `battlefield_contact`: `1`
-- `enemy_rival`: `3`
 
 ## Outputs
 

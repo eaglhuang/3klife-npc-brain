@@ -2,12 +2,12 @@
 
 - General ID: `yuan-shao`
 - Display Name: `袁紹`
-- Generated At: `2026-05-21T09:52:24+00:00`
+- Generated At: `2026-06-01T15:25:14+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `None`
-- Ready Events: `33`
-- Relationships: `10`
-- Rejected Relationship Edges: `7`
+- Completion: `57.24`
+- Ready Events: `1`
+- Relationships: `8`
+- Rejected Relationship Edges: `1`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,22 +17,19 @@
 - `aptitude`: `1`
 - `choice`: `1`
 - `decision`: `2`
-- `event`: `16`
+- `event`: `1`
 - `identity`: `3`
-- `item`: `1`
-- `location`: `11`
-- `person`: `9`
+- `location`: `1`
+- `person`: `6`
 - `personality`: `3`
-- `relationship`: `10`
+- `relationship`: `8`
 
 ## Relationship Types
 
-- `alliance_oath`: `1`
 - `battlefield_contact`: `2`
-- `enemy_rival`: `2`
+- `enemy_rival`: `1`
 - `parent_child`: `2`
-- `ruler_subject`: `2`
-- `spouse`: `1`
+- `ruler_subject`: `3`
 
 ## Outputs
 

@@ -2,7 +2,7 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "li-dian",
   "displayName": "李典",
-  "generatedAt": "2026-06-01T08:31:41+00:00",
+  "generatedAt": "2026-06-01T15:25:08+00:00",
   "relationshipCount": 1,
   "typeCounts": {
     "battlefield_contact": 1
@@ -14,8 +14,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "patron_client",
-        "ruler_subject",
+        "commands",
         "protects"
       ],
       "directions": [
@@ -30,51 +29,13 @@
       "edgeStrength": 0.62,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted",
         "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
     }
   ],
-  "rejectedRelationshipEdges": [
-    {
-      "targetId": "xiahou-dun",
-      "targetName": "夏侯惇",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p11"
-      ],
-      "sourceQuote": "褚斬李封於馬下。薛蘭急走回陣，吊橋邊李典攔住。薛蘭不敢回城，引軍投鉅野而去，",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "xiahou-dun",
-      "targetName": "夏侯惇",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "012#p11"
-      ],
-      "sourceQuote": "褚斬李封於馬下。薛蘭急走回陣，吊橋邊李典攔住。薛蘭不敢回城，引軍投鉅野而去，",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence",
-        "enemy_rival_without_pair_conflict_signal"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    }
-  ],
+  "rejectedRelationshipEdges": [],
   "taxonomyPolicy": {
     "commands": "not exported as final type; refined into semantic runtime labels when possible",
     "fallbackType": "battlefield_contact",

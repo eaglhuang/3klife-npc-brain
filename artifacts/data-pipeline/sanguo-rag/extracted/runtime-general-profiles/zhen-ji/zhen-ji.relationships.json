@@ -2,11 +2,64 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "zhen-ji",
   "displayName": "甄姬",
-  "generatedAt": "2026-05-21T09:52:28+00:00",
+  "generatedAt": "2026-06-01T15:25:15+00:00",
   "relationshipCount": 0,
   "typeCounts": {},
   "anchors": [],
-  "rejectedRelationshipEdges": [],
+  "rejectedRelationshipEdges": [
+    {
+      "targetId": "yuan-shao",
+      "targetName": "袁紹",
+      "type": "spouse",
+      "originalType": "spouse",
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-091#p7;window=1"
+      ],
+      "sourceQuote": "曹丕，魏國的皇帝，在位已經七年了，這也是蜀漢建興的第四年。他先前娶了袁紹的次子袁熙的妻子甄氏為夫人，這是在攻破鄴城時得到的。",
+      "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|spouse|yuan-shao|zhen-ji",
+        "negativeCondition:relationship|spouse|yuan-shao|zhen-ji",
+        "blockedRelationship:relationship|spouse|yuan-shao|zhen-ji",
+        "blacklist:relationship|spouse|zhen-ji|yuan-shao",
+        "decisionOnlyBlacklist:relationship|spouse|zhen-ji|yuan-shao",
+        "negativeCondition:relationship|spouse|zhen-ji|yuan-shao",
+        "blockedRelationship:relationship|spouse|zhen-ji|yuan-shao",
+        "kinship_without_pair_relation_signal"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|spouse|yuan-shao|zhen-ji",
+        "negativeCondition:relationship|spouse|yuan-shao|zhen-ji",
+        "blockedRelationship:relationship|spouse|yuan-shao|zhen-ji",
+        "blacklist:relationship|spouse|zhen-ji|yuan-shao",
+        "decisionOnlyBlacklist:relationship|spouse|zhen-ji|yuan-shao",
+        "negativeCondition:relationship|spouse|zhen-ji|yuan-shao",
+        "blockedRelationship:relationship|spouse|zhen-ji|yuan-shao"
+      ],
+      "reviewStatus": "rejected-runtime-export"
+    },
+    {
+      "targetId": "yuan-xi",
+      "targetName": "袁熙",
+      "type": "spouse",
+      "originalType": "spouse",
+      "evidenceRefs": [
+        "sgyy-baihua#chapter-091#p7;window=1"
+      ],
+      "sourceQuote": "曹丕，魏國的皇帝，在位已經七年了，這也是蜀漢建興的第四年。他先前娶了袁紹的次子袁熙的妻子甄氏為夫人，這是在攻破鄴城時得到的。",
+      "rejectionReasons": [
+        "kinship_without_pair_relation_signal"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "trustZoneBlacklistMatches": [],
+      "reviewStatus": "rejected-runtime-export"
+    }
+  ],
   "taxonomyPolicy": {
     "commands": "not exported as final type; refined into semantic runtime labels when possible",
     "fallbackType": "battlefield_contact",

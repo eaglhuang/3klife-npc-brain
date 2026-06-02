@@ -2,7 +2,7 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "xiahou-yuan",
   "displayName": "夏侯淵",
-  "generatedAt": "2026-06-01T08:31:42+00:00",
+  "generatedAt": "2026-06-01T15:25:13+00:00",
   "relationshipCount": 1,
   "typeCounts": {
     "patron_client": 1
@@ -39,34 +39,36 @@
       "targetId": "cao-cao",
       "targetName": "曹操",
       "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "originalType": "commands",
       "evidenceRefs": [
         "006#p7"
       ],
       "sourceQuote": null,
       "rejectionReasons": [
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "blacklist:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xiahou-yuan|cao-cao",
         "conflicts_with_stable_relationship_without_direct_pair_evidence",
         "semantic_relationship_without_direct_pair_evidence"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "li-jue",
-      "targetName": "李傕",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
-      "evidenceRefs": [
-        "006#p7"
-      ],
-      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "negativeCondition:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "blockedRelationship:relationship|battlefield_contact|cao-cao|xiahou-yuan",
+        "blacklist:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "decisionOnlyBlacklist:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "negativeCondition:relationship|battlefield_contact|xiahou-yuan|cao-cao",
+        "blockedRelationship:relationship|battlefield_contact|xiahou-yuan|cao-cao"
       ],
       "reviewStatus": "rejected-runtime-export"
     }

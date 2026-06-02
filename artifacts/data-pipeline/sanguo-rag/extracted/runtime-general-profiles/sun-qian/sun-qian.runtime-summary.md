@@ -2,12 +2,12 @@
 
 - General ID: `sun-qian`
 - Display Name: `孫乾`
-- Generated At: `2026-05-21T09:52:26+00:00`
+- Generated At: `2026-06-01T15:25:11+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
-- Ready Events: `32`
+- Ready Events: `4`
 - Relationships: `1`
-- Rejected Relationship Edges: `3`
+- Rejected Relationship Edges: `1`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,9 +17,9 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `3`
-- `event`: `16`
+- `event`: `3`
 - `identity`: `3`
-- `location`: `8`
+- `location`: `3`
 - `person`: `1`
 - `personality`: `5`
 - `relationship`: `1`

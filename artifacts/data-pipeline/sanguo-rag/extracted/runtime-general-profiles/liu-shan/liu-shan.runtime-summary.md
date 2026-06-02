@@ -2,26 +2,23 @@
 
 - General ID: `liu-shan`
 - Display Name: `劉禪`
-- Generated At: `2026-05-21T09:52:25+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:09+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `4`
-- Relationships: `2`
-- Rejected Relationship Edges: `3`
+- Ready Events: `0`
+- Relationships: `1`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
 
-- `event`: `3`
 - `identity`: `4`
-- `location`: `2`
-- `person`: `2`
-- `relationship`: `2`
+- `person`: `1`
+- `relationship`: `1`
 
 ## Relationship Types
 
 - `parent_child`: `1`
-- `protects_family`: `1`
 
 ## Outputs
 

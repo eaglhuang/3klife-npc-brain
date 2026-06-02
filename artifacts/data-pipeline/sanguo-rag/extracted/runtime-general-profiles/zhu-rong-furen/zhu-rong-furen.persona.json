@@ -9,26 +9,22 @@
   "title": "【祝融夫人】",
   "gender": "女",
   "baseFaction": "other",
-  "generatedAt": "2026-05-21T09:52:28+00:00",
+  "generatedAt": "2026-06-01T15:25:16+00:00",
   "runtimeReadiness": {
-    "status": "ready-for-dialogue-smoke",
+    "status": "thin-but-testable",
     "canonicalWrites": false,
     "completionPercent": null,
-    "readyEventCount": 4,
-    "relationshipCount": 2,
-    "rejectedRelationshipEdgeCount": 5,
+    "readyEventCount": 0,
+    "relationshipCount": 0,
+    "rejectedRelationshipEdgeCount": 0,
     "keywordCategoryCounts": {
       "activity": 1,
       "affect": 3,
       "aptitude": 2,
       "choice": 2,
       "decision": 2,
-      "event": 4,
       "identity": 4,
-      "location": 2,
-      "person": 1,
-      "personality": 5,
-      "relationship": 2
+      "personality": 5
     },
     "reviewBacklogCount": 0
   },
@@ -82,196 +78,7 @@
       "輸出繁體中文，避免現代網路語。"
     ]
   },
-  "storyBeats": [
-    {
-      "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "eventKey": "female-interaction-090-p10",
-      "chapterNo": 90,
-      "location": "南中",
-      "summary": "南中：次日，孔明正要分兵緝擒孟獲，忽報：「蠻王孟獲妻弟帶來洞主，因勸孟獲歸降，獲不從，今將孟獲并祝融夫人及宗黨數百餘人盡皆擒來，獻與丞相。",
-      "sourceQuote": "主，因勸孟獲歸降，獲不從，今將孟獲并祝融夫人及宗黨數百餘人盡皆擒來，獻與丞相。」",
-      "sourceRefs": [
-        "090#p10"
-      ],
-      "angleFamilies": [
-        "activity_seed",
-        "affect_story",
-        "battle",
-        "decision_weight",
-        "female_interaction",
-        "item_equipment",
-        "work_role"
-      ],
-      "relatedGeneralIds": [
-        "meng-huo",
-        "zhu-rong",
-        "zhuge-liang"
-      ],
-      "targetLinkTrace": [
-        {
-          "targetId": "meng-huo",
-          "sources": [
-            "aliasMatch",
-            "relationshipEdges",
-            "relationshipRefs"
-          ]
-        },
-        {
-          "targetId": "zhu-rong",
-          "sources": [
-            "aliasMatch"
-          ]
-        },
-        {
-          "targetId": "zhuge-liang",
-          "sources": [
-            "aliasMatch",
-            "relationshipEdges"
-          ]
-        }
-      ],
-      "confidence": 0.76
-    },
-    {
-      "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "eventKey": "female-interaction-090-p15",
-      "chapterNo": 90,
-      "location": "南中",
-      "summary": "南中：此時王平、張翼已引一軍趕到蠻寨中，將祝融夫人并一應老小皆活捉而來。孔明歸到寨中，",
-      "sourceQuote": "此時王平、張翼已引一軍趕到蠻寨中，將祝融夫人并一應老小皆活捉而來。孔明歸到寨中，",
-      "sourceRefs": [
-        "090#p15"
-      ],
-      "angleFamilies": [
-        "activity_seed",
-        "affect_story",
-        "battle",
-        "faction_timeline",
-        "female_interaction",
-        "item_equipment",
-        "location_context",
-        "work_role"
-      ],
-      "relatedGeneralIds": [
-        "meng-huo",
-        "wang-ping",
-        "zhu-rong",
-        "zhuge-liang"
-      ],
-      "targetLinkTrace": [
-        {
-          "targetId": "meng-huo",
-          "sources": [
-            "relationshipEdges"
-          ]
-        },
-        {
-          "targetId": "wang-ping",
-          "sources": [
-            "aliasMatch"
-          ]
-        },
-        {
-          "targetId": "zhu-rong",
-          "sources": [
-            "aliasMatch"
-          ]
-        },
-        {
-          "targetId": "zhuge-liang",
-          "sources": [
-            "aliasMatch"
-          ]
-        }
-      ],
-      "confidence": 0.81
-    },
-    {
-      "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "eventKey": "female-interaction-090-p7",
-      "chapterNo": 90,
-      "location": "大寨",
-      "summary": "大寨：去。次日，蠻兵報入洞中，說趙雲搦戰。祝融夫人即上馬出迎。二人戰不數合，雲撥馬便走",
-      "sourceQuote": "去。次日，蠻兵報入洞中，說趙雲搦戰。祝融夫人即上馬出迎。二人戰不數合，雲撥馬便走",
-      "sourceRefs": [
-        "090#p7"
-      ],
-      "angleFamilies": [
-        "activity_seed",
-        "affect_story",
-        "battle",
-        "female_interaction",
-        "item_equipment",
-        "location_context"
-      ],
-      "relatedGeneralIds": [
-        "meng-huo",
-        "zhao-yun",
-        "zhu-rong"
-      ],
-      "targetLinkTrace": [
-        {
-          "targetId": "meng-huo",
-          "sources": [
-            "relationshipEdges"
-          ]
-        },
-        {
-          "targetId": "zhao-yun",
-          "sources": [
-            "aliasMatch"
-          ]
-        },
-        {
-          "targetId": "zhu-rong",
-          "sources": [
-            "aliasMatch"
-          ]
-        }
-      ],
-      "confidence": 0.77
-    },
-    {
-      "eventId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "eventKey": "female-interaction-090-p6",
-      "chapterNo": 90,
-      "location": "南中",
-      "summary": "南中：是一婦人，願與你出戰。」獲視之，乃妻祝融夫人也。夫人世居南蠻，乃祝融氏之後，善使",
-      "sourceQuote": "是一婦人，願與你出戰。」獲視之，乃妻祝融夫人也。夫人世居南蠻，乃祝融氏之後，善使",
-      "sourceRefs": [
-        "090#p6"
-      ],
-      "angleFamilies": [
-        "activity_seed",
-        "affect_story",
-        "battle",
-        "decision_weight",
-        "faction_timeline",
-        "female_interaction",
-        "item_equipment",
-        "location_context"
-      ],
-      "relatedGeneralIds": [
-        "meng-huo",
-        "zhu-rong"
-      ],
-      "targetLinkTrace": [
-        {
-          "targetId": "meng-huo",
-          "sources": [
-            "relationshipEdges"
-          ]
-        },
-        {
-          "targetId": "zhu-rong",
-          "sources": [
-            "aliasMatch"
-          ]
-        }
-      ],
-      "confidence": 0.72
-    }
-  ],
+  "storyBeats": [],
   "sourceHighlights": [
     {
       "sourceRef": "090#p15",
@@ -288,15 +95,72 @@
       ],
       "example": "此時王平、張翼已引一軍趕到蠻寨中，將祝融夫人并一應老小皆活捉而來。孔明歸到寨中，",
       "relatedGeneralIds": [
+        "ma-dai",
+        "ma-zhong",
+        "meng-huo",
         "wang-ping",
+        "wei-yan",
+        "wu-tugu",
+        "zhang-yi",
+        "zhang-yi-shu",
+        "zhao-yun",
         "zhu-rong",
         "zhuge-liang"
       ],
       "targetLinkTrace": [
         {
+          "targetId": "ma-dai",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "ma-zhong",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "meng-huo",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
           "targetId": "wang-ping",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "wei-yan",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "wu-tugu",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "zhang-yi",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "zhang-yi-shu",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "zhao-yun",
+          "sources": [
+            "declaredGeneralIds"
           ]
         },
         {
@@ -308,7 +172,350 @@
         {
           "targetId": "zhuge-liang",
           "sources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "ma-dai",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "ma-zhong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "meng-huo",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "wang-ping",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "wei-yan",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "wu-tugu",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhang-yi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhang-yi-shu",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhao-yun",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhu-rong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
             "aliasMatch"
+          ],
+          "linkAuthority": "alias_match_only",
+          "sceneEligible": false,
+          "supplementalEligible": false,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhuge-liang",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p15",
+          "sourceId": "090#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -328,13 +535,193 @@
       ],
       "example": "是一婦人，願與你出戰。」獲視之，乃妻祝融夫人也。夫人世居南蠻，乃祝融氏之後，善使",
       "relatedGeneralIds": [
-        "zhu-rong"
+        "ma-zhong",
+        "meng-huo",
+        "zhang-yi",
+        "zhu-rong",
+        "zhuge-liang"
       ],
       "targetLinkTrace": [
+        {
+          "targetId": "ma-zhong",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "meng-huo",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "zhang-yi",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
         {
           "targetId": "zhu-rong",
           "sources": [
             "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "zhuge-liang",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "ma-zhong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p6",
+          "sourceId": "090#p6",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "meng-huo",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p6",
+          "sourceId": "090#p6",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhang-yi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p6",
+          "sourceId": "090#p6",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhu-rong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p6",
+          "sourceId": "090#p6",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "aliasMatch"
+          ],
+          "linkAuthority": "alias_match_only",
+          "sceneEligible": false,
+          "supplementalEligible": false,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhuge-liang",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p6",
+          "sourceId": "090#p6",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "faction_timeline",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -353,21 +740,194 @@
       ],
       "example": "主，因勸孟獲歸降，獲不從，今將孟獲并祝融夫人及宗黨數百餘人盡皆擒來，獻與丞相。」",
       "relatedGeneralIds": [
+        "ma-zhong",
         "meng-huo",
-        "zhu-rong"
+        "zhang-yi",
+        "zhu-rong",
+        "zhuge-liang"
       ],
       "targetLinkTrace": [
+        {
+          "targetId": "ma-zhong",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
         {
           "targetId": "meng-huo",
           "sources": [
             "aliasMatch",
-            "relationshipRefs"
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "zhang-yi",
+          "sources": [
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "zhu-rong",
           "sources": [
             "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "zhuge-liang",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "ma-zhong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p10",
+          "sourceId": "090#p10",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "female_interaction",
+            "item_equipment",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "meng-huo",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p10",
+          "sourceId": "090#p10",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "female_interaction",
+            "item_equipment",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhang-yi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p10",
+          "sourceId": "090#p10",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "female_interaction",
+            "item_equipment",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhu-rong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p10",
+          "sourceId": "090#p10",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "female_interaction",
+            "item_equipment",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch"
+          ],
+          "linkAuthority": "alias_match_only",
+          "sceneEligible": false,
+          "supplementalEligible": false,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhuge-liang",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p10",
+          "sourceId": "090#p10",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "decision_weight",
+            "female_interaction",
+            "item_equipment",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -387,25 +947,158 @@
       "relatedGeneralIds": [
         "meng-huo",
         "meng-you",
-        "zhu-rong"
+        "zhu-rong",
+        "zhuge-liang"
       ],
       "targetLinkTrace": [
         {
           "targetId": "meng-huo",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "meng-you",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "zhu-rong",
           "sources": [
             "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "zhuge-liang",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "meng-huo",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p16",
+          "sourceId": "090#p16",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "meng-you",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p16",
+          "sourceId": "090#p16",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhu-rong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p16",
+          "sourceId": "090#p16",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "work_role"
+          ],
+          "traceSources": [
+            "aliasMatch"
+          ],
+          "linkAuthority": "alias_match_only",
+          "sceneEligible": false,
+          "supplementalEligible": false,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhuge-liang",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p16",
+          "sourceId": "090#p16",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "work_role"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -423,20 +1116,294 @@
       ],
       "example": "去。次日，蠻兵報入洞中，說趙雲搦戰。祝融夫人即上馬出迎。二人戰不數合，雲撥馬便走",
       "relatedGeneralIds": [
+        "ma-dai",
+        "ma-zhong",
+        "meng-huo",
+        "wei-yan",
+        "zhang-yi",
         "zhao-yun",
-        "zhu-rong"
+        "zhu-rong",
+        "zhuge-liang"
       ],
       "targetLinkTrace": [
         {
+          "targetId": "ma-dai",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "ma-zhong",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "meng-huo",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "wei-yan",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
+          "targetId": "zhang-yi",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        },
+        {
           "targetId": "zhao-yun",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
           ]
         },
         {
           "targetId": "zhu-rong",
           "sources": [
             "aliasMatch"
+          ]
+        },
+        {
+          "targetId": "zhuge-liang",
+          "sources": [
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "ma-dai",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p7",
+          "sourceId": "090#p7",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "ma-zhong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p7",
+          "sourceId": "090#p7",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "meng-huo",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p7",
+          "sourceId": "090#p7",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "wei-yan",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p7",
+          "sourceId": "090#p7",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhang-yi",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p7",
+          "sourceId": "090#p7",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhao-yun",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p7",
+          "sourceId": "090#p7",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhu-rong",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p7",
+          "sourceId": "090#p7",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "aliasMatch"
+          ],
+          "linkAuthority": "alias_match_only",
+          "sceneEligible": false,
+          "supplementalEligible": false,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
+          ]
+        },
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "zhuge-liang",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "090#p7",
+          "sourceId": "090#p7",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "battle",
+            "female_interaction",
+            "item_equipment",
+            "location_context"
+          ],
+          "traceSources": [
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -457,7 +1424,40 @@
         {
           "targetId": "cao-cao",
           "sources": [
-            "aliasMatch"
+            "aliasMatch",
+            "declaredGeneralIds"
+          ]
+        }
+      ],
+      "targetProjections": [
+        {
+          "focusGeneralId": "zhu-rong-furen",
+          "targetId": "cao-cao",
+          "sourceType": "sourceHighlight",
+          "sourceRef": "040#p15",
+          "sourceId": "040#p15",
+          "angleFamilies": [
+            "activity_seed",
+            "affect_story",
+            "location_context"
+          ],
+          "traceSources": [
+            "aliasMatch",
+            "declaredGeneralIds"
+          ],
+          "linkAuthority": "source_event_participant",
+          "sceneEligible": false,
+          "supplementalEligible": true,
+          "sourceDataStatus": "insufficient_source_data",
+          "upstreamFeedback": [
+            {
+              "reason": "alias mention alone cannot create runtime scene data",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            },
+            {
+              "reason": "participant exists, but relationship or scene authority is not established",
+              "suggestedAction": "upstream_source_or_relationship_backfill"
+            }
           ]
         }
       ]
@@ -466,1238 +1466,1616 @@
   "angleTargetLinks": [
     {
       "angleFamily": "activity_seed",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "ma-dai",
+      "sourceRef": "090#p15",
+      "sourceId": "090#p15",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "ma-zhong",
+      "sourceRef": "090#p15",
+      "sourceId": "090#p15",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p10",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p10-090-p10",
-      "sourceType": "storyBeat"
+      "sourceRef": "090#p15",
+      "sourceId": "090#p15",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "meng-huo",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "wang-ping",
       "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
+      "sourceId": "090#p15",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "wang-ping",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "wei-yan",
       "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
+      "sourceId": "090#p15",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhu-rong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "wu-tugu",
       "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
+      "sourceId": "090#p15",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhuge-liang",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "zhang-yi",
       "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p15-090-p15",
-      "sourceType": "storyBeat"
+      "sourceId": "090#p15",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
+      "targetId": "zhang-yi-shu",
+      "sourceRef": "090#p15",
+      "sourceId": "090#p15",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "activity_seed",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p7-090-p7",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "activity_seed",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "activity_seed",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "romance.reviewed-a.zhu-rong-furen-female-interaction-090-p6-090-p6",
-      "sourceType": "storyBeat"
-    },
-    {
-      "angleFamily": "activity_seed",
-      "targetId": "wang-ping",
       "sourceRef": "090#p15",
       "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "zhu-rong",
       "sourceRef": "090#p15",
       "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "alias_match_only",
+      "linkAuthorities": [
+        "alias_match_only"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "faction_timeline",
+        "item_equipment",
+        "location_context",
+        "work_role"
+      ],
       "targetId": "zhuge-liang",
       "sourceRef": "090#p15",
       "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "wang-ping",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhuge-liang",
-      "sourceRef": "090#p15",
-      "sourceId": "090#p15",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhu-rong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "ma-zhong",
       "sourceRef": "090#p6",
       "sourceId": "090#p6",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "090#p6",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "090#p6",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "090#p6",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "faction_timeline",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "090#p6",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "090#p6",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "090#p6",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p6",
-      "sourceId": "090#p6",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context"
+      ],
       "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
+      "sourceRef": "090#p6",
+      "sourceId": "090#p6",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "decision_weight",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p10",
-      "sourceId": "090#p10",
-      "sourceType": "sourceHighlight"
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "zhang-yi",
+      "sourceRef": "090#p6",
+      "sourceId": "090#p6",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "zhu-rong",
+      "sourceRef": "090#p6",
+      "sourceId": "090#p6",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "alias_match_only",
+      "linkAuthorities": [
+        "alias_match_only"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "faction_timeline",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "zhuge-liang",
+      "sourceRef": "090#p6",
+      "sourceId": "090#p6",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "work_role"
+      ],
+      "targetId": "ma-zhong",
+      "sourceRef": "090#p10",
+      "sourceId": "090#p10",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "work_role"
+      ],
+      "targetId": "meng-huo",
+      "sourceRef": "090#p10",
+      "sourceId": "090#p10",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "work_role"
+      ],
+      "targetId": "zhang-yi",
+      "sourceRef": "090#p10",
+      "sourceId": "090#p10",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "work_role"
+      ],
+      "targetId": "zhu-rong",
+      "sourceRef": "090#p10",
+      "sourceId": "090#p10",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "alias_match_only",
+      "linkAuthorities": [
+        "alias_match_only"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "decision_weight",
+        "item_equipment",
+        "work_role"
+      ],
+      "targetId": "zhuge-liang",
+      "sourceRef": "090#p10",
+      "sourceId": "090#p10",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "work_role"
+      ],
       "targetId": "meng-huo",
       "sourceRef": "090#p16",
       "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "work_role"
+      ],
       "targetId": "meng-you",
       "sourceRef": "090#p16",
       "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "work_role"
+      ],
       "targetId": "zhu-rong",
       "sourceRef": "090#p16",
       "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "meng-you",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "meng-you",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "meng-you",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "meng-you",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "meng-huo",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "meng-you",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "work_role",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p16",
-      "sourceId": "090#p16",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "alias_match_only",
+      "linkAuthorities": [
+        "alias_match_only"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "work_role"
+      ],
+      "targetId": "zhuge-liang",
+      "sourceRef": "090#p16",
+      "sourceId": "090#p16",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
-      "targetId": "zhu-rong",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "ma-dai",
       "sourceRef": "090#p7",
       "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "battle",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "female_interaction",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "item_equipment",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhao-yun",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "zhu-rong",
-      "sourceRef": "090#p7",
-      "sourceId": "090#p7",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     },
     {
       "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "ma-zhong",
+      "sourceRef": "090#p7",
+      "sourceId": "090#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "meng-huo",
+      "sourceRef": "090#p7",
+      "sourceId": "090#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "wei-yan",
+      "sourceRef": "090#p7",
+      "sourceId": "090#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "zhang-yi",
+      "sourceRef": "090#p7",
+      "sourceId": "090#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "zhao-yun",
+      "sourceRef": "090#p7",
+      "sourceId": "090#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "zhu-rong",
+      "sourceRef": "090#p7",
+      "sourceId": "090#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "alias_match_only",
+      "linkAuthorities": [
+        "alias_match_only"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "battle",
+        "item_equipment",
+        "location_context"
+      ],
+      "targetId": "zhuge-liang",
+      "sourceRef": "090#p7",
+      "sourceId": "090#p7",
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
+    },
+    {
+      "angleFamily": "activity_seed",
+      "angleFamilies": [
+        "activity_seed",
+        "affect_story",
+        "location_context"
+      ],
       "targetId": "cao-cao",
       "sourceRef": "040#p15",
       "sourceId": "040#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "affect_story",
-      "targetId": "cao-cao",
-      "sourceRef": "040#p15",
-      "sourceId": "040#p15",
-      "sourceType": "sourceHighlight"
-    },
-    {
-      "angleFamily": "location_context",
-      "targetId": "cao-cao",
-      "sourceRef": "040#p15",
-      "sourceId": "040#p15",
-      "sourceType": "sourceHighlight"
+      "sourceType": "sourceHighlight",
+      "linkAuthority": "source_event_participant",
+      "linkAuthorities": [
+        "source_event_participant"
+      ],
+      "sceneEligible": false,
+      "sourceDataStatus": "insufficient_source_data",
+      "sourceDataStatuses": [
+        "insufficient_source_data"
+      ],
+      "upstreamFeedback": [
+        {
+          "reason": "alias mention alone cannot create runtime scene data",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        },
+        {
+          "reason": "participant exists, but relationship or scene authority is not established",
+          "suggestedAction": "upstream_source_or_relationship_backfill"
+        }
+      ]
     }
   ],
   "targetLinking": {
     "version": "deterministic_source_link_v1",
-    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference",
-    "linkCount": 166
-  },
-  "relationshipSummary": {
-    "typeCounts": {
-      "battlefield_contact": 1,
-      "betrayal_surrender": 1
-    },
-    "topAnchors": [
+    "focusProjectionVersion": "runtime_focus_projection_v1",
+    "policy": "source generalIds + relationship evidenceRefs + exact alias match; no LLM inference; insufficient links emit upstreamFeedback instead of downstream backfill",
+    "linkCount": 34,
+    "sceneEligibleLinkCount": 0,
+    "upstreamFeedbackRequiredCount": 34,
+    "missingDataPolicy": "Downstream must never invent missing person, relationship, event, or mood facts. When a target is only weakly linked, emit upstreamFeedback and keep sceneEligible=false.",
+    "upstreamFeedback": [
       {
-        "targetId": "meng-huo",
-        "targetName": "孟獲",
-        "type": "battlefield_contact",
-        "typeLabel": "戰場接觸",
-        "originalTypes": [
-          "spouse"
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "ma-dai",
+        "traceSources": [
+          "declaredGeneralIds"
         ],
-        "directions": [
-          "outgoing"
-        ],
-        "evidenceRefs": [
-          "090#p10"
-        ],
-        "edgeConfidence": 0.82,
-        "edgeStrength": 0.65,
-        "sourceQuotes": [
-          "主，因勸孟獲歸降，獲不從，今將孟獲并祝融夫人及宗黨數百餘人盡皆擒來，獻與丞相。」"
-        ],
-        "refinementReasons": [
-          "coarse_edge_fallback"
-        ],
-        "reviewStatus": "accepted-review-candidate",
-        "sourceLayer": null
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
       },
       {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "ma-zhong",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
         "targetId": "meng-huo",
-        "targetName": "孟獲",
-        "type": "betrayal_surrender",
-        "typeLabel": "背叛投降",
-        "originalTypes": [
-          "betrayal_surrender"
+        "traceSources": [
+          "declaredGeneralIds"
         ],
-        "directions": [
-          "incoming",
-          "outgoing"
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "wang-ping",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
         ],
-        "evidenceRefs": [
-          "090#p10"
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "wei-yan",
+        "traceSources": [
+          "declaredGeneralIds"
         ],
-        "edgeConfidence": 0.82,
-        "edgeStrength": 0.7,
-        "sourceQuotes": [
-          "主，因勸孟獲歸降，獲不從，今將孟獲并祝融夫人及宗黨數百餘人盡皆擒來，獻與丞相。」"
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "wu-tugu",
+        "traceSources": [
+          "declaredGeneralIds"
         ],
-        "refinementReasons": [
-          "source_graph_refined_type"
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhang-yi",
+        "traceSources": [
+          "declaredGeneralIds"
         ],
-        "reviewStatus": "accepted-review-candidate",
-        "sourceLayer": null
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhang-yi-shu",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhao-yun",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhu-rong",
+        "traceSources": [
+          "aliasMatch"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p15",
+        "sourceId": "090#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhuge-liang",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p6",
+        "sourceId": "090#p6",
+        "sourceType": "sourceHighlight",
+        "targetId": "ma-zhong",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p6",
+        "sourceId": "090#p6",
+        "sourceType": "sourceHighlight",
+        "targetId": "meng-huo",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p6",
+        "sourceId": "090#p6",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhang-yi",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p6",
+        "sourceId": "090#p6",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhu-rong",
+        "traceSources": [
+          "aliasMatch"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p6",
+        "sourceId": "090#p6",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhuge-liang",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p10",
+        "sourceId": "090#p10",
+        "sourceType": "sourceHighlight",
+        "targetId": "ma-zhong",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p10",
+        "sourceId": "090#p10",
+        "sourceType": "sourceHighlight",
+        "targetId": "meng-huo",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p10",
+        "sourceId": "090#p10",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhang-yi",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p10",
+        "sourceId": "090#p10",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhu-rong",
+        "traceSources": [
+          "aliasMatch"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p10",
+        "sourceId": "090#p10",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhuge-liang",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p16",
+        "sourceId": "090#p16",
+        "sourceType": "sourceHighlight",
+        "targetId": "meng-huo",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p16",
+        "sourceId": "090#p16",
+        "sourceType": "sourceHighlight",
+        "targetId": "meng-you",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p16",
+        "sourceId": "090#p16",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhu-rong",
+        "traceSources": [
+          "aliasMatch"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p16",
+        "sourceId": "090#p16",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhuge-liang",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p7",
+        "sourceId": "090#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "ma-dai",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p7",
+        "sourceId": "090#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "ma-zhong",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p7",
+        "sourceId": "090#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "meng-huo",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p7",
+        "sourceId": "090#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "wei-yan",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p7",
+        "sourceId": "090#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhang-yi",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p7",
+        "sourceId": "090#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhao-yun",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p7",
+        "sourceId": "090#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhu-rong",
+        "traceSources": [
+          "aliasMatch"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "090#p7",
+        "sourceId": "090#p7",
+        "sourceType": "sourceHighlight",
+        "targetId": "zhuge-liang",
+        "traceSources": [
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
+      },
+      {
+        "sourceRef": "040#p15",
+        "sourceId": "040#p15",
+        "sourceType": "sourceHighlight",
+        "targetId": "cao-cao",
+        "traceSources": [
+          "aliasMatch",
+          "declaredGeneralIds"
+        ],
+        "upstreamFeedback": [
+          {
+            "reason": "alias mention alone cannot create runtime scene data",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          },
+          {
+            "reason": "participant exists, but relationship or scene authority is not established",
+            "suggestedAction": "upstream_source_or_relationship_backfill"
+          }
+        ]
       }
     ]
   },
+  "relationshipSummary": {
+    "typeCounts": {},
+    "topAnchors": []
+  },
   "reviewBacklog": [],
-  "evidenceRefs": [
-    "090#p10",
-    "090#p15",
-    "090#p6",
-    "090#p7"
-  ],
+  "evidenceRefs": [],
   "observedMentionStats": {
     "mentionCount": 100,
     "firstChapter": 40,

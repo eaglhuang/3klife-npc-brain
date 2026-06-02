@@ -2,231 +2,21 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "dong-zhuo",
   "displayName": "董卓",
-  "generatedAt": "2026-05-21T09:52:25+00:00",
-  "relationshipCount": 11,
+  "generatedAt": "2026-06-01T15:25:06+00:00",
+  "relationshipCount": 4,
   "typeCounts": {
-    "enemy_rival": 10,
-    "parent_child": 1
+    "adoptive_parent_child": 1,
+    "battlefield_opponent": 1,
+    "enemy_rival": 2
   },
   "anchors": [
     {
-      "targetId": "gao-shun",
-      "targetName": "高順",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:d2b19a489e964ee8a871"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "高順諫曰：「將軍躬殺董卓，威震夷狄，端坐顧盼，遠近自然畏服，不宜輕自出軍"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "li-jue",
-      "targetName": "李傕",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:ca4b0addc0a4895820e0",
-        "ext-card:wikisource-sanguozhi:candidate-card:6fa2678665144d66cf0a"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "董卓敗，濟與李傕等擊呂布，為卓報仇"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
       "targetId": "lu-bu",
       "targetName": "呂布",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "type": "adoptive_parent_child",
+      "typeLabel": "adoptive_parent_child",
       "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:018299f1daab7e584efc",
-        "ext-card:wikisource-sanguozhi:candidate-card:a31d766234743631cf58"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "」董卓未及回言，呂布飛馬直殺過來",
-        "董卓敗，濟與李傕等擊呂布，為卓報仇"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    },
-    {
-      "targetId": "romance-person-4f0d-74ca",
-      "targetName": "伍瓊",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-houhanshu:candidate-card:633bb639ab4dfc4b0d4a",
-        "ext-card:wikisource-houhanshu:candidate-card:8ec23c0bba3fa2c4d9de"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "庚辰，董卓殺城門校尉伍瓊、督軍校尉周珌"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "romance-person-5f35-6eab",
-      "targetName": "張溫",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-houhanshu:candidate-card:2b44d3001d00b827ad27",
-        "ext-card:wikisource-houhanshu:candidate-card:d95146fc05971cf82a84"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "〉 冬十月壬戌，董卓殺衞尉張溫"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "romance-person-738b-5321",
-      "targetName": "王匡",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:0c221e0066c5aa331662"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "〉 太守王匡起兵討董卓，遣諸生於屬縣微伺吏民罪負，便收之，考責錢穀贖罪，稽遲則夷滅宗族，以崇威嚴"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "romance-person-8881-9697",
-      "targetName": "袁隗",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-houhanshu:candidate-card:2bb4b7092f338b71636a",
-        "ext-card:wikisource-houhanshu:candidate-card:30795214a8e336844f4c"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "戊午，董卓殺太傅袁隗、太僕袁基，夷其族"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "zhang-ji",
-      "targetName": "張濟",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-houhanshu:candidate-card:332c4fbbe643524c95f7"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "董卓部曲將李傕、郭汜、樊稠、張濟等反，攻京師"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "parent_child",
-      "typeLabel": "親子",
-      "originalTypes": [
-        "parent_child"
+        "adoptive_parent_child"
       ],
       "directions": [
         "outgoing"
@@ -244,8 +34,8 @@
       "sourceLayer": "stable-bootstrap-seed"
     },
     {
-      "targetId": "ding-yuan",
-      "targetName": "丁原",
+      "targetId": "zhang-jue",
+      "targetName": "張角",
       "type": "enemy_rival",
       "typeLabel": "敵對競爭",
       "originalTypes": [
@@ -255,12 +45,37 @@
         "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:a87f7163ee4f6903f90c"
+        "ext-card:wikisource-romance:candidate-card:5f33373a9b624ca2e4b9"
       ],
       "edgeConfidence": 0.82,
       "edgeStrength": 0.7,
       "sourceQuotes": [
-        "議溫明是董卓無君，殺丁原是呂布無父"
+        "張角正殺敗董卓，乘勢趕來，忽遇三人衝殺，角軍大亂，敗走五十餘里"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "yuan-shao",
+      "targetName": "袁紹",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "incoming"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:040b269ad97c18103105"
+      ],
+      "edgeConfidence": 0.77,
+      "edgeStrength": 0.65,
+      "sourceQuotes": [
+        "本是昭烈從袁紹以討董卓，却弄出助公孫瓚以攻袁紹，則一變"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -271,380 +86,28 @@
     {
       "targetId": "zhang-jue",
       "targetName": "張角",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
+      "type": "battlefield_opponent",
+      "typeLabel": "戰場對手",
       "originalTypes": [
-        "enemy_rival"
+        "confronts"
       ],
       "directions": [
-        "outgoing",
         "incoming"
       ],
       "evidenceRefs": [
-        "001#p20",
-        "ext-card:wikisource-romance:candidate-card:5f33373a9b624ca2e4b9"
-      ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
-      "sourceQuotes": [
-        "張角正殺敗董卓，乘勢趕來，忽遇三人衝殺，角軍大亂，敗走五十餘里"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline",
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-romance"
-    }
-  ],
-  "rejectedRelationshipEdges": [
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "battlefield_opponent",
-      "originalType": "parent_child",
-      "evidenceRefs": [
-        "003#p13"
-      ],
-      "sourceQuote": "卓怒，引軍同李儒出迎。兩陣對圓，只見呂布頂束髮金冠，披百花戰袍，擐唐猊鎧甲，",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "battlefield_opponent_target"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "battlefield_opponent",
-      "originalType": "parent_child",
-      "evidenceRefs": [
-        "005#p11"
-      ],
-      "sourceQuote": "斬其首，懸於都門。」卓大喜曰：「吾有奉先，高枕無憂矣！」言未絕，呂布背後一人",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "battlefield_opponent_target"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "li-ru",
-      "targetName": "李儒",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "003#p13"
-      ],
-      "sourceQuote": "卓怒，引軍同李儒出迎。兩陣對圓，只見呂布頂束髮金冠，披百花戰袍，擐唐猊鎧甲，",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "li-su",
-      "targetName": "李肅",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "003#p13"
-      ],
-      "sourceQuote": "卓怒，引軍同李儒出迎。兩陣對圓，只見呂布頂束髮金冠，披百花戰袍，擐唐猊鎧甲，",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "li-jue",
-      "targetName": "李傕",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "005#p16"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "005#p16"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
-      "evidenceRefs": [
-        "006#p7"
-      ],
-      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "003#p13"
-      ],
-      "sourceQuote": "卓怒，引軍同李儒出迎。兩陣對圓，只見呂布頂束髮金冠，披百花戰袍，擐唐猊鎧甲，",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "003#p13"
-      ],
-      "sourceQuote": "卓怒，引軍同李儒出迎。兩陣對圓，只見呂布頂束髮金冠，披百花戰袍，擐唐猊鎧甲，",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p16"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-fei",
-      "targetName": "張飛",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p16"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "cao-ren",
-      "targetName": "曹仁",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "006#p6"
-      ],
-      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "zhang-jue",
-      "targetName": "張角",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
         "001#p20"
       ],
-      "sourceQuote": "光燭天。急引兵來時，賊已敗散。玄德見皇甫嵩、朱雋，具道盧植之意。嵩曰：「張梁、",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "diao-chan",
-      "targetName": "貂蟬",
-      "type": "battlefield_contact",
-      "originalType": "spouse",
-      "evidenceRefs": [
-        "019#p8"
-      ],
-      "sourceQuote": "布答話！」布上城而立。操謂布曰：「聞奉先又欲結婚袁術，吾故領兵至此。夫術有反",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "coarse_edge_fallback"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "diao-chan",
-      "targetName": "貂蟬",
-      "type": "battlefield_contact",
-      "originalType": "spouse",
-      "evidenceRefs": [
-        "008#p4"
-      ],
-      "sourceQuote": "皆好色之徒，今欲用連環計，先將汝許嫁呂布，後獻與董卓，汝於中取便諜間他父子反",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "coarse_edge_fallback"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "liu-bei",
-      "targetName": "劉備",
-      "type": "betrayal_surrender",
-      "originalType": "betrayal_surrender",
-      "evidenceRefs": [
-        "019#p7"
-      ],
-      "sourceQuote": "布答話！」布上城而立。操謂布曰：「聞奉先又欲結婚袁術，吾故領兵至此。夫術有反",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "li-ru",
-      "targetName": "李儒",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "005#p16"
-      ],
-      "sourceQuote": "關，不要廝殺；卓自將十五萬，同李儒、呂布、樊稠、張濟等守虎牢關。這關離洛陽五",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "lu-bu",
-      "targetName": "呂布",
-      "type": "battlefield_opponent",
-      "originalType": "parent_child",
-      "evidenceRefs": [
-        "006#p7"
-      ],
-      "sourceQuote": "」呂布罵曰：「背主懦夫，何得妄言！」夏侯惇挺槍躍馬，直取呂布。戰不數合，李傕引",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
+      "edgeConfidence": 0.74,
+      "edgeStrength": 0.62,
+      "sourceQuotes": [],
       "refinementReasons": [
         "battlefield_opponent_target"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "sun-jian",
-      "targetName": "孫堅",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p12"
-      ],
-      "sourceQuote": "赴關迎敵。眾諸侯內有濟北相鮑信，尋思孫堅既爲前部，怕他奪了頭功，暗撥其弟鮑忠",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "sun-jian",
-      "targetName": "孫堅",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "005#p12"
-      ],
-      "sourceQuote": "赴關迎敵。眾諸侯內有濟北相鮑信，尋思孫堅既爲前部，怕他奪了頭功，暗撥其弟鮑忠",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
-      ],
-      "reviewStatus": "rejected-runtime-export"
+      "reviewStatus": "source-grounded-review",
+      "sourceLayer": "mao-hant-observed-mentions"
     }
   ],
+  "rejectedRelationshipEdges": [],
   "taxonomyPolicy": {
     "commands": "not exported as final type; refined into semantic runtime labels when possible",
     "fallbackType": "battlefield_contact",

@@ -2,12 +2,12 @@
 
 - General ID: `zhang-fei`
 - Display Name: `張飛`
-- Generated At: `2026-06-01T08:31:41+00:00`
+- Generated At: `2026-06-01T15:25:14+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
-- Completion: `None`
-- Ready Events: `80`
-- Relationships: `5`
-- Rejected Relationship Edges: `27`
+- Completion: `79.35`
+- Ready Events: `8`
+- Relationships: `3`
+- Rejected Relationship Edges: `6`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,19 +17,17 @@
 - `aptitude`: `2`
 - `choice`: `2`
 - `decision`: `1`
-- `event`: `41`
+- `event`: `8`
 - `identity`: `4`
-- `item`: `1`
-- `location`: `14`
+- `location`: `6`
 - `person`: `3`
 - `personality`: `4`
-- `relationship`: `5`
+- `relationship`: `3`
 
 ## Relationship Types
 
 - `battlefield_contact`: `2`
 - `parent_child`: `1`
-- `sworn_sibling`: `2`
 
 ## Outputs
 

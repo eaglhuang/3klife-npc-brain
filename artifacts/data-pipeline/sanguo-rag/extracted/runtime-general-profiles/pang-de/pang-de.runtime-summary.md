@@ -2,11 +2,11 @@
 
 - General ID: `pang-de`
 - Display Name: `龐德`
-- Generated At: `2026-05-21T09:27:27+00:00`
+- Generated At: `2026-06-01T15:25:10+00:00`
 - Runtime Status: `thin-but-testable`
 - Completion: `None`
 - Ready Events: `0`
-- Relationships: `5`
+- Relationships: `3`
 - Rejected Relationship Edges: `1`
 - Review Backlog: `0`
 
@@ -18,15 +18,15 @@
 - `choice`: `1`
 - `decision`: `1`
 - `identity`: `3`
-- `person`: `5`
+- `person`: `2`
 - `personality`: `4`
-- `relationship`: `5`
+- `relationship`: `3`
 
 ## Relationship Types
 
 - `battlefield_contact`: `1`
-- `betrayal_surrender`: `1`
-- `enemy_rival`: `3`
+- `battlefield_opponent`: `1`
+- `enemy_rival`: `1`
 
 ## Outputs
 

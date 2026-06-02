@@ -2,12 +2,12 @@
 
 - General ID: `meng-huo`
 - Display Name: `孟獲`
-- Generated At: `2026-05-21T09:52:27+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:10+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `4`
-- Relationships: `3`
-- Rejected Relationship Edges: `3`
+- Ready Events: `0`
+- Relationships: `1`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -15,17 +15,14 @@
 - `activity`: `4`
 - `affect`: `1`
 - `decision`: `1`
-- `event`: `4`
 - `identity`: `2`
-- `location`: `2`
-- `person`: `2`
+- `person`: `1`
 - `personality`: `4`
-- `relationship`: `3`
+- `relationship`: `1`
 
 ## Relationship Types
 
-- `battlefield_contact`: `2`
-- `betrayal_surrender`: `1`
+- `battlefield_contact`: `1`
 
 ## Outputs
 

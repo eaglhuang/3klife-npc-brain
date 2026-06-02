@@ -2,15 +2,13 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "yuan-shao",
   "displayName": "袁紹",
-  "generatedAt": "2026-05-21T09:52:24+00:00",
-  "relationshipCount": 10,
+  "generatedAt": "2026-06-01T15:25:14+00:00",
+  "relationshipCount": 8,
   "typeCounts": {
-    "alliance_oath": 1,
     "battlefield_contact": 2,
-    "enemy_rival": 2,
+    "enemy_rival": 1,
     "parent_child": 2,
-    "ruler_subject": 2,
-    "spouse": 1
+    "ruler_subject": 3
   },
   "anchors": [
     {
@@ -60,131 +58,23 @@
       "sourceLayer": "stable-bootstrap-seed"
     },
     {
-      "targetId": "cao-cao",
-      "targetName": "曹操",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-houhanshu:candidate-card:1622b9830f025de08780",
-        "ext-card:wikisource-houhanshu:candidate-card:e3eddd1936cd35a86ec7"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "曹操與袁紹戰於官度， 〈 裴松之《 北征記 》曰：「中牟臺下臨汴水，是爲官度，袁紹、曹操壘尚存焉"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "gongsun-zan",
-      "targetName": "公孫瓚",
-      "type": "spouse",
-      "typeLabel": "夫妻姻親",
-      "originalTypes": [
-        "spouse"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:9ae36d461761a45218b0",
-        "ext-card:wikisource-sanguozhi:candidate-card:d40b2e207085d8b15de3"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "是時岱與袁紹、公孫瓚和親，紹令妻子居岱所，瓚亦遣從事范方將騎助岱"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "romance-person-5f35-694a",
-      "targetName": "張楊",
-      "type": "enemy_rival",
-      "typeLabel": "敵對競爭",
-      "originalTypes": [
-        "enemy_rival"
-      ],
-      "directions": [
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:3b16bd5ad26695af6fa4"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "張楊將楊醜殺楊，眭固又殺醜，以其衆屬袁紹，屯射犬"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "romance-person-66f9-7d14",
-      "targetName": "曹純",
+      "targetId": "chen-zhen",
+      "targetName": "陳震",
       "type": "ruler_subject",
       "typeLabel": "君臣主從",
       "originalTypes": [
         "ruler_subject"
       ],
       "directions": [
-        "incoming",
         "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-sanguozhi:candidate-card:80bd65240d87fedc17f6",
-        "ext-card:wikisource-sanguozhi:candidate-card:d0a343667b504a5ce360"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "袁紹又遣麴義及虞子和，將兵與輔合擊瓚"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
-    {
-      "targetId": "cao-cao",
-      "targetName": "曹操",
-      "type": "alliance_oath",
-      "typeLabel": "盟約同盟",
-      "originalTypes": [
-        "alliance_oath"
-      ],
-      "directions": [
-        "incoming",
-        "outgoing"
-      ],
-      "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:a70adde2d511623f07fa",
-        "ext-card:wikisource-romance:candidate-card:c0ec564e533b90b8960c"
+        "ext-card:wikisource-romance:candidate-card:81d231cb5dd78a256307"
       ],
       "edgeConfidence": 0.82,
       "edgeStrength": 0.7,
       "sourceQuotes": [
-        "時袁紹得操矯詔，乃聚麾下文武，引兵三萬，離渤海來與曹操會盟"
+        "」答曰：「某乃袁紹部下南陽陳震也"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -193,8 +83,8 @@
       "sourceLayer": "claim-graph-a-romance"
     },
     {
-      "targetId": "yuan-shu",
-      "targetName": "袁術",
+      "targetId": "yan-liang",
+      "targetName": "顏良",
       "type": "ruler_subject",
       "typeLabel": "君臣主從",
       "originalTypes": [
@@ -204,12 +94,62 @@
         "outgoing"
       ],
       "evidenceRefs": [
-        "ext-card:wikisource-romance:candidate-card:57f91bd75644644c9796"
+        "ext-card:wikisource-romance:candidate-card:7dc2a3fc458b3c810ca3"
       ],
-      "edgeConfidence": 0.82,
-      "edgeStrength": 0.7,
+      "edgeConfidence": 0.8,
+      "edgeStrength": 0.68,
       "sourceQuotes": [
-        "」於是袁紹、曹操各選精兵五百，命袁紹之弟袁術領之"
+        "袁紹令顏良、文醜為先鋒，各引弓弩手一千，亦分作左右兩隊"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "dong-zhuo",
+      "targetName": "董卓",
+      "type": "enemy_rival",
+      "typeLabel": "敵對競爭",
+      "originalTypes": [
+        "enemy_rival"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:040b269ad97c18103105"
+      ],
+      "edgeConfidence": 0.77,
+      "edgeStrength": 0.65,
+      "sourceQuotes": [
+        "本是昭烈從袁紹以討董卓，却弄出助公孫瓚以攻袁紹，則一變"
+      ],
+      "refinementReasons": [
+        "stable_relationship_baseline"
+      ],
+      "reviewStatus": "ready",
+      "sourceLayer": "claim-graph-a-romance"
+    },
+    {
+      "targetId": "wen-chou",
+      "targetName": "文醜",
+      "type": "ruler_subject",
+      "typeLabel": "君臣主從",
+      "originalTypes": [
+        "ruler_subject"
+      ],
+      "directions": [
+        "outgoing"
+      ],
+      "evidenceRefs": [
+        "ext-card:wikisource-romance:candidate-card:7dc2a3fc458b3c810ca3"
+      ],
+      "edgeConfidence": 0.77,
+      "edgeStrength": 0.65,
+      "sourceQuotes": [
+        "袁紹令顏良、文醜為先鋒，各引弓弩手一千，亦分作左右兩隊"
       ],
       "refinementReasons": [
         "stable_relationship_baseline"
@@ -223,7 +163,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -235,7 +175,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -246,7 +186,7 @@
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "outgoing"
@@ -258,7 +198,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
@@ -266,126 +206,36 @@
   ],
   "rejectedRelationshipEdges": [
     {
-      "targetId": "sun-jian",
-      "targetName": "孫堅",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
+      "targetId": "zhen-ji",
+      "targetName": "甄姬",
+      "type": "spouse",
+      "originalType": "spouse",
       "evidenceRefs": [
-        "005#p12"
+        "sgyy-baihua#chapter-091#p7;window=1"
       ],
-      "sourceQuote": "名茂，字太榮，吳郡富春人也，使雙刀。孫堅披爛銀鎧，裹赤幘，橫古錠刀，騎花鬃馬",
+      "sourceQuote": "曹丕，魏國的皇帝，在位已經七年了，這也是蜀漢建興的第四年。他先前娶了袁紹的次子袁熙的妻子甄氏為夫人，這是在攻破鄴城時得到的。",
       "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
+        "trust_zone_blacklist_hit",
+        "blacklist:relationship|spouse|yuan-shao|zhen-ji",
+        "negativeCondition:relationship|spouse|yuan-shao|zhen-ji",
+        "blockedRelationship:relationship|spouse|yuan-shao|zhen-ji",
+        "blacklist:relationship|spouse|zhen-ji|yuan-shao",
+        "decisionOnlyBlacklist:relationship|spouse|zhen-ji|yuan-shao",
+        "negativeCondition:relationship|spouse|zhen-ji|yuan-shao",
+        "blockedRelationship:relationship|spouse|zhen-ji|yuan-shao",
+        "kinship_without_pair_relation_signal"
       ],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "stable_relationship_baseline"
       ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yuan-shu",
-      "targetName": "袁術",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "005#p12"
-      ],
-      "sourceQuote": "名茂，字太榮，吳郡富春人也，使雙刀。孫堅披爛銀鎧，裹赤幘，橫古錠刀，騎花鬃馬",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "yuan-shu",
-      "targetName": "袁術",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "005#p12"
-      ],
-      "sourceQuote": "名茂，字太榮，吳郡富春人也，使雙刀。孫堅披爛銀鎧，裹赤幘，橫古錠刀，騎花鬃馬",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "cao-cao",
-      "targetName": "曹操",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "003#p6"
-      ],
-      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "cao-cao",
-      "targetName": "曹操",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "003#p6"
-      ],
-      "sourceQuote": "殺大臣！誅惡黨者前來助戰！」何進部將吳匡便於青瑣門外放起火來。袁術引兵突入宮",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "wen-chou",
-      "targetName": "文醜",
-      "type": "battlefield_contact",
-      "originalType": "ruler_subject",
-      "evidenceRefs": [
-        "007#p5"
-      ],
-      "sourceQuote": "？」言未畢，文醜策馬挺槍，直殺上橋。公孫瓚就橋邊與文醜交鋒。戰不到十餘合，瓚抵",
-      "rejectionReasons": [
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "non_stable_authority_type_demoted"
-      ],
-      "reviewStatus": "rejected-runtime-export"
-    },
-    {
-      "targetId": "gongsun-zan",
-      "targetName": "公孫瓚",
-      "type": "enemy_rival",
-      "originalType": "enemy_rival",
-      "evidenceRefs": [
-        "007#p4"
-      ],
-      "sourceQuote": "？」言未畢，文醜策馬挺槍，直殺上橋。公孫瓚就橋邊與文醜交鋒。戰不到十餘合，瓚抵",
-      "rejectionReasons": [
-        "conflicts_with_stable_relationship_without_direct_pair_evidence",
-        "semantic_relationship_without_direct_pair_evidence"
-      ],
-      "refinementReasons": [
-        "source_graph_refined_type"
+      "trustZoneBlacklistMatches": [
+        "blacklist:relationship|spouse|yuan-shao|zhen-ji",
+        "negativeCondition:relationship|spouse|yuan-shao|zhen-ji",
+        "blockedRelationship:relationship|spouse|yuan-shao|zhen-ji",
+        "blacklist:relationship|spouse|zhen-ji|yuan-shao",
+        "decisionOnlyBlacklist:relationship|spouse|zhen-ji|yuan-shao",
+        "negativeCondition:relationship|spouse|zhen-ji|yuan-shao",
+        "blockedRelationship:relationship|spouse|zhen-ji|yuan-shao"
       ],
       "reviewStatus": "rejected-runtime-export"
     }

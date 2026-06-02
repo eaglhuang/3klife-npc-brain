@@ -2,12 +2,12 @@
 
 - General ID: `sun-shang-xiang`
 - Display Name: `孫尚香`
-- Generated At: `2026-05-21T09:52:28+00:00`
-- Runtime Status: `ready-for-dialogue-smoke`
+- Generated At: `2026-06-01T15:25:12+00:00`
+- Runtime Status: `thin-but-testable`
 - Completion: `None`
-- Ready Events: `6`
-- Relationships: `2`
-- Rejected Relationship Edges: `11`
+- Ready Events: `0`
+- Relationships: `1`
+- Rejected Relationship Edges: `0`
 - Review Backlog: `0`
 
 ## Keyword Categories
@@ -17,16 +17,13 @@
 - `aptitude`: `1`
 - `choice`: `1`
 - `decision`: `2`
-- `event`: `6`
 - `identity`: `4`
-- `location`: `2`
 - `person`: `1`
 - `personality`: `4`
-- `relationship`: `2`
+- `relationship`: `1`
 
 ## Relationship Types
 
-- `battlefield_contact`: `1`
 - `spouse`: `1`
 
 ## Outputs

@@ -2,47 +2,19 @@
   "relationshipVersion": "general_relationships_v1",
   "generalId": "lu-meng",
   "displayName": "呂蒙",
-  "generatedAt": "2026-05-21T09:27:28+00:00",
-  "relationshipCount": 2,
+  "generatedAt": "2026-06-01T15:25:09+00:00",
+  "relationshipCount": 1,
   "typeCounts": {
-    "battlefield_contact": 1,
-    "mentor_student": 1
+    "battlefield_contact": 1
   },
   "anchors": [
-    {
-      "targetId": "zhang-zhao",
-      "targetName": "張昭",
-      "type": "mentor_student",
-      "typeLabel": "師友教導",
-      "originalTypes": [
-        "mentor_student"
-      ],
-      "directions": [
-        "outgoing",
-        "incoming"
-      ],
-      "evidenceRefs": [
-        "ext-card:gutenberg-sanguozhi:candidate-card:5da750093c6ecfcefc3b",
-        "ext-card:gutenberg-sanguozhi:candidate-card:c864b076ac0719a47352"
-      ],
-      "edgeConfidence": 0.88,
-      "edgeStrength": 0.76,
-      "sourceQuotes": [
-        "於是張昭為師傅，周 瑜、陸公、魯肅、呂蒙之疇入為腹心，出作股肱"
-      ],
-      "refinementReasons": [
-        "stable_relationship_baseline"
-      ],
-      "reviewStatus": "ready",
-      "sourceLayer": "claim-graph-a-history"
-    },
     {
       "targetId": "sun-quan",
       "targetName": "孫權",
       "type": "battlefield_contact",
       "typeLabel": "戰場接觸",
       "originalTypes": [
-        "ruler_subject"
+        "commands"
       ],
       "directions": [
         "incoming"
@@ -54,7 +26,7 @@
       "edgeStrength": 0.54,
       "sourceQuotes": [],
       "refinementReasons": [
-        "non_stable_authority_type_demoted"
+        "coarse_edge_fallback"
       ],
       "reviewStatus": "source-grounded-review",
       "sourceLayer": "mao-hant-observed-mentions"
