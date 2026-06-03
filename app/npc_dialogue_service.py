@@ -8859,12 +8859,16 @@ class NpcDialogueService:
 
     def _runtime_target_projection(self, source: dict[str, Any], target_id: str) -> dict[str, Any] | None:
         cleaned_target_id = str(target_id or "").strip()
+        first_match: dict[str, Any] | None = None
         for projection in source.get("targetProjections") or []:
             if not isinstance(projection, dict):
                 continue
             if str(projection.get("targetId") or "").strip() == cleaned_target_id:
-                return projection
-        return None
+                if first_match is None:
+                    first_match = projection
+                if bool(projection.get("sceneEligible")):
+                    return projection
+        return first_match
 
     def _runtime_edge_source_text(self, edge: dict[str, Any], runtime_persona: dict[str, Any] | None = None) -> str:
         refs = self._runtime_edge_refs(edge)
@@ -9150,6 +9154,7 @@ class NpcDialogueService:
             "affect": 0.6,
         }
         preferred_non_conflict = self._preferred_non_conflict_relationships(runtime_relationships, runtime_persona)
+        projection_gate_active = bool((runtime_persona.get("targetLinking") or {}).get("focusProjectionVersion"))
 
         def ensure_bucket(target_id: str) -> dict[str, Any]:
             bucket = buckets.get(target_id)
@@ -9175,6 +9180,16 @@ class NpcDialogueService:
             }
             buckets[target_id] = bucket
             return bucket
+
+        def apply_projection_metadata(bucket: dict[str, Any], projection: dict[str, Any]) -> None:
+            projection_scene_eligible = bool(projection.get("sceneEligible"))
+            bucket_is_canonical = str(bucket.get("sourceType") or "") == "relationship-edge"
+            bucket["sceneEligible"] = bool(bucket.get("sceneEligible")) or projection_scene_eligible
+            if not bucket_is_canonical and (projection_scene_eligible or not bucket.get("linkAuthority")):
+                bucket["linkAuthority"] = projection.get("linkAuthority") or bucket.get("linkAuthority")
+            if not bucket_is_canonical and (projection_scene_eligible or not bucket.get("sourceDataStatus")):
+                bucket["sourceDataStatus"] = projection.get("sourceDataStatus") or bucket.get("sourceDataStatus")
+            bucket["upstreamFeedbackRequired"] = bool(bucket.get("upstreamFeedbackRequired")) or bool(projection.get("upstreamFeedback"))
 
         for edge in (runtime_relationships.get("anchors") or []):
             target_id = self._normalize_runtime_target_id(
@@ -9256,9 +9271,12 @@ class NpcDialogueService:
                     continue
                 trace_sources = self._runtime_target_link_sources(source, target_key)
                 projection = self._runtime_target_projection(source, target_key)
-                if projection is not None and not bool(projection.get("sceneEligible")):
+                projection_scene_eligible = bool(projection and projection.get("sceneEligible"))
+                if projection is not None and not projection_scene_eligible:
                     continue
-                if source_type == "sourceHighlight" and trace_sources and trace_sources <= {"aliasMatch"} and target_key not in buckets:
+                if source_type == "sourceHighlight" and trace_sources and trace_sources <= {"aliasMatch"} and target_key not in buckets and not projection_scene_eligible:
+                    continue
+                if projection_gate_active and target_key not in buckets and not projection_scene_eligible:
                     continue
                 bucket = ensure_bucket(target_key)
                 is_female = bucket["femaleFocus"] or self._is_female_gender(self._roster_gender_for(target_key, roster_index))
@@ -9271,12 +9289,7 @@ class NpcDialogueService:
                 bucket["score"] += 2.0 if families else 1.2
                 bucket["evidenceRefs"].extend(refs)
                 if projection is not None:
-                    bucket["sceneEligible"] = bool(projection.get("sceneEligible"))
-                    bucket["linkAuthority"] = projection.get("linkAuthority")
-                    bucket["sourceDataStatus"] = projection.get("sourceDataStatus")
-                    bucket["upstreamFeedbackRequired"] = bool(projection.get("upstreamFeedback"))
-
-        projection_gate_active = bool((runtime_persona.get("targetLinking") or {}).get("focusProjectionVersion"))
+                    apply_projection_metadata(bucket, projection)
         for text, refs, has_emotion_angle in self._iter_runtime_target_mention_sources(runtime_persona):
             if not text:
                 continue
@@ -9314,6 +9327,17 @@ class NpcDialogueService:
                 str(item["label"]),
             )
 
+        selected_items = sorted(buckets.values(), key=sort_key)
+        primary_items = selected_items[:12]
+        primary_target_ids = {item["targetId"] for item in primary_items}
+        overflow_projection_items = [
+            item
+            for item in selected_items[12:]
+            if str(item.get("sourceType") or "") == "pipeline-angle-target-link"
+            and bool(item.get("sceneEligible"))
+            and item["targetId"] not in primary_target_ids
+        ]
+
         targets = [
             NarrativeInteractionTarget(
                 targetId=item["targetId"],
@@ -9330,7 +9354,7 @@ class NpcDialogueService:
                 sourceDataStatus=item.get("sourceDataStatus"),
                 upstreamFeedbackRequired=bool(item.get("upstreamFeedbackRequired")),
             )
-            for item in sorted(buckets.values(), key=sort_key)[:12]
+            for item in [*primary_items, *overflow_projection_items]
         ]
         return targets
 
