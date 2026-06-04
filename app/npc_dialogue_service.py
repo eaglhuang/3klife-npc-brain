@@ -542,6 +542,8 @@ class SceneDirectorRequest(BaseModel):
     # render modes remain accepted only when a caller explicitly requests them.
     renderMode: str = SCENE_RENDER_MODE_LLM_SCRIPT_V3
     chorusTargetIds: list[str] = Field(default_factory=list)
+    includeChorus: bool = True
+    storyTextOverride: str | None = Field(default=None, max_length=1200)
     locale: str = DEFAULT_LOCALE
     llmModelPreset: str = DEFAULT_LLM_MODEL_PRESET
     maxStoryChars: int = Field(default=560, ge=80, le=650)
@@ -1344,6 +1346,7 @@ class NpcDialogueService:
         used_persona_anchors: list[str] = []
         used_beat_fields: list[str] = []
         v3_beat_texts: dict[str, str] = {}
+        story_text_override = " ".join(str(request.storyTextOverride or "").split()).strip()
         if has_scene_data:
             story_context = self._build_scene_director_selected_context(profile, target, card, beats, request.renderMode)
             story_context_key = str(story_context.get("contextKey") or "").strip() or None
@@ -1394,29 +1397,44 @@ class NpcDialogueService:
                         repairUsed=False,
                     )
             elif request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3:
-                try:
-                    story_generation = self._generate_scene_script_pack_v3(
-                        request=request,
-                        profile=profile,
-                        target=target,
-                        card=card,
-                        beats=beats,
-                        story_context=story_context,
-                        story_keywords=story_keywords,
-                        evidence_refs=evidence_refs,
-                    )
+                if story_text_override:
                     story_status = SCENE_DIRECTOR_STATUS_OK
                     story_source = SCENE_DIRECTOR_SOURCE_LLM_SCRIPT_V3
-                    used_scene_seeds = list(story_generation.metadata.get("usedSceneSeeds") or [])
-                    used_persona_anchors = list(story_generation.metadata.get("usedPersonaAnchors") or [])
-                    used_beat_fields = list(story_generation.metadata.get("usedBeatFields") or [])
-                    v3_beat_texts = {
-                        key: str(value or "").strip()
-                        for key, value in dict(story_generation.metadata.get("beatTexts") or {}).items()
-                        if key in {"memoryText", "emotionText", "dialogueText", "intentText"} and str(value or "").strip()
-                    }
-                    if v3_beat_texts:
-                        beats = beats.model_copy(update=v3_beat_texts)
+                    story_generation = DialogueGenerationResult(
+                        text=story_text_override,
+                        provider="client_story",
+                        model=None,
+                        generationMode="scene-script-pack-v3-story-reuse",
+                        fallbackUsed=False,
+                        providerTrace=[*evidence_resolution.resolutionTrace, "story:client_story_override"],
+                        usedEvidenceRefs=resolved_evidence_refs[:12],
+                        qualityWarnings=[],
+                        repairUsed=False,
+                    )
+                try:
+                    if not story_text_override:
+                        story_generation = self._generate_scene_script_pack_v3(
+                            request=request,
+                            profile=profile,
+                            target=target,
+                            card=card,
+                            beats=beats,
+                            story_context=story_context,
+                            story_keywords=story_keywords,
+                            evidence_refs=evidence_refs,
+                        )
+                        story_status = SCENE_DIRECTOR_STATUS_OK
+                        story_source = SCENE_DIRECTOR_SOURCE_LLM_SCRIPT_V3
+                        used_scene_seeds = list(story_generation.metadata.get("usedSceneSeeds") or [])
+                        used_persona_anchors = list(story_generation.metadata.get("usedPersonaAnchors") or [])
+                        used_beat_fields = list(story_generation.metadata.get("usedBeatFields") or [])
+                        v3_beat_texts = {
+                            key: str(value or "").strip()
+                            for key, value in dict(story_generation.metadata.get("beatTexts") or {}).items()
+                            if key in {"memoryText", "emotionText", "dialogueText", "intentText"} and str(value or "").strip()
+                        }
+                        if v3_beat_texts:
+                            beats = beats.model_copy(update=v3_beat_texts)
                 except ProviderUnavailableError as exc:
                     error_text = str(exc or "").strip().lower()
                     story_status = (
@@ -1546,7 +1564,9 @@ class NpcDialogueService:
                 or str(beats.sceneText or "").strip()
                 or str(beats.memoryText or "").strip()
             )
-            if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3:
+            if not request.includeChorus:
+                chorus_lines = []
+            elif request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3:
                 if story_status == SCENE_DIRECTOR_STATUS_OK and story_generation.text:
                     try:
                         chorus_lines = self._build_scene_chorus_batch_v3(
@@ -4246,6 +4266,15 @@ class NpcDialogueService:
         }
         if use_history_cache:
             provider_order.append("history_cache")
+        if render_mode == SCENE_RENDER_MODE_LLM_SCRIPT_V3 and llm_model_preset == "scene_director_fast":
+            model_overrides = dict(preset_config.get("modelOverrides") or {})
+            model_overrides["__timeoutMs"] = "5500"
+            model_overrides["__retryCount"] = "1"
+            return {
+                "providerOrder": ["gemini_flash_lite"],
+                "modelOverrides": model_overrides,
+                "allowDeterministicFallback": False,
+            }
         preferred = ["gemini_flash_lite", "gemini_flash", "gemini"]
         for provider_name in [*base_order, *preferred]:
             if provider_name in {"history_cache", "deterministic"}:
