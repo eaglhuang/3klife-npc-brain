@@ -104,7 +104,7 @@ LLM_HISTORY_PROVIDERS = {"gemini", "gemini_flash", "gemini_flash_lite", "local_l
 SUPPORTED_LOCALES = set(LOCALE_INSTRUCTIONS.keys())
 SUPPORTED_SPEECH_CONTEXT_MODES = set(SPEECH_CONTEXT_INSTRUCTIONS.keys())
 DEFAULT_LLM_MODEL_PRESET = "fallback_chain"
-DEFAULT_SCENE_DIRECTOR_TOTAL_TIMEOUT_MS = 14000
+DEFAULT_SCENE_DIRECTOR_TOTAL_TIMEOUT_MS = 30000
 SCENE_RENDER_MODE_DATA_FIRST = "data_first"
 SCENE_RENDER_MODE_LLM_POLISH = "llm_polish"
 SCENE_RENDER_MODE_LLM_SCRIPT_V2 = "llm_script_v2"
@@ -190,8 +190,8 @@ LLM_MODEL_PRESETS = {
     "scene_director_fast": {
         "label": "Scene Director Fast",
         "description": "Fast service-side scene director chain for demo rendering.",
-        "providerOrder": ["gemini_flash", "gemini_flash_lite"],
-        "modelOverrides": {"__timeoutMs": "9000", "__retryCount": "2"},
+        "providerOrder": ["gemini_flash_lite", "gemini_flash"],
+        "modelOverrides": {"__timeoutMs": "7000", "__retryCount": "1"},
         "allowDeterministicFallback": True,
     },
     "qwen2_5_7b": {
@@ -1343,6 +1343,7 @@ class NpcDialogueService:
         used_scene_seeds: list[str] = []
         used_persona_anchors: list[str] = []
         used_beat_fields: list[str] = []
+        v3_beat_texts: dict[str, str] = {}
         if has_scene_data:
             story_context = self._build_scene_director_selected_context(profile, target, card, beats, request.renderMode)
             story_context_key = str(story_context.get("contextKey") or "").strip() or None
@@ -1409,6 +1410,13 @@ class NpcDialogueService:
                     used_scene_seeds = list(story_generation.metadata.get("usedSceneSeeds") or [])
                     used_persona_anchors = list(story_generation.metadata.get("usedPersonaAnchors") or [])
                     used_beat_fields = list(story_generation.metadata.get("usedBeatFields") or [])
+                    v3_beat_texts = {
+                        key: str(value or "").strip()
+                        for key, value in dict(story_generation.metadata.get("beatTexts") or {}).items()
+                        if key in {"memoryText", "emotionText", "dialogueText", "intentText"} and str(value or "").strip()
+                    }
+                    if v3_beat_texts:
+                        beats = beats.model_copy(update=v3_beat_texts)
                 except ProviderUnavailableError as exc:
                     error_text = str(exc or "").strip().lower()
                     story_status = (
@@ -2324,16 +2332,32 @@ class NpcDialogueService:
                     runtime_persona=runtime_persona or {},
                 )
             ]
-            if emotional_targets:
-                return emotional_targets
             family_targets = [
                 target
                 for target in eligible_targets
                 if self._is_emotion_family_chorus_target(target, main_target=main_target)
             ]
-            if family_targets:
-                return family_targets
-            return []
+            fill_targets = [
+                target
+                for target in eligible_targets
+                if (not main_target or target.targetId != main_target.targetId)
+                and str(target.relationshipType or "") not in {
+                    *SCENE_CHORUS_HARD_EXCLUDED_RELATIONSHIP_TYPES,
+                    "spouse",
+                    "lover",
+                }
+            ]
+            combined: list[NarrativeInteractionTarget] = []
+            seen_ids: set[str] = set()
+            for group in [emotional_targets, family_targets, fill_targets]:
+                for target in group:
+                    if target.targetId in seen_ids:
+                        continue
+                    combined.append(target)
+                    seen_ids.add(target.targetId)
+                    if len(combined) >= 4:
+                        return combined
+            return combined
         return [
             target
             for target in eligible_targets
@@ -7096,6 +7120,31 @@ class NpcDialogueService:
         warnings.extend(str(item).strip() for item in (payload.get("violations") or []) if str(item).strip())
         return list(dict.fromkeys(warnings))
 
+    def _scene_script_v3_clean_card_text(self, value: Any, *, max_chars: int = 80) -> str:
+        text = " ".join(str(value or "").split()).strip()
+        if not text:
+            return ""
+        if self._scene_script_text_has_placeholder(text):
+            return ""
+        lowered = text.lower()
+        if any(token in lowered for token in ["runtime-story-beat", "targetid", "evidenceid", "contextkey", "data_first"]):
+            return ""
+        if len(text) > max_chars:
+            text = text[: max_chars - 1].rstrip("，、；：") + "。"
+        return text
+
+    def _scene_script_v3_cards_are_usable(self, beat_texts: dict[str, str]) -> bool:
+        required_fields = ["memoryText", "emotionText", "dialogueText", "intentText"]
+        for field in required_fields:
+            value = str(beat_texts.get(field) or "").strip()
+            if not value:
+                return False
+            if len(re.findall(r"[\u4e00-\u9fff]", value)) < 6:
+                return False
+            if self._is_weak_scene_seed_text(value):
+                return False
+        return True
+
     def _parse_scene_script_pack_v3_payload(self, text: str) -> dict[str, Any]:
         try:
             payload = json.loads(str(text or ""))
@@ -7103,13 +7152,22 @@ class NpcDialogueService:
             raise ValueError(f"scene_script_pack_v3:json_parse:{exc}") from exc
         if not isinstance(payload, dict):
             raise ValueError("scene_script_pack_v3:not-object")
-        story_text = " ".join(str(payload.get("storyText") or "").split()).strip()
+        nested_format = payload.get("format") if isinstance(payload.get("format"), dict) else {}
+        source_payload = nested_format if nested_format else payload
+        story_text = " ".join(str(source_payload.get("storyText") or payload.get("storyText") or "").split()).strip()
+        beat_texts = {
+            "memoryText": self._scene_script_v3_clean_card_text(source_payload.get("memoryText") or payload.get("memoryText")),
+            "emotionText": self._scene_script_v3_clean_card_text(source_payload.get("emotionText") or payload.get("emotionText")),
+            "dialogueText": self._scene_script_v3_clean_card_text(source_payload.get("dialogueText") or payload.get("dialogueText")),
+            "intentText": self._scene_script_v3_clean_card_text(source_payload.get("intentText") or payload.get("intentText")),
+        }
         parsed = {
             "storyText": story_text,
-            "usedSceneSeeds": [str(item).strip() for item in (payload.get("usedSceneSeeds") or payload.get("usedSeedKeys") or []) if str(item).strip()],
-            "usedPersonaAnchors": [str(item).strip() for item in (payload.get("usedPersonaAnchors") or []) if str(item).strip()],
-            "usedBeatFields": [str(item).strip() for item in (payload.get("usedBeatFields") or []) if str(item).strip()],
-            "violations": [str(item).strip() for item in (payload.get("violations") or []) if str(item).strip()],
+            "beatTexts": beat_texts,
+            "usedSceneSeeds": [str(item).strip() for item in (source_payload.get("usedSceneSeeds") or payload.get("usedSceneSeeds") or payload.get("usedSeedKeys") or []) if str(item).strip()],
+            "usedPersonaAnchors": [str(item).strip() for item in (source_payload.get("usedPersonaAnchors") or payload.get("usedPersonaAnchors") or []) if str(item).strip()],
+            "usedBeatFields": [str(item).strip() for item in (source_payload.get("usedBeatFields") or payload.get("usedBeatFields") or []) if str(item).strip()],
+            "violations": [str(item).strip() for item in (source_payload.get("violations") or payload.get("violations") or []) if str(item).strip()],
         }
         return parsed
 
@@ -7132,8 +7190,6 @@ class NpcDialogueService:
         if self._scene_script_v2_story_has_repetition_spike(story_text):
             return False
         if self._scene_script_v2_story_is_seed_dump(story_text):
-            return False
-        if len(used_scene_seeds) < 3 or len(used_beat_fields) < 3:
             return False
         if profile is not None:
             actor_aliases = [
@@ -7230,12 +7286,21 @@ class NpcDialogueService:
                 )
                 payload = self._parse_scene_script_pack_v3_payload(str(generation.text or "").strip())
                 story_text = str(payload.get("storyText") or "").strip()
+                beat_texts = dict(payload.get("beatTexts") or {})
                 used_scene_seeds = list(payload.get("usedSceneSeeds") or [])
                 used_persona_anchors = list(payload.get("usedPersonaAnchors") or [])
                 used_beat_fields = list(payload.get("usedBeatFields") or [])
+                if not used_beat_fields:
+                    used_beat_fields = [
+                        field_name.removesuffix("Text")
+                        for field_name, field_text in beat_texts.items()
+                        if str(field_text or "").strip()
+                    ]
                 violations = list(payload.get("violations") or [])
                 if not story_text:
                     raise ValueError("scene_script_pack_v3:empty_story")
+                if not self._scene_script_v3_cards_are_usable(beat_texts):
+                    raise ValueError("scene_script_pack_v3:beat_cards_not_usable")
                 if violations:
                     raise ValueError(f"scene_script_pack_v3:violations:{','.join(violations[:3])}")
                 if not self._scene_script_v3_story_is_usable(
@@ -7257,6 +7322,7 @@ class NpcDialogueService:
                         "usedSceneSeeds": used_scene_seeds,
                         "usedPersonaAnchors": used_persona_anchors,
                         "usedBeatFields": used_beat_fields,
+                        "beatTexts": beat_texts,
                     },
                 )
             except ProviderUnavailableError as exc:
@@ -7566,7 +7632,7 @@ class NpcDialogueService:
             },
             evidence_refs=sorted(set(evidence_refs))[:12],
             deterministic_text="",
-            max_chars=request.maxChorusChars,
+            max_chars=min(720, max(360, int(request.maxChorusChars or 120) * max(1, len(targets)) + 180)),
             locale=request.locale,
             llm_model_preset=request.llmModelPreset,
             speech_context_mode="inner_monologue",

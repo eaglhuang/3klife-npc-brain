@@ -690,25 +690,41 @@ class GeminiDialogueProvider:
     def _extract_structured_scene_text(self, parsed: dict, package: DialoguePromptPackage) -> str:
         selected_task = str((package.selectedContext or {}).get("task") or "").strip()
         if selected_task in {"scene-script-pack-v2", "scene-script-pack-v3"}:
+            nested_format = parsed.get("format") if isinstance(parsed.get("format"), dict) else {}
             used_scene_seeds = parsed.get("usedSceneSeeds") if isinstance(parsed.get("usedSceneSeeds"), list) else []
+            if not used_scene_seeds and isinstance(nested_format.get("usedSceneSeeds"), list):
+                used_scene_seeds = nested_format.get("usedSceneSeeds")
             if not used_scene_seeds and isinstance(parsed.get("usedSeedKeys"), list):
                 used_scene_seeds = parsed.get("usedSeedKeys")
             payload = {
-                "memoryText": str(parsed.get("memoryText") or "").strip(),
-                "emotionText": str(parsed.get("emotionText") or "").strip(),
-                "dialogueText": str(parsed.get("dialogueText") or "").strip(),
-                "intentText": str(parsed.get("intentText") or "").strip(),
-                "storyText": str(parsed.get("storyText") or "").strip(),
+                "memoryText": str(parsed.get("memoryText") or nested_format.get("memoryText") or "").strip(),
+                "emotionText": str(parsed.get("emotionText") or nested_format.get("emotionText") or "").strip(),
+                "dialogueText": str(parsed.get("dialogueText") or nested_format.get("dialogueText") or "").strip(),
+                "intentText": str(parsed.get("intentText") or nested_format.get("intentText") or "").strip(),
+                "storyText": str(parsed.get("storyText") or nested_format.get("storyText") or "").strip(),
                 "usedSceneSeeds": used_scene_seeds,
-                "usedPersonaAnchors": parsed.get("usedPersonaAnchors") if isinstance(parsed.get("usedPersonaAnchors"), list) else [],
-                "usedBeatFields": parsed.get("usedBeatFields") if isinstance(parsed.get("usedBeatFields"), list) else [],
-                "violations": parsed.get("violations") if isinstance(parsed.get("violations"), list) else [],
+                "usedPersonaAnchors": (
+                    parsed.get("usedPersonaAnchors")
+                    if isinstance(parsed.get("usedPersonaAnchors"), list)
+                    else nested_format.get("usedPersonaAnchors")
+                    if isinstance(nested_format.get("usedPersonaAnchors"), list)
+                    else []
+                ),
+                "usedBeatFields": (
+                    parsed.get("usedBeatFields")
+                    if isinstance(parsed.get("usedBeatFields"), list)
+                    else nested_format.get("usedBeatFields")
+                    if isinstance(nested_format.get("usedBeatFields"), list)
+                    else []
+                ),
+                "violations": (
+                    parsed.get("violations")
+                    if isinstance(parsed.get("violations"), list)
+                    else nested_format.get("violations")
+                    if isinstance(nested_format.get("violations"), list)
+                    else []
+                ),
             }
-            if selected_task == "scene-script-pack-v3":
-                payload["memoryText"] = ""
-                payload["emotionText"] = ""
-                payload["dialogueText"] = ""
-                payload["intentText"] = ""
             if not any(payload[key] for key in ["memoryText", "emotionText", "dialogueText", "intentText", "storyText"]):
                 return ""
             payload["usedSeedKeys"] = list(payload["usedSceneSeeds"])
@@ -765,6 +781,10 @@ class GeminiDialogueProvider:
                     "Use only personaCardSubset, selectedContext, selectedKeywords, resolvedEvidence, and draftFragments.",
                     "The protagonist is selectedContext.mainActor; the counterpart is selectedContext.activeTarget. Do not swap their actions, emotions, or dialogue ownership.",
                     "Use sceneSeeds, persona, memoryText, emotionText, dialogueText, intentText, activeTarget, and resolvedEvidence as source material, but rewrite them into clean prose instead of copying noisy fragments.",
+                    "Return four display-card sentences plus storyText. The display-card sentences are memoryText, emotionText, dialogueText, and intentText; they must be newly written from the same interpretation as storyText, not copied from draftFragments.",
+                    "memoryText must answer what the protagonist recalls now; emotionText must answer how the protagonist's heart changes; dialogueText must be one speakable line to activeTarget; intentText must answer what the protagonist will do next.",
+                    "Each display-card sentence should be concise but meaningful, roughly 18-55 Traditional Chinese characters, and must not be a source fragment, isolated quote tail, metadata label, or fallback summary.",
+                    "If storyText is non-empty, all four display-card sentences must also be non-empty. If any display-card sentence cannot be supported, return empty storyText and a violation instead.",
                     "Write one natural zh-TW paragraph, roughly 180-260 Traditional Chinese characters, that reads like a formal director passage rather than a field summary.",
                     "Let personaCardSubset voiceStyle and personalityTraits shape the attitude, cadence, and decision weight of the paragraph.",
                     "Fuse memory, emotion, dialogue, and intent into one advancing scene. Do not output a beat sheet, labels, bullets, metadata, sourceRef, or analysis phrasing.",
@@ -794,6 +814,10 @@ class GeminiDialogueProvider:
                 "outputContract": {
                     "language": package.locale,
                     "format": {
+                        "memoryText": "string, required when storyText is non-empty; one rewritten display-card sentence answering what the protagonist recalls now",
+                        "emotionText": "string, required when storyText is non-empty; one rewritten display-card sentence answering how the protagonist's heart changes",
+                        "dialogueText": "string, required when storyText is non-empty; one quoted or speakable line from the protagonist to activeTarget",
+                        "intentText": "string, required when storyText is non-empty; one rewritten display-card sentence answering what the protagonist will do next",
                         "storyText": "string, clean formal director prose in zh-TW; empty string if no clean story can be formed",
                         "usedSceneSeeds": ["only the seed categories actually visible or clearly implied in storyText"],
                         "usedPersonaAnchors": ["only persona anchors actually visible in storyText"],
@@ -880,6 +904,7 @@ class GeminiDialogueProvider:
                     "Return exactly one chorusLines array with exactly the speakers listed in selectedContext.speakers, preserving each targetId.",
                     "Each item must include targetId, label, role, status, text, usedSeedKeys, usedPersonaAnchors, voiceTag, and violations.",
                     "Set status to ok only when a clean in-character spoken line can be produced from persona, relationship, sceneScript, and sceneGrounding.",
+                    "For speakers that have personaSummary, focusHint, or seedHint and the sceneScript is concrete, prefer status ok with a grounded reaction; use no_data only when there is truly not enough identity or scene grounding.",
                     "If a clean line cannot be produced, set status to no_data and text to an empty string. Do not fabricate fallback dialogue.",
                     "When status is ok, keep text within 24-72 zh-TW characters and make it a complete, speakable reaction.",
                     "Do not copy raw tags, runtime markers, source fragments, English persona tags, or fallback-style summary wording into text.",
