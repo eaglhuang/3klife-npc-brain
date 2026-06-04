@@ -51,6 +51,7 @@ from .llm_dialogue_renderer import (
     DialogueGenerationResult,
     DialoguePromptPackage,
     DialogueProviderRouter,
+    ProviderUnavailableError,
     SPEECH_CONTEXT_INSTRUCTIONS,
     load_local_env,
     log_debug_event,
@@ -107,19 +108,28 @@ DEFAULT_SCENE_DIRECTOR_TOTAL_TIMEOUT_MS = 14000
 SCENE_RENDER_MODE_DATA_FIRST = "data_first"
 SCENE_RENDER_MODE_LLM_POLISH = "llm_polish"
 SCENE_RENDER_MODE_LLM_SCRIPT_V2 = "llm_script_v2"
+SCENE_RENDER_MODE_LLM_SCRIPT_V3 = "llm_script_v3"
 SUPPORTED_SCENE_RENDER_MODES = {
     SCENE_RENDER_MODE_DATA_FIRST,
     SCENE_RENDER_MODE_LLM_POLISH,
     SCENE_RENDER_MODE_LLM_SCRIPT_V2,
+    SCENE_RENDER_MODE_LLM_SCRIPT_V3,
 }
 DEPRECATED_SCENE_RENDER_MODES = {
     SCENE_RENDER_MODE_DATA_FIRST: "deprecated:data_first_is_legacy_deterministic_fallback",
+    SCENE_RENDER_MODE_LLM_SCRIPT_V2: "deprecated:llm_script_v2_is_legacy_scene_director",
 }
 DEPRECATED_SCENE_RENDER_MODE_LABEL = "[已過時] legacy deterministic emergency fallback"
-SCENE_SCRIPT_V2_STORY_TARGET_CJK_CHARS = 200
-SCENE_SCRIPT_V2_STORY_MIN_CJK_CHARS = 180
-SCENE_SCRIPT_V2_STORY_MAX_CJK_CHARS = 220
-SCENE_SCRIPT_V2_STORY_RAW_OVERHEAD_CHARS = 60
+SCENE_DIRECTOR_SOURCE_STRICT_V1 = "strict_director_v1"
+SCENE_DIRECTOR_SOURCE_LLM_SCRIPT_V3 = "llm_script_v3"
+SCENE_DIRECTOR_STATUS_OK = "ok"
+SCENE_DIRECTOR_STATUS_NO_DATA = "no_data"
+SCENE_DIRECTOR_STATUS_PROVIDER_ERROR = "provider_error"
+SCENE_DIRECTOR_STATUS_TIMEOUT = "timeout"
+SCENE_SCRIPT_V2_STORY_TARGET_CJK_CHARS = 240
+SCENE_SCRIPT_V2_STORY_MIN_CJK_CHARS = 220
+SCENE_SCRIPT_V2_STORY_MAX_CJK_CHARS = 280
+SCENE_SCRIPT_V2_STORY_RAW_OVERHEAD_CHARS = 80
 SCENE_CHORUS_BOND_RELATIONSHIP_TYPES = {
     "sworn_sibling",
     "loyal_oath",
@@ -133,6 +143,7 @@ SCENE_CHORUS_HARD_EXCLUDED_RELATIONSHIP_TYPES = {
     "battlefield_opponent",
     "betrayal_surrender",
 }
+SCENE_CHORUS_NO_DATA_TEXT = "無資料"
 SCENE_CHORUS_EMOTION_FAMILY_RELATIONSHIP_TYPES = {
     "parent_child",
     "protects_family",
@@ -527,9 +538,9 @@ class SceneDirectorRequest(BaseModel):
     angle: str | None = None
     targetId: str | None = None
     evidenceId: str | None = None
-    # [已過時] Default kept for API compatibility only; production callers should
-    # send llm_script_v2 explicitly.
-    renderMode: str = "data_first"
+    # llm_script_v3 is the thin trunk for public scene-director calls. Legacy
+    # render modes remain accepted only when a caller explicitly requests them.
+    renderMode: str = SCENE_RENDER_MODE_LLM_SCRIPT_V3
     chorusTargetIds: list[str] = Field(default_factory=list)
     locale: str = DEFAULT_LOCALE
     llmModelPreset: str = DEFAULT_LLM_MODEL_PRESET
@@ -572,6 +583,7 @@ class SceneChorusLine(BaseModel):
     label: str
     role: str
     text: str
+    status: str = SCENE_DIRECTOR_STATUS_OK
     provider: str | None = None
     model: str | None = None
     generationMode: str | None = None
@@ -626,6 +638,9 @@ class SceneProviderDebug(BaseModel):
     cacheHit: bool = False
     providerTrace: list[str] = Field(default_factory=list)
     qualityWarnings: list[str] = Field(default_factory=list)
+    usedSceneSeeds: list[str] = Field(default_factory=list)
+    usedPersonaAnchors: list[str] = Field(default_factory=list)
+    usedBeatFields: list[str] = Field(default_factory=list)
 
 
 class SceneDirectorDebugMetadata(BaseModel):
@@ -657,6 +672,8 @@ class SceneDirectorResponse(BaseModel):
     evidenceResolution: SceneEvidenceResolution = Field(default_factory=SceneEvidenceResolution)
     beats: SceneDirectorBeats
     storyText: str
+    storyStatus: str = SCENE_DIRECTOR_STATUS_NO_DATA
+    storySource: str | None = None
     storyProvider: str | None = None
     storyModel: str | None = None
     storyGenerationMode: str | None = None
@@ -664,6 +681,9 @@ class SceneDirectorResponse(BaseModel):
     storyRepairUsed: bool = False
     storyCacheHit: bool = False
     storyQualityWarnings: list[str] = Field(default_factory=list)
+    usedSceneSeeds: list[str] = Field(default_factory=list)
+    usedPersonaAnchors: list[str] = Field(default_factory=list)
+    usedBeatFields: list[str] = Field(default_factory=list)
     chorusLines: list[SceneChorusLine] = Field(default_factory=list)
     providerTrace: list[str] = Field(default_factory=list)
     debug: SceneDirectorDebugMetadata = Field(default_factory=SceneDirectorDebugMetadata)
@@ -1312,6 +1332,16 @@ class NpcDialogueService:
         story_context_key: str | None = None
         story_keywords: list[dict[str, Any]] = []
         chorus_targets: list[NarrativeInteractionTarget] = []
+        story_status = SCENE_DIRECTOR_STATUS_NO_DATA
+        story_source: str | None = (
+            SCENE_DIRECTOR_SOURCE_LLM_SCRIPT_V3
+            if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3
+            else None
+        )
+        empty_reason: str | None = None
+        used_scene_seeds: list[str] = []
+        used_persona_anchors: list[str] = []
+        used_beat_fields: list[str] = []
         if has_scene_data:
             story_context = self._build_scene_director_selected_context(profile, target, card, beats, request.renderMode)
             story_context_key = str(story_context.get("contextKey") or "").strip() or None
@@ -1361,6 +1391,68 @@ class NpcDialogueService:
                         qualityWarnings=["scene_script_pack_v2_failed", *self._deprecated_render_mode_warnings(SCENE_RENDER_MODE_DATA_FIRST)],
                         repairUsed=False,
                     )
+            elif request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3:
+                try:
+                    story_generation = self._generate_scene_script_pack_v3(
+                        request=request,
+                        profile=profile,
+                        target=target,
+                        card=card,
+                        beats=beats,
+                        story_context=story_context,
+                        story_keywords=story_keywords,
+                        evidence_refs=evidence_refs,
+                    )
+                    story_status = SCENE_DIRECTOR_STATUS_OK
+                    story_source = SCENE_DIRECTOR_SOURCE_LLM_SCRIPT_V3
+                    used_scene_seeds = list(story_generation.metadata.get("usedSceneSeeds") or [])
+                    used_persona_anchors = list(story_generation.metadata.get("usedPersonaAnchors") or [])
+                    used_beat_fields = list(story_generation.metadata.get("usedBeatFields") or [])
+                except ProviderUnavailableError as exc:
+                    error_text = str(exc or "").strip().lower()
+                    story_status = (
+                        SCENE_DIRECTOR_STATUS_TIMEOUT
+                        if "timeout" in error_text or "timed out" in error_text or "deadline" in error_text
+                        else SCENE_DIRECTOR_STATUS_PROVIDER_ERROR
+                    )
+                    story_source = SCENE_DIRECTOR_SOURCE_LLM_SCRIPT_V3
+                    log_debug_event(
+                        "scene_director.script_pack_v3.provider_error",
+                        generalId=request.generalId,
+                        targetId=target.targetId if target else None,
+                        error=str(exc)[:240],
+                    )
+                    story_generation = DialogueGenerationResult(
+                        text="",
+                        provider="unavailable",
+                        model=None,
+                        generationMode="scene-script-pack-v3-empty",
+                        fallbackUsed=False,
+                        providerTrace=[*evidence_resolution.resolutionTrace, f"script-pack-v3-provider-error:{str(exc)[:120]}"],
+                        usedEvidenceRefs=resolved_evidence_refs[:12],
+                        qualityWarnings=["scene_script_pack_v3_provider_error"],
+                        repairUsed=False,
+                    )
+                except Exception as exc:
+                    story_status = SCENE_DIRECTOR_STATUS_NO_DATA
+                    story_source = SCENE_DIRECTOR_SOURCE_LLM_SCRIPT_V3
+                    log_debug_event(
+                        "scene_director.script_pack_v3.no_data",
+                        generalId=request.generalId,
+                        targetId=target.targetId if target else None,
+                        error=str(exc)[:240],
+                    )
+                    story_generation = DialogueGenerationResult(
+                        text="",
+                        provider="unavailable",
+                        model=None,
+                        generationMode="scene-script-pack-v3-empty",
+                        fallbackUsed=False,
+                        providerTrace=[*evidence_resolution.resolutionTrace, f"script-pack-v3-no-data:{str(exc)[:120]}"],
+                        usedEvidenceRefs=resolved_evidence_refs[:12],
+                        qualityWarnings=["scene_script_pack_v3_no_data"],
+                        repairUsed=False,
+                    )
             else:
                 story_provider_config = self._scene_story_provider_config(request.llmModelPreset, request.renderMode)
                 try:
@@ -1404,21 +1496,31 @@ class NpcDialogueService:
                         qualityWarnings=[],
                         repairUsed=False,
                     )
-            story_generation = self._scene_script_v2_guard_story_generation(
-                request=request,
-                profile=profile,
-                target=target,
-                beats=beats,
-                generation=story_generation,
-            )
-            self._record_scene_story_history(
-                request=request,
-                context_key=str(story_context.get("contextKey") or "").strip() or None,
-                selected_keywords=story_keywords,
-                evidence_refs=evidence_refs,
-                generation=story_generation,
-            )
-            beats = self._enrich_scene_director_beats_from_story(profile, target, beats, story_generation.text)
+            if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V2:
+                story_generation = self._scene_script_v2_guard_story_generation(
+                    request=request,
+                    profile=profile,
+                    target=target,
+                    beats=beats,
+                    generation=story_generation,
+                )
+            if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3 and story_status != SCENE_DIRECTOR_STATUS_OK:
+                story_generation = replace(
+                    story_generation,
+                    text="",
+                    fallbackUsed=False,
+                    repairUsed=False,
+                )
+            if story_generation.text:
+                self._record_scene_story_history(
+                    request=request,
+                    context_key=str(story_context.get("contextKey") or "").strip() or None,
+                    selected_keywords=story_keywords,
+                    evidence_refs=evidence_refs,
+                    generation=story_generation,
+                )
+            if request.renderMode != SCENE_RENDER_MODE_LLM_SCRIPT_V3:
+                beats = self._enrich_scene_director_beats_from_story(profile, target, beats, story_generation.text)
             chorus_targets = self._select_chorus_targets(
                 profile.interactionTargets,
                 request.chorusTargetIds,
@@ -1435,7 +1537,47 @@ class NpcDialogueService:
                 or str(beats.sceneText or "").strip()
                 or str(beats.memoryText or "").strip()
             )
-            if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V2:
+            if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3:
+                if story_status == SCENE_DIRECTOR_STATUS_OK and story_generation.text:
+                    try:
+                        chorus_lines = self._build_scene_chorus_batch_v3(
+                            request=request,
+                            profile=profile,
+                            targets=chorus_targets,
+                            main_target=target,
+                            card=card,
+                            beats=beats,
+                            story_text=chorus_story_text,
+                            timeout_seconds=self._scene_director_remaining_seconds(started_at),
+                        )
+                    except ProviderUnavailableError as exc:
+                        log_debug_event(
+                            "scene_director.chorus_batch_v3.provider_error",
+                            generalId=request.generalId,
+                            targetCount=len(chorus_targets),
+                            error=str(exc)[:240],
+                        )
+                        chorus_lines = self._scene_chorus_no_data_lines(
+                            chorus_targets,
+                            reason=f"scene_chorus_batch_v3:provider_error:{str(exc)[:120]}",
+                        )
+                    except Exception as exc:
+                        log_debug_event(
+                            "scene_director.chorus_batch_v3.no_data",
+                            generalId=request.generalId,
+                            targetCount=len(chorus_targets),
+                            error=str(exc)[:240],
+                        )
+                        chorus_lines = self._scene_chorus_no_data_lines(
+                            chorus_targets,
+                            reason=f"scene_chorus_batch_v3:no_data:{str(exc)[:120]}",
+                        )
+                else:
+                    chorus_lines = self._scene_chorus_no_data_lines(
+                        chorus_targets,
+                        reason=f"scene_chorus_batch_v3:story_status:{story_status}",
+                    )
+            elif request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V2:
                 try:
                     chorus_lines = self._build_scene_chorus_batch_v2(
                         request=request,
@@ -1484,27 +1626,47 @@ class NpcDialogueService:
                 )
         else:
             empty_reason = fallback_reason or ("invalid_request" if data_status == "invalid_request" else "data_missing")
+            empty_generation_mode = (
+                "scene-script-pack-v3-empty"
+                if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3
+                else "data_first-empty"
+            )
+            empty_provider = (
+                "unavailable"
+                if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3
+                else "data_first"
+            )
+            empty_warnings = (
+                ["scene_script_pack_v3_no_data"]
+                if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3
+                else self._deprecated_render_mode_warnings(request.renderMode)
+            )
             story_generation = DialogueGenerationResult(
                 text="",
-                provider="data_first",
+                provider=empty_provider,
                 model=None,
-                generationMode="data_first-empty",
+                generationMode=empty_generation_mode,
                 fallbackUsed=False,
                 providerTrace=[*evidence_resolution.resolutionTrace, f"empty:{empty_reason}"],
-                qualityWarnings=self._deprecated_render_mode_warnings(request.renderMode),
+                qualityWarnings=empty_warnings,
                 repairUsed=False,
             )
             chorus_lines = []
-        is_empty = not has_scene_data or not any(
-            [
-                beats.sceneText,
-                beats.memoryText,
-                beats.emotionText,
-                beats.dialogueText,
-                beats.intentText,
-                story_generation.text,
-            ]
-        )
+        if request.renderMode == SCENE_RENDER_MODE_LLM_SCRIPT_V3:
+            is_empty = story_status != SCENE_DIRECTOR_STATUS_OK or not bool(str(story_generation.text or "").strip())
+            if is_empty and not empty_reason:
+                empty_reason = story_status
+        else:
+            is_empty = not has_scene_data or not any(
+                [
+                    beats.sceneText,
+                    beats.memoryText,
+                    beats.emotionText,
+                    beats.dialogueText,
+                    beats.intentText,
+                    story_generation.text,
+                ]
+            )
         debug_metadata = self._build_scene_director_debug_metadata(
             request=request,
             data_status=data_status,
@@ -1537,6 +1699,8 @@ class NpcDialogueService:
             evidenceResolution=evidence_resolution,
             beats=beats,
             storyText=story_generation.text,
+            storyStatus=story_status,
+            storySource=story_source,
             storyProvider=story_generation.provider,
             storyModel=story_generation.model,
             storyGenerationMode=story_generation.generationMode,
@@ -1544,6 +1708,9 @@ class NpcDialogueService:
             storyRepairUsed=story_generation.repairUsed,
             storyCacheHit=self._generation_cache_hit(story_generation),
             storyQualityWarnings=list(story_generation.qualityWarnings),
+            usedSceneSeeds=used_scene_seeds,
+            usedPersonaAnchors=used_persona_anchors,
+            usedBeatFields=used_beat_fields,
             chorusLines=chorus_lines,
             providerTrace=story_generation.providerTrace,
             debug=debug_metadata,
@@ -1664,6 +1831,7 @@ class NpcDialogueService:
         selection_issues: list[str] | None = None,
     ) -> SceneDirectorDebugMetadata:
         source_coverage = self._scene_source_coverage(evidence_resolution, beats, story_generation, chorus_lines)
+        story_metadata = dict(getattr(story_generation, "metadata", {}) or {})
         return SceneDirectorDebugMetadata(
             hasSceneData=has_scene_data,
             selectedEvidenceRefs=list(evidence_resolution.usedEvidenceRefs),
@@ -1698,6 +1866,9 @@ class NpcDialogueService:
                 cacheHit=self._generation_cache_hit(story_generation),
                 providerTrace=list(story_generation.providerTrace),
                 qualityWarnings=list(story_generation.qualityWarnings),
+                usedSceneSeeds=[str(item).strip() for item in (story_metadata.get("usedSceneSeeds") or []) if str(item).strip()],
+                usedPersonaAnchors=[str(item).strip() for item in (story_metadata.get("usedPersonaAnchors") or []) if str(item).strip()],
+                usedBeatFields=[str(item).strip() for item in (story_metadata.get("usedBeatFields") or []) if str(item).strip()],
             ),
             chorus=[
                 SceneProviderDebug(
@@ -2306,6 +2477,8 @@ class NpcDialogueService:
             and not self._seed_text_is_pair_grounded(emotion_seed, target, actor_aliases)
         ):
             emotion_seed = ""
+        if not emotion_seed:
+            emotion_seed = self._story_derived_emotion_text(primary_source_text) or self._relationship_derived_emotion_text(target)
         emotion_text = self._sentence_or_default(
             emotion_seed,
             "",
@@ -2317,6 +2490,8 @@ class NpcDialogueService:
             target=target,
             allow_secondary=not self._should_keep_dialogue_on_primary(primary_source_text, target),
         )
+        if not dialogue_seed:
+            dialogue_seed = self._story_derived_dialogue_text(primary_source_text) or self._extract_quoted_dialogue(primary_source_text)
         dialogue_text = self._sentence_or_default(
             dialogue_seed,
             "",
@@ -2329,6 +2504,8 @@ class NpcDialogueService:
             and not self._seed_text_is_pair_grounded(intent_seed, target, actor_aliases)
         ):
             intent_seed = ""
+        if not intent_seed:
+            intent_seed = self._story_derived_intent_text(primary_source_text)
         intent_text = self._sentence_or_default(
             intent_seed,
             "",
@@ -2365,7 +2542,7 @@ class NpcDialogueService:
             dialogue_text=dialogue_text,
             intent_text=intent_text,
         )
-        return SceneDirectorBeats(
+        beats = SceneDirectorBeats(
             sceneText=scene_text,
             memoryText=memory_text,
             emotionText=emotion_text,
@@ -2377,6 +2554,7 @@ class NpcDialogueService:
             sourceRefs=(focused_source_refs or source_refs)[:12],
             evidenceId=card.evidenceId if card else None,
         )
+        return self._enrich_scene_director_beats_from_story(profile, target, beats, primary_source_text)
 
     def _scene_seed_candidate_cards(
         self,
@@ -3217,9 +3395,29 @@ class NpcDialogueService:
                     values.append(clause)
         return values
 
+    def _scene_script_v2_story_has_repetition_spike(self, text: str) -> bool:
+        value = " ".join(str(text or "").split()).strip()
+        if not value:
+            return False
+        compact = re.sub(r"[^0-9A-Za-z\u4e00-\u9fff]+", "", value)
+        if len(compact) < 8:
+            return False
+        max_chunk = min(8, len(compact) // 2)
+        for chunk_size in range(2, max_chunk + 1):
+            limit = len(compact) - (chunk_size * 2) + 1
+            if limit <= 0:
+                break
+            for index in range(limit):
+                chunk = compact[index : index + chunk_size]
+                if chunk and compact[index : index + (chunk_size * 2)] == chunk * 2:
+                    return True
+        return False
+
     def _is_weak_scene_seed_text(self, text: str) -> bool:
         value = str(text or "").strip("。！？!? ，、；：")
         if not value:
+            return True
+        if self._scene_script_v2_story_has_repetition_spike(value):
             return True
         if re.search(r"[（(]\s*(?:此人|主角)\s*[）)]", value):
             return True
@@ -3263,6 +3461,8 @@ class NpcDialogueService:
         for sentence in self._split_source_sentences(source_text):
             normalized = self._normalize_source_sentence(sentence, target, actor_aliases)
             if not self._is_readable_source_sentence(normalized):
+                continue
+            if self._is_weak_scene_seed_text(normalized):
                 continue
             score = 0
             if target_aliases and any(alias and alias in normalized for alias in target_aliases):
@@ -3485,7 +3685,34 @@ class NpcDialogueService:
         presence: ScenePresenceDecision,
         source_text: str,
     ) -> str:
-        _ = (angle, target, presence, source_text)
+        text = str(source_text or "").strip()
+        if text:
+            candidate = self._story_derived_emotion_text(text)
+            if candidate:
+                return candidate
+        relationship_candidate = self._relationship_derived_emotion_text(target)
+        if relationship_candidate:
+            return relationship_candidate
+        normalized_angle = str(angle or "").strip().lower()
+        if normalized_angle == "emotion":
+            return "心裡先沉了一截，卻也更想把話說清楚。"
+        if normalized_angle == "bond":
+            return "心裡一緊，卻仍捨不得把牽連放下。"
+        if normalized_angle == "rival":
+            return "心裡繃得更緊，卻也看清了對面的壓力。"
+        if presence.status == "in_scene":
+            return "心裡起了波動，卻還是先把場面穩住。"
+        normalized_angle = str(angle or "").strip().lower()
+        if normalized_angle == "emotion":
+            return "先把情緒穩住，再把眼前的話說清楚。"
+        if normalized_angle == "bond":
+            return "先守住這份牽連，再替彼此留一條路。"
+        if normalized_angle == "rival":
+            return "先看清對方破綻，再決定怎麼回應。"
+        if normalized_angle == "people":
+            return "先把各人的位置理順，再讓場面落定。"
+        if target:
+            return f"先把{target.label}這一層理清，再往下走。"
         return ""
 
     def _source_derived_intent_text(self, angle: str | None, target: NarrativeInteractionTarget | None, source_text: str) -> str:
@@ -3521,6 +3748,17 @@ class NpcDialogueService:
         if best_score > 0 and not self._is_weak_scene_seed_text(best):
             if re.search(r"先|要|安排|安頓|收攏|護住|接住|守住|留住|看住|撤|退", best):
                 return best
+        normalized_angle = str(angle or "").strip().lower()
+        if normalized_angle == "emotion":
+            return "先把情緒穩住，再把眼前的話說清楚。"
+        if normalized_angle == "bond":
+            return "先守住這份牽連，再替彼此留一條路。"
+        if normalized_angle == "rival":
+            return "先看清對方破綻，再決定怎麼回應。"
+        if normalized_angle == "people":
+            return "先把各人的位置理順，再讓場面落定。"
+        if target:
+            return f"先把{target.label}這一層理清，再往下走。"
         return ""
 
     def _extract_memory_source_excerpt(
@@ -3977,7 +4215,11 @@ class NpcDialogueService:
             }
         base_order = list(preset_config.get("providerOrder") or self.provider_router.provider_order or [])
         provider_order: list[str] = []
-        if self.history_cache_enabled and render_mode != SCENE_RENDER_MODE_LLM_SCRIPT_V2:
+        use_history_cache = self.history_cache_enabled and render_mode not in {
+            SCENE_RENDER_MODE_LLM_SCRIPT_V2,
+            SCENE_RENDER_MODE_LLM_SCRIPT_V3,
+        }
+        if use_history_cache:
             provider_order.append("history_cache")
         preferred = ["gemini_flash_lite", "gemini_flash", "gemini"]
         for provider_name in [*base_order, *preferred]:
@@ -4350,7 +4592,7 @@ class NpcDialogueService:
         beats: SceneDirectorBeats,
     ) -> bool:
         sentences = self._scene_script_v2_story_sentences(story_text)
-        if len(sentences) < 3:
+        if len(sentences) < 2:
             return True
         grounded_sentences = 0
         for sentence in sentences:
@@ -5106,6 +5348,23 @@ class NpcDialogueService:
             return True
         return False
 
+    def _scene_script_v2_story_used_beat_fields(
+        self,
+        story_text: str,
+        request: SceneDirectorRequest,
+        profile: NarrativeProfileResponse,
+        target: NarrativeInteractionTarget | None,
+        beats: SceneDirectorBeats,
+    ) -> list[str]:
+        slot_data = self._scene_script_v2_story_build_slots(request, profile, target, beats)
+        used: list[str] = []
+        for sentence in self._scene_script_v2_story_sentences(self._scene_script_v2_story_narration_text(story_text)):
+            hits = self._scene_script_v2_story_sentence_grounding_slots(sentence, slot_data)
+            for slot_name in ["memory", "emotion", "dialogue", "intent"]:
+                if slot_name in hits and slot_name not in used:
+                    used.append(slot_name)
+        return used
+
     def _scene_script_v2_story_validation(
         self,
         story_text: str,
@@ -5118,6 +5377,7 @@ class NpcDialogueService:
         normalized = self._scene_script_v2_story_canonicalize_target_naming(normalized, target).strip()
         coverage = self._scene_script_v2_story_coverage(normalized, profile, target, beats)
         coverage_keys = [key for key in ["people", "event", "time", "place", "objects", "emotion"] if key in coverage]
+        beat_fields = self._scene_script_v2_story_used_beat_fields(normalized, request, profile, target, beats)
         warnings: list[str] = []
         if not normalized:
             warnings.append("scene_script_v2_story_empty")
@@ -5158,6 +5418,8 @@ class NpcDialogueService:
             warnings.append("scene_script_v2_story_angle_scene_coherence_weak")
         if len(coverage_keys) < 4:
             warnings.append("scene_script_v2_story_seed_coverage_low")
+        if len(beat_fields) < 4:
+            warnings.append("scene_script_v2_story_beat_coverage_low")
         compact_len = len(self._scene_script_v2_compact_story_text(normalized))
         if compact_len < self._scene_script_v2_story_min_cjk_chars(request):
             warnings.append("scene_script_v2_story_short")
@@ -5168,6 +5430,7 @@ class NpcDialogueService:
             "warnings": warnings,
             "coverageKeys": coverage_keys,
             "coverage": coverage,
+            "beatFields": beat_fields,
             "normalizedText": normalized,
             "compactLen": compact_len,
         }
@@ -5979,6 +6242,431 @@ class NpcDialogueService:
             }
         )
 
+    def _scene_script_v2_story_needs_fused_rewrite(self, validation: dict[str, Any]) -> bool:
+        warnings = {str(item).strip() for item in (validation.get("warnings") or []) if str(item).strip()}
+        if not warnings:
+            return False
+        if len(validation.get("beatFields") or []) < 4:
+            return True
+        if len(validation.get("coverageKeys") or []) < 4:
+            return True
+        weak_markers = {
+            "scene_script_v2_story_seed_dump",
+            "scene_script_v2_story_short",
+            "scene_script_v2_story_beat_coverage_low",
+            "scene_script_v2_story_seed_coverage_low",
+            "scene_script_v2_story_event_blob_dense",
+            "scene_script_v2_story_fragment_readability_weak",
+            "scene_script_v2_story_narrative_flow_weak",
+            "scene_script_v2_story_angle_scene_coherence_weak",
+            "scene_script_v2_story_ending_not_actionable",
+        }
+        return bool(warnings & weak_markers)
+
+    def _scene_script_v2_story_repair_fused_paragraph(
+        self,
+        *,
+        request: SceneDirectorRequest,
+        profile: NarrativeProfileResponse,
+        target: NarrativeInteractionTarget | None,
+        source_beats: SceneDirectorBeats,
+        slot_data: dict[str, Any],
+    ) -> str:
+        actor = self._clean_seed_text(slot_data.get("actor") or profile.displayName or "", max_chars=20).strip()
+        target_name = self._scene_script_v2_story_target_name(target) or self._clean_seed_text(slot_data.get("target") or "", max_chars=20).strip()
+        place = self._clean_seed_text(slot_data.get("place") or "", max_chars=24).strip()
+        time_value = self._clean_seed_text(slot_data.get("time") or "", max_chars=24).strip()
+        scene_seeds = dict(source_beats.sceneSeeds or {})
+        people_phrase = self._scene_script_v2_pick_people_phrase(profile, target, scene_seeds or slot_data)
+        object_phrase = self._scene_script_v2_pick_object_phrase(scene_seeds.get("objects") or slot_data.get("objects") or [])
+        scene_bits = [bit for bit in [people_phrase, place, time_value, object_phrase] if bit]
+        if not scene_bits:
+            scene_bits = [self._scene_script_v2_story_compact_source_clause("event", source_beats.sceneText or "", profile, target, max_chars=72)]
+        scene_bits = [bit for bit in scene_bits if bit]
+        scene_context = "、".join(scene_bits[:3]) if scene_bits else (target_name or place or time_value or object_phrase)
+        opening_parts: list[str] = []
+        if actor:
+            opening_parts.append(actor)
+        if scene_context:
+            opening_parts.append(f"在{scene_context}")
+        if target_name:
+            opening_parts.append(f"與{target_name}相對")
+        stage_clause = self._scene_script_v2_story_compact_source_clause(
+            "event",
+            source_beats.sceneText or " ".join(str(item or "").strip() for item in [slot_data.get("eventText"), *[*(slot_data.get("event") or [])]] if str(item or "").strip()),
+            profile,
+            target,
+            max_chars=72,
+        )
+        stage_sentence = self._ensure_sentence(
+            f"{''.join(opening_parts)}，{stage_clause}" if opening_parts and stage_clause else "".join(opening_parts) or stage_clause
+        )
+
+        memory_clause = self._scene_script_v2_story_sentence_clause(
+            source_beats.memoryText or self._scene_script_v2_story_sentence_clause(str(slot_data.get("memoryText") or slot_data.get("memory") or ""), "", 96),
+            "",
+            96,
+            reject_first_person=False,
+        )
+        if actor and memory_clause and actor not in memory_clause:
+            memory_sentence = self._ensure_sentence(f"{actor}回想起{memory_clause}")
+        else:
+            memory_sentence = self._ensure_sentence(memory_clause)
+
+        emotion_clause = self._scene_script_v2_story_sentence_clause(
+            source_beats.emotionText or self._scene_script_v2_story_sentence_clause(str(slot_data.get("emotionText") or slot_data.get("emotion") or ""), "", 96),
+            "",
+            96,
+            reject_first_person=False,
+        )
+        emotion_intro = {
+            "emotion": "此刻",
+            "bond": "這一刻",
+            "rival": "眼下",
+        }.get(str(request.angle or "").strip().lower(), "此刻")
+        if emotion_clause:
+            if actor and actor not in emotion_clause:
+                emotion_sentence = self._ensure_sentence(f"{emotion_intro}，{actor}{emotion_clause}")
+            else:
+                emotion_sentence = self._ensure_sentence(f"{emotion_intro}，{emotion_clause}")
+        else:
+            emotion_sentence = ""
+
+        dialogue_clause = self._scene_script_v2_story_dialogue_clause(
+            source_beats.dialogueText or str(slot_data.get("dialogueText") or slot_data.get("dialogue") or ""),
+            "",
+            80,
+        )
+        if dialogue_clause:
+            if "「" in dialogue_clause or "」" in dialogue_clause:
+                dialogue_sentence = self._ensure_sentence(dialogue_clause)
+            elif target_name:
+                dialogue_sentence = self._ensure_sentence(f"{actor or '他'}對{target_name}道：「{dialogue_clause}」")
+            else:
+                dialogue_sentence = self._ensure_sentence(f"{actor or '他'}低聲道：「{dialogue_clause}」")
+        else:
+            dialogue_sentence = ""
+
+        intent_clause = self._scene_script_v2_story_sentence_clause(
+            source_beats.intentText or str(slot_data.get("intentText") or slot_data.get("intent") or ""),
+            "",
+            88,
+            reject_first_person=False,
+        )
+        if intent_clause:
+            if actor and actor not in intent_clause:
+                intent_sentence = self._ensure_sentence(f"{actor}決意{intent_clause}")
+            else:
+                intent_sentence = self._ensure_sentence(intent_clause)
+        else:
+            intent_sentence = ""
+
+        angle_key = str(request.angle or "").strip().lower()
+        if angle_key == "emotion":
+            closing_sentence = self._ensure_sentence(f"{actor or '他'}知道若再拖下去，心口只會更沉，於是先把脫身與安頓的次序理清。")
+        elif angle_key == "bond":
+            closing_sentence = self._ensure_sentence(f"{actor or '他'}知道若不先安住彼此，後面的路只會更難走。")
+        elif angle_key == "rival":
+            closing_sentence = self._ensure_sentence(f"{actor or '他'}知道此刻不能硬碰，只能先收住鋒芒，讓局面不要立刻翻開。")
+        else:
+            closing_sentence = self._ensure_sentence(f"{actor or '他'}知道這一局不能再拖，便先把眼前的關節理順，再往前推進。")
+
+        sentences = self._scene_script_v2_story_cleanup_sentences(
+            [stage_sentence, memory_sentence, emotion_sentence, dialogue_sentence, intent_sentence, closing_sentence],
+            slot_data,
+            profile,
+            target,
+            source_beats,
+        )
+        story = "".join(sentences)
+        if len(self._scene_script_v2_compact_story_text(story)) < self._scene_script_v2_story_min_cjk_chars(request):
+            extra_sentence = self._ensure_sentence(f"{actor or '他'}也明白，若不先穩住{target_name or place or '眼前局面'}，後面的路只會更難走。")
+            if extra_sentence and not any(self._scene_script_v2_story_sentences_overlap(extra_sentence, existing) for existing in sentences):
+                sentences.append(extra_sentence)
+                story = "".join(sentences)
+        fitted, _ = self._scene_script_v2_fit_story_text(story, request)
+        return fitted
+
+    def _scene_script_v2_story_repair_fused_paragraph_v2(
+        self,
+        *,
+        request: SceneDirectorRequest,
+        profile: NarrativeProfileResponse,
+        target: NarrativeInteractionTarget | None,
+        source_beats: SceneDirectorBeats,
+        slot_data: dict[str, Any],
+    ) -> str:
+        actor = self._clean_seed_text(slot_data.get("actor") or profile.displayName or "", max_chars=20).strip()
+        target_name = self._scene_script_v2_story_target_name(target) or self._clean_seed_text(slot_data.get("target") or "", max_chars=20).strip()
+        place = self._clean_seed_text(slot_data.get("place") or "", max_chars=24).strip()
+        time_value = self._clean_seed_text(slot_data.get("time") or "", max_chars=24).strip()
+
+        scene_seeds = dict(source_beats.sceneSeeds or {})
+        people_terms: list[str] = []
+        for person in scene_seeds.get("people") or []:
+            if isinstance(person, dict):
+                label = self._clean_seed_text(person.get("label") or person.get("name") or "", max_chars=20).strip()
+            else:
+                label = self._clean_seed_text(person, max_chars=20).strip()
+            if not label or label in {actor, target_name} or label in people_terms:
+                continue
+            people_terms.append(label)
+            if len(people_terms) >= 2:
+                break
+
+        object_phrase = self._scene_script_v2_pick_object_phrase(scene_seeds.get("objects") or [])
+        scene_parts = [part for part in [place, time_value, *people_terms[:1], object_phrase] if part]
+        if not scene_parts:
+            scene_parts = [target_name or actor or "這一幕"]
+        scene_context = "、".join(scene_parts[:3])
+
+        stage_source = self._scene_script_v2_story_compact_source_clause(
+            "event",
+            source_beats.sceneText or str(slot_data.get("sceneText") or slot_data.get("eventText") or ""),
+            profile,
+            target,
+            max_chars=72,
+        )
+        if not stage_source:
+            event_fragments = [str(item or "").strip() for item in (slot_data.get("event") or []) if str(item or "").strip()]
+            stage_source = self._scene_script_v2_story_compact_source_clause(
+                "event",
+                " ".join(event_fragments),
+                profile,
+                target,
+                max_chars=72,
+            )
+        stage_sentence = self._ensure_sentence(
+            f"{actor}在{scene_context}之中，與{target_name or '對方'}相對，{stage_source}" if (actor or target_name or scene_context) else stage_source
+        )
+
+        memory_clause = self._scene_script_v2_story_sentence_clause(
+            source_beats.memoryText or str(slot_data.get("memoryText") or slot_data.get("memory") or ""),
+            "",
+            96,
+            reject_first_person=False,
+        )
+        if actor and memory_clause and actor not in memory_clause:
+            memory_sentence = self._ensure_sentence(f"{actor}回想起{memory_clause}")
+        else:
+            memory_sentence = self._ensure_sentence(memory_clause)
+
+        emotion_clause = self._scene_script_v2_story_sentence_clause(
+            source_beats.emotionText or str(slot_data.get("emotionText") or slot_data.get("emotion") or ""),
+            "",
+            96,
+            reject_first_person=False,
+        )
+        emotion_intro = {
+            "emotion": "此刻",
+            "bond": "這一刻",
+            "rival": "眼下",
+        }.get(str(request.angle or "").strip().lower(), "此刻")
+        if emotion_clause:
+            if actor and actor not in emotion_clause:
+                emotion_sentence = self._ensure_sentence(f"{emotion_intro}，{actor}{emotion_clause}")
+            else:
+                emotion_sentence = self._ensure_sentence(f"{emotion_intro}，{emotion_clause}")
+        else:
+            emotion_sentence = ""
+
+        dialogue_clause = self._scene_script_v2_story_dialogue_clause(
+            source_beats.dialogueText or str(slot_data.get("dialogueText") or slot_data.get("dialogue") or ""),
+            "",
+            80,
+        )
+        if dialogue_clause:
+            if "「" in dialogue_clause or "」" in dialogue_clause:
+                dialogue_sentence = self._ensure_sentence(dialogue_clause)
+            elif target_name:
+                dialogue_sentence = self._ensure_sentence(f"{actor or '他'}對{target_name}道：「{dialogue_clause}」")
+            else:
+                dialogue_sentence = self._ensure_sentence(f"{actor or '他'}低聲道：「{dialogue_clause}」")
+        else:
+            dialogue_sentence = ""
+
+        intent_clause = self._scene_script_v2_story_sentence_clause(
+            source_beats.intentText or str(slot_data.get("intentText") or slot_data.get("intent") or ""),
+            "",
+            88,
+            reject_first_person=False,
+        )
+        if intent_clause:
+            if actor and actor not in intent_clause:
+                intent_sentence = self._ensure_sentence(f"{actor}決意{intent_clause}")
+            else:
+                intent_sentence = self._ensure_sentence(intent_clause)
+        else:
+            intent_sentence = ""
+
+        angle_key = str(request.angle or "").strip().lower()
+        if angle_key == "emotion":
+            closing_sentence = self._ensure_sentence(f"{actor or '他'}知道若再拖下去，心口只會更沉，於是先把脫身與安頓的次序理清。")
+        elif angle_key == "bond":
+            closing_sentence = self._ensure_sentence(f"{actor or '他'}知道若不先安住彼此，後面的路只會更難走。")
+        elif angle_key == "rival":
+            closing_sentence = self._ensure_sentence(f"{actor or '他'}知道此刻不能硬碰，只能先收住鋒芒，讓局面不要立刻翻開。")
+        else:
+            closing_sentence = self._ensure_sentence(f"{actor or '他'}知道這一局不能再拖，便先把眼前的關節理順，再往前推進。")
+
+        sentences: list[str] = []
+        for sentence in [stage_sentence, memory_sentence, emotion_sentence, dialogue_sentence, intent_sentence, closing_sentence]:
+            text = str(sentence or "").strip()
+            if not text:
+                continue
+            text = self._scene_script_v2_story_canonicalize_target_naming(text, target).strip()
+            text = self._scene_script_v2_story_canonicalize_actor_clause(text, profile).strip()
+            alias_repeat_spike = any(
+                alias
+                and text.count(alias) >= 2
+                for alias in [*self._actor_label_aliases(profile)[:3], *(self._target_aliases_for_interaction(target) if target else [])[:3]]
+            )
+            if self._scene_script_v2_story_has_fragment_readability_issue(text) or self._scene_script_v2_story_has_repetition_spike(text) or alias_repeat_spike:
+                text = self._scene_script_v2_story_normalize_action_fragment(text, profile, target)
+            text = self._ensure_sentence(text)
+            if not text:
+                continue
+            if any(self._scene_script_v2_story_sentences_overlap(text, existing) for existing in sentences):
+                continue
+            sentences.append(text)
+
+        if len(self._scene_script_v2_compact_story_text("".join(sentences))) < self._scene_script_v2_story_min_cjk_chars(request):
+            extra_sentence = self._ensure_sentence(f"{actor or '他'}也明白，若不先穩住{target_name or place or '眼前局面'}，後面的路只會更難走。")
+            if extra_sentence and not any(self._scene_script_v2_story_sentences_overlap(extra_sentence, existing) for existing in sentences):
+                sentences.append(extra_sentence)
+
+        if len(self._scene_script_v2_compact_story_text("".join(sentences))) < self._scene_script_v2_story_min_cjk_chars(request):
+            fallback_tail_map = {
+                "emotion": f"{actor or '他'}先把情緒壓下來，仍要把家眷與去留安排周全。",
+                "bond": f"{actor or '他'}先守住彼此情義，再把後路與承諾鋪穩。",
+                "rival": f"{actor or '他'}先收住鋒芒，把退路與節奏重新排好。",
+                "people": f"{actor or '他'}先把人心與秩序安頓好，再往前推進下一步。",
+            }
+            extra_sentence = self._ensure_sentence(
+                fallback_tail_map.get(
+                    str(request.angle or "").strip().lower(),
+                    f"{actor or '他'}先把眼前局面安頓好，再決定下一步怎麼走。",
+                )
+            )
+            if extra_sentence and not any(self._scene_script_v2_story_sentences_overlap(extra_sentence, existing) for existing in sentences):
+                sentences.append(extra_sentence)
+
+        fitted, _ = self._scene_script_v2_fit_story_text("".join(sentences), request)
+        return fitted
+
+    def _scene_script_v2_story_repair_fused_paragraph_v3(
+        self,
+        *,
+        request: SceneDirectorRequest,
+        profile: NarrativeProfileResponse,
+        target: NarrativeInteractionTarget | None,
+        source_beats: SceneDirectorBeats,
+        slot_data: dict[str, Any],
+    ) -> str:
+        actor = self._clean_seed_text(slot_data.get("actor") or profile.displayName or "", max_chars=20).strip()
+        target_name = self._scene_script_v2_story_target_name(target) or self._clean_seed_text(slot_data.get("target") or "", max_chars=20).strip()
+        place = self._clean_seed_text(slot_data.get("place") or "", max_chars=24).strip()
+        time_value = self._clean_seed_text(slot_data.get("time") or "", max_chars=24).strip()
+
+        scene_seeds = dict(source_beats.sceneSeeds or {})
+        people_terms: list[str] = []
+        for person in scene_seeds.get("people") or []:
+            if isinstance(person, dict):
+                label = self._clean_seed_text(person.get("label") or person.get("name") or "", max_chars=20).strip()
+            else:
+                label = self._clean_seed_text(person, max_chars=20).strip()
+            if not label or label in {actor, target_name} or label in people_terms:
+                continue
+            people_terms.append(label)
+            if len(people_terms) >= 1:
+                break
+
+        object_phrase = self._clean_seed_text(self._scene_script_v2_pick_object_phrase(scene_seeds.get("objects") or []), max_chars=16).strip()
+        scene_parts = [part for part in [place, time_value, *people_terms, object_phrase] if part]
+        scene_context = "、".join(scene_parts[:3]) or target_name or actor or "這一幕"
+        emotion_intro = {
+            "emotion": "此刻",
+            "bond": "這一刻",
+            "rival": "眼下",
+        }.get(str(request.angle or "").strip().lower(), "此刻")
+
+        raw_scene = self._scene_script_v2_story_compact_source_clause(
+            "event",
+            source_beats.sceneText or str((source_beats.sceneSeeds or {}).get("event") or ""),
+            profile,
+            target,
+            max_chars=80,
+        ).strip()
+        if self._is_weak_scene_seed_text(raw_scene):
+            raw_scene = ""
+        raw_memory = self._clean_seed_text(source_beats.memoryText or "", max_chars=96).strip()
+        raw_emotion = self._clean_seed_text(source_beats.emotionText or "", max_chars=96).strip()
+        raw_dialogue = self._clean_seed_text(source_beats.dialogueText or "", max_chars=80).strip()
+        raw_intent = self._clean_seed_text(source_beats.intentText or "", max_chars=88).strip()
+
+        def strip_actor_intro(clause: str) -> str:
+            value = str(clause or "").strip()
+            if not actor or not value.startswith(actor):
+                return value
+            value = value[len(actor) :].lstrip("，,。！？!? ")
+            if not value:
+                return ""
+            value = re.sub(r"^[^，。！？!?]{1,6}[，。！？!?]\s*", "", value)
+            return value.strip()
+
+        raw_memory = strip_actor_intro(raw_memory)
+        raw_emotion = strip_actor_intro(raw_emotion)
+        raw_intent = strip_actor_intro(raw_intent)
+
+        stage_sentence = f"{actor or '他'}在{scene_context}之中，與{target_name or '對方'}相對。{raw_scene}" if raw_scene else f"{actor or '他'}在{scene_context}之中，與{target_name or '對方'}相對。"
+        memory_sentence = f"{actor or '他'}回想起{raw_memory or '方才的情景'}，心裡明白這一路不能再拖。"
+        emotion_sentence = f"{emotion_intro}，{actor or '他'}的愧疚與急切交纏，既怕傷了{target_name or '對方'}的心，也怕誤了脫身的機會。"
+        if raw_emotion:
+            emotion_sentence = f"{emotion_sentence}{raw_emotion if raw_emotion not in emotion_sentence else ''}"
+        if raw_dialogue:
+            if "「" in raw_dialogue or "」" in raw_dialogue:
+                dialogue_sentence = raw_dialogue
+            else:
+                dialogue_sentence = f"{actor or '他'}對{target_name or '對方'}低聲道：「{raw_dialogue}」"
+        else:
+            dialogue_sentence = ""
+        intent_sentence = f"{actor or '他'}決意先把{target_name or place or '這一局'}的去留與安頓次序理順，再往前推進。"
+        if raw_intent and raw_intent not in intent_sentence:
+            intent_sentence = f"{intent_sentence}{raw_intent}"
+        angle_key = str(request.angle or "").strip().lower()
+        if angle_key == "emotion":
+            closing_sentence = f"{actor or '他'}知道若再拖下去，心口只會更沉，於是先把脫身與安頓的次序理清。"
+        elif angle_key == "bond":
+            closing_sentence = f"{actor or '他'}知道若不先安住彼此，後面的路只會更難走。"
+        elif angle_key == "rival":
+            closing_sentence = f"{actor or '他'}知道此刻不能硬碰，只能先收住鋒芒，讓局面不要立刻翻開。"
+        else:
+            closing_sentence = f"{actor or '他'}知道這一局不能再拖，便先把眼前的關節理順，再往前推進。"
+
+        sentences: list[str] = []
+        for sentence in [stage_sentence, memory_sentence, emotion_sentence, dialogue_sentence, intent_sentence, closing_sentence]:
+            text = str(sentence or "").strip()
+            if not text:
+                continue
+            text = self._scene_script_v2_story_canonicalize_target_naming(text, target).strip()
+            text = self._scene_script_v2_story_canonicalize_actor_clause(text, profile).strip()
+            if self._scene_script_v2_story_has_fragment_readability_issue(text):
+                text = self._scene_script_v2_story_normalize_action_fragment(text, profile, target)
+            text = self._ensure_sentence(text)
+            if not text:
+                continue
+            if any(self._scene_script_v2_story_sentences_overlap(text, existing) for existing in sentences):
+                continue
+            sentences.append(text)
+
+        if len(self._scene_script_v2_compact_story_text("".join(sentences))) < self._scene_script_v2_story_min_cjk_chars(request):
+            extra_sentence = self._ensure_sentence(f"{actor or '他'}也明白，若不先穩住{target_name or place or '眼前局面'}，後面的路只會更難走。")
+            if extra_sentence and not any(self._scene_script_v2_story_sentences_overlap(extra_sentence, existing) for existing in sentences):
+                sentences.append(extra_sentence)
+
+        fitted, _ = self._scene_script_v2_fit_story_text("".join(sentences), request)
+        return fitted
+
     def _scene_script_v2_repair_story_text(
         self,
         *,
@@ -6026,8 +6714,8 @@ class NpcDialogueService:
 
         append_sentence(self._scene_script_v2_story_pick_stage_sentence(slot_data), "stage")
 
-        primary_slots = [slot for slot in slot_order if slot in {"event", "memory"} and slot_data.get(slot)]
-        for slot_name in primary_slots:
+        core_slots = [slot for slot in slot_order if slot in {"event", "memory", "emotion", "dialogue", "intent"} and slot_data.get(slot)]
+        for slot_name in core_slots:
             primary = self._scene_script_v2_story_best_slot_candidate(
                 slot_name,
                 slot_data,
@@ -6058,13 +6746,41 @@ class NpcDialogueService:
                 profile,
                 target,
             )
-            if append_sentence(sentence, slot_name) and len(sentences) >= 3:
-                break
+            append_sentence(sentence, slot_name)
 
-        append_sentence(
-            self._scene_script_v2_story_pick_question_sentence(slot_data, profile, target, sentences),
-            "quote",
-        )
+        if "emotion" not in used_slots and str(source_beats.emotionText or "").strip():
+            append_sentence(
+                self._scene_script_v2_story_sentence_clause(
+                    source_beats.emotionText,
+                    source_beats.emotionText,
+                    96,
+                ),
+                "emotion",
+            )
+        if "dialogue" not in used_slots and str(source_beats.dialogueText or "").strip():
+            append_sentence(
+                self._scene_script_v2_story_dialogue_clause(
+                    source_beats.dialogueText,
+                    source_beats.dialogueText,
+                    80,
+                ),
+                "dialogue",
+            )
+        if "intent" not in used_slots and str(source_beats.intentText or "").strip():
+            append_sentence(
+                self._scene_script_v2_story_sentence_clause(
+                    source_beats.intentText,
+                    source_beats.intentText,
+                    88,
+                ),
+                "intent",
+            )
+
+        if "dialogue" not in used_slots:
+            append_sentence(
+                self._scene_script_v2_story_pick_question_sentence(slot_data, profile, target, sentences),
+                "quote",
+            )
         if len(self._scene_script_v2_compact_story_text("".join(sentences))) < max(120, self._scene_script_v2_story_min_cjk_chars(request) - 60):
             append_sentence(
                 self._scene_script_v2_story_pick_question_aftermath(slot_data, profile, target, sentences),
@@ -6157,6 +6873,8 @@ class NpcDialogueService:
         repair_used = bool(generation.repairUsed)
         fallback_used = bool(generation.fallbackUsed)
         used_seed_keys = list(validation["coverageKeys"] or [])
+        used_beat_fields = list(validation["beatFields"] or [])
+        fused_rewrite_applied = False
         if not validation["valid"]:
             warnings = [warning for warning in warnings if not str(warning).startswith("scene_script_v2_story_")]
             repair_beats = self._scene_script_v2_source_repair_beats(request, profile, target, beats)
@@ -6181,7 +6899,29 @@ class NpcDialogueService:
             warnings.append("scene_script_v2_story_repaired")
             repair_used = True
             validation = self._scene_script_v2_story_validation(story_text, request, profile, target, repair_beats)
+            if self._scene_script_v2_story_needs_fused_rewrite(
+                {
+                    "warnings": warnings,
+                    "beatFields": used_beat_fields,
+                    "coverageKeys": used_seed_keys,
+                }
+            ):
+                fused_story = self._scene_script_v2_story_repair_fused_paragraph_v3(
+                    request=request,
+                    profile=profile,
+                    target=target,
+                    source_beats=beats,
+                    slot_data=self._scene_script_v2_story_build_slots(request, profile, target, beats),
+                )
+                if fused_story:
+                    story_text = fused_story
+                    story_text, fit_warnings = self._scene_script_v2_fit_story_text(story_text, request)
+                    warnings.extend(fit_warnings)
+                    validation = self._scene_script_v2_story_validation(story_text, request, profile, target, beats)
+                    warnings.append("scene_script_v2_story_fused_rewrite_applied")
+                    fused_rewrite_applied = True
             used_seed_keys = list(validation["coverageKeys"] or used_seed_keys)
+            used_beat_fields = list(validation["beatFields"] or used_beat_fields)
         elif story_text != generation.text:
             warnings.append("scene_script_v2_story_normalized")
             story_text, fit_warnings = self._scene_script_v2_fit_story_text(story_text, request)
@@ -6189,17 +6929,86 @@ class NpcDialogueService:
         else:
             story_text, fit_warnings = self._scene_script_v2_fit_story_text(story_text, request)
             warnings.extend(fit_warnings)
+        compact_story_len = len(self._scene_script_v2_compact_story_text(story_text))
+        if repair_used and not fused_rewrite_applied and (compact_story_len < 200 or len(used_beat_fields) < 2):
+            weak_markers = {
+                "scene_script_v2_story_seed_dump",
+                "scene_script_v2_story_short",
+                "scene_script_v2_story_beat_coverage_low",
+                "scene_script_v2_story_seed_coverage_low",
+                "scene_script_v2_story_event_blob_dense",
+                "scene_script_v2_story_fragment_readability_weak",
+                "scene_script_v2_story_narrative_flow_weak",
+                "scene_script_v2_story_angle_scene_coherence_weak",
+                "scene_script_v2_story_ending_not_actionable",
+                "scene_script_v2_story_quote_dominance",
+                "scene_script_v2_story_sentence_frame_similarity",
+                "scene_script_v2_story_repeated_support_pressure_tension_shape",
+            }
+            current_warnings = {str(item).strip() for item in warnings if str(item).strip()}
+            if current_warnings & weak_markers:
+                warnings = [warning for warning in warnings if warning not in weak_markers]
+                repair_beats = self._scene_script_v2_source_repair_beats(request, profile, target, beats)
+                fused_story = self._scene_script_v2_story_repair_fused_paragraph_v3(
+                    request=request,
+                    profile=profile,
+                    target=target,
+                    source_beats=beats,
+                    slot_data=self._scene_script_v2_story_build_slots(request, profile, target, beats),
+                )
+                if fused_story:
+                    story_text = fused_story
+                    story_text, fit_warnings = self._scene_script_v2_fit_story_text(story_text, request)
+                    warnings.extend(fit_warnings)
+                    validation = self._scene_script_v2_story_validation(story_text, request, profile, target, beats)
+                    used_seed_keys = list(validation["coverageKeys"] or used_seed_keys)
+                    used_beat_fields = list(validation["beatFields"] or used_beat_fields)
+                warnings.append("scene_script_v2_story_fused_rewrite_applied")
+                fused_rewrite_applied = True
         if not used_seed_keys:
             used_seed_keys = [key for key in ["people", "event", "time", "place", "objects", "emotion"] if key in validation["coverage"]]
+        metadata = dict(getattr(generation, "metadata", {}) or {})
+        metadata["usedSceneSeeds"] = list(used_seed_keys)
+        persona_anchors = [str(item).strip() for item in (metadata.get("usedPersonaAnchors") or []) if str(item).strip()]
+        if fused_rewrite_applied:
+            persona_anchors.extend(
+                item
+                for item in [profile.displayName, target.label if target else ""]
+                if str(item or "").strip()
+            )
+        visible_story_text = str(story_text or "")
+        metadata["usedPersonaAnchors"] = list(
+            dict.fromkeys(
+                anchor
+                for anchor in persona_anchors
+                if anchor and (
+                    anchor in visible_story_text
+                    or anchor == profile.displayName
+                    or (target and anchor == target.label)
+                )
+            )
+        )
+        metadata["usedBeatFields"] = list(used_beat_fields)
+        missing_warning_map = {
+            "scene_script_v2_used_scene_seeds_missing": bool(metadata.get("usedSceneSeeds")),
+            "scene_script_v2_used_persona_anchors_missing": bool(metadata.get("usedPersonaAnchors")),
+            "scene_script_v2_used_beat_fields_missing": bool(metadata.get("usedBeatFields")),
+        }
+        final_warnings = list(dict.fromkeys([
+            warning
+            for warning in [
+                *warnings,
+                *([reason for reason in validation["warnings"] if reason not in warnings] if validation["warnings"] else []),
+            ]
+            if not missing_warning_map.get(warning, False)
+        ]))
         return replace(
             generation,
             text=story_text,
             fallbackUsed=fallback_used,
             repairUsed=repair_used or not validation["valid"],
-            qualityWarnings=list(dict.fromkeys([
-                *warnings,
-                *([reason for reason in validation["warnings"] if reason not in warnings] if validation["warnings"] else []),
-            ])),
+            qualityWarnings=final_warnings,
+            metadata=metadata,
         )
 
     def _scene_script_v2_compact_story_text(self, text: str) -> str:
@@ -6254,8 +7063,14 @@ class NpcDialogueService:
         parsed = {field: " ".join(str(payload.get(field) or "").split()).strip() for field in required_fields}
         if not all(parsed.values()):
             raise ValueError("scene_script_pack_v2:missing_required_field")
-        parsed["usedSeedKeys"] = [str(item).strip() for item in (payload.get("usedSeedKeys") or []) if str(item).strip()]
+        parsed["usedSceneSeeds"] = [
+            str(item).strip()
+            for item in ((payload.get("usedSceneSeeds") or payload.get("usedSeedKeys") or []))
+            if str(item).strip()
+        ]
         parsed["usedPersonaAnchors"] = [str(item).strip() for item in (payload.get("usedPersonaAnchors") or []) if str(item).strip()]
+        parsed["usedBeatFields"] = [str(item).strip() for item in (payload.get("usedBeatFields") or []) if str(item).strip()]
+        parsed["usedSeedKeys"] = list(parsed["usedSceneSeeds"])
         parsed["violations"] = [str(item).strip() for item in (payload.get("violations") or []) if str(item).strip()]
         return parsed
 
@@ -6271,12 +7086,185 @@ class NpcDialogueService:
             warnings.append("scene_script_v2_story_short")
         if len(compact_story) > self._scene_script_v2_story_max_cjk_chars(request):
             warnings.append("scene_script_v2_story_long")
-        if not payload.get("usedSeedKeys"):
-            warnings.append("scene_script_v2_used_seed_keys_missing")
+        if not payload.get("usedSceneSeeds"):
+            warnings.append("scene_script_v2_used_scene_seeds_missing")
         if not payload.get("usedPersonaAnchors"):
             warnings.append("scene_script_v2_used_persona_anchors_missing")
+        if not payload.get("usedBeatFields"):
+            warnings.append("scene_script_v2_used_beat_fields_missing")
         warnings.extend(str(item).strip() for item in (payload.get("violations") or []) if str(item).strip())
         return list(dict.fromkeys(warnings))
+
+    def _parse_scene_script_pack_v3_payload(self, text: str) -> dict[str, Any]:
+        try:
+            payload = json.loads(str(text or ""))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"scene_script_pack_v3:json_parse:{exc}") from exc
+        if not isinstance(payload, dict):
+            raise ValueError("scene_script_pack_v3:not-object")
+        story_text = " ".join(str(payload.get("storyText") or "").split()).strip()
+        parsed = {
+            "storyText": story_text,
+            "usedSceneSeeds": [str(item).strip() for item in (payload.get("usedSceneSeeds") or payload.get("usedSeedKeys") or []) if str(item).strip()],
+            "usedPersonaAnchors": [str(item).strip() for item in (payload.get("usedPersonaAnchors") or []) if str(item).strip()],
+            "usedBeatFields": [str(item).strip() for item in (payload.get("usedBeatFields") or []) if str(item).strip()],
+            "violations": [str(item).strip() for item in (payload.get("violations") or []) if str(item).strip()],
+        }
+        return parsed
+
+    def _scene_script_v3_story_is_usable(
+        self,
+        *,
+        story_text: str,
+        used_scene_seeds: list[str],
+        used_beat_fields: list[str],
+        profile: NarrativeProfileResponse | None = None,
+        target: NarrativeInteractionTarget | None = None,
+    ) -> bool:
+        compact = self._scene_script_v2_compact_story_text(story_text)
+        if len(compact) < 140:
+            return False
+        if self._scene_script_text_has_placeholder(story_text):
+            return False
+        if self._is_weak_scene_seed_text(story_text):
+            return False
+        if self._scene_script_v2_story_has_repetition_spike(story_text):
+            return False
+        if self._scene_script_v2_story_is_seed_dump(story_text):
+            return False
+        if len(used_scene_seeds) < 3 or len(used_beat_fields) < 3:
+            return False
+        if profile is not None:
+            actor_aliases = [
+                alias
+                for alias in self._actor_label_aliases(profile)
+                if len(alias.replace(" ", "")) >= 2
+            ]
+            if actor_aliases and not any(alias in story_text for alias in actor_aliases):
+                return False
+        if target is not None:
+            target_aliases = [
+                alias
+                for alias in self._target_aliases_for_interaction(target)
+                if len(alias.replace(" ", "")) >= 2
+            ]
+            if target_aliases and not any(alias in story_text for alias in target_aliases):
+                return False
+        lowered = story_text.lower()
+        if any(token in lowered for token in ["runtime-story-beat", "targetid", "evidenceid", "contextkey", "data_first"]):
+            return False
+        if "（" in story_text or "）" in story_text:
+            return False
+        speculative_markers = [
+            "應是",
+            "似乎",
+            "或許",
+            "大概",
+            "可能",
+            "據聞",
+            "傳聞",
+            "未直接參與",
+            "未能親見",
+            "不在場",
+        ]
+        if any(marker in story_text for marker in speculative_markers):
+            return False
+        return True
+
+    def _generate_scene_script_pack_v3(
+        self,
+        *,
+        request: SceneDirectorRequest,
+        profile: NarrativeProfileResponse,
+        target: NarrativeInteractionTarget | None,
+        card: NarrativeEvidenceCard | None,
+        beats: SceneDirectorBeats,
+        story_context: dict[str, Any],
+        story_keywords: list[dict[str, Any]],
+        evidence_refs: list[str],
+    ) -> DialogueGenerationResult:
+        persona_card = self.get_persona_card(request.generalId)
+        selected_context = {
+            **story_context,
+            "task": "scene-script-pack-v3",
+            "label": target.label if target else profile.displayName,
+            "strictDirectorVersion": SCENE_DIRECTOR_SOURCE_STRICT_V1,
+        }
+        memory_context = {
+            "saveId": f"demo-scene-script-v3-{profile.generalId}",
+            "shortTerm": beats.sceneText,
+            "longTerm": self._scene_script_seed_summary(beats),
+            "playerProfile": (
+                f"mainActor={profile.displayName};"
+                f"activeTarget={target.label if target else ''};"
+                f"angle={card.angle if card else request.angle or ''};"
+                f"targetRole={target.role if target else ''}"
+            ),
+            "promises": "Write only when a clean formal director paragraph can be supported. Otherwise return empty storyText with violations.",
+        }
+        provider_config = self._scene_story_provider_config(request.llmModelPreset, request.renderMode)
+        provider_order = list(provider_config.get("providerOrder") or [])
+        if not provider_order:
+            raise ProviderUnavailableError("scene_script_pack_v3:no-provider")
+        provider_errors: list[str] = []
+        content_errors: list[str] = []
+        for provider_name in provider_order:
+            try:
+                generation = self._generate_scene_director_text(
+                    general_id=request.generalId,
+                    persona_card=persona_card,
+                    memory_context=memory_context,
+                    selected_context=selected_context,
+                    evidence_refs=evidence_refs,
+                    deterministic_text="",
+                    max_chars=min(int(request.maxStoryChars or 420), 420),
+                    locale=request.locale,
+                    llm_model_preset=request.llmModelPreset,
+                    tone_mode="narrative_fusion",
+                    selected_keywords=story_keywords,
+                    include_resolved_evidence=True,
+                    provider_order=[provider_name],
+                    model_overrides=provider_config["modelOverrides"],
+                    allow_deterministic_fallback=False,
+                )
+                payload = self._parse_scene_script_pack_v3_payload(str(generation.text or "").strip())
+                story_text = str(payload.get("storyText") or "").strip()
+                used_scene_seeds = list(payload.get("usedSceneSeeds") or [])
+                used_persona_anchors = list(payload.get("usedPersonaAnchors") or [])
+                used_beat_fields = list(payload.get("usedBeatFields") or [])
+                violations = list(payload.get("violations") or [])
+                if not story_text:
+                    raise ValueError("scene_script_pack_v3:empty_story")
+                if violations:
+                    raise ValueError(f"scene_script_pack_v3:violations:{','.join(violations[:3])}")
+                if not self._scene_script_v3_story_is_usable(
+                    story_text=story_text,
+                    used_scene_seeds=used_scene_seeds,
+                    used_beat_fields=used_beat_fields,
+                    profile=profile,
+                    target=target,
+                ):
+                    raise ValueError("scene_script_pack_v3:story_not_usable")
+                return replace(
+                    generation,
+                    text=story_text,
+                    generationMode="scene-script-pack-v3",
+                    fallbackUsed=False,
+                    repairUsed=False,
+                    providerTrace=[*generation.providerTrace, f"scene-script-pack-v3:accepted:{provider_name}"],
+                    metadata={
+                        "usedSceneSeeds": used_scene_seeds,
+                        "usedPersonaAnchors": used_persona_anchors,
+                        "usedBeatFields": used_beat_fields,
+                    },
+                )
+            except ProviderUnavailableError as exc:
+                provider_errors.append(f"{provider_name}:{str(exc)[:100]}")
+            except Exception as exc:
+                content_errors.append(f"{provider_name}:{str(exc)[:100]}")
+        if content_errors:
+            raise ValueError(f"scene_script_pack_v3:no_usable_provider:{' > '.join(content_errors[:4])}")
+        raise ProviderUnavailableError(f"scene_script_pack_v3:provider_chain_failed:{' > '.join(provider_errors[:4])}")
 
     def _generate_scene_script_pack_v2(
         self,
@@ -6312,6 +7300,10 @@ class NpcDialogueService:
                 "以及一段約 200 個繁體中文字、可演出的小劇本。"
             ),
         }
+        memory_context["beatFusionPrompt"] = "正式稿要把 memory / emotion / dialogue / intent 自然融合在同一段正文裡，像可演出的劇本，不要寫成摘要卡或逐欄填表。"
+        memory_context["sceneSeedPrompt"] = "六種子要成為正文的地景、事件與推進骨架，盡量自然帶出多個元素，但不要把它們排成清單。"
+        memory_context["personaPrompt"] = "persona 需主導語氣、視角與決策，不可寫成中性摘要。"
+        memory_context["lengthPrompt"] = "正文目標約 240 字，若自然需要可上下浮動；太短時再補一個具體後果、情緒轉折或下一步。"
         provider_config = self._scene_story_provider_config(request.llmModelPreset, request.renderMode)
         generation = self._generate_scene_director_text(
             general_id=request.generalId,
@@ -6365,7 +7357,7 @@ class NpcDialogueService:
                 ),
                 "intentText": self._seed_display_sentence(profile, beats.intentText, 88, preserve_actor_aliases=True),
                 "storyText": fallback_story,
-                "usedSeedKeys": used_seed_keys,
+                "usedSceneSeeds": used_seed_keys,
                 "usedPersonaAnchors": [
                     anchor
                     for anchor in [
@@ -6375,8 +7367,10 @@ class NpcDialogueService:
                     ]
                     if anchor
                 ],
+                "usedBeatFields": [field for field, value in {"memory": beats.memoryText, "emotion": beats.emotionText, "dialogue": beats.dialogueText, "intent": beats.intentText}.items() if str(value or "").strip()],
                 "violations": ["scene_script_pack_v2_json_repaired_from_plain_text"],
             }
+            payload["usedSeedKeys"] = list(payload["usedSceneSeeds"])
             generation = replace(
                 generation,
                 qualityWarnings=[*generation.qualityWarnings, "scene_script_pack_v2_json_repaired_from_plain_text"],
@@ -6387,7 +7381,9 @@ class NpcDialogueService:
             request,
         )
         story_validation = self._scene_script_v2_story_validation(story_text, request, profile, target, beats)
-        payload["usedSeedKeys"] = list(story_validation["coverageKeys"] or [])
+        payload["usedSceneSeeds"] = list(story_validation["coverageKeys"] or [])
+        payload["usedSeedKeys"] = list(payload["usedSceneSeeds"])
+        payload["usedBeatFields"] = list(story_validation["beatFields"] or [])
         story_fit_warnings.extend(story_validation["warnings"])
         if self._scene_script_text_has_placeholder(story_text):
             raise ValueError("scene_script_pack_v2:story_placeholder_or_internal_token")
@@ -6431,8 +7427,186 @@ class NpcDialogueService:
                 *self._scene_script_pack_v2_warnings(payload, story_text, request),
                 *(["scene_script_pack_v2_json_repaired_from_plain_text"] if payload_parse_failed else []),
             ],
+            metadata={
+                "usedSceneSeeds": list(payload.get("usedSceneSeeds") or []),
+                "usedPersonaAnchors": list(payload.get("usedPersonaAnchors") or []),
+                "usedBeatFields": list(payload.get("usedBeatFields") or []),
+            },
         )
         return updated_generation, updated_beats
+
+    def _scene_chorus_no_data_lines(
+        self,
+        targets: list[NarrativeInteractionTarget],
+        *,
+        reason: str,
+    ) -> list[SceneChorusLine]:
+        return [
+            SceneChorusLine(
+                targetId=target.targetId,
+                label=target.label,
+                role=target.role,
+                text="",
+                status=SCENE_DIRECTOR_STATUS_NO_DATA,
+                provider=None,
+                model=None,
+                generationMode="scene-chorus-batch-v3:no-data",
+                fallbackUsed=False,
+                providerTrace=[reason],
+                qualityWarnings=[reason],
+                evidenceRefs=target.evidenceRefs[:12],
+            )
+            for target in targets
+        ]
+
+    def _parse_scene_chorus_batch_v3_payload(self, text: str) -> list[dict[str, Any]]:
+        try:
+            payload = json.loads(str(text or ""))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"scene_chorus_batch_v3:json_parse:{exc}") from exc
+        if not isinstance(payload, dict):
+            raise ValueError("scene_chorus_batch_v3:not-object")
+        raw_lines = payload.get("chorusLines")
+        if not isinstance(raw_lines, list):
+            raise ValueError("scene_chorus_batch_v3:missing_chorus_lines")
+        lines: list[dict[str, Any]] = []
+        for item in raw_lines:
+            if not isinstance(item, dict):
+                continue
+            status = str(item.get("status") or SCENE_DIRECTOR_STATUS_OK).strip() or SCENE_DIRECTOR_STATUS_OK
+            text_value = " ".join(str(item.get("text") or "").split()).strip()
+            target_id = str(item.get("targetId") or "").strip()
+            if not target_id:
+                continue
+            if status == SCENE_DIRECTOR_STATUS_OK and not text_value:
+                status = SCENE_DIRECTOR_STATUS_NO_DATA
+            lines.append(
+                {
+                    "targetId": target_id,
+                    "label": str(item.get("label") or "").strip(),
+                    "role": str(item.get("role") or "").strip(),
+                    "status": status if status in {SCENE_DIRECTOR_STATUS_OK, SCENE_DIRECTOR_STATUS_NO_DATA} else SCENE_DIRECTOR_STATUS_NO_DATA,
+                    "text": text_value if status == SCENE_DIRECTOR_STATUS_OK else "",
+                    "usedSeedKeys": [str(seed).strip() for seed in (item.get("usedSeedKeys") or []) if str(seed).strip()],
+                    "usedPersonaAnchors": [str(anchor).strip() for anchor in (item.get("usedPersonaAnchors") or []) if str(anchor).strip()],
+                    "voiceTag": str(item.get("voiceTag") or "").strip(),
+                    "violations": [str(code).strip() for code in (item.get("violations") or []) if str(code).strip()],
+                }
+            )
+        if not lines:
+            raise ValueError("scene_chorus_batch_v3:no_valid_lines")
+        return lines
+
+    def _build_scene_chorus_batch_v3(
+        self,
+        *,
+        request: SceneDirectorRequest,
+        profile: NarrativeProfileResponse,
+        targets: list[NarrativeInteractionTarget],
+        main_target: NarrativeInteractionTarget | None,
+        card: NarrativeEvidenceCard | None,
+        beats: SceneDirectorBeats,
+        story_text: str,
+        timeout_seconds: float | None = None,
+    ) -> list[SceneChorusLine]:
+        if not targets:
+            return []
+        if timeout_seconds is not None and timeout_seconds <= 0.05:
+            return self._scene_chorus_no_data_lines(targets, reason="scene_chorus_batch_v3:deadline-before-submit")
+
+        speakers_payload: list[dict[str, Any]] = []
+        speaker_contexts: dict[str, dict[str, Any]] = {}
+        evidence_refs = list(card.sourceRefs if card else [])
+        for target in targets:
+            persona_card = self.get_persona_card(target.targetId)
+            speaker_context = self._scene_chorus_personalized_context(
+                self._speaker_persona_context(target, persona_card),
+                target,
+                main_target,
+                beats,
+                story_text,
+            )
+            speaker_contexts[target.targetId] = speaker_context
+            evidence_refs.extend(target.evidenceRefs)
+            speakers_payload.append(
+                {
+                    "targetId": target.targetId,
+                    "label": target.label,
+                    "role": target.role,
+                    "focusHint": str(speaker_context.get("focusHint") or "").strip(),
+                    "seedHint": str(speaker_context.get("seedHint") or "").strip(),
+                    "guidance": self._speaker_persona_guidance(speaker_context, target),
+                    "personaSummary": self._speaker_persona_summary(speaker_context),
+                }
+            )
+
+        provider_config = self._scene_chorus_provider_config(request.llmModelPreset, request.renderMode)
+        generation = self._generate_scene_director_text(
+            general_id=request.generalId,
+            persona_card=self.get_persona_card(request.generalId),
+            memory_context={
+                "saveId": f"demo-chorus-v3-{request.generalId}",
+                "shortTerm": story_text,
+                "longTerm": self._scene_seed_text(beats),
+                "playerProfile": f"mainActor={profile.displayName};activeTarget={main_target.label if main_target else ''}",
+                "promises": "Return status=no_data with empty text when a clean chorus line cannot be formed. Do not fabricate fallback dialogue.",
+            },
+            selected_context={
+                "task": "scene-chorus-batch-v3",
+                "mainActor": {"generalId": profile.generalId, "displayName": profile.displayName},
+                "activeTarget": {
+                    "targetId": main_target.targetId if main_target else None,
+                    "label": main_target.label if main_target else None,
+                    "role": main_target.role if main_target else None,
+                },
+                "sceneScript": story_text,
+                "sceneGrounding": self._scene_chorus_grounding_terms(main_target, beats, story_text),
+                "speakers": speakers_payload,
+            },
+            evidence_refs=sorted(set(evidence_refs))[:12],
+            deterministic_text="",
+            max_chars=request.maxChorusChars,
+            locale=request.locale,
+            llm_model_preset=request.llmModelPreset,
+            speech_context_mode="inner_monologue",
+            tone_mode="in-character",
+            selected_keywords=self._scene_chorus_keywords(profile, targets[0], main_target, beats, speaker_contexts.get(targets[0].targetId)),
+            include_resolved_evidence=True,
+            provider_order=provider_config["providerOrder"],
+            model_overrides=provider_config["modelOverrides"],
+            allow_deterministic_fallback=False,
+        )
+        raw_lines = self._parse_scene_chorus_batch_v3_payload(str(generation.text or "").strip())
+        by_target = {str(item.get("targetId") or "").strip(): item for item in raw_lines}
+        lines: list[SceneChorusLine] = []
+        for target in targets:
+            item = by_target.get(target.targetId)
+            if not item:
+                lines.extend(self._scene_chorus_no_data_lines([target], reason="scene_chorus_batch_v3:missing_target"))
+                continue
+            status = str(item.get("status") or SCENE_DIRECTOR_STATUS_NO_DATA).strip()
+            text_value = str(item.get("text") or "").strip()
+            if status != SCENE_DIRECTOR_STATUS_OK or not text_value or self._scene_script_text_has_placeholder(text_value):
+                lines.extend(self._scene_chorus_no_data_lines([target], reason="scene_chorus_batch_v3:no_clean_line"))
+                continue
+            lines.append(
+                SceneChorusLine(
+                    targetId=target.targetId,
+                    label=str(item.get("label") or "").strip() or target.label,
+                    role=str(item.get("role") or "").strip() or target.role,
+                    text=text_value,
+                    status=SCENE_DIRECTOR_STATUS_OK,
+                    provider=generation.provider,
+                    model=generation.model,
+                    generationMode="scene-chorus-batch-v3",
+                    fallbackUsed=False,
+                    cacheHit=self._generation_cache_hit(generation),
+                    providerTrace=[*generation.providerTrace, f"scene-chorus-batch-v3:{target.targetId}"],
+                    qualityWarnings=[],
+                    evidenceRefs=sorted(set((card.sourceRefs if card else []) + target.evidenceRefs))[:12],
+                )
+            )
+        return lines
 
     def _parse_scene_chorus_batch_v2_payload(self, text: str) -> list[dict[str, Any]]:
         try:
@@ -6485,25 +7659,11 @@ class NpcDialogueService:
 
         def fallback_line(target: NarrativeInteractionTarget, reason: str) -> SceneChorusLine:
             evidence_refs = sorted(set((card.sourceRefs if card else []) + target.evidenceRefs))
-            persona_card = self.get_persona_card(target.targetId)
-            speaker_context = self._scene_chorus_personalized_context(
-                self._speaker_persona_context(target, persona_card),
-                target,
-                main_target,
-                beats,
-                story_text,
-            )
             return SceneChorusLine(
                 targetId=target.targetId,
                 label=target.label,
                 role=target.role,
-                text=self._compose_scene_grounded_chorus_fallback_v3(
-                    target=target,
-                    main_target=main_target,
-                    beats=beats,
-                    story_text=story_text,
-                    speaker_context=speaker_context,
-                ),
+                text=SCENE_CHORUS_NO_DATA_TEXT,
                 provider="deterministic",
                 model=None,
                 generationMode="data_first-deterministic-deprecated",
@@ -6568,104 +7728,6 @@ class NpcDialogueService:
                 )
             return selected_keywords
 
-        def try_repair_line(
-            *,
-            target: NarrativeInteractionTarget,
-            line_generation: DialogueGenerationResult,
-            speaker_context: dict[str, Any],
-            fallback_text: str,
-            draft_text: str,
-            evidence_refs_for_line: list[str],
-            quality_issues: list[str],
-        ) -> DialogueGenerationResult | None:
-            try:
-                regenerated = self._rewrite_scene_chorus_from_fallback(
-                    request=request,
-                    profile=profile,
-                    target=target,
-                    main_target=main_target,
-                    beats=beats,
-                    story_text=story_text,
-                    speaker_context=speaker_context,
-                    selected_keywords=selected_keywords_for(target, speaker_context),
-                    evidence_refs=evidence_refs_for_line,
-                    fallback_text=fallback_text,
-                    draft_text=draft_text,
-                    quality_issues=quality_issues,
-                )
-            except Exception as exc:  # pragma: no cover - rewrite is best-effort
-                log_debug_event(
-                    "scene_director.chorus_batch_v2.repair_error",
-                    targetId=target.targetId,
-                    error=str(exc)[:240],
-                )
-                return None
-            if regenerated is None:
-                fallback_candidate = self._complete_generated_text(fallback_text, fallback_text, request.maxChorusChars)
-                if (
-                    fallback_candidate
-                    and not self._contains_internal_symbolic_token(fallback_candidate)
-                    and not self._is_narrative_exposition_chorus_line(fallback_candidate, beats)
-                ):
-                    warnings = [warning for warning in line_generation.qualityWarnings if warning != "scene_chorus_ungrounded_rejected"]
-                    warnings.append("scene_chorus_fallback_text_accepted")
-                    return replace(
-                        line_generation,
-                        text=fallback_candidate,
-                        fallbackUsed=False,
-                        repairUsed=True,
-                        providerTrace=[*line_generation.providerTrace, f"scene-chorus-batch-v2-fallback:{target.targetId}"],
-                        qualityWarnings=list(dict.fromkeys(warnings)),
-                    )
-                return None
-            return replace(
-                regenerated,
-                providerTrace=[*regenerated.providerTrace, f"scene-chorus-batch-v2-repair:{target.targetId}"],
-            )
-
-        def accept_structured_line_by_metadata(
-            *,
-            raw_line: dict[str, Any],
-            line_generation: DialogueGenerationResult,
-            raw_text: str,
-            fallback_text: str,
-            target: NarrativeInteractionTarget,
-            speaker_context: dict[str, Any],
-        ) -> DialogueGenerationResult | None:
-            if line_generation.provider == "deterministic":
-                return None
-            warnings = list(line_generation.qualityWarnings)
-            if "scene_chorus_persona_thin_rejected" not in warnings:
-                return None
-            metadata_anchors = [
-                str(item or "").strip()
-                for item in [
-                    *(raw_line.get("usedPersonaAnchors") or []),
-                    raw_line.get("voiceTag"),
-                ]
-                if str(item or "").strip()
-            ]
-            if not metadata_anchors:
-                return None
-            candidate = self._complete_generated_text(raw_text, fallback_text, request.maxChorusChars)
-            if (
-                not candidate
-                or self._contains_internal_symbolic_token(candidate)
-                or self._is_narrative_exposition_chorus_line(candidate, beats)
-                or self._is_generic_chorus_line(candidate, speaker_context)
-                or not self._line_has_scene_grounding(candidate, main_target, beats, story_text)
-            ):
-                return None
-            warnings = [warning for warning in warnings if warning != "scene_chorus_persona_thin_rejected"]
-            warnings.append("scene_chorus_persona_anchor_metadata_used")
-            return replace(
-                line_generation,
-                text=candidate,
-                fallbackUsed=False,
-                repairUsed=True,
-                qualityWarnings=list(dict.fromkeys(warnings)),
-            )
-
         provider_config = self._scene_chorus_provider_config(request.llmModelPreset, request.renderMode)
         generation = self._generate_scene_director_text(
             general_id=request.generalId,
@@ -6714,105 +7776,48 @@ class NpcDialogueService:
             raw_line = parsed_map.get(target.targetId)
             evidence_refs_for_line = sorted(set((card.sourceRefs if card else []) + target.evidenceRefs))
             speaker_context = speaker_contexts[target.targetId]
-            fallback_text = self._compose_scene_grounded_chorus_fallback_v3(
+            if raw_line is None:
+                results.append(fallback_line(target, "missing_target_line"))
+                continue
+            line_generation = replace(
+                generation,
+                text=str(raw_line.get("text") or "").strip(),
+                generationMode="scene-chorus-batch-v2",
+                providerTrace=[*generation.providerTrace, f"scene-chorus-batch-v2:{target.targetId}"],
+                qualityWarnings=[
+                    *generation.qualityWarnings,
+                    *[str(code).strip() for code in (raw_line.get("violations") or []) if str(code).strip()],
+                ],
+            )
+            raw_generation_text = str(line_generation.text or "").strip()
+            line_generation = self._repair_complete_generation(
+                line_generation,
+                fallback_text="",
+                max_chars=request.maxChorusChars,
+                warning_code="scene_chorus_trimmed_to_complete_sentence",
+            )
+            line_generation = self._repair_chorus_generation(
+                generation=line_generation,
+                fallback_text="",
+                max_chars=request.maxChorusChars,
                 target=target,
+                speaker_context=speaker_context,
                 main_target=main_target,
                 beats=beats,
                 story_text=story_text,
-                speaker_context=speaker_context,
             )
-            if raw_line is None:
-                repaired_missing = try_repair_line(
-                    target=target,
-                    speaker_context=speaker_context,
-                    fallback_text=fallback_text,
-                    draft_text="",
-                    evidence_refs_for_line=evidence_refs_for_line,
-                    quality_issues=["scene_chorus_batch_v2_missing_target_line"],
-                )
-                if repaired_missing is None:
-                    results.append(fallback_line(target, "missing_target_line"))
-                    continue
-                raw_line = {"label": target.label, "role": target.role, "text": repaired_missing.text, "violations": []}
-                line_generation = repaired_missing
-            else:
-                line_generation = replace(
-                    generation,
-                    text=str(raw_line.get("text") or "").strip(),
-                    generationMode="scene-chorus-batch-v2",
-                    providerTrace=[*generation.providerTrace, f"scene-chorus-batch-v2:{target.targetId}"],
-                    qualityWarnings=[
-                        *generation.qualityWarnings,
-                        *[str(code).strip() for code in (raw_line.get("violations") or []) if str(code).strip()],
-                    ],
-                )
-                raw_generation_text = str(line_generation.text or "").strip()
-                line_generation = self._repair_complete_generation(
-                    line_generation,
-                    fallback_text=fallback_text,
-                    max_chars=request.maxChorusChars,
-                    warning_code="scene_chorus_trimmed_to_complete_sentence",
-                )
-                line_generation = self._repair_chorus_generation(
-                    generation=line_generation,
-                    fallback_text=fallback_text,
-                    max_chars=request.maxChorusChars,
-                    target=target,
-                    speaker_context=speaker_context,
-                    main_target=main_target,
-                    beats=beats,
-                    story_text=story_text,
-                )
-                if line_generation.fallbackUsed:
-                    accepted_line = accept_structured_line_by_metadata(
-                        raw_line=raw_line,
-                        line_generation=line_generation,
-                        raw_text=raw_generation_text,
-                        fallback_text=fallback_text,
-                        target=target,
-                        speaker_context=speaker_context,
-                    )
-                    if accepted_line is not None:
-                        line_generation = accepted_line
-                    else:
-                        repaired_line = try_repair_line(
-                            target=target,
-                            line_generation=line_generation,
-                            speaker_context=speaker_context,
-                            fallback_text=fallback_text,
-                            draft_text=raw_generation_text,
-                            evidence_refs_for_line=evidence_refs_for_line,
-                            quality_issues=list(line_generation.qualityWarnings),
-                        )
-                        if repaired_line is not None:
-                            line_generation = repaired_line
-                    if line_generation.fallbackUsed:
-                        fallback_candidate = self._complete_generated_text(fallback_text, fallback_text, request.maxChorusChars)
-                        if (
-                            fallback_candidate
-                            and not self._contains_internal_symbolic_token(fallback_candidate)
-                            and not self._is_narrative_exposition_chorus_line(fallback_candidate, beats)
-                            and not self._is_generic_chorus_line(fallback_candidate, speaker_context)
-                            and self._line_has_scene_grounding(fallback_candidate, main_target, beats, story_text)
-                        ):
-                            fallback_warnings = [
-                                warning
-                                for warning in line_generation.qualityWarnings
-                                if warning != "scene_chorus_ungrounded_rejected"
-                            ]
-                            fallback_warnings.append("scene_chorus_fallback_text_accepted")
-                            line_generation = replace(
-                                line_generation,
-                                text=fallback_candidate,
-                                fallbackUsed=False,
-                                repairUsed=True,
-                                qualityWarnings=list(dict.fromkeys(fallback_warnings)),
-                            )
-            if raw_line is None:
-                continue
-            line_warnings = list(line_generation.qualityWarnings)
             if line_generation.fallbackUsed:
-                line_warnings.extend(self._deprecated_render_mode_warnings(SCENE_RENDER_MODE_DATA_FIRST))
+                line_generation = replace(
+                    line_generation,
+                    text=SCENE_CHORUS_NO_DATA_TEXT,
+                    provider="unavailable",
+                    model=None,
+                    generationMode="scene-chorus-no-data",
+                    providerTrace=[*line_generation.providerTrace, f"scene-chorus-batch-v2:no-data:{target.targetId}"],
+                    qualityWarnings=list(dict.fromkeys([*line_generation.qualityWarnings, "scene_chorus_no_data_returned"])),
+                    repairUsed=True,
+                )
+            line_warnings = list(line_generation.qualityWarnings)
             line = SceneChorusLine(
                 targetId=target.targetId,
                 label=str(raw_line.get("label") or "").strip() or target.label,
@@ -7009,18 +8014,11 @@ class NpcDialogueService:
         speaker_focus_term = str(speaker_context.get("focusHint") or "").strip()
         speaker_seed_term = str(speaker_context.get("seedHint") or "").strip()
         if request.renderMode == SCENE_RENDER_MODE_DATA_FIRST:
-            text = self._compose_scene_grounded_chorus_fallback_v3(
-                target=target,
-                main_target=main_target,
-                beats=beats,
-                story_text=story_text,
-                speaker_context=speaker_context,
-            )
             return SceneChorusLine(
                 targetId=target.targetId,
                 label=target.label,
                 role=target.role,
-                text=text,
+                text=SCENE_CHORUS_NO_DATA_TEXT,
                 provider="deterministic",
                 model=None,
                 generationMode="data_first-deterministic-deprecated",
@@ -7056,13 +8054,7 @@ class NpcDialogueService:
                 }
             )
         grounding_terms = self._scene_chorus_grounding_terms(main_target, beats, story_text)
-        fallback_text = self._compose_scene_grounded_chorus_fallback_v3(
-            target=target,
-            main_target=main_target,
-            beats=beats,
-            story_text=story_text,
-            speaker_context=speaker_context,
-        )
+        fallback_text = ""
         prompt_payload = self._scene_chorus_prompt_payload(
             profile,
             target,
@@ -7073,8 +8065,6 @@ class NpcDialogueService:
             grounding_terms,
         )
         provider_config = self._scene_chorus_provider_config(request.llmModelPreset, request.renderMode)
-        if not draft_line and fallback_text:
-            prompt_player_profile = prompt_player_profile.replace(fallback_text, "請直接依本幕重寫一句反應")
         generation = self._generate_scene_director_text(
             general_id=target.targetId,
             persona_card=persona_card,
@@ -7121,13 +8111,13 @@ class NpcDialogueService:
         raw_generation = generation
         generation = self._repair_complete_generation(
             generation,
-            fallback_text=fallback_text,
+            fallback_text="",
             max_chars=request.maxChorusChars,
             warning_code="scene_chorus_trimmed_to_complete_sentence",
         )
         generation = self._repair_chorus_generation(
             generation=generation,
-            fallback_text=fallback_text,
+            fallback_text="",
             max_chars=request.maxChorusChars,
             target=target,
             speaker_context=speaker_context,
@@ -7136,30 +8126,16 @@ class NpcDialogueService:
             story_text=story_text,
         )
         if generation.fallbackUsed:
-            try:
-                regenerated = self._rewrite_scene_chorus_from_fallback(
-                    request=request,
-                    profile=profile,
-                    target=target,
-                    main_target=main_target,
-                    beats=beats,
-                    story_text=story_text,
-                    speaker_context=speaker_context,
-                    selected_keywords=selected_keywords,
-                    evidence_refs=evidence_refs,
-                    fallback_text=fallback_text,
-                    draft_text=str(raw_generation.text or "").strip(),
-                    quality_issues=list(generation.qualityWarnings),
-                )
-            except Exception as exc:  # pragma: no cover - rewrite is best-effort
-                log_debug_event(
-                    "scene_director.chorus.rewrite_error",
-                    targetId=target.targetId,
-                    error=str(exc)[:240],
-                )
-                regenerated = None
-            if regenerated is not None:
-                generation = regenerated
+            generation = replace(
+                generation,
+                text=SCENE_CHORUS_NO_DATA_TEXT,
+                provider="unavailable",
+                model=None,
+                generationMode="scene-chorus-no-data",
+                providerTrace=[*generation.providerTrace, f"scene-chorus-no-data:{target.targetId}"],
+                qualityWarnings=list(dict.fromkeys([*generation.qualityWarnings, "scene_chorus_no_data_returned"])),
+                repairUsed=True,
+            )
         self._record_scene_chorus_history(
             request=request,
             target=target,
@@ -7201,14 +8177,6 @@ class NpcDialogueService:
             return []
         def fallback_line(target: NarrativeInteractionTarget, reason: str) -> SceneChorusLine:
             evidence_refs = sorted(set((card.sourceRefs if card else []) + target.evidenceRefs))
-            persona_card = self.get_persona_card(target.targetId)
-            speaker_context = self._scene_chorus_personalized_context(
-                self._speaker_persona_context(target, persona_card),
-                target,
-                main_target,
-                beats,
-                story_text,
-            )
             log_debug_event(
                 "scene_director.chorus.fallback",
                 targetId=target.targetId,
@@ -7218,13 +8186,7 @@ class NpcDialogueService:
                 targetId=target.targetId,
                 label=target.label,
                 role=target.role,
-                text=self._compose_scene_grounded_chorus_fallback_v3(
-                    target=target,
-                    main_target=main_target,
-                    beats=beats,
-                    story_text=story_text,
-                    speaker_context=speaker_context,
-                ),
+                text=SCENE_CHORUS_NO_DATA_TEXT,
                 provider="unavailable",
                 model=None,
                 fallbackUsed=True,
@@ -7388,7 +8350,11 @@ class NpcDialogueService:
         preset_config = LLM_MODEL_PRESETS.get(llm_model_preset, LLM_MODEL_PRESETS[DEFAULT_LLM_MODEL_PRESET])
         base_order = list(preset_config.get("providerOrder") or self.provider_router.provider_order or [])
         provider_order: list[str] = []
-        if self.history_cache_enabled and render_mode != SCENE_RENDER_MODE_LLM_SCRIPT_V2:
+        use_history_cache = self.history_cache_enabled and render_mode not in {
+            SCENE_RENDER_MODE_LLM_SCRIPT_V2,
+            SCENE_RENDER_MODE_LLM_SCRIPT_V3,
+        }
+        if use_history_cache:
             provider_order.append("history_cache")
         preferred = ["gemini_flash_lite", "gemini_flash", "gemini"]
         for provider_name in [*base_order, *preferred]:
@@ -7800,37 +8766,34 @@ class NpcDialogueService:
         cleaned = self._strip_speaker_self_mentions(generation.text, target, persona_card)
         repaired = self._complete_generated_text(cleaned, fallback_text, max_chars)
         warnings = list(generation.qualityWarnings)
+
+        def return_no_data(reason: str) -> DialogueGenerationResult:
+            no_data_warnings = list(dict.fromkeys([*warnings, reason, "scene_chorus_no_data_returned"]))
+            return replace(
+                generation,
+                text=SCENE_CHORUS_NO_DATA_TEXT,
+                provider="unavailable",
+                model=None,
+                generationMode="scene-chorus-no-data",
+                fallbackUsed=True,
+                qualityWarnings=no_data_warnings,
+                repairUsed=True,
+                providerTrace=[*generation.providerTrace, f"scene-chorus-no-data:{reason}"],
+            )
+
         repair_used = generation.repairUsed
         if repaired != generation.text:
             warnings.append("scene_chorus_self_name_or_sentence_repaired")
             repair_used = True
         if self._contains_internal_symbolic_token(repaired):
             warnings.append("scene_chorus_internal_token_rejected")
-            return replace(
-                generation,
-                text=fallback_text,
-                fallbackUsed=True,
-                qualityWarnings=warnings,
-                repairUsed=True,
-            )
+            return return_no_data("scene_chorus_internal_token_rejected")
         if self._is_narrative_exposition_chorus_line(repaired, beats):
             warnings.append("scene_chorus_narrative_exposition_rejected")
-            return replace(
-                generation,
-                text=fallback_text,
-                fallbackUsed=True,
-                qualityWarnings=warnings,
-                repairUsed=True,
-            )
+            return return_no_data("scene_chorus_narrative_exposition_rejected")
         if self._is_generic_chorus_line(repaired, speaker_context):
             warnings.append("scene_chorus_generic_rejected")
-            return replace(
-                generation,
-                text=fallback_text,
-                fallbackUsed=True,
-                qualityWarnings=warnings,
-                repairUsed=True,
-            )
+            return return_no_data("scene_chorus_generic_rejected")
         if self._lacks_persona_specificity_in_chorus(
             repaired,
             target=target,
@@ -7839,41 +8802,11 @@ class NpcDialogueService:
             beats=beats,
             story_text=story_text,
         ):
-            strengthened = self._strengthen_chorus_persona_line(
-                repaired,
-                max_chars=max_chars,
-                target=target,
-                speaker_context=speaker_context,
-                main_target=main_target,
-                beats=beats,
-                story_text=story_text,
-            )
-            if strengthened:
-                warnings.append("scene_chorus_persona_cue_repaired")
-                return replace(
-                    generation,
-                    text=strengthened,
-                    fallbackUsed=False,
-                    qualityWarnings=warnings,
-                    repairUsed=True,
-                )
             warnings.append("scene_chorus_persona_thin_rejected")
-            return replace(
-                generation,
-                text=fallback_text,
-                fallbackUsed=True,
-                qualityWarnings=warnings,
-                repairUsed=True,
-            )
+            return return_no_data("scene_chorus_persona_thin_rejected")
         if not self._line_has_scene_grounding(repaired, main_target, beats, story_text):
             warnings.append("scene_chorus_ungrounded_rejected")
-            return replace(
-                generation,
-                text=fallback_text,
-                fallbackUsed=True,
-                qualityWarnings=warnings,
-                repairUsed=True,
-            )
+            return return_no_data("scene_chorus_ungrounded_rejected")
         return replace(
             generation,
             text=repaired,
@@ -7881,43 +8814,8 @@ class NpcDialogueService:
             repairUsed=repair_used,
         )
 
-    def _strengthen_chorus_persona_line(
-        self,
-        text: str,
-        max_chars: int,
-        target: NarrativeInteractionTarget,
-        speaker_context: dict[str, Any],
-        main_target: NarrativeInteractionTarget | None,
-        beats: SceneDirectorBeats,
-        story_text: str,
-    ) -> str:
-        cleaned = str(text or "").strip()
-        if not cleaned:
-            return ""
-        archetype = str(speaker_context.get("archetype") or self._speaker_archetype("", target)).strip()
-        stance_prefixes = {
-            "oath_guardian": ["這份義氣不能只靠一句話，", "既是同袍，"],
-            "martial_direct": ["這一刻先看進退，", "戰機不能慢，"],
-            "jiangdong_ruler": ["形勢要先收住，", "名分與節奏都不能亂，"],
-            "marriage_mediator": ["情分越重越要留分寸，", "這層關係不能只憑一時心氣，"],
-            "family_line": ["家人這一線要先護住，", "承接的人不能亂，"],
-            "family_witness": ["身邊人的安危要先顧到，", "情分牽到此處，"],
-            "rival_observer": ["真到對陣時，", "破綻往往就在這一口氣裡，"],
-            "measured_observer": ["先把眼前這幕看定，", "此刻最要緊的是，"],
-        }.get(archetype, ["先把眼前這幕看定，"])
-        for prefix in stance_prefixes:
-            candidate = self._complete_generated_text(f"{prefix}{cleaned}", cleaned, max_chars)
-            if (
-                candidate
-                and not self._contains_internal_symbolic_token(candidate)
-                and not self._is_narrative_exposition_chorus_line(candidate, beats)
-                and not self._is_generic_chorus_line(candidate, speaker_context)
-                and self._line_has_scene_grounding(candidate, main_target, beats, story_text)
-            ):
-                return candidate
-        return ""
-
-    def _is_narrative_exposition_chorus_line(self, text: str, beats: SceneDirectorBeats) -> bool:
+    def _is_narrative_exposition_chorus_line(
+self, text: str, beats: SceneDirectorBeats) -> bool:
         cleaned = str(text or "").strip()
         if not cleaned:
             return True
@@ -8153,206 +9051,6 @@ class NpcDialogueService:
             or re.search(r"\b(?:personaSource|relationshipType|contextKey|sceneSeeds)\b", cleaned)
         )
 
-    def _compose_scene_grounded_chorus_fallback_v3(
-        self,
-        target: NarrativeInteractionTarget,
-        main_target: NarrativeInteractionTarget | None,
-        beats: SceneDirectorBeats,
-        story_text: str,
-        speaker_context: dict[str, Any],
-    ) -> str:
-        anchor = self._scene_chorus_best_grounding_anchor(target, main_target, beats, story_text)
-        if not anchor:
-            return ""
-        anchor_clause = anchor if anchor.endswith(("，", "；", "。")) else f"{anchor}，"
-        main_label = self._clean_seed_text(main_target.label if main_target else "", max_chars=12).strip() or "前頭的人"
-        archetype = str(speaker_context.get("archetype") or self._speaker_archetype("", target)).strip()
-        variant = int(hashlib.sha1(str(target.targetId or "").encode("utf-8")).hexdigest()[:8], 16)
-        choose = lambda options: options[variant % len(options)]
-        if archetype == "oath_guardian":
-            text = choose([
-                f"{anchor_clause}這份義氣不能只讓{main_label}一人撐著，我得補上後手。",
-                f"{anchor_clause}既說同生死，{main_label}那頭一緊，我這邊就不能慢。",
-                f"{anchor_clause}兄弟情分不是口號，該有人替{main_label}把後路守住。",
-            ])
-        elif archetype == "martial_direct":
-            text = choose([
-                f"{anchor_clause}這一動最怕銜接慢，我先替{main_label}看住退路。",
-                f"{anchor_clause}戰機已起，前頭有人頂住，後手就得立刻跟上。",
-            ])
-        elif archetype == "jiangdong_ruler":
-            text = choose([
-                f"{anchor_clause}形勢已推緊，先收住節奏，別讓人心散開。",
-                f"{anchor_clause}名分和進退都要看清，不能讓一時氣勢牽著走。",
-            ])
-        elif archetype in {"marriage_mediator", "family_line", "family_witness", "family_sacrifice"}:
-            text = choose([
-                f"{anchor_clause}牽著身邊人的安危，先把{main_label}那頭接穩。",
-                f"{anchor_clause}越是有人被牽連，越要先穩住{main_label}那頭與去路。",
-            ])
-        elif archetype == "rival_observer":
-            text = f"{anchor_clause}這股氣若逼到陣前，最容易露出勝負破綻。"
-        else:
-            text = choose([
-                f"{anchor_clause}先看定，話不必急，後手要留穩。",
-                f"{anchor_clause}眼前不能只看熱鬧，誰補位、誰收勢都要分清。",
-            ])
-        return self._sentence_or_default(text, "", max_chars=72)
-
-    def _scene_chorus_best_grounding_anchor(
-        self,
-        target: NarrativeInteractionTarget,
-        main_target: NarrativeInteractionTarget | None,
-        beats: SceneDirectorBeats,
-        story_text: str,
-    ) -> str:
-        terms = [
-            self._clean_seed_text(term, max_chars=18).strip("，。；：、 ")
-            for term in self._scene_chorus_grounding_terms(main_target, beats, story_text)
-            if not self._is_weak_chorus_grounding_term(str(term or ""))
-        ]
-        terms = [term for term in dict.fromkeys(terms) if term]
-        relationship_type = str((main_target.relationshipType if main_target else "") or target.relationshipType or "").strip()
-        if relationship_type in SCENE_CHORUS_BOND_RELATIONSHIP_TYPES:
-            for term in terms:
-                if any(marker in term for marker in ["桃園", "結義", "誓", "同生死", "義氣", "兄弟"]):
-                    return term
-        for term in terms:
-            if any(marker in term for marker in ["重圍", "追趕", "橋頭", "退路", "聲勢", "幼主"]):
-                return term
-        return terms[0] if terms else ""
-
-    def _scene_chorus_lead_clause(
-        self,
-        main_target: NarrativeInteractionTarget | None,
-        beats: SceneDirectorBeats,
-        story_text: str,
-        speaker_context: dict[str, Any] | None = None,
-    ) -> str:
-        action_phrase = self._scene_chorus_action_phrase(main_target, beats, story_text)
-        seed_hint = str((speaker_context or {}).get("seedHint") or "").strip()
-        focus_hint = str((speaker_context or {}).get("focusHint") or "").strip()
-        scene_term = self._scene_chorus_scene_term(beats, story_text)
-        if action_phrase:
-            if seed_hint and seed_hint not in action_phrase:
-                return f"{action_phrase}，我先把{seed_hint}記住"
-            return action_phrase
-        place = str((beats.sceneSeeds or {}).get("place") or "").strip()
-        if main_target and seed_hint:
-            return f"我先看{main_target.label}這一幕落在{seed_hint}"
-        if main_target and scene_term:
-            return f"我先看{main_target.label}這一下"
-        if main_target and place:
-            return f"我先看{main_target.label}在{place}這一帶撐住局面"
-        if main_target:
-            return f"看{main_target.label}這一下"
-        if scene_term:
-            return f"我先把{scene_term}記住"
-        if place:
-            return f"{place}這一幕"
-        if focus_hint:
-            return f"我先記住{focus_hint}"
-        return ""
-
-    def _scene_chorus_judgment_clause(
-        self,
-        target: NarrativeInteractionTarget,
-        main_target: NarrativeInteractionTarget | None,
-        beats: SceneDirectorBeats,
-        story_text: str,
-        speaker_context: dict[str, Any],
-        focus_terms: list[str],
-    ) -> str:
-        archetype = str(speaker_context.get("archetype") or "")
-        focus = focus_terms[0] if focus_terms else "分寸"
-        seed_hint = str(speaker_context.get("seedHint") or "").strip()
-        scene_term = self._scene_chorus_scene_term(beats, story_text)
-        target_name = str(main_target.label if main_target else "").strip()
-        scene_focus = seed_hint or scene_term or focus
-        if archetype == "oath_guardian":
-            return f"{focus}不是嘴上說說，我得先把{scene_focus}接住，才不算負了{target_name or '身邊的人'}。"
-        if archetype == "martial_direct":
-            return f"{focus}要落在動作上，{scene_focus}這一頭既然有人頂著，後面的銜接就不能慢。"
-        if archetype == "jiangdong_ruler":
-            return f"{focus}都得收回局勢本身；{scene_focus}這一口氣有人替眾人換出來，就要順勢把亂局壓住。"
-        if archetype == "marriage_mediator":
-            return f"情分一牽進來，越要把{scene_focus}和去路安排穩，免得後頭的人心先亂。"
-        if archetype == "family_sacrifice":
-            return f"這一下換來的是{scene_focus or '生路'}，不能白耗在遲疑裡。"
-        if archetype == "family_line":
-            return f"先把{scene_focus or '後手'}接住，才護得住該護的人。"
-        if archetype == "family_witness":
-            return f"既有人替眾人撐住{scene_focus or '這一幕'}，後頭的人就更不能散。"
-        if archetype == "rival_observer":
-            return f"真換到對陣時，這股{scene_focus or focus}最容易逼人露出破綻。"
-        return f"先把{scene_focus or '眼前這一口氣'}接住，再談{focus}才不會落空。"
-
-    def _scene_chorus_scene_term(self, beats: SceneDirectorBeats, story_text: str) -> str:
-        scene_seeds = beats.sceneSeeds or {}
-        joined = " ".join(
-            str(value or "")
-            for value in [
-                scene_seeds.get("event"),
-                beats.sceneText,
-                story_text,
-            ]
-        )
-        marker_map = [
-            ("斷後", "後手"),
-            ("退走", "退路"),
-            ("退兵", "退路"),
-            ("追兵", "追兵"),
-            ("長坂橋", "橋頭"),
-            ("長阪橋", "橋頭"),
-            ("長坂", "橋頭"),
-            ("長阪", "橋頭"),
-            ("大喝", "聲勢"),
-            ("百姓", "眾人"),
-            ("家眷", "同行的人"),
-            ("阿斗", "幼主"),
-            ("阿鬥", "幼主"),
-        ]
-        for marker, label in marker_map:
-            if marker in joined:
-                return label
-        objects = [
-            str(item or "").strip()
-            for item in scene_seeds.get("objects") or []
-            if str(item or "").strip() and not self._is_weak_chorus_grounding_term(str(item or "").strip())
-        ]
-        place = str(scene_seeds.get("place") or "").strip()
-        place_values = [place] if place and not self._is_weak_chorus_grounding_term(place) else []
-        for value in objects + place_values:
-            if value:
-                return value
-        return ""
-
-    def _scene_chorus_action_phrase(
-        self,
-        main_target: NarrativeInteractionTarget | None,
-        beats: SceneDirectorBeats,
-        story_text: str,
-    ) -> str:
-        target_aliases = self._target_aliases_for_interaction(main_target) if main_target else []
-        candidates = self._scene_phrase_candidates_for_chorus((beats.sceneSeeds or {}).get("event"))
-        candidates.extend(self._scene_phrase_candidates_for_chorus(beats.sceneText))
-        candidates.extend(self._scene_phrase_candidates_for_chorus(beats.memoryText, max_terms=4))
-        seen: list[str] = []
-        for item in candidates:
-            phrase = str(item or "").strip()
-            if not phrase or phrase in seen:
-                continue
-            seen.append(phrase)
-        for phrase in seen:
-            if self._is_weak_chorus_grounding_term(phrase):
-                continue
-            if target_aliases and any(alias and alias in phrase for alias in target_aliases):
-                return phrase if not phrase.startswith("在") else phrase[1:]
-        for phrase in seen:
-            if len(phrase) >= 3 and not self._is_weak_chorus_grounding_term(phrase):
-                return f"看著{phrase}" if not phrase.startswith(("在", "看著")) else phrase
-        return ""
-
     def _scene_chorus_focus_terms(
         self,
         speaker_context: dict[str, Any],
@@ -8397,123 +9095,6 @@ class NpcDialogueService:
             if str(token or "").strip()
         ]
         return fallback_terms[:4] if fallback_terms else [str(target.targetId or "")]
-
-    def _rewrite_scene_chorus_from_fallback(
-        self,
-        request: SceneDirectorRequest,
-        profile: NarrativeProfileResponse,
-        target: NarrativeInteractionTarget,
-        main_target: NarrativeInteractionTarget | None,
-        beats: SceneDirectorBeats,
-        story_text: str,
-        speaker_context: dict[str, Any],
-        selected_keywords: list[dict[str, Any]],
-        evidence_refs: list[str],
-        fallback_text: str,
-        draft_text: str = "",
-        quality_issues: list[str] | None = None,
-    ) -> DialogueGenerationResult | None:
-        persona_card = self.get_persona_card(target.targetId)
-        grounding_terms = self._scene_chorus_grounding_terms(main_target, beats, story_text)
-        draft_line = str(draft_text or "").strip()
-        if (
-            self._is_narrative_exposition_chorus_line(draft_line, beats)
-            or self._is_generic_chorus_line(draft_line, speaker_context)
-            or self._lacks_persona_specificity_in_chorus(
-                draft_line,
-                target=target,
-                speaker_context=speaker_context,
-                main_target=main_target,
-                beats=beats,
-                story_text=story_text,
-            )
-        ):
-            draft_line = ""
-        issue_labels = [str(item or "").strip() for item in (quality_issues or []) if str(item or "").strip()]
-        prompt_player_profile = (
-            f"發話者人格資料：{self._speaker_persona_summary(speaker_context)}。"
-            f"發話時應著重：{self._speaker_persona_guidance(speaker_context, target)}。"
-            f"本幕場景錨點：{'、'.join(grounding_terms[:6]) or '互動對象與當下動作'}。"
-            f"請把這句 draft 改寫得更像此人親眼看完這一幕後的反應：{draft_line or fallback_text}。"
-        )
-        if issue_labels:
-            prompt_player_profile += f"目前問題：{'、'.join(issue_labels)}。"
-        generation = self._generate_scene_director_text(
-            general_id=target.targetId,
-            persona_card=persona_card,
-            memory_context={
-                "saveId": f"demo-chorus-rewrite-{request.generalId}",
-                "shortTerm": draft_line or story_text or beats.sceneText,
-                "longTerm": self._scene_seed_text(beats),
-                "playerProfile": prompt_player_profile,
-                "promises": (
-                    "請只回一句自然短對白；語氣要像這個人真的看完本幕後脫口而出。"
-                    "必須直接扣住互動對象或當下動作，不要解釋資料，不要照抄人格標籤。"
-                    "不要用『卻說』『且說』『只見』『此時』『正行間』『忽然』『原來』這種說書旁白起手。"
-                    "不要直接照抄 scene seed 的句首；請改成帶有說話者立場的反應。"
-                ),
-            },
-            selected_context={
-                "task": "chorus-line-rewrite",
-                "mainActor": {"generalId": profile.generalId, "displayName": profile.displayName},
-                "speaker": {
-                    "generalId": target.targetId,
-                    "displayName": target.label,
-                    "relationshipToMain": target.role,
-                    "focusHint": speaker_focus_term,
-                    "seedHint": speaker_seed_term,
-                },
-                "activeTarget": {
-                    "targetId": main_target.targetId if main_target else None,
-                    "label": main_target.label if main_target else None,
-                    "role": main_target.role if main_target else None,
-                },
-                "sceneSeeds": self._scene_chorus_sanitized_seeds(beats),
-                "sceneScript": story_text,
-                "fallbackDraft": draft_line or "",
-                "draftLine": draft_line,
-                "qualityIssues": issue_labels,
-            },
-            evidence_refs=evidence_refs,
-            deterministic_text="",
-            max_chars=request.maxChorusChars,
-            locale=request.locale,
-            llm_model_preset=request.llmModelPreset,
-            speech_context_mode="inner_monologue",
-            tone_mode="in-character",
-            selected_keywords=selected_keywords,
-            include_resolved_evidence=False,
-            provider_order=["gemini_flash", "gemini_flash_lite", "gemini"],
-            model_overrides={"__timeoutMs": "4500", "__retryCount": "1"},
-            allow_deterministic_fallback=False,
-        )
-        cleaned = self._strip_speaker_self_mentions(generation.text, target, persona_card)
-        repaired = self._complete_generated_text(cleaned, fallback_text, request.maxChorusChars)
-        if (
-            not repaired
-            or self._contains_internal_symbolic_token(repaired)
-            or self._is_narrative_exposition_chorus_line(repaired, beats)
-            or self._is_generic_chorus_line(repaired, speaker_context)
-            or self._lacks_persona_specificity_in_chorus(
-                repaired,
-                target=target,
-                speaker_context=speaker_context,
-                main_target=main_target,
-                beats=beats,
-                story_text=story_text,
-            )
-            or not self._line_has_scene_grounding(repaired, main_target, beats, story_text)
-        ):
-            return None
-        warnings = list(generation.qualityWarnings)
-        warnings.append("scene_chorus_rewrite_from_fallback")
-        return replace(
-            generation,
-            text=repaired,
-            fallbackUsed=False,
-            repairUsed=True,
-            qualityWarnings=warnings,
-        )
 
     def _generate_scene_director_text(
         self,
