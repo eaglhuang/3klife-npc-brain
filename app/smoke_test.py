@@ -56,7 +56,7 @@ def main() -> None:
         SceneDirectorRequest(
             generalId="liu-bei",
             angle="people",
-            targetId="huang-zhong",
+            targetId="guan-yu",
             llmModelPreset="fallback_chain",
             renderMode="llm_script_v2",
         )

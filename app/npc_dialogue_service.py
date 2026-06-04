@@ -1080,6 +1080,7 @@ class NpcDialogueService:
             interaction_targets=interaction_targets,
         )
         activity_seeds = self._build_activity_seeds(runtime_persona=runtime_persona, runtime_keywords=runtime_keywords)
+        relationship_edges = self._displayable_runtime_relationship_edges(runtime_relationships, runtime_persona)
         persona_payload = {
             **runtime_persona,
             "displayName": display_name,
@@ -1099,7 +1100,7 @@ class NpcDialogueService:
             canonicalWrites=False,
             persona=persona_payload,
             keywords=runtime_keywords.get("categories") or {},
-            relationshipEdges=list(runtime_relationships.get("anchors") or []),
+            relationshipEdges=relationship_edges,
             evidenceCards=evidence_cards,
             itemRelations=[],
             activitySeeds=activity_seeds,
@@ -9451,6 +9452,19 @@ self, text: str, beats: SceneDirectorBeats) -> bool:
                     return projection
         return first_match
 
+    def _runtime_target_scene_eligible_projection(
+        self,
+        runtime_persona: dict[str, Any] | None,
+        target_id: str,
+    ) -> dict[str, Any] | None:
+        if not runtime_persona:
+            return None
+        for _, source in self._iter_runtime_profile_sources(runtime_persona):
+            projection = self._runtime_target_projection(source, target_id)
+            if projection is not None and bool(projection.get("sceneEligible")):
+                return projection
+        return None
+
     def _runtime_edge_source_text(self, edge: dict[str, Any], runtime_persona: dict[str, Any] | None = None) -> str:
         refs = self._runtime_edge_refs(edge)
         return " ".join(
@@ -9480,6 +9494,107 @@ self, text: str, beats: SceneDirectorBeats) -> bool:
             else DEFAULT_A_CANON_RELATIONSHIP_GRADES
         )
         return source_layer in stable_source_layers or str(edge.get("claimGrade") or "") in a_canon_grades
+
+    def _runtime_edge_is_displayable_relationship(
+        self,
+        edge: dict[str, Any],
+        runtime_persona: dict[str, Any],
+        relationship_type: str | None = None,
+    ) -> bool:
+        """Only expose relationship edges that are strong enough for the public UI.
+
+        Scene/story projections may still use weaker source mentions, but the
+        visible relationship list should not promote coarse contacts or unstable
+        conflict/defection claims into apparent canon.
+        """
+        edge_type = str(relationship_type or edge.get("type") or "").strip()
+        if not edge_type:
+            return False
+        soft_or_volatile_types = {
+            "battlefield_contact",
+            "political_contact",
+            "resource_support",
+            "enemy_rival",
+            "battlefield_opponent",
+            "betrayal_surrender",
+        }
+        if edge_type in soft_or_volatile_types:
+            return False
+        displayable_types = {
+            "adoptive_parent_child",
+            "alliance_oath",
+            "battle_ally",
+            "loyal_oath",
+            "mentor",
+            "mentor_student",
+            "parent_child",
+            "patron_client",
+            "protects_family",
+            "ruler_subject",
+            "sibling",
+            "spouse",
+            "sworn_sibling",
+        }
+        if edge_type not in displayable_types:
+            return False
+        source_layer = str(edge.get("sourceLayer") or "").strip()
+        if source_layer == "stable-bootstrap-seed":
+            return True
+        claim_grade = str(edge.get("claimGrade") or "").strip()
+        is_a_canon = claim_grade in DEFAULT_A_CANON_RELATIONSHIP_GRADES
+        if not is_a_canon:
+            return False
+        has_pair_signal = bool(edge.get("pairRelationSignal") or edge.get("directPairSignal"))
+        has_pair_signal = has_pair_signal or self._edge_has_direct_pair_signal(edge, runtime_persona)
+        if not has_pair_signal:
+            return False
+        if edge_type == "ruler_subject":
+            return self._edge_has_authority_signal(edge, runtime_persona)
+        if edge_type == "patron_client":
+            return self._edge_has_patron_signal(edge, runtime_persona)
+        return True
+
+    def _displayable_runtime_relationship_edges(
+        self,
+        runtime_relationships: dict[str, Any],
+        runtime_persona: dict[str, Any],
+    ) -> list[dict[str, Any]]:
+        preferred_non_conflict = self._preferred_non_conflict_relationships(runtime_relationships, runtime_persona)
+        selected: dict[tuple[str, str], dict[str, Any]] = {}
+        for edge in runtime_relationships.get("anchors") or []:
+            target_id = self._normalize_runtime_target_id(
+                edge.get("targetId"),
+                edge.get("targetName"),
+                self._runtime_edge_source_text(edge),
+            )
+            if not target_id:
+                continue
+            normalized_edge = {**edge, "targetId": target_id}
+            resolved_type = self._resolve_runtime_relationship_type(normalized_edge, runtime_persona, preferred_non_conflict)
+            relationship_type = self._relationship_edge_card_type(normalized_edge, resolved_type)
+            if not self._runtime_edge_is_displayable_relationship(normalized_edge, runtime_persona, relationship_type):
+                continue
+            key = (target_id, str(relationship_type or ""))
+            candidate = {
+                **normalized_edge,
+                "type": relationship_type,
+                "typeLabel": self._relationship_type_label(relationship_type, normalized_edge.get("typeLabel")),
+            }
+            current = selected.get(key)
+            if current is None:
+                selected[key] = candidate
+                continue
+            current_score = self._coerce_float(current.get("edgeConfidence"), default=0.0)
+            candidate_score = self._coerce_float(candidate.get("edgeConfidence"), default=0.0)
+            if candidate_score > current_score:
+                selected[key] = candidate
+        return sorted(
+            selected.values(),
+            key=lambda item: (
+                -self._relationship_display_priority(str(item.get("type") or ""), set(item.get("originalTypes") or [])),
+                str(item.get("targetName") or item.get("targetId") or ""),
+            ),
+        )
 
     def _relationship_edge_card_type(self, edge: dict[str, Any], resolved_type: str | None) -> str | None:
         raw_type = str(edge.get("type") or "").strip() or None
@@ -9782,12 +9897,15 @@ self, text: str, beats: SceneDirectorBeats) -> bool:
                 continue
             if target_id != str(edge.get("targetId") or "").strip():
                 edge = {**edge, "targetId": target_id}
-            bucket = ensure_bucket(target_id)
             original_types = {str(item).strip() for item in (edge.get("originalTypes") or []) if str(item).strip()}
             edge_type = self._resolve_runtime_relationship_type(edge, runtime_persona, preferred_non_conflict)
-            edge_label = self._relationship_type_label(edge_type, edge.get("typeLabel") or bucket["role"])
             if "spouse" in original_types:
                 edge_type = "spouse"
+            if not self._runtime_edge_is_displayable_relationship(edge, runtime_persona, edge_type):
+                continue
+            bucket = ensure_bucket(target_id)
+            edge_label = self._relationship_type_label(edge_type, edge.get("typeLabel") or bucket["role"])
+            if "spouse" in original_types:
                 edge_label = "姻親 / 家室"
             edge_priority = self._relationship_display_priority(edge_type, original_types)
             bucket["label"] = self._prefer_human_target_label(
@@ -9819,6 +9937,9 @@ self, text: str, beats: SceneDirectorBeats) -> bool:
                         " ".join(str(ref) for ref in refs),
                     )
                     if not target_key or target_key == general_id:
+                        continue
+                    projection = self._runtime_target_scene_eligible_projection(runtime_persona, target_key)
+                    if projection_gate_active and target_key not in buckets and projection is None:
                         continue
                     bucket = ensure_bucket(target_key)
                     bucket["score"] += category_weight.get(category, 0.45)
@@ -10145,6 +10266,8 @@ self, text: str, beats: SceneDirectorBeats) -> bool:
             relationship_type = self._relationship_edge_card_type(edge, resolved_type)
             if not relationship_type:
                 continue
+            if not self._runtime_edge_is_displayable_relationship(edge, runtime_persona, relationship_type):
+                continue
             target = target_by_id.get(target_id)
             evidence_id = f"relationship:{target_id}:{relationship_type or edge.get('type') or len(cards)}"
             if evidence_id in seen:
@@ -10409,6 +10532,13 @@ self, text: str, beats: SceneDirectorBeats) -> bool:
                 continue
             if not re.fullmatch(r"[a-z0-9][a-z0-9_.-]*", candidate):
                 return candidate
+        try:
+            runtime_persona = self.store.read_runtime_persona(normalized_target_id) or {}
+        except (OSError, json.JSONDecodeError):
+            runtime_persona = {}
+        runtime_display_name = str(runtime_persona.get("displayName") or "").strip()
+        if runtime_display_name and not re.fullmatch(r"[a-z0-9][a-z0-9_.-]*", runtime_display_name):
+            return runtime_display_name
         for candidate in normalized_candidates:
             if candidate:
                 return candidate
