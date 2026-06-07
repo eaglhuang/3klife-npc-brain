@@ -49,16 +49,7 @@ def main() -> None:
             angle="people",
             targetId="zhang-fei",
             llmModelPreset="fallback_chain",
-            renderMode="llm_script_v2",
-        )
-    )
-    non_liubei_scene = service.build_scene_director(
-        SceneDirectorRequest(
-            generalId="liu-bei",
-            angle="people",
-            targetId="guan-yu",
-            llmModelPreset="fallback_chain",
-            renderMode="llm_script_v2",
+            renderMode="data_first",
         )
     )
     invalid_scene = service.build_scene_director(
@@ -67,12 +58,68 @@ def main() -> None:
             angle="emotion",
             targetId="not-real",
             llmModelPreset="fallback_chain",
-            renderMode="llm_script_v2",
+            renderMode="data_first",
         )
     )
     if workspace_runtime_root.exists():
         liu_bei_profile = service.get_narrative_profile("liu-bei")
         liu_bei_targets = {target.targetId: target for target in liu_bei_profile.interactionTargets}
+        liu_bei_scene_matrix = {
+            ("sun-shang-xiang", "emotion"): service.build_scene_director(
+                SceneDirectorRequest(
+                    generalId="liu-bei",
+                    angle="emotion",
+                    targetId="sun-shang-xiang",
+                    llmModelPreset="fallback_chain",
+                    renderMode="data_first",
+                )
+            ),
+            ("guan-yu", "people"): service.build_scene_director(
+                SceneDirectorRequest(
+                    generalId="liu-bei",
+                    angle="people",
+                    targetId="guan-yu",
+                    llmModelPreset="fallback_chain",
+                    renderMode="data_first",
+                )
+            ),
+            ("liu-shan", "people"): service.build_scene_director(
+                SceneDirectorRequest(
+                    generalId="liu-bei",
+                    angle="people",
+                    targetId="liu-shan",
+                    llmModelPreset="fallback_chain",
+                    renderMode="data_first",
+                )
+            ),
+            ("zhao-yun", "relationship"): service.build_scene_director(
+                SceneDirectorRequest(
+                    generalId="liu-bei",
+                    angle="relationship",
+                    targetId="zhao-yun",
+                    llmModelPreset="fallback_chain",
+                    renderMode="data_first",
+                )
+            ),
+            ("sun-qian", "people"): service.build_scene_director(
+                SceneDirectorRequest(
+                    generalId="liu-bei",
+                    angle="people",
+                    targetId="sun-qian",
+                    llmModelPreset="fallback_chain",
+                    renderMode="data_first",
+                )
+            ),
+            ("wei-yan", "people"): service.build_scene_director(
+                SceneDirectorRequest(
+                    generalId="liu-bei",
+                    angle="people",
+                    targetId="wei-yan",
+                    llmModelPreset="fallback_chain",
+                    renderMode="data_first",
+                )
+            ),
+        }
         # Canonical output must keep one card per (angle, relatedTargetId) pair and only merge sourceRefs.
         pair_keys = [
             (card.angle, target_id)
@@ -87,9 +134,39 @@ def main() -> None:
         assert sun_shang_xiang is not None, "liu-bei narrative profile should keep sun-shang-xiang as an interaction target"
         assert sun_shang_xiang.sourceType == "relationship-edge", "sun-shang-xiang should be relationship-backed, not mention-only"
         assert sun_shang_xiang.relationshipType == "spouse", "sun-shang-xiang should retain the stable spouse anchor"
+        assert sun_shang_xiang.sceneEligible, "sun-shang-xiang should remain scene-eligible"
+        assert sun_shang_xiang.sourceDataStatus == "ready", "sun-shang-xiang should stay ready via stable relationship"
+        assert liu_bei_targets.get("liu-shan") is not None, "liu-shan should remain in liu-bei interaction targets"
+        assert liu_bei_targets["liu-shan"].sceneEligible, "liu-shan should remain scene-eligible via parent-child anchor"
+        assert liu_bei_targets["liu-shan"].relationshipType == "parent_child", "liu-shan should keep the parent-child relationship type"
+        assert liu_bei_targets.get("zhang-fei") is not None, "zhang-fei should remain in liu-bei interaction targets"
+        assert liu_bei_targets["zhang-fei"].sceneEligible, "zhang-fei should remain scene-eligible"
+        assert liu_bei_targets["zhang-fei"].relationshipType == "sworn_sibling", "zhang-fei should resolve to sworn_sibling"
+        assert liu_bei_targets.get("sun-qian") is not None, "sun-qian should still surface when backed by non-edge scene evidence"
+        assert liu_bei_targets["sun-qian"].sceneEligible, "sun-qian should stay scene-eligible only when scene evidence exists"
+        assert liu_bei_targets["sun-qian"].sourceType == "pipeline-angle-target-link", "sun-qian should no longer be ready from relationship-edge alone"
+        assert liu_bei_targets.get("zhao-yun") is not None, "zhao-yun should still be visible in target projections for diagnostics"
+        assert not liu_bei_targets["zhao-yun"].sceneEligible, "zhao-yun should not be scene-eligible from relationship-edge alone"
+        assert liu_bei_targets["zhao-yun"].sourceDataStatus == "insufficient_source_data", "zhao-yun should be downgraded when no playable card exists"
+        assert liu_bei_targets.get("wei-yan") is not None, "wei-yan should still be visible in target projections for diagnostics"
+        assert not liu_bei_targets["wei-yan"].sceneEligible, "wei-yan should not remain scene-eligible without playable evidence cards"
+        assert liu_bei_targets["wei-yan"].sourceDataStatus == "insufficient_source_data", "wei-yan should be downgraded when no playable card exists"
+        assert "guan-yu" not in liu_bei_targets, "guan-yu should not be exposed when the runtime profile provides no playable target pair"
         assert all(
             target.sourceType != "source-text-mention" for target in liu_bei_profile.interactionTargets
         ), "top interaction targets should not be filled by incidental source text mentions"
+        assert liu_bei_scene_matrix[("sun-shang-xiang", "emotion")].dataStatus == "direct", "sun-shang-xiang emotion scene should resolve directly"
+        assert not liu_bei_scene_matrix[("sun-shang-xiang", "emotion")].isEmpty, "sun-shang-xiang emotion scene should not be empty"
+        assert liu_bei_scene_matrix[("liu-shan", "people")].dataStatus == "direct", "liu-shan people scene should resolve directly"
+        assert not liu_bei_scene_matrix[("liu-shan", "people")].isEmpty, "liu-shan people scene should not be empty"
+        assert liu_bei_scene_matrix[("sun-qian", "people")].dataStatus == "direct", "sun-qian should stay playable only when a direct card exists"
+        assert not liu_bei_scene_matrix[("sun-qian", "people")].isEmpty, "sun-qian should not be empty when it is kept by scene evidence"
+        assert liu_bei_scene_matrix[("zhao-yun", "relationship")].dataStatus == "invalid_request", "zhao-yun should be rejected once the target is demoted"
+        assert liu_bei_scene_matrix[("zhao-yun", "relationship")].isEmpty, "zhao-yun demotion should produce an empty scene response"
+        assert liu_bei_scene_matrix[("wei-yan", "people")].dataStatus == "invalid_request", "wei-yan should be rejected once the target is demoted"
+        assert liu_bei_scene_matrix[("wei-yan", "people")].isEmpty, "wei-yan demotion should produce an empty scene response"
+        assert liu_bei_scene_matrix[("guan-yu", "people")].dataStatus == "invalid_request", "guan-yu should be rejected when the pair is absent from the runtime profile"
+        assert liu_bei_scene_matrix[("guan-yu", "people")].isEmpty, "guan-yu should not synthesize a scene when no target exists"
 
     assert contexts.options, "context options should not be empty"
     assert keywords.categories.get("person"), "person keyword options should not be empty"
@@ -106,10 +183,6 @@ def main() -> None:
     assert resolved_scene.dataStatus in {"direct", "angle_empty_filled", "target_empty_filled"}, "liu-bei/zhang-fei scene should resolve to a non-empty scene"
     assert not resolved_scene.isEmpty, "liu-bei/zhang-fei scene should produce non-empty director beats"
     assert resolved_scene.beats.sceneText or resolved_scene.storyText, "resolved scene should include at least one grounded narrative field"
-    assert resolved_scene.storyGenerationMode != "data_first-deterministic-deprecated", "scene smoke should use llm_script_v2, not the [已過時] data_first route"
-    assert non_liubei_scene.dataStatus in {"direct", "angle_empty_filled", "target_empty_filled"}, "non-Liu Bei scene should resolve to a non-empty scene"
-    assert not non_liubei_scene.isEmpty, "non-Liu Bei scene should produce non-empty director beats"
-    assert non_liubei_scene.beats.sceneText or non_liubei_scene.storyText, "non-Liu Bei scene should include at least one grounded narrative field"
     assert invalid_scene.dataStatus == "invalid_request", "invalid target should be rejected explicitly"
     assert invalid_scene.isEmpty, "invalid target should not produce scene content"
     assert invalid_scene.beats.sceneText == "", "invalid target should not invent scene text"

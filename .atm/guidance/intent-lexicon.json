@@ -1,0 +1,16 @@
+{
+  "schemaId": "atm.guidanceIntentLexicon",
+  "specVersion": "0.1.0",
+  "entries": [
+    {
+      "phrase": "請修正 sanguo-rag relationship pipeline 的 kinship / spouse 誤判規則，避免把第三人稱家庭描述、婚配計策與 spouse/direct pair 混在一起；只改 build_relationship_claim_graph.py、relationship_type_refinement.py，必要時補 run_relationship_semantic_review_cache.py 與 export_general_runtime_profile.py，並重建相關 runtime artifacts。",
+      "normalizedPhrase": "請修正 sanguo-rag relationship pipeline 的 kinship / spouse 誤判規則 避免把第三人稱家庭描述 婚配計策與 spouse/direct pair 混在一起 只改 build_relationship_claim_graph py relationship_type_refinement py 必要時補 run_relationship_semantic_review_cache py 與 export_general_runtime_profile py 並重建相關 runtime artifacts",
+      "intent": "legacy-candidate-ranking",
+      "status": "suggested",
+      "reason": "Guidance Drift Police observed a missed candidate-ranking phrase.",
+      "source": "host-local",
+      "createdAt": "2026-06-01T14:43:39.315Z",
+      "updatedAt": "2026-06-01T14:43:39.315Z"
+    }
+  ]
+}

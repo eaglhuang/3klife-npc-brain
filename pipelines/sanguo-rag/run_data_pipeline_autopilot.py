@@ -654,7 +654,6 @@ def main() -> int:
         apply_payload = _apply_overlay(
             args=args,
             round_dir=round_dir,
-            bucket_rows=bucket_queue_rows.get(args.apply_bucket, []),
             bucket_source_refs=bucket_source_refs,
         )
 
@@ -716,14 +715,16 @@ def main() -> int:
             "applyInvocationFailed": bool(
                 args.allow_apply
                 and apply_payload.get("invoked")
-                and apply_payload.get("exitCode") not in (0, None)
-            ),
-        },
+                    bucket_rows = bucket_queue_rows.get(args.apply_bucket, [])
+                    for row in bucket_rows:
+                        ref = row.get("sourceRef") or ""
         "phase": 2 if args.allow_apply else 1,
         "mode": "apply" if args.allow_apply else "read-only",
         "apply": apply_payload,
         "nextActions": _suggested_next_actions(bucket_counts, alias_meta, skip_meta, apply_payload),
     }
+
+                        bucket_rows=bucket_rows,
     write_json(summary_path, summary)
     history_path = _append_rounds_history(output_root, summary)
 

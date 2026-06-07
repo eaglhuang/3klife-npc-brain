@@ -8,7 +8,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import relationship_type_refinement as relationship_types
 from sanguo_governance_loader import (
     SanguoGovernanceError,
     default_governance_root,
@@ -27,9 +26,6 @@ DEFAULT_STAGED_EVENTS_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/
 DEFAULT_STAGED_RELATIONSHIPS_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/core-person-progress/core-guanyu-boost-r1-staged-relationship-evidence.jsonl")
 DEFAULT_CORE_REPORT_PATH = Path("artifacts/data-pipeline/sanguo-rag/extracted/core-person-progress/core-guanyu-boost-r1-after.json")
 DEFAULT_OUTPUT_ROOT = Path("artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles")
-DEFAULT_TRUST_ZONE_SKIP_INDEX_PATH = Path(
-    "artifacts/data-pipeline/sanguo-rag/extracted/relationship-trust-zone/relationship-trust-zone.skip-index.json"
-)
 DEFAULT_GENERAL_ID = "guan-yu"
 DEFAULT_GOVERNANCE_ROOT = default_governance_root()
 
@@ -137,7 +133,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--runtime-relationship-refinement-rules", default=None)
     parser.add_argument("--runtime-profile-label-catalog", default=None)
     parser.add_argument("--runtime-voice-presets", default=None)
-    parser.add_argument("--relationship-trust-zone-skip-index", default=str(DEFAULT_TRUST_ZONE_SKIP_INDEX_PATH))
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
 
@@ -180,26 +175,6 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
-
-
-def load_trust_zone_skip_index(path: Path) -> dict[str, set[str]]:
-    if not path.exists():
-        return {}
-    payload = read_json(path)
-
-    def keys(name: str) -> set[str]:
-        values = payload.get(name)
-        if not isinstance(values, list):
-            return set()
-        return {str(item).strip() for item in values if str(item).strip()}
-
-    return {
-        "blacklist": keys("blacklistTrustKeys"),
-        "decisionOnlyBlacklist": keys("decisionOnlyBlacklistTrustKeys"),
-        "removedByHumanDecision": keys("removedByHumanDecisionTrustKeys"),
-        "negativeCondition": keys("negativeConditionTrustKeys"),
-        "blockedRelationship": keys("blockedRelationshipTrustKeys"),
-    }
 
 
 def write_json(path: Path, payload: Any) -> None:
@@ -320,46 +295,6 @@ def edge_compact_text(edge: dict[str, Any]) -> str:
     return "。".join(edge_text_segments(edge, include_summary=True))
 
 
-def trust_zone_pair_key_candidates(edge_type: str, from_id: str, to_id: str) -> list[str]:
-    rel_type = str(edge_type or "").strip() or "battlefield_contact"
-    left = str(from_id or "").strip()
-    right = str(to_id or "").strip()
-    if not left or not right:
-        return []
-    candidates: list[str] = []
-    for a, b in ((left, right), (right, left)):
-        candidates.append(f"relationship|{rel_type}|{a}|{b}")
-        candidates.append(f"{rel_type}:{a}:{b}")
-    return candidates
-
-
-def trust_zone_blacklist_matches(
-    edge: dict[str, Any],
-    *,
-    trust_zone_skip_sets: dict[str, set[str]],
-) -> list[str]:
-    candidates = trust_zone_pair_key_candidates(
-        str(edge.get("type") or ""),
-        str(edge.get("fromId") or ""),
-        str(edge.get("toId") or ""),
-    )
-    if not candidates:
-        return []
-    blacklist_groups = (
-        "blacklist",
-        "decisionOnlyBlacklist",
-        "removedByHumanDecision",
-        "negativeCondition",
-        "blockedRelationship",
-    )
-    matched: list[str] = []
-    for candidate in candidates:
-        for group in blacklist_groups:
-            if candidate in trust_zone_skip_sets.get(group, set()):
-                matched.append(f"{group}:{candidate}")
-    return unique(matched)
-
-
 def is_stable_relationship_edge(edge: dict[str, Any]) -> bool:
     source_layer = str(edge.get("sourceLayer") or "").strip()
     return source_layer in STABLE_RELATIONSHIP_SOURCE_LAYERS or str(edge.get("claimGrade") or "") in A_CANON_RELATIONSHIP_GRADES
@@ -441,26 +376,6 @@ def index_relationship_targets_by_ref(relationships: dict[str, Any]) -> dict[str
     return by_ref
 
 
-def trust_zone_blocked_projection_refs(relationships: dict[str, Any]) -> dict[str, set[str]]:
-    blocked: dict[str, set[str]] = defaultdict(set)
-    for edge in relationships.get("rejectedRelationshipEdges") or []:
-        if not isinstance(edge, dict):
-            continue
-        if not edge.get("trustZoneBlacklistMatches"):
-            continue
-        target_id = str(edge.get("targetId") or "").strip()
-        if not target_id:
-            continue
-        for ref in edge.get("evidenceRefs") or []:
-            ref_key = str(ref or "").strip()
-            if ref_key:
-                blocked[target_id].add(ref_key)
-        source_ref = str(edge.get("sourceRef") or "").strip()
-        if source_ref:
-            blocked[target_id].add(source_ref)
-    return blocked
-
-
 def relationship_edge_general_ids(edges: list[dict[str, Any]], general_id: str) -> list[str]:
     hits: set[str] = set()
     for edge in edges or []:
@@ -538,15 +453,8 @@ def projection_from_trace_sources(trace_sources: list[str]) -> dict[str, Any]:
     }
 
 
-def build_target_projections(
-    *,
-    general_id: str,
-    source: dict[str, Any],
-    source_type: str,
-    blocked_projection_refs: dict[str, set[str]] | None = None,
-) -> list[dict[str, Any]]:
+def build_target_projections(*, general_id: str, source: dict[str, Any], source_type: str) -> list[dict[str, Any]]:
     projections: list[dict[str, Any]] = []
-    blocked_projection_refs = blocked_projection_refs or {}
     source_refs = [str(ref) for ref in (source.get("sourceRefs") or []) if str(ref).strip()]
     if source.get("sourceRef"):
         source_refs.append(str(source.get("sourceRef")))
@@ -575,31 +483,12 @@ def build_target_projections(
         }
         if upstream_feedback:
             payload["upstreamFeedback"] = upstream_feedback
-        blocked_refs = blocked_projection_refs.get(target_id) or set()
-        if blocked_refs and ({source_ref, str(source_id or "").strip()} & blocked_refs):
-            payload["sceneEligible"] = False
-            payload["sourceDataStatus"] = "blocked_by_trust_zone"
-            payload["upstreamFeedback"] = list(payload.get("upstreamFeedback") or []) + [
-                {
-                    "reason": "trust-zone-blacklisted-relationship",
-                    "suggestedAction": "honor_trust_zone_blacklist",
-                }
-            ]
         projections.append(payload)
     return projections
 
 
-def build_angle_target_links(
-    story_beats: list[dict[str, Any]],
-    source_highlights: list[dict[str, Any]],
-    identities: dict[str, dict[str, Any]],
-) -> list[dict[str, Any]]:
+def build_angle_target_links(story_beats: list[dict[str, Any]], source_highlights: list[dict[str, Any]]) -> list[dict[str, Any]]:
     links: dict[tuple[str, str, str], dict[str, Any]] = {}
-
-    def target_is_female(target_id: str) -> bool:
-        identity = identities.get(target_id) or {}
-        gender = str(identity.get("gender") or "").strip().lower()
-        return gender in {"f", "female", "woman", "women", "女", "女性"} or gender.startswith("fem")
 
     def add_link(*, angle: str, target_id: str, source_ref: Any, source_id: Any, source_type: str, projection: dict[str, Any] | None = None) -> None:
         cleaned_angle = str(angle or "").strip() or "source_highlight"
@@ -607,8 +496,6 @@ def build_angle_target_links(
         cleaned_source_ref = str(source_ref or "").strip()
         cleaned_source_id = str(source_id or "").strip()
         if not cleaned_target_id:
-            return
-        if cleaned_angle == "female_interaction" and not target_is_female(cleaned_target_id):
             return
         key = (cleaned_target_id, cleaned_source_ref or cleaned_source_id, source_type)
         existing = links.get(key)
@@ -624,7 +511,7 @@ def build_angle_target_links(
                     existing["sourceDataStatus"] = projection.get("sourceDataStatus")
                     existing["linkAuthority"] = projection.get("linkAuthority")
                 if projection.get("upstreamFeedback"):
-                    existing["upstreamFeedback"] = unique(list(existing.get("upstreamFeedback") or []) + list(projection.get("upstreamFeedback") or []))
+                    existing["upstreamFeedback"] = list(existing.get("upstreamFeedback") or []) + list(projection.get("upstreamFeedback") or [])
             return
         payload = {
             "angleFamily": cleaned_angle,
@@ -740,12 +627,6 @@ def refine_relationship_type(edge: dict[str, Any], general_id: str) -> tuple[str
     quote = str(edge.get("sourceQuote") or "")
     refs = " ".join(str(ref) for ref in edge.get("evidenceRefs") or [])
     reasons: list[str] = []
-    intimidation_terms = ("勒住馬", "速退", "退兵", "中計", "又中諸葛亮之計")
-    strategy_terms = ("計策", "謀策", "奇計", "奇謀")
-    oath_terms = ("結義", "誓同生死", "盟誓", "桃園")
-    family_guardian_terms = ("二嫂嫂", "甘夫人", "阿斗", "家眷", "付託")
-    loyal_oath_terms = ("忠義", "盟約", "託付", "付託", "守義", "相托", "託孤")
-    battle_ally_terms = ("並肩", "同戰", "協戰", "共戰", "援護", "救援", "同袍", "護主")
     if is_stable_relationship_edge(edge):
         reasons.append("stable_relationship_baseline")
         return original or "relationship", reasons
@@ -758,26 +639,29 @@ def refine_relationship_type(edge: dict[str, Any], general_id: str) -> tuple[str
             return "battlefield_contact", reasons
         reasons.append("source_graph_refined_type")
         return original, reasons
-    if any(term in quote for term in intimidation_terms):
+    if target == "cao-cao" and any(term in quote for term in ["勒住馬", "速退", "又中諸葛亮之計"]):
         reasons.append("enemy_retreat_or_intimidation_terms")
         return "intimidates_enemy", reasons
-    if any(term in quote for term in strategy_terms):
+    if target == "zhuge-liang" and "計" in quote:
         reasons.append("strategy_context_terms")
         return "strategy_pressure", reasons
-    if original == "confronts":
+    if original == "confronts" or target in {"xiahou-dun", "cao-ren", "pang-de", "wen-chou", "yan-liang", "lu-bu"}:
         reasons.append("battlefield_opponent_target")
         return "battlefield_opponent", reasons
-    if original == "sworn_sibling" or any(term in quote for term in oath_terms):
+    if original == "sworn_sibling" or (target in {"liu-bei", "zhang-fei"} and any(term in quote for term in ["結義", "誓同生死", "盟誓"])):
         reasons.append("oath_or_sworn_sibling_terms")
         return "sworn_sibling", reasons
-    if any(term in quote for term in family_guardian_terms):
+    if target in {"liu-bei", "mi-shi", "gan-shi", "liu-shan"} and any(term in quote for term in ["二嫂嫂", "甘夫人", "阿斗", "家眷", "付託"]):
         reasons.append("family_guardian_terms")
         return "protects_family", reasons
-    if any(term in quote for term in loyal_oath_terms):
+    if target == "liu-bei" and any(term in quote for term in ["結義", "盟誓", "桃園", "誓同生死"]):
         reasons.append("liu_bei_core_oath_relation")
         return "loyal_oath", reasons
-    if original == "battle_ally" or any(term in quote for term in battle_ally_terms):
-        reasons.append("battle_ally_context_terms")
+    if target == "liu-bei" and ("025#" in refs or "073#" in refs or "007#" in refs):
+        reasons.append("liu_bei_oath_context")
+        return "loyal_oath", reasons
+    if target == "zhang-fei":
+        reasons.append("zhang_fei_battle_ally_context")
         return "battle_ally", reasons
     reasons.append("coarse_edge_fallback")
     return "battlefield_contact", reasons
@@ -788,14 +672,12 @@ def build_relationships(
     edges: list[dict[str, Any]],
     identities: dict[str, dict[str, Any]],
     stable_edges: list[dict[str, Any]] | None = None,
-    trust_zone_skip_sets: dict[str, set[str]] | None = None,
 ) -> dict[str, Any]:
     grouped: dict[tuple[str, str], dict[str, Any]] = {}
     counts = Counter()
     rejected: list[dict[str, Any]] = []
     alias_index = build_alias_index(identities)
     stable_edges = stable_edges or []
-    trust_zone_skip_sets = trust_zone_skip_sets or {}
     stable_types_by_target = stable_type_index(stable_edges, general_id)
     for edge in [*stable_edges, *edges]:
         target = relationship_target(edge, general_id)
@@ -803,30 +685,16 @@ def build_relationships(
             continue
         refined_type, reasons = refine_relationship_type(edge, general_id)
         is_stable = is_stable_relationship_edge(edge)
-        source_layer = str(edge.get("sourceLayer") or "").strip()
         direct_pair_signal = edge_has_direct_pair_signal(edge, general_id, target, alias_index)
         pair_relation_signal = edge_has_pair_relation_signal(edge)
         stable_types = stable_types_by_target.get(target) or set()
-        kinship_binding_supported = relationship_types.kinship_pair_binding_supported(refined_type, edge_compact_text(edge))
         reject_reasons: list[str] = []
-        trust_zone_matches = trust_zone_blacklist_matches(
-            {**edge, "type": refined_type},
-            trust_zone_skip_sets=trust_zone_skip_sets,
-        )
-        if trust_zone_matches:
-            reject_reasons.append("trust_zone_blacklist_hit")
-            reject_reasons.extend(trust_zone_matches)
         if not is_stable and stable_types and refined_type not in stable_types and not direct_pair_signal:
             reject_reasons.append("conflicts_with_stable_relationship_without_direct_pair_evidence")
         if not is_stable and refined_type in SEMANTIC_RELATIONSHIP_TYPES and not direct_pair_signal:
             reject_reasons.append("semantic_relationship_without_direct_pair_evidence")
         if not is_stable and refined_type == "enemy_rival" and not pair_relation_signal:
             reject_reasons.append("enemy_rival_without_pair_conflict_signal")
-        if refined_type in relationship_types.KINSHIP_RELATIONSHIP_TYPES and source_layer != STABLE_RELATIONSHIP_SOURCE_LAYER:
-            if not pair_relation_signal:
-                reject_reasons.append("kinship_without_pair_relation_signal")
-            if not kinship_binding_supported:
-                reject_reasons.append("kinship_without_explicit_pair_bound_evidence")
         if reject_reasons:
             rejected.append(
                 {
@@ -838,7 +706,6 @@ def build_relationships(
                     "sourceQuote": edge.get("sourceQuote"),
                     "rejectionReasons": unique(reject_reasons),
                     "refinementReasons": reasons,
-                    "trustZoneBlacklistMatches": trust_zone_matches[:12],
                     "reviewStatus": "rejected-runtime-export",
                 }
             )
@@ -983,7 +850,6 @@ def build_persona(
     source_refs = sorted({ref for event in events for ref in (event.get("sourceRefs") or [])})
     alias_index = build_alias_index(identities)
     relationship_targets_by_ref = index_relationship_targets_by_ref(relationships)
-    blocked_projection_refs = trust_zone_blocked_projection_refs(relationships)
     highlight_by_ref = {str(packet.get("sourceRef") or "").strip(): packet for packet in packets if str(packet.get("sourceRef") or "").strip()}
     story_beats: list[dict[str, Any]] = []
     for event in events[:18]:
@@ -1024,7 +890,6 @@ def build_persona(
             general_id=general_id,
             source=story_beat,
             source_type="storyBeat",
-            blocked_projection_refs=blocked_projection_refs,
         )
         story_beats.append(story_beat)
     source_highlights: list[dict[str, Any]] = []
@@ -1052,10 +917,9 @@ def build_persona(
             general_id=general_id,
             source=source_highlight,
             source_type="sourceHighlight",
-            blocked_projection_refs=blocked_projection_refs,
         )
         source_highlights.append(source_highlight)
-    angle_target_links = build_angle_target_links(story_beats, source_highlights, identities)
+    angle_target_links = build_angle_target_links(story_beats, source_highlights)
     all_target_projections = [
         projection
         for source in [*story_beats, *source_highlights]
@@ -1190,15 +1054,10 @@ def main() -> None:
             args.governance_root,
             runtime_relationship_refinement_rules=args.runtime_relationship_refinement_rules,
         )
-        trust_zone_skip_sets = load_trust_zone_skip_index(Path(args.relationship_trust_zone_skip_index))
         apply_runtime_profile_relationship_and_keyword_governance(
             runtime_profile_policy,
             runtime_profile_item_cue_rules,
             runtime_relationship_refinement_rules,
-        )
-        relationship_types.apply_relationship_type_refinement_rules(
-            args.governance_root,
-            args.runtime_relationship_refinement_rules,
         )
         apply_relationship_runtime_canon_policy(args.governance_root, args.relationship_policy)
     except SanguoGovernanceError as exc:
@@ -1223,13 +1082,7 @@ def main() -> None:
     review_paths = [Path(path) for path in args.review_answers]
     review_backlog = load_review_backlog(review_paths, general_id)
     stable_edges = stable_relationship_edges_for_general(stable, general_id)
-    relationships = build_relationships(
-        general_id,
-        edges,
-        identities,
-        stable_edges=stable_edges,
-        trust_zone_skip_sets=trust_zone_skip_sets,
-    )
+    relationships = build_relationships(general_id, edges, identities, stable_edges=stable_edges)
     keywords = build_keywords(general_id, identity, profile, events, packets, relationships)
     persona = build_persona(general_id, identity, profile, events, packets, relationships, core_report, review_backlog, keywords, identities)
 

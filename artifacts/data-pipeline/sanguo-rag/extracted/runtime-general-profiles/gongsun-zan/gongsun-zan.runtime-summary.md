@@ -2,7 +2,7 @@
 
 - General ID: `gongsun-zan`
 - Display Name: `公孫瓚`
-- Generated At: `2026-05-31T11:12:19+00:00`
+- Generated At: `2026-06-01T13:00:46+00:00`
 - Runtime Status: `ready-for-dialogue-smoke`
 - Completion: `None`
 - Ready Events: `1`
