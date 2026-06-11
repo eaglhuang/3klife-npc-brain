@@ -2790,8 +2790,8 @@ class NpcDialogueService:
         return beats.model_copy(update=updates)
 
     def _seed_display_sentence(self, profile: NarrativeProfileResponse, text: str, max_chars: int) -> str:
-        value = self._replace_actor_aliases_in_seed(profile, text)
-        return self._sentence_or_default(value, "", max_chars=max_chars)
+        _ = profile
+        return self._sentence_or_default(text, "", max_chars=max_chars)
 
     def _story_derived_dialogue_text(self, story_text: str) -> str:
         quote = self._extract_quoted_dialogue(story_text)
@@ -3000,7 +3000,10 @@ class NpcDialogueService:
             selected.append(next(sentence for index, sentence in readable if index == target_index))
         else:
             selected.append(readable[0][1])
-        return self._sentence_or_default("".join(selected), "", max_chars=max_chars)
+        cleaned = self._sentence_or_default("".join(selected), "", max_chars=max_chars)
+        if self._scene_excerpt_is_polluted(cleaned, target_aliases):
+            return ""
+        return cleaned
 
     def _split_source_sentences(self, text: str) -> list[str]:
         normalized = re.sub(r"\s+", "", str(text or ""))
@@ -3053,6 +3056,14 @@ class NpcDialogueService:
             return False
         return True
 
+    def _scene_excerpt_is_polluted(self, text: str, target_aliases: list[str]) -> bool:
+        compact = " ".join(str(text or "").split()).strip("。！？!? ，、；：")
+        if not compact:
+            return True
+        if "此人" in compact:
+            return True
+        return any(alias and compact.startswith(f"{alias}{alias}") for alias in target_aliases)
+
     def _source_derived_scene_text(
         self,
         angle: str | None,
@@ -3066,13 +3077,22 @@ class NpcDialogueService:
             return ""
         if not self._source_mentions_target(text, target):
             return ""
-        return self._extract_target_source_excerpt(
+        excerpt = self._extract_target_source_excerpt(
             source_text=text,
             target=target,
             max_chars=120,
             include_previous=False,
             prefer_target_only=True,
         )
+        if not excerpt:
+            return ""
+        compact = " ".join(str(excerpt or "").split()).strip("。！？!? ，、；：")
+        if not compact or "此人" in compact:
+            return ""
+        target_aliases = self._target_aliases_for_interaction(target)
+        if any(alias and compact.startswith(f"{alias}{alias}") for alias in target_aliases):
+            return ""
+        return excerpt
 
     def _source_derived_memory_text(
         self,
@@ -3178,6 +3198,8 @@ class NpcDialogueService:
         if not options:
             return ""
         best = sorted(options, key=lambda item: (-item[0], item[1]))[0][1]
+        if self._scene_excerpt_is_polluted(best, target_aliases):
+            return ""
         if self._is_weak_scene_seed_text(best):
             return ""
         return self._sentence_or_default(best, "", max_chars=max_chars)
