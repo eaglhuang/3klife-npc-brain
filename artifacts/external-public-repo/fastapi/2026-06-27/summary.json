@@ -1,0 +1,20 @@
+{
+  "claimType": "public-source-snapshot-governance-case",
+  "paperSafeClaim": "ATM exercised a provenance-pinned FastAPI public-source snapshot inside the live 3klife-npc-brain host repository and preserved replayable validation evidence before and after a small host-visible snapshot modification.",
+  "nonClaim": "This case does not claim governance over the FastAPI upstream maintainer workflow.",
+  "upstreamUrl": "https://github.com/fastapi/fastapi.git",
+  "snapshotHead": "82064857539e6286522c347b4b11331b48dd2378",
+  "hostRepoHead": "738b9883880742cd36b64f1f81ce6a638f073135",
+  "baselineSmokePass": true,
+  "postChangeSmokePass": true,
+  "baselineFastapiModulePath": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3-baseline\\fastapi\\__init__.py",
+  "postChangeFastapiModulePath": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3\\fastapi\\__init__.py",
+  "postChangeCaseTag": "npc-brain-fastapi-case",
+  "postChangeHelper": "get_public_source_snapshot_metadata",
+  "postChangeSnapshotHead": "82064857539e6286522c347b4b11331b48dd2378",
+  "artifactRoot": "C:\\Users\\User\\3klife-npc-brain\\artifacts\\external-public-repo\\fastapi\\2026-06-27",
+  "touchedPaths": [
+    "local/public-source-snapshots/fastapi-0.136.3/fastapi/__init__.py",
+    "app/main.py"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "caseType": "public-source-snapshot-governance-readiness",
+  "hostRepo": "C:\\Users\\User\\3klife-npc-brain",
+  "orientation": {
+    "command": "node atm.mjs orient --cwd . --json",
+    "detectedLanguages": [
+      "Python"
+    ],
+    "legacyUriSupported": true,
+    "mutationPolicy": {
+      "requireSession": true,
+      "requireDryRunProposal": true,
+      "requireReviewBeforeApply": true,
+      "allowUnguidedInDev": true,
+      "allowUnguidedInCI": false
+    },
+    "runtimeAdapterReadiness": "python-language-adapter-available"
+  },
+  "shadowGuidanceSessions": [
+    {
+      "sessionId": "guidance-20260627101147-06b51a0bc8",
+      "targetFile": "local/public-source-snapshots/fastapi-0.136.3/fastapi/applications.py",
+      "recommendedRoute": "atomize",
+      "note": "Dry-run guidance marked FastAPI.__init__ and other trunk surfaces as no-touch zones for this minimal case."
+    },
+    {
+      "sessionId": "guidance-20260627101201-3ef3461786",
+      "targetFile": "local/public-source-snapshots/fastapi-0.136.3/fastapi/__init__.py",
+      "recommendedRoute": "split",
+      "note": "The published case therefore chose a tiny helper export in __init__.py instead of mutating trunk routing logic."
+    }
+  ],
+  "publishedTouchedPaths": [
+    "local/public-source-snapshots/fastapi-0.136.3/fastapi/__init__.py",
+    "app/main.py",
+    "scripts/capture_fastapi_public_source_case.py"
+  ]
+}

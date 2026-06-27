@@ -1,0 +1,212 @@
+## baseline
+$ C:\Users\User\3klife-npc-brain\.venv\Scripts\python.exe -c import fastapi, json; print(json.dumps({'version': fastapi.__version__, 'modulePath': fastapi.__file__}, ensure_ascii=False))
+cwd: C:\Users\User\3klife-npc-brain
+returnCode: 0
+stdout:
+{"version": "0.136.3", "modulePath": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3-baseline\\fastapi\\__init__.py"}
+
+$ C:\Users\User\3klife-npc-brain\.venv\Scripts\python.exe -m app.http_smoke_test
+cwd: C:\Users\User\3klife-npc-brain
+returnCode: 0
+stdout:
+[npc-brain-http-smoke] PASS
+[npc-brain-http-smoke] contexts=8 categories=11 evidenceRefs=6 presets=9
+stderr:
+C:\Users\User\3klife-npc-brain\local\public-source-snapshots\fastapi-0.136.3-baseline\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+
+$ C:\Users\User\3klife-npc-brain\.venv\Scripts\python.exe -c 
+import json
+import os
+import subprocess
+from pathlib import Path
+
+import fastapi
+from fastapi.testclient import TestClient
+
+from app.main import create_app
+
+os.environ["NPC_LLM_PROVIDER_ORDER"] = "deterministic"
+os.environ["NPC_BRAIN_DEPLOY_API_KEY"] = "smoke-test-api-key"
+
+client = TestClient(create_app())
+repo_root = Path.cwd()
+git_sha = subprocess.run(
+    ["git", "rev-parse", "HEAD"],
+    cwd=repo_root,
+    check=True,
+    capture_output=True,
+    text=True,
+).stdout.strip()
+service_headers = {"X-API-Key": os.environ["NPC_BRAIN_DEPLOY_API_KEY"]}
+
+health = client.get("/healthz")
+contexts = client.get("/v1/npc/context-options", params={"generalId": "zhang-fei"}, headers=service_headers)
+keywords = client.get("/v1/npc/keyword-options", params={"generalId": "zhang-fei"}, headers=service_headers)
+keyword_payload = keywords.json()
+selected_keyword_keys = [
+    item["keywordKey"]
+    for items in keyword_payload["categories"].values()
+    for item in items[:1]
+][:3]
+dialogue = client.post(
+    "/v1/npc/dialogue",
+    json={
+        "generalId": "zhang-fei",
+        "contextKey": "changban-bridge",
+        "selectedKeywordKeys": selected_keyword_keys + ["unknown-key"],
+        "maxChars": 90,
+    },
+)
+
+payload = dialogue.json()
+result = {
+    "fastapiVersion": fastapi.__version__,
+    "fastapiModulePath": fastapi.__file__,
+    "hostGitHead": git_sha,
+    "health": {
+        "statusCode": health.status_code,
+        "ok": health.json().get("ok"),
+        "service": health.json().get("service"),
+        "schemaVersion": health.json().get("schemaVersion"),
+        "dataVersion": health.json().get("dataVersion"),
+        "artifactVersion": health.json().get("artifactVersion"),
+        "fastapiSnapshot": health.json().get("fastapiSnapshot"),
+    },
+    "contexts": {
+        "statusCode": contexts.status_code,
+        "count": len(contexts.json().get("options", [])),
+        "firstContextKey": (contexts.json().get("options") or [{}])[0].get("contextKey"),
+    },
+    "keywords": {
+        "statusCode": keywords.status_code,
+        "categoryCount": len(keyword_payload.get("categories", {})),
+        "selectedKeywordKeys": selected_keyword_keys,
+    },
+    "dialogue": {
+        "statusCode": dialogue.status_code,
+        "textPreview": payload.get("text", "")[:90],
+        "evidenceRefCount": len(payload.get("evidenceRefs", [])),
+        "rejectedKeywordKeys": payload.get("rejectedKeywordKeys", []),
+        "llmModelPreset": payload.get("llmModelPreset"),
+    },
+}
+helper = getattr(fastapi, "get_public_source_snapshot_metadata", None)
+if callable(helper):
+    result["helperMetadata"] = helper()
+print(json.dumps(result, ensure_ascii=False))
+
+cwd: C:\Users\User\3klife-npc-brain
+returnCode: 0
+stdout:
+{"fastapiVersion": "0.136.3", "fastapiModulePath": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3-baseline\\fastapi\\__init__.py", "hostGitHead": "738b9883880742cd36b64f1f81ce6a638f073135", "health": {"statusCode": 200, "ok": true, "service": "npc-brain", "schemaVersion": "healthz.v2", "dataVersion": "738b9883880742cd36b64f1f81ce6a638f073135", "artifactVersion": "6b16b6567dee3a8da4005ce9", "fastapiSnapshot": null}, "contexts": {"statusCode": 200, "count": 8, "firstContextKey": "changban-bridge"}, "keywords": {"statusCode": 200, "categoryCount": 11, "selectedKeywordKeys": ["activity.family_duty", "affect.family_affection", "aptitude.command_strategy"]}, "dialogue": {"statusCode": 200, "textPreview": "閒聊說起長坂橋與家族責任、家族情感，俺只按眼前證據作答，不敢亂編史事。", "evidenceRefCount": 6, "rejectedKeywordKeys": ["unknown-key"], "llmModelPreset": "fallback_chain"}}
+stderr:
+C:\Users\User\3klife-npc-brain\local\public-source-snapshots\fastapi-0.136.3-baseline\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+
+## post-change
+$ C:\Users\User\3klife-npc-brain\.venv\Scripts\python.exe -c import fastapi, json; print(json.dumps({'version': fastapi.__version__, 'modulePath': fastapi.__file__}, ensure_ascii=False))
+cwd: C:\Users\User\3klife-npc-brain
+returnCode: 0
+stdout:
+{"version": "0.136.3", "modulePath": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3\\fastapi\\__init__.py"}
+
+$ C:\Users\User\3klife-npc-brain\.venv\Scripts\python.exe -m app.http_smoke_test
+cwd: C:\Users\User\3klife-npc-brain
+returnCode: 0
+stdout:
+[npc-brain-http-smoke] PASS
+[npc-brain-http-smoke] contexts=8 categories=11 evidenceRefs=6 presets=9
+stderr:
+C:\Users\User\3klife-npc-brain\local\public-source-snapshots\fastapi-0.136.3\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+
+$ C:\Users\User\3klife-npc-brain\.venv\Scripts\python.exe -c 
+import json
+import os
+import subprocess
+from pathlib import Path
+
+import fastapi
+from fastapi.testclient import TestClient
+
+from app.main import create_app
+
+os.environ["NPC_LLM_PROVIDER_ORDER"] = "deterministic"
+os.environ["NPC_BRAIN_DEPLOY_API_KEY"] = "smoke-test-api-key"
+
+client = TestClient(create_app())
+repo_root = Path.cwd()
+git_sha = subprocess.run(
+    ["git", "rev-parse", "HEAD"],
+    cwd=repo_root,
+    check=True,
+    capture_output=True,
+    text=True,
+).stdout.strip()
+service_headers = {"X-API-Key": os.environ["NPC_BRAIN_DEPLOY_API_KEY"]}
+
+health = client.get("/healthz")
+contexts = client.get("/v1/npc/context-options", params={"generalId": "zhang-fei"}, headers=service_headers)
+keywords = client.get("/v1/npc/keyword-options", params={"generalId": "zhang-fei"}, headers=service_headers)
+keyword_payload = keywords.json()
+selected_keyword_keys = [
+    item["keywordKey"]
+    for items in keyword_payload["categories"].values()
+    for item in items[:1]
+][:3]
+dialogue = client.post(
+    "/v1/npc/dialogue",
+    json={
+        "generalId": "zhang-fei",
+        "contextKey": "changban-bridge",
+        "selectedKeywordKeys": selected_keyword_keys + ["unknown-key"],
+        "maxChars": 90,
+    },
+)
+
+payload = dialogue.json()
+result = {
+    "fastapiVersion": fastapi.__version__,
+    "fastapiModulePath": fastapi.__file__,
+    "hostGitHead": git_sha,
+    "health": {
+        "statusCode": health.status_code,
+        "ok": health.json().get("ok"),
+        "service": health.json().get("service"),
+        "schemaVersion": health.json().get("schemaVersion"),
+        "dataVersion": health.json().get("dataVersion"),
+        "artifactVersion": health.json().get("artifactVersion"),
+        "fastapiSnapshot": health.json().get("fastapiSnapshot"),
+    },
+    "contexts": {
+        "statusCode": contexts.status_code,
+        "count": len(contexts.json().get("options", [])),
+        "firstContextKey": (contexts.json().get("options") or [{}])[0].get("contextKey"),
+    },
+    "keywords": {
+        "statusCode": keywords.status_code,
+        "categoryCount": len(keyword_payload.get("categories", {})),
+        "selectedKeywordKeys": selected_keyword_keys,
+    },
+    "dialogue": {
+        "statusCode": dialogue.status_code,
+        "textPreview": payload.get("text", "")[:90],
+        "evidenceRefCount": len(payload.get("evidenceRefs", [])),
+        "rejectedKeywordKeys": payload.get("rejectedKeywordKeys", []),
+        "llmModelPreset": payload.get("llmModelPreset"),
+    },
+}
+helper = getattr(fastapi, "get_public_source_snapshot_metadata", None)
+if callable(helper):
+    result["helperMetadata"] = helper()
+print(json.dumps(result, ensure_ascii=False))
+
+cwd: C:\Users\User\3klife-npc-brain
+returnCode: 0
+stdout:
+{"fastapiVersion": "0.136.3", "fastapiModulePath": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3\\fastapi\\__init__.py", "hostGitHead": "738b9883880742cd36b64f1f81ce6a638f073135", "health": {"statusCode": 200, "ok": true, "service": "npc-brain", "schemaVersion": "healthz.v2", "dataVersion": "738b9883880742cd36b64f1f81ce6a638f073135", "artifactVersion": "6b16b6567dee3a8da4005ce9", "fastapiSnapshot": {"caseTag": "npc-brain-fastapi-case", "modulePath": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3\\fastapi\\__init__.py", "version": "0.136.3", "snapshot": {"caseType": "public-source-snapshot", "package": "fastapi", "version": "0.136.3", "modulePath": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3\\fastapi\\__init__.py", "repoRoot": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3", "repoHead": "82064857539e6286522c347b4b11331b48dd2378", "helper": "get_public_source_snapshot_metadata"}}}, "contexts": {"statusCode": 200, "count": 8, "firstContextKey": "changban-bridge"}, "keywords": {"statusCode": 200, "categoryCount": 11, "selectedKeywordKeys": ["activity.family_duty", "affect.family_affection", "aptitude.command_strategy"]}, "dialogue": {"statusCode": 200, "textPreview": "閒聊說起長坂橋與家族責任、家族情感，俺只按眼前證據作答，不敢亂編史事。", "evidenceRefCount": 6, "rejectedKeywordKeys": ["unknown-key"], "llmModelPreset": "fallback_chain"}, "helperMetadata": {"caseType": "public-source-snapshot", "package": "fastapi", "version": "0.136.3", "modulePath": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3\\fastapi\\__init__.py", "repoRoot": "C:\\Users\\User\\3klife-npc-brain\\local\\public-source-snapshots\\fastapi-0.136.3", "repoHead": "82064857539e6286522c347b4b11331b48dd2378", "helper": "get_public_source_snapshot_metadata"}}
+stderr:
+C:\Users\User\3klife-npc-brain\local\public-source-snapshots\fastapi-0.136.3\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+
