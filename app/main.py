@@ -10,6 +10,8 @@ except ModuleNotFoundError:
     def load_dotenv(*args, **kwargs):
         return False
 
+import fastapi as fastapi_module
+
 try:
     from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 except ModuleNotFoundError as exc:
@@ -45,6 +47,7 @@ from .llm_dialogue_renderer import ProviderOutputError, ProviderUnavailableError
 DEPLOY_API_KEY_ENV = "NPC_BRAIN_DEPLOY_API_KEY"
 PUBLIC_DEMO_MODE_ENV = "NPC_BRAIN_PUBLIC_DEMO_MODE"
 PUBLIC_DEMO_ORIGINS_ENV = "NPC_BRAIN_PUBLIC_DEMO_ORIGINS"
+FASTAPI_CASE_TAG_ENV = "NPC_BRAIN_FASTAPI_CASE_TAG"
 DEV_CORS_ORIGINS = [
     "null",
     "http://localhost:7456",
@@ -136,6 +139,21 @@ def is_public_demo_request(request: Request | None) -> bool:
     return request_origin in resolve_public_demo_origins()
 
 
+def resolve_fastapi_snapshot_metadata(case_tag: str | None) -> dict[str, object] | None:
+    normalized_case_tag = str(case_tag or "").strip()
+    if not normalized_case_tag:
+        return None
+    metadata: dict[str, object] = {
+        "caseTag": normalized_case_tag,
+        "modulePath": str(getattr(fastapi_module, "__file__", "") or ""),
+        "version": str(getattr(fastapi_module, "__version__", "") or ""),
+    }
+    helper = getattr(fastapi_module, "get_public_source_snapshot_metadata", None)
+    if callable(helper):
+        metadata["snapshot"] = helper()
+    return metadata
+
+
 def create_app() -> FastAPI:
     app = FastAPI(title="3KLife NPC Brain", version="0.1.0")
     app.add_middleware(
@@ -147,10 +165,14 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     service = NpcDialogueService()
+    fastapi_snapshot_metadata = resolve_fastapi_snapshot_metadata(os.environ.get(FASTAPI_CASE_TAG_ENV))
 
     @app.get("/healthz")
     def healthz():
-        return service.get_health()
+        payload = service.get_health()
+        if fastapi_snapshot_metadata:
+            payload["fastapiSnapshot"] = fastapi_snapshot_metadata
+        return payload
 
     @app.post("/v1/npc/interaction-events", response_model=InteractionEventWriteResponse)
     def interaction_events(
