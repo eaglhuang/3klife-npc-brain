@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hmac
 import os
+from typing import Any
 from urllib.parse import urlparse
 
 try:
@@ -42,12 +43,14 @@ from .npc_dialogue_service import (
     SceneIllustrationResponse,
 )
 from .llm_dialogue_renderer import ProviderOutputError, ProviderUnavailableError
+from .dialogue_library import export_library_payload, import_library_payload
 
 
 DEPLOY_API_KEY_ENV = "NPC_BRAIN_DEPLOY_API_KEY"
 PUBLIC_DEMO_MODE_ENV = "NPC_BRAIN_PUBLIC_DEMO_MODE"
 PUBLIC_DEMO_ORIGINS_ENV = "NPC_BRAIN_PUBLIC_DEMO_ORIGINS"
 FASTAPI_CASE_TAG_ENV = "NPC_BRAIN_FASTAPI_CASE_TAG"
+ADMIN_TOKEN_ENV = "NPC_ADMIN_TOKEN"
 DEV_CORS_ORIGINS = [
     "null",
     "http://localhost:7456",
@@ -261,7 +264,40 @@ def create_app() -> FastAPI:
         except ProviderOutputError as exc:
             raise HTTPException(status_code=502, detail=str(exc)) from exc
 
+    @app.get("/v1/admin/dialogue-library/export")
+    def dialogue_library_export(authorization: str | None = Header(default=None)):
+        require_admin_token(authorization)
+        return export_library_payload(service._dialogue_library_store())
+
+    @app.post("/v1/admin/dialogue-library/import")
+    async def dialogue_library_import(
+        request: Request,
+        dry_run: bool = Query(default=False, alias="dryRun"),
+        authorization: str | None = Header(default=None),
+    ):
+        require_admin_token(authorization)
+        try:
+            payload = await request.json()
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="request body must be JSON") from exc
+        try:
+            return import_library_payload(service._dialogue_library_store(), payload, dry_run=dry_run)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     return app
+
+
+def require_admin_token(authorization: str | None) -> None:
+    """Admin gate: NPC_ADMIN_TOKEN must be configured (403 otherwise), and the Bearer token must match (401 if absent, 403 if wrong)."""
+    expected_token = str(os.environ.get(ADMIN_TOKEN_ENV) or "").strip()
+    if not expected_token:
+        raise HTTPException(status_code=403, detail=f"admin endpoints disabled: {ADMIN_TOKEN_ENV} is not configured")
+    provided_token = extract_api_key(None, authorization)
+    if not provided_token:
+        raise HTTPException(status_code=401, detail="missing admin bearer token")
+    if not hmac.compare_digest(provided_token, expected_token):
+        raise HTTPException(status_code=403, detail="invalid admin token")
 
 
 def extract_api_key(x_api_key: str | None, authorization: str | None) -> str | None:

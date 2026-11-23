@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import copy
+import importlib.util
 import json
 import os
 import tempfile
@@ -22,6 +24,7 @@ _LIBRARY_ENV_KEYS = [
     "NPC_DIALOGUE_LIBRARY_DB_PATH",
     "NPC_DIALOGUE_LIBRARY_ENABLED",
     "NPC_LLM_HISTORY_CACHE_PATH",
+    "NPC_ADMIN_TOKEN",
 ]
 
 
@@ -261,6 +264,193 @@ def _test_service_flow(db_path: Path) -> None:
     print("[dialogue-library-smoke] service_v2_flow PASS")
 
 
+def _admin_client(db_path: Path, token: str | None):
+    from fastapi.testclient import TestClient
+
+    from .main import create_app
+
+    os.environ["NPC_DIALOGUE_LIBRARY_DB_PATH"] = str(db_path)
+    if token is None:
+        os.environ.pop("NPC_ADMIN_TOKEN", None)
+    else:
+        os.environ["NPC_ADMIN_TOKEN"] = token
+    return TestClient(create_app())
+
+
+def _admin_headers(token: str) -> dict[str, str]:
+    return {"Authorization": f"Bearer {token}"}
+
+
+def _test_admin_endpoints(tmp: Path) -> dict:
+    token = "mock-admin-token-0001"
+    source_db = tmp / "admin-source.sqlite"
+    target_db = tmp / "admin-target.sqlite"
+    empty_db = tmp / "admin-empty.sqlite"
+
+    # Seed the source library: two keys, one with an overflow-retired line and one served line.
+    source = DialogueLibrary(source_db)
+    buckets_a = normalize_buckets(**_bucket_kwargs())
+    key_a = compute_cache_key(buckets_a)
+    for index in range(MAX_LINES_PER_KEY + 1):
+        source.add(key_a, buckets_a, f"admin-line-{index}", model="claude-haiku-5-5", prompt_version="v2",
+                   quality_score=0.5 + index / 10, quality_flags=["ok"], extra={"n": index})
+    source.pick(key_a)
+    buckets_b = normalize_buckets(**_bucket_kwargs(mood="joy"))
+    key_b = compute_cache_key(buckets_b)
+    source.add(key_b, buckets_b, "joy-line", model=None, prompt_version=None, quality_score=None)
+
+    # 1) Auth gate: 403 when unconfigured, 401 when missing, 403 when wrong.
+    unconfigured = _admin_client(source_db, None)
+    assert unconfigured.get("/v1/admin/dialogue-library/export", headers=_admin_headers(token)).status_code == 403
+    configured = _admin_client(source_db, token)
+    assert configured.get("/v1/admin/dialogue-library/export").status_code == 401
+    assert configured.get("/v1/admin/dialogue-library/export", headers=_admin_headers("wrong")).status_code == 403
+    assert configured.post("/v1/admin/dialogue-library/import", json={"lines": []}).status_code == 401
+    assert configured.post("/v1/admin/dialogue-library/import", json={"lines": []},
+                           headers=_admin_headers("wrong")).status_code == 403
+    # X-API-Key must not be accepted for admin endpoints.
+    assert configured.get("/v1/admin/dialogue-library/export", headers={"X-API-Key": token}).status_code == 401
+    print("[dialogue-library-smoke] admin_auth PASS")
+
+    # 2) Export is complete (active + retired) and carries every documented field.
+    exported = configured.get("/v1/admin/dialogue-library/export", headers=_admin_headers(token))
+    assert exported.status_code == 200, exported.text
+    payload = exported.json()
+    assert payload["format"] == "3klife-dialogue-library" and payload["count"] == len(payload["lines"]) == 7, payload["count"]
+    statuses = sorted(line["status"] for line in payload["lines"])
+    assert statuses.count("retired") == 1 and statuses.count("active") == 6, statuses
+    served = [line for line in payload["lines"] if line["servedCount"] == 1]
+    assert len(served) == 1 and served[0]["lastServedAt"], served
+    required = {"key", "generalId", "bucket", "textZhTw", "textEn", "textJa", "textZhCn", "model", "createdAt",
+                "promptVersion", "qualityScore", "qualityFlags", "extra", "status", "servedCount", "lastServedAt"}
+    assert all(required <= set(line) for line in payload["lines"]), payload["lines"][0].keys()
+
+    # 3) Round trip into an empty library yields identical lines.
+    empty_client = _admin_client(empty_db, token)
+    summary = empty_client.post("/v1/admin/dialogue-library/import", json=payload,
+                                headers=_admin_headers(token)).json()
+    assert summary["inserted"] == 7 and summary["updated"] == 0 and summary["skipped"] == 0, summary
+    round_trip = empty_client.get("/v1/admin/dialogue-library/export", headers=_admin_headers(token)).json()
+    assert round_trip["lines"] == payload["lines"], "round trip mismatch"
+    print("[dialogue-library-smoke] export_import_round_trip PASS")
+
+    # 4) Re-importing the same backup is idempotent: nothing duplicated, everything skipped.
+    again = empty_client.post("/v1/admin/dialogue-library/import", json=payload,
+                              headers=_admin_headers(token)).json()
+    assert again["inserted"] == 0 and again["skipped"] == 7, again
+    assert empty_client.get("/v1/admin/dialogue-library/export",
+                            headers=_admin_headers(token)).json()["count"] == 7
+    print("[dialogue-library-smoke] reimport_idempotent PASS")
+
+    # 5) Newer local rows are not overwritten; older local rows are updated by a newer backup.
+    stale_backup = copy.deepcopy(payload)
+    stale_backup["lines"][0]["createdAt"] = "2000-01-01T00:00:00+00:00"
+    stale_backup["lines"][0]["textEn"] = "should-not-apply"
+    stale_backup["lines"][1]["createdAt"] = "1999-01-01T00:00:00+00:00"
+    update_summary = empty_client.post("/v1/admin/dialogue-library/import", json=stale_backup,
+                                       headers=_admin_headers(token)).json()
+    assert update_summary["skipped"] == 7 and update_summary["updated"] == 0, update_summary
+    # Local rows dated older than the backup are updated by it.
+    older_local_db = tmp / "admin-older.sqlite"
+    older_client = _admin_client(older_local_db, token)
+    seeded = copy.deepcopy(payload)
+    for line in seeded["lines"]:
+        line["createdAt"] = "1990-01-01T00:00:00+00:00"
+    older_client.post("/v1/admin/dialogue-library/import", json=seeded, headers=_admin_headers(token))
+    update_summary = older_client.post("/v1/admin/dialogue-library/import", json=payload,
+                                       headers=_admin_headers(token)).json()
+    assert update_summary["updated"] == 7 and update_summary["skipped"] == 0, update_summary
+    print("[dialogue-library-smoke] newer_not_overwritten PASS")
+
+    # 6) Dry-run reports counts but writes nothing.
+    dry_db = tmp / "admin-dry.sqlite"
+    dry_client = _admin_client(dry_db, token)
+    dry = dry_client.post("/v1/admin/dialogue-library/import?dryRun=true", json=payload,
+                          headers=_admin_headers(token)).json()
+    assert dry["dryRun"] is True and dry["inserted"] == 7, dry
+    assert dry_client.get("/v1/admin/dialogue-library/export", headers=_admin_headers(token)).json()["count"] == 0
+    print("[dialogue-library-smoke] dry_run PASS")
+
+    # 7) Capacity: an incoming backup cannot push a key above MAX_LINES_PER_KEY active lines.
+    cap_db = tmp / "admin-cap.sqlite"
+    cap_client = _admin_client(cap_db, token)
+    overflow = {"format": "3klife-dialogue-library", "version": 1, "lines": [
+        {"key": key_a, "generalId": "zhang-fei", "textZhTw": f"cap-{i}", "createdAt": "2026-01-01T00:00:00+00:00"}
+        for i in range(MAX_LINES_PER_KEY + 1)
+    ]}
+    cap = cap_client.post("/v1/admin/dialogue-library/import", json=overflow, headers=_admin_headers(token)).json()
+    assert cap["inserted"] == MAX_LINES_PER_KEY + 1 and cap["cappedToRetired"] == 1, cap
+    assert DialogueLibrary(cap_db).count_active(key_a) == MAX_LINES_PER_KEY
+    print("[dialogue-library-smoke] import_capacity PASS")
+
+    # 8) Malformed payloads are rejected with 400 and write nothing.
+    bad = cap_client.post("/v1/admin/dialogue-library/import",
+                          json={"format": "3klife-dialogue-library", "lines": [{"key": "", "textZhTw": "x"}]},
+                          headers=_admin_headers(token))
+    assert bad.status_code == 400, bad.text
+    not_json = cap_client.post("/v1/admin/dialogue-library/import", content=b"not json",
+                               headers={**_admin_headers(token), "Content-Type": "application/json"})
+    assert not_json.status_code == 400, not_json.text
+    print("[dialogue-library-smoke] import_validation PASS")
+    return payload
+
+
+class _FakeHttpResponse:
+    def __init__(self, body: bytes) -> None:
+        self._body = body
+
+    def read(self) -> bytes:
+        return self._body
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc) -> bool:
+        return False
+
+
+def _test_backup_script(tmp: Path, payload: dict) -> None:
+    spec = importlib.util.spec_from_file_location(
+        "backup_dialogue_library_under_test",
+        Path(__file__).resolve().parents[1] / "tools" / "backup_dialogue_library.py",
+    )
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    token = "mock-admin-token-script-9"
+    seen: list[tuple[str, str, str | None]] = []
+
+    def fake_opener(request, timeout=None):
+        seen.append((request.get_method(), request.full_url, request.get_header("Authorization")))
+        assert request.get_header("Authorization") == f"Bearer {token}"
+        return _FakeHttpResponse(json.dumps(payload).encode("utf-8"))
+
+    out_dir = tmp / "backup-out"
+    target, count = module.backup(out_dir, "https://example.test", token, opener=fake_opener)
+    assert count == len(payload["lines"]) and target.parent == out_dir and target.name.startswith("dialogue-library-")
+    assert token not in target.read_text(encoding="utf-8"), "token leaked into backup file"
+    assert json.loads(target.read_text(encoding="utf-8")) == payload
+
+    summary = module.restore(target, "https://target.example.test", token, dry_run=True, opener=fake_opener)
+    assert isinstance(summary, dict)
+    assert seen[-1][0] == "POST" and seen[-1][1].endswith("/v1/admin/dialogue-library/import?dryRun=true"), seen[-1]
+
+    try:
+        module.post_import("http://remote.example.test", token, payload, opener=fake_opener)
+    except module.AdminRequestError:
+        pass
+    else:
+        raise AssertionError("plain http to a non-local host must be refused")
+    os.environ.pop("NPC_ADMIN_TOKEN", None)
+    try:
+        module.require_token("NPC_ADMIN_TOKEN")
+    except module.AdminRequestError:
+        pass
+    else:
+        raise AssertionError("missing token env must fail")
+    print("[dialogue-library-smoke] backup_script_mock PASS")
+
+
 def run() -> None:
     original_env = {key: os.environ.get(key) for key in _LIBRARY_ENV_KEYS}
     with tempfile.TemporaryDirectory() as tmp:
@@ -277,6 +467,8 @@ def run() -> None:
             _test_truncation_fallback()
             _test_library_rotation_and_cap(Path(tmp) / "rotation.sqlite")
             _test_service_flow(db_path)
+            payload = _test_admin_endpoints(Path(tmp))
+            _test_backup_script(Path(tmp), payload)
         finally:
             for key, value in original_env.items():
                 if value is None:
