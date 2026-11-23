@@ -1137,7 +1137,7 @@ class NpcDialogueService:
         keyword_response = self.get_keyword_options(request.generalId)
         persona_card = self.get_persona_card(request.generalId)
         memory_context = self._resolve_memory_context(request)
-        selected_context = self._select_context(context_response, request.contextKey)
+        selected_context = self._select_context(context_response, request.contextKey, request.schemaVersion)
         keyword_index = self._index_keywords(keyword_response)
 
         used_keywords: list[UsedKeyword] = []
@@ -6489,13 +6489,15 @@ class NpcDialogueService:
     def _resolve_path(self, path: Path) -> Path:
         return path if path.is_absolute() else self.repo_root / path
 
-    def _select_context(self, response: ContextOptionsResponse, context_key: str | None) -> ContextOption | None:
+    def _select_context(self, response: ContextOptionsResponse, context_key: str | None, schema_version: int = 1) -> ContextOption | None:
         if not response.options:
             return None
         if context_key:
             for option in response.options:
                 if option.contextKey == context_key:
                     return option
+            return None
+        if schema_version >= 2:
             return None
         return response.options[0]
 
@@ -6565,6 +6567,8 @@ class NpcDialogueService:
 
     def _dialogue_buckets(self, request: DialogueRequest) -> DialogueBuckets:
         interaction_type = request.interaction.get("type") if isinstance(request.interaction, dict) else None
+        event_id = request.interaction.get("eventId") if isinstance(request.interaction, dict) else None
+        context_tag = str(event_id or request.contextKey or "").strip() or None
         return normalize_buckets(
             general_id=request.generalId,
             personality=request.personality,
@@ -6573,6 +6577,7 @@ class NpcDialogueService:
             world_phase=request.worldPhase,
             interaction_type=str(interaction_type) if interaction_type is not None else None,
             scene=request.scene,
+            context_tag=context_tag,
         )
 
     def _dialogue_state_context(self, request: DialogueRequest) -> dict[str, Any] | None:
@@ -6604,8 +6609,17 @@ class NpcDialogueService:
         if line is None:
             return None
         log_debug_event("dialogue.library.serve", cacheKey=key, lineId=line.lineId, servedCount=line.servedCount, generalId=request.generalId)
+        served_text = line.text
+        if len(served_text) > request.maxChars:
+            # Avoid cutting mid-sentence; find last punctuation within limit
+            truncated = served_text[: request.maxChars]
+            last_punc = max(truncated.rfind("。"), truncated.rfind("！"), truncated.rfind("？"), truncated.rfind("!"), truncated.rfind("?"))
+            if last_punc >= 20:
+                served_text = truncated[: last_punc + 1]
+            else:
+                served_text = truncated
         return DialogueGenerationResult(
-            text=line.text[: request.maxChars],
+            text=served_text,
             provider="dialogue_library",
             model=line.model,
             generationMode="dialogue-library-v1",
@@ -6622,6 +6636,13 @@ class NpcDialogueService:
             return
         text = str(generation.text or "").strip()
         if not text or not self._dialogue_library_applies(request):
+            return
+        # Punctuation and length check before storing
+        if not any(text.endswith(p) for p in ("。", "！", "？", "!", "?", "」", "』")):
+            log_debug_event("dialogue.library.store-rejected-punctuation", text=text)
+            return
+        if len(text) < 15 or len(text) > request.maxChars:
+            log_debug_event("dialogue.library.store-rejected-length", length=len(text), maxChars=request.maxChars)
             return
         try:
             buckets = self._dialogue_buckets(request)
