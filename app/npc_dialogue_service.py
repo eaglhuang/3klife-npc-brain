@@ -1137,7 +1137,7 @@ class NpcDialogueService:
         keyword_response = self.get_keyword_options(request.generalId)
         persona_card = self.get_persona_card(request.generalId)
         memory_context = self._resolve_memory_context(request)
-        selected_context = self._select_context(context_response, request.contextKey)
+        selected_context = self._select_context(context_response, request.contextKey, request.schemaVersion)
         keyword_index = self._index_keywords(keyword_response)
 
         used_keywords: list[UsedKeyword] = []
