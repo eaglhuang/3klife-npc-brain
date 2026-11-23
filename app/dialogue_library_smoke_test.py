@@ -38,6 +38,7 @@ def _bucket_kwargs(**overrides):
         world_phase="crisis",
         interaction_type="battle_victory",
         scene="battlefield",
+        context_tag="changban",
     )
     base.update(overrides)
     return base
@@ -135,7 +136,7 @@ def _test_truncation_fallback() -> None:
 def _anthropic_text(index: int) -> str:
     return json.dumps(
         {
-            "text": f"曹仁小兒，長坂橋前有種便來！第{index}回",
+            "text": f"曹仁小兒，長坂橋前有種便來！第{index}回。",
             "usedKeywordKeys": ["cao-ren"],
             "usedEvidenceRefs": ["042#p1"],
             "usedPersonaAnchors": ["voiceStyle.豪烈"],

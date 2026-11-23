@@ -24,7 +24,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol
 
-BUCKET_VERSION = 1
+BUCKET_VERSION = 2
 MAX_LINES_PER_KEY = 5
 DB_PATH_ENV = "NPC_DIALOGUE_DB_PATH"
 LEGACY_DB_PATH_ENV = "NPC_DIALOGUE_LIBRARY_DB_PATH"
@@ -47,6 +47,12 @@ INTERACTION_TYPES = (
     "meeting",
     "memory_recall",
     "keyword_topic",
+    "praised",
+    "rejected",
+    "request_reward",
+    "gift_received",
+    "farewell",
+    "comfort",
     "other",
 )
 RELATION_BUCKET_MIN = 0
@@ -59,6 +65,31 @@ DEFAULT_INTERACTION_TYPE = "other"
 DEFAULT_SCENE = "lobby"
 UNSET_PERSONALITY = "unset"
 
+INTERACTION_DESCRIPTIONS: dict[str, str] = {
+    "greeting": "向玩家日常問候致意。",
+    "daily_chat": "與玩家閒聊近況或軍中瑣事。",
+    "battle_start": "出征迎敵之際，宣示戰意。",
+    "battle_victory": "戰勝敵軍後，向玩家報捷或慶賀。",
+    "battle_defeat": "戰局不利或敗退之際，檢討或重振士氣。",
+    "gift": "向玩家呈遞禮物或寶物。",
+    "order": "接獲玩家派下的調度軍令或政務委託。",
+    "encounter": "在城中偶遇玩家，隨性寒暄。",
+    "meeting": "參與軍政會議，與玩家商討大計。",
+    "memory_recall": "回想昔日往事，與玩家感懷交談。",
+    "keyword_topic": "針對特定人物或典故話題展開交談。",
+    "praised": "受到玩家誇獎與讚許，謙遜或得意地回應，並以幽默自嘲收尾。",
+    "rejected": "剛向玩家提了請求但被拒絕，得體且幽默自嘲地回應這次被拒絕。",
+    "request_reward": "自認立下功勞，半開玩笑向玩家討賞，用輕鬆自嘲收尾。",
+    "gift_received": "收到玩家送的賞賜或禮物，驚喜感謝並以小梗調侃收尾。",
+    "farewell": "即將出發執行遠征或任務，向玩家道別。",
+    "comfort": "安慰或開解受到挫折的對象，語帶溫暖與調侃。",
+    "other": "日常交談與互動。",
+}
+
+
+
+DEFAULT_CONTEXT_TAG = "none"
+
 
 @dataclass(frozen=True)
 class DialogueBuckets:
@@ -69,6 +100,7 @@ class DialogueBuckets:
     worldPhase: str
     interactionType: str
     scene: str
+    contextTag: str = DEFAULT_CONTEXT_TAG
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -80,6 +112,7 @@ class DialogueBuckets:
             "worldPhase": self.worldPhase,
             "interactionType": self.interactionType,
             "scene": self.scene,
+            "contextTag": self.contextTag,
         }
 
 
@@ -102,6 +135,7 @@ def normalize_buckets(
     world_phase: str | None,
     interaction_type: str | None,
     scene: str | None,
+    context_tag: str | None = None,
 ) -> DialogueBuckets:
     """Map raw request values onto the closed bucket sets. Unknown values fall back to defaults."""
     personality_value = personality if personality in PERSONALITIES else UNSET_PERSONALITY
@@ -113,6 +147,7 @@ def normalize_buckets(
     phase_value = world_phase if world_phase in WORLD_PHASES else DEFAULT_WORLD_PHASE
     interaction_value = interaction_type if interaction_type in INTERACTION_TYPES else DEFAULT_INTERACTION_TYPE
     scene_value = scene if scene in SCENES else DEFAULT_SCENE
+    tag_value = str(context_tag).strip() if context_tag else DEFAULT_CONTEXT_TAG
     return DialogueBuckets(
         generalId=str(general_id),
         personality=personality_value,
@@ -121,6 +156,7 @@ def normalize_buckets(
         worldPhase=phase_value,
         interactionType=interaction_value,
         scene=scene_value,
+        contextTag=tag_value,
     )
 
 

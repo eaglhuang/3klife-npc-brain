@@ -1592,11 +1592,24 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             ]
         identity_guard = self._speaker_identity_guard(package)
         state_lines = []
+        situation_line = []
         if package.stateContext:
             state_lines = [
                 "Current state (use to shape tone and attitude, do not quote verbatim):",
                 json.dumps(package.stateContext, ensure_ascii=False, sort_keys=True),
             ]
+            interaction_type = package.stateContext.get("interactionType")
+            from .dialogue_library import INTERACTION_DESCRIPTIONS
+            desc = INTERACTION_DESCRIPTIONS.get(interaction_type)
+            if desc:
+                situation_line = [f"Situation: {desc}"]
+
+        persona_subset = package.personaCardSubset or {}
+        humor_hooks = persona_subset.get("humorHooks") or []
+        humor_line = []
+        if humor_hooks:
+            humor_line = [f"Character quirks / humor anchors: {', '.join(humor_hooks)}."]
+
         return "\n".join([
             "You are the strict NPC dialogue renderer for a Three Kingdoms game.",
             "Return one JSON object only. Do not include markdown or commentary.",
@@ -1606,8 +1619,13 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             f"Locale: {package.locale}. {locale_instruction['instruction']}",
             f"Speech context: {package.speechContextMode}. {speech_instruction['instruction']}",
             f"Keyword angle: {speech_instruction['keywordAngle']}",
+            *situation_line,
+            *humor_line,
             *memory_lines,
             *state_lines,
+            "Tone and style: Game-casual, witty, lighthearted humor and self-mockery. Maintain historical persona flavor.",
+            "Length and structure: Keep Traditional Chinese dialogue around 30 to 60 characters (maxChars is an upper bound). Must end with proper sentence-ending punctuation (。！？!?」』).",
+            "General context rules: Avoid bringing up specific famous battlegrounds (e.g. Changban Bridge, Chibi) unless explicitly present in the situation or selectedContext.",
             "Speech context must: " + "; ".join(speech_instruction["must"]),
             "Speech context must avoid: " + "; ".join(speech_instruction["avoid"]),
             "Use only the persona, keywords, context, and evidence provided by the user payload.",
@@ -1766,6 +1784,8 @@ class AnthropicDialogueProvider(LocalLlamaDialogueProvider):
             # claude-haiku-5-5 answers HTTP 400 "`temperature` is deprecated for this model".
             # It also thinks by default and can spend the whole max_tokens budget before any text block.
             body["thinking"] = {"type": "disabled"}
+        elif "sonnet-5" in self.model or "sonnet-3-7" in self.model or "3-7-sonnet" in self.model:
+            body["thinking"] = {"type": "between_tools"}
         else:
             body["temperature"] = self.temperature
         return body
