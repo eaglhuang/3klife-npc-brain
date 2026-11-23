@@ -43,7 +43,7 @@ from .npc_dialogue_service import (
     SceneIllustrationResponse,
 )
 from .llm_dialogue_renderer import ProviderOutputError, ProviderUnavailableError
-from .dialogue_library import export_library_payload, import_library_payload
+from .dialogue_library import export_library_payload, import_library_payload, retire_library_lines
 
 
 DEPLOY_API_KEY_ENV = "NPC_BRAIN_DEPLOY_API_KEY"
@@ -282,6 +282,31 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=400, detail="request body must be JSON") from exc
         try:
             return import_library_payload(service._dialogue_library_store(), payload, dry_run=dry_run)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    @app.post("/v1/admin/dialogue-library/delete")
+    async def dialogue_library_delete(
+        request: Request,
+        dry_run: bool = Query(default=False, alias="dryRun"),
+        authorization: str | None = Header(default=None),
+    ):
+        """Soft-delete (retire) lines by {"targets":[{"key","textZhTw"}]} and/or {"keys":[...]}. Never hard-deletes."""
+        require_admin_token(authorization)
+        try:
+            payload = await request.json()
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="request body must be JSON") from exc
+        if not isinstance(payload, dict):
+            raise HTTPException(status_code=400, detail="request body must be a JSON object")
+        dry_run = dry_run or payload.get("dryRun") is True
+        try:
+            return retire_library_lines(
+                service._dialogue_library_store(),
+                targets=payload.get("targets"),
+                keys=payload.get("keys"),
+                dry_run=dry_run,
+            )
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
