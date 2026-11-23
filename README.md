@@ -122,6 +122,20 @@ python tools/backup_dialogue_library.py restore --file <備份檔> --token-env N
 
 Token 只放環境變數，腳本不寫入檔案也不印出。純 http 只允許 localhost。
 
+### 台詞庫整理（清掉或重生不好的台詞）
+
+`tools/dialogue_library_curate.py`：`list`／`flag`／`delete`／`regenerate`。Token 讀環境變數 `NPC_ADMIN_TOKEN`，沒設則讀 repo 根 `.env`，不印出、不寫檔。`delete` 是軟刪除（status 改 retired，備份可還原），線上端點為 `POST /v1/admin/dialogue-library/delete`（支援 `dryRun`）。
+
+```powershell
+python tools/dialogue_library_curate.py list --general zhang-fei --limit 30
+python tools/dialogue_library_curate.py flag --text-contains 本王 --too-short 6 --no-end-punct --key-mismatch --duplicate-similar 0.85
+python tools/dialogue_library_curate.py delete --text-contains 本王 --dry-run     # 只預覽
+python tools/dialogue_library_curate.py delete --text-contains 本王 --yes         # 先備份到 3klife-backups 再刪
+python tools/dialogue_library_curate.py regenerate --from-deleted <deleted-*.json> --max 5
+```
+
+規則之間是 OR，範圍（`--key`、`--general`、`--status`）是 AND；沒有規則也沒有範圍時拒絕刪除。`regenerate` 只補到每個 key 5 句，且最多呼叫 `--max` 次（預設 5）。
+
 Render 升級後的持久化：免費方案的磁碟是暫時性的，重新部署後台詞庫會消失。若改用付費方案，需：
 
 1. 掛載持久磁碟，mount path 為 `/data`（1 GB）。
