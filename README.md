@@ -96,3 +96,34 @@ docker exec 3klife-npc-brain-dev python -B pipelines/sanguo-rag/run_sanguo_gover
 - [向量檢索與資料入庫](./文件/向量檢索與資料入庫.md)
 - [資料契約與 Cocos 串接](./文件/資料契約與%20Cocos%20串接.md)
 - [三國人物資料推進流程](./文件/三國人物資料推進流程.md)
+
+## 台詞庫備份與搬家
+
+台詞庫（`app/dialogue_library.py`，SQLite）可透過管理端點備份與還原。兩個端點都需要 `Authorization: Bearer <NPC_ADMIN_TOKEN>`；服務未設定 `NPC_ADMIN_TOKEN` 時回 403，token 缺少回 401，token 不符回 403。
+
+- `GET /v1/admin/dialogue-library/export`：回傳完整 JSON（含 active 與 retired 列），欄位含 key、bucket 參數、各語系台詞、model、createdAt、promptVersion、qualityScore、status、servedCount。
+- `POST /v1/admin/dialogue-library/import`：依 `(key, textZhTw)` 合併。本機較新的列不會被覆蓋；重複匯入不會重複插入；同一 key 的 active 列超過 5 筆時多出的列會以 retired 存入。加 `?dryRun=true` 只回報筆數、不寫入。
+
+備份（預設存到 `C:/Users/User/3klife-backups/dialogue-library/`，檔名含時間戳）：
+
+```powershell
+$env:NPC_ADMIN_TOKEN = "<Render 上的 NPC_ADMIN_TOKEN>"
+python tools/backup_dialogue_library.py backup
+```
+
+搬家到另一個服務（先 dry-run）：
+
+```powershell
+$env:NPC_BRAIN_URL = "https://<新服務>.onrender.com"
+$env:NPC_ADMIN_TOKEN_NEW = "<新服務的 NPC_ADMIN_TOKEN>"
+python tools/backup_dialogue_library.py restore --file <備份檔> --token-env NPC_ADMIN_TOKEN_NEW --dry-run
+python tools/backup_dialogue_library.py restore --file <備份檔> --token-env NPC_ADMIN_TOKEN_NEW
+```
+
+Token 只放環境變數，腳本不寫入檔案也不印出。純 http 只允許 localhost。
+
+Render 升級後的持久化：免費方案的磁碟是暫時性的，重新部署後台詞庫會消失。若改用付費方案，需：
+
+1. 掛載持久磁碟，mount path 為 `/data`（1 GB）。
+2. 台詞庫路徑由環境變數 `NPC_DIALOGUE_DB_PATH` 指定，建議值 `/data/dialogue_library.sqlite`（render.yaml 已設定）；未設定時維持預設 `local/dialogue-library.sqlite`（舊變數 `NPC_DIALOGUE_LIBRARY_DB_PATH` 仍相容）。
+3. 設定 `NPC_ADMIN_TOKEN`（render.yaml 已宣告為 `sync: false`，需在 Render 後台填值）。

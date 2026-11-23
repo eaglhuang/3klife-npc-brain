@@ -12,6 +12,10 @@ services:
         sync: false
       - key: PINECONE_API_KEY
         sync: false
+      - key: NPC_ADMIN_TOKEN
+        sync: false
+      - key: NPC_DIALOGUE_DB_PATH
+        value: /data/dialogue_library.sqlite
       - key: NPC_BRAIN_DEPLOY_API_KEY
         generateValue: true
       - key: NPC_BRAIN_DEPLOY_IDENTITY

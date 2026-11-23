@@ -26,7 +26,8 @@ from typing import Any, Protocol
 
 BUCKET_VERSION = 1
 MAX_LINES_PER_KEY = 5
-DB_PATH_ENV = "NPC_DIALOGUE_LIBRARY_DB_PATH"
+DB_PATH_ENV = "NPC_DIALOGUE_DB_PATH"
+LEGACY_DB_PATH_ENV = "NPC_DIALOGUE_LIBRARY_DB_PATH"
 DEFAULT_DB_PATH = "local/dialogue-library.sqlite"
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -171,7 +172,7 @@ CREATE INDEX IF NOT EXISTS ix_dialogue_line_key_status ON dialogue_line (cache_k
 
 class DialogueLibrary:
     def __init__(self, db_path: str | Path | None = None, similarity: SimilarityFallback | None = None) -> None:
-        raw = db_path or os.environ.get(DB_PATH_ENV) or DEFAULT_DB_PATH
+        raw = db_path or os.environ.get(DB_PATH_ENV) or os.environ.get(LEGACY_DB_PATH_ENV) or DEFAULT_DB_PATH
         path = Path(raw)
         self.db_path = path if path.is_absolute() else REPO_ROOT / path
         self.similarity: SimilarityFallback = similarity or NullSimilarityFallback()
@@ -303,3 +304,216 @@ class DialogueLibrary:
                 conn.execute("ROLLBACK")
                 raise
         return line_id
+
+
+EXPORT_FORMAT = "3klife-dialogue-library"
+EXPORT_VERSION = 1
+_VALID_STATUSES = ("active", "retired")
+
+
+def _parse_timestamp(value: Any, field: str) -> datetime:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{field} must be an ISO-8601 string")
+    try:
+        parsed = datetime.fromisoformat(value.strip())
+    except ValueError as exc:
+        raise ValueError(f"{field} is not a valid ISO-8601 timestamp: {value!r}") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=UTC)
+    return parsed
+
+
+def _json_or_default(raw: str | None, default: Any) -> Any:
+    if not raw:
+        return default
+    try:
+        return json.loads(raw)
+    except ValueError:
+        return default
+
+
+def _row_to_export(row: sqlite3.Row) -> dict[str, Any]:
+    return {
+        "key": row["cache_key"],
+        "generalId": row["general_id"],
+        "bucket": _json_or_default(row["bucket_json"], {}),
+        "textZhTw": row["text_zh_tw"],
+        "textEn": row["text_en"],
+        "textJa": row["text_ja"],
+        "textZhCn": row["text_zh_cn"],
+        "model": row["model"],
+        "createdAt": row["created_at"],
+        "promptVersion": row["prompt_version"],
+        "qualityScore": row["quality_score"],
+        "qualityFlags": _json_or_default(row["quality_flags_json"], []),
+        "extra": _json_or_default(row["extra_json"], {}),
+        "status": row["status"],
+        "servedCount": int(row["served_count"] or 0),
+        "lastServedAt": row["last_served_at"],
+    }
+
+
+def _validate_import_line(index: int, item: Any) -> dict[str, Any]:
+    where = f"lines[{index}]"
+    if not isinstance(item, dict):
+        raise ValueError(f"{where} must be an object")
+    key = item.get("key")
+    if not isinstance(key, str) or not key.strip():
+        raise ValueError(f"{where}.key must be a non-empty string")
+    text = item.get("textZhTw")
+    if not isinstance(text, str) or not text.strip():
+        raise ValueError(f"{where}.textZhTw must be a non-empty string")
+    status = item.get("status") or "active"
+    if status not in _VALID_STATUSES:
+        raise ValueError(f"{where}.status must be one of {_VALID_STATUSES}")
+    served = item.get("servedCount") or 0
+    if isinstance(served, bool) or not isinstance(served, int) or served < 0:
+        raise ValueError(f"{where}.servedCount must be a non-negative integer")
+    quality = item.get("qualityScore")
+    if quality is not None and (isinstance(quality, bool) or not isinstance(quality, (int, float))):
+        raise ValueError(f"{where}.qualityScore must be a number or null")
+    bucket = item.get("bucket") or {}
+    flags = item.get("qualityFlags") or []
+    extra = item.get("extra") or {}
+    if not isinstance(bucket, dict) or not isinstance(flags, list) or not isinstance(extra, dict):
+        raise ValueError(f"{where}.bucket/extra must be objects and qualityFlags must be a list")
+    created_at = _parse_timestamp(item.get("createdAt"), f"{where}.createdAt")
+    return {
+        "key": key.strip(),
+        "generalId": str(item.get("generalId") or bucket.get("generalId") or ""),
+        "bucket": bucket,
+        "textZhTw": text.strip(),
+        "textEn": item.get("textEn"),
+        "textJa": item.get("textJa"),
+        "textZhCn": item.get("textZhCn"),
+        "model": item.get("model"),
+        "createdAt": created_at.isoformat(),
+        "createdAtDt": created_at,
+        "promptVersion": item.get("promptVersion"),
+        "qualityScore": None if quality is None else float(quality),
+        "qualityFlags": flags,
+        "extra": extra,
+        "status": status,
+        "servedCount": served,
+        "lastServedAt": item.get("lastServedAt"),
+    }
+
+
+def validate_import_payload(payload: Any) -> list[dict[str, Any]]:
+    """Validate a backup payload and return normalized lines. Raises ValueError on any malformed input."""
+    if not isinstance(payload, dict):
+        raise ValueError("payload must be a JSON object")
+    if payload.get("format") not in (None, EXPORT_FORMAT):
+        raise ValueError(f"unsupported format: {payload.get('format')!r}")
+    if payload.get("version") not in (None, EXPORT_VERSION):
+        raise ValueError(f"unsupported version: {payload.get('version')!r}")
+    lines = payload.get("lines")
+    if not isinstance(lines, list):
+        raise ValueError("payload.lines must be a list")
+    return [_validate_import_line(index, item) for index, item in enumerate(lines)]
+
+
+def _count_active(conn: sqlite3.Connection, cache_key: str) -> int:
+    row = conn.execute(
+        "SELECT COUNT(*) AS n FROM dialogue_line WHERE cache_key = ? AND status = 'active'",
+        (cache_key,),
+    ).fetchone()
+    return int(row["n"])
+
+
+def _merge_line(conn: sqlite3.Connection, item: dict[str, Any]) -> tuple[str, bool]:
+    """Merge one normalized line by (key, textZhTw). Returns (action, capped).
+
+    Newer local rows are never overwritten. Active lines beyond MAX_LINES_PER_KEY are stored as retired.
+    """
+    existing = conn.execute(
+        "SELECT id, status, created_at, served_count FROM dialogue_line "
+        "WHERE cache_key = ? AND text_zh_tw = ? ORDER BY id LIMIT 1",
+        (item["key"], item["textZhTw"]),
+    ).fetchone()
+    status = item["status"]
+    capped = False
+    if status == "active":
+        others_active = _count_active(conn, item["key"])
+        if existing is not None and existing["status"] == "active":
+            others_active -= 1
+        if others_active >= MAX_LINES_PER_KEY:
+            status = "retired"
+            capped = True
+    bucket_json = json.dumps(item["bucket"], ensure_ascii=False, sort_keys=True)
+    flags_json = json.dumps(item["qualityFlags"], ensure_ascii=False)
+    extra_json = json.dumps(item["extra"], ensure_ascii=False, sort_keys=True)
+    if existing is not None:
+        local_created = _parse_timestamp(existing["created_at"], "created_at")
+        if local_created >= item["createdAtDt"]:
+            return "skipped", False
+        conn.execute(
+            """
+            UPDATE dialogue_line SET general_id = ?, bucket_json = ?, text_en = ?, text_ja = ?, text_zh_cn = ?,
+                model = ?, created_at = ?, prompt_version = ?, quality_score = ?, quality_flags_json = ?,
+                extra_json = ?, status = ?, served_count = MAX(served_count, ?),
+                last_served_at = COALESCE(?, last_served_at)
+            WHERE id = ?
+            """,
+            (
+                item["generalId"], bucket_json, item["textEn"], item["textJa"], item["textZhCn"],
+                item["model"], item["createdAt"], item["promptVersion"], item["qualityScore"], flags_json,
+                extra_json, status, item["servedCount"], item["lastServedAt"], existing["id"],
+            ),
+        )
+        return "updated", capped
+    conn.execute(
+        """
+        INSERT INTO dialogue_line (
+            cache_key, general_id, bucket_json, text_en, text_ja, text_zh_cn, text_zh_tw,
+            model, created_at, prompt_version, quality_score, quality_flags_json, extra_json,
+            status, served_count, last_served_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            item["key"], item["generalId"], bucket_json, item["textEn"], item["textJa"], item["textZhCn"],
+            item["textZhTw"], item["model"], item["createdAt"], item["promptVersion"], item["qualityScore"],
+            flags_json, extra_json, status, item["servedCount"], item["lastServedAt"],
+        ),
+    )
+    return "inserted", capped
+
+
+def export_library_payload(library: DialogueLibrary) -> dict[str, Any]:
+    """Full dump of every row (active and retired) as a portable JSON payload."""
+    with library._session() as conn:
+        rows = conn.execute("SELECT * FROM dialogue_line ORDER BY id").fetchall()
+    lines = [_row_to_export(row) for row in rows]
+    return {
+        "format": EXPORT_FORMAT,
+        "version": EXPORT_VERSION,
+        "exportedAt": datetime.now(UTC).isoformat(),
+        "count": len(lines),
+        "lines": lines,
+    }
+
+
+def import_library_payload(library: DialogueLibrary, payload: Any, *, dry_run: bool = False) -> dict[str, Any]:
+    """Merge a backup payload in one transaction. dry_run rolls back and only reports the counts."""
+    items = validate_import_payload(payload)
+    summary: dict[str, Any] = {
+        "dryRun": bool(dry_run),
+        "received": len(items),
+        "inserted": 0,
+        "updated": 0,
+        "skipped": 0,
+        "cappedToRetired": 0,
+    }
+    with library._session() as conn:
+        conn.execute("BEGIN IMMEDIATE")
+        try:
+            for item in items:
+                action, capped = _merge_line(conn, item)
+                summary[action] += 1
+                if capped:
+                    summary["cappedToRetired"] += 1
+            conn.execute("ROLLBACK" if dry_run else "COMMIT")
+        except Exception:
+            conn.execute("ROLLBACK")
+            raise
+    return summary
