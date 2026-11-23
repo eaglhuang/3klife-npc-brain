@@ -639,6 +639,9 @@ def main() -> None:
         _run_anthropic_provider_smoke()
         _run_anthropic_provider_missing_key_smoke()
         _run_anthropic_provider_http_error_smoke()
+        from .dialogue_library_smoke_test import run as _run_dialogue_library_smoke
+
+        _run_dialogue_library_smoke()
     finally:
         for key, value in original_env.items():
             if value is None:

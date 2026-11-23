@@ -56,6 +56,13 @@ from .llm_dialogue_renderer import (
     load_local_env,
     log_debug_event,
 )
+from .dialogue_library import (
+    MAX_LINES_PER_KEY,
+    DialogueBuckets,
+    DialogueLibrary,
+    compute_cache_key,
+    normalize_buckets,
+)
 from .memory_compressor import compress_general_memory
 from .runtime_profile_store import RuntimeProfileStore
 from .scene_image_renderer import GeminiSceneImageRenderer
@@ -441,9 +448,22 @@ class DialogueRequest(BaseModel):
     maxChars: int = Field(default=80, ge=12, le=650)
     saveId: str | None = None
     memoryContext: GeneralMemoryContext | None = None
+    # schemaVersion >= 2 opts into the dialogue library and state-aware prompts. Older clients omit it.
+    schemaVersion: int = 1
+    personality: str | None = None
+    mood: str | None = None
+    relationBucket: int | None = None
+    worldPhase: str | None = None
+    interaction: dict[str, Any] | None = None
+    scene: str | None = None
+    extra: dict[str, Any] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def normalize_request_fields(self):
+        if not isinstance(self.schemaVersion, int) or self.schemaVersion < 1:
+            self.schemaVersion = 1
+        if not isinstance(self.interaction, dict):
+            self.interaction = None
         self.selectedKeywordKeys = list(dict.fromkeys(key for key in self.selectedKeywordKeys if key))
         if self.saveId is None and self.memoryContext is not None:
             self.saveId = self.memoryContext.saveId
@@ -1169,7 +1189,8 @@ class NpcDialogueService:
             deterministicPreview=deterministic_text,
         )
         preset_config = LLM_MODEL_PRESETS.get(request.llmModelPreset, LLM_MODEL_PRESETS[DEFAULT_LLM_MODEL_PRESET])
-        generation = self.provider_router.generate(
+        library_generation = self._serve_dialogue_library(request, selected_context, used_keywords)
+        generation = library_generation if library_generation is not None else self.provider_router.generate(
             DialoguePromptPackage(
                 generalId=request.generalId,
                 personaCardSubset=self._persona_subset(persona_card),
@@ -1183,12 +1204,14 @@ class NpcDialogueService:
                 toneMode=request.toneMode,
                 locale=request.locale,
                 speechContextMode=request.speechContextMode,
+                stateContext=self._dialogue_state_context(request),
             ),
             provider_order=preset_config["providerOrder"],
             model_overrides=preset_config["modelOverrides"],
             allow_deterministic_fallback=preset_config["allowDeterministicFallback"],
         )
         self._record_llm_dialogue_history(request, selected_context, used_keywords, evidence_refs, generation)
+        self._store_dialogue_library(request, generation)
         log_debug_event(
             "dialogue.build.result",
             generalId=request.generalId,
@@ -6526,6 +6549,94 @@ class NpcDialogueService:
         else:
             text = f"說起{context_label}，俺{display_name}只認一個理：臨陣不可退，先護住主公。"
         return text[:max_chars]
+
+    def _dialogue_library_applies(self, request: DialogueRequest) -> bool:
+        """Library read/write only for schemaVersion >= 2 zh-TW requests, and only when not disabled by env."""
+        if request.schemaVersion < 2 or request.locale != "zh-TW":
+            return False
+        return os.environ.get("NPC_DIALOGUE_LIBRARY_ENABLED", "1").strip() != "0"
+
+    def _dialogue_library_store(self) -> DialogueLibrary:
+        store = getattr(self, "_dialogue_library", None)
+        if store is None:
+            store = DialogueLibrary()
+            self._dialogue_library = store
+        return store
+
+    def _dialogue_buckets(self, request: DialogueRequest) -> DialogueBuckets:
+        interaction_type = request.interaction.get("type") if isinstance(request.interaction, dict) else None
+        return normalize_buckets(
+            general_id=request.generalId,
+            personality=request.personality,
+            mood=request.mood,
+            relation_bucket=request.relationBucket,
+            world_phase=request.worldPhase,
+            interaction_type=str(interaction_type) if interaction_type is not None else None,
+            scene=request.scene,
+        )
+
+    def _dialogue_state_context(self, request: DialogueRequest) -> dict[str, Any] | None:
+        if not self._dialogue_library_applies(request):
+            return None
+        buckets = self._dialogue_buckets(request)
+        return {
+            "personality": buckets.personality,
+            "mood": buckets.mood,
+            "relationBucket": buckets.relationBucket,
+            "worldPhase": buckets.worldPhase,
+            "scene": buckets.scene,
+            "interactionType": buckets.interactionType,
+        }
+
+    def _serve_dialogue_library(self, request: DialogueRequest, selected_context, used_keywords) -> DialogueGenerationResult | None:
+        """Serve from the library only once a key is full (MAX_LINES_PER_KEY). Below that, AI is called and the line is stored."""
+        if not self._dialogue_library_applies(request):
+            return None
+        try:
+            key = compute_cache_key(self._dialogue_buckets(request))
+            store = self._dialogue_library_store()
+            if store.count_active(key) < MAX_LINES_PER_KEY:
+                return None
+            line = store.pick(key)
+        except Exception as exc:  # library must never break dialogue generation
+            log_debug_event("dialogue.library.serve-failed", error=str(exc))
+            return None
+        if line is None:
+            return None
+        log_debug_event("dialogue.library.serve", cacheKey=key, lineId=line.lineId, servedCount=line.servedCount, generalId=request.generalId)
+        return DialogueGenerationResult(
+            text=line.text[: request.maxChars],
+            provider="dialogue_library",
+            model=line.model,
+            generationMode="dialogue-library-v1",
+            fallbackUsed=False,
+            providerTrace=["dialogue_library:ok"],
+            usedEvidenceRefs=[],
+            qualityWarnings=[],
+            repairUsed=False,
+        )
+
+    def _store_dialogue_library(self, request: DialogueRequest, generation) -> None:
+        """Store fresh Anthropic output. Only clean, non-fallback zh-TW lines are kept. Quality score is not computed in phase 1."""
+        if generation.provider != "anthropic" or generation.fallbackUsed or generation.qualityWarnings:
+            return
+        text = str(generation.text or "").strip()
+        if not text or not self._dialogue_library_applies(request):
+            return
+        try:
+            buckets = self._dialogue_buckets(request)
+            self._dialogue_library_store().add(
+                compute_cache_key(buckets),
+                buckets,
+                text,
+                model=generation.model,
+                prompt_version=generation.generationMode,
+                quality_score=None,
+                quality_flags=[],
+                extra=request.extra,
+            )
+        except Exception as exc:  # storing is best-effort
+            log_debug_event("dialogue.library.write-failed", error=str(exc))
 
     def _record_llm_dialogue_history(
         self,
