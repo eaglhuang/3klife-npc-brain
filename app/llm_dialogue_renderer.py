@@ -6,7 +6,7 @@ import os
 import re
 import urllib.error
 import urllib.request
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Protocol
 
@@ -23,6 +23,12 @@ DEFAULT_GEMINI_REPAIR_RETRY_COUNT = 1
 DEFAULT_GEMINI_REPAIR_TIMEOUT_MS = 2500
 DEFAULT_LOCAL_LLAMA_MODEL = "qwen2.5:7b"
 DEFAULT_DEEPSEEK_REASONER_MODEL = "deepseek-r1:7b"
+DEFAULT_ANTHROPIC_MODEL = "claude-haiku-5-5"
+DEFAULT_ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
+ANTHROPIC_API_VERSION = "2023-06-01"
+ANTHROPIC_API_KEY_ENV = "SANGUO_ANTHROPIC_API_KEY"
+DEFAULT_ANTHROPIC_TIMEOUT_MS = 6000
+DEFAULT_ANTHROPIC_TEMPERATURE = 0.6
 DEFAULT_LOCAL_LLAMA_TIMEOUT_MS = 6000
 DEFAULT_LOCAL_LLAMA_API_BASE = "http://127.0.0.1:11434"
 DEFAULT_LOCAL_LLAMA_API_PATH = "/api/chat"
@@ -1479,6 +1485,7 @@ class GeminiDialogueProvider:
 
 class LocalLlamaDialogueProvider(GeminiDialogueProvider):
     name = "local_llama"
+    error_label = "local_llama"
 
     def __init__(self, api_url: str | None = None, model: str | None = None, timeout_ms: int | None = None) -> None:
         self.model = model or os.environ.get("NPC_LLM_MODEL_LOCAL_LLAMA") or DEFAULT_LOCAL_LLAMA_MODEL
@@ -1503,7 +1510,7 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             "scene-chorus-batch-v2",
         }
         if not package.resolvedEvidence and not allow_memory_only:
-            raise ProviderUnavailableError("local_llama:no-resolved-evidence")
+            raise ProviderUnavailableError(f"{self.error_label}:no-resolved-evidence")
 
         prompt = self._build_prompt(package)
         request_body = self._build_local_request(package, prompt)
@@ -1529,7 +1536,7 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
 
         final_warnings = [] if self._is_structured_scene_task(package) else self._quality_warnings(dialogue_text, package)
         if final_warnings:
-            raise ProviderOutputError(f"local_llama:quality:{','.join(final_warnings)}")
+            raise ProviderOutputError(f"{self.error_label}:quality:{','.join(final_warnings)}")
 
         quality_warnings = [f"repaired:{warning}" for warning in original_warnings[:4]] if repair_used else []
         log_debug_event(
@@ -1625,9 +1632,9 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
                 payload = json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")[:300]
-            raise ProviderUnavailableError(f"local_llama:http-{exc.code}:{detail}") from exc
+            raise ProviderUnavailableError(f"{self.error_label}:http-{exc.code}:{detail}") from exc
         except (urllib.error.URLError, TimeoutError) as exc:
-            raise ProviderUnavailableError(f"local_llama:network:{exc}") from exc
+            raise ProviderUnavailableError(f"{self.error_label}:network:{exc}") from exc
 
         response_text = self._extract_local_llama_text(payload)
         log_debug_event(
@@ -1644,12 +1651,12 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
         parsed = self._parse_json_text(response_text)
         dialogue_text = self._extract_structured_scene_text(parsed, package) if self._is_structured_scene_task(package) else self._extract_dialogue_text(parsed)
         if not dialogue_text:
-            raise ProviderOutputError("local_llama:empty-text")
+            raise ProviderOutputError(f"{self.error_label}:empty-text")
         used_keyword_keys = self._extract_used_keyword_keys(parsed, package)
         if not self._is_structured_scene_task(package) and not self._matches_selected_keyword_focus(dialogue_text, package, used_keyword_keys):
-            raise ProviderOutputError("local_llama:missing-keyword-focus")
+            raise ProviderOutputError(f"{self.error_label}:missing-keyword-focus")
         if not self._is_structured_scene_task(package) and self._violates_taboos(dialogue_text, package):
-            raise ProviderOutputError("local_llama:taboo-violation")
+            raise ProviderOutputError(f"{self.error_label}:taboo-violation")
 
         allowed_refs = {evidence.evidenceRef for evidence in package.resolvedEvidence}
         used_refs = [ref for ref in parsed.get("usedEvidenceRefs", []) if ref in allowed_refs]
@@ -1704,7 +1711,7 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
         message = payload.get("message") or {}
         content = message.get("content")
         if not content:
-            raise ProviderOutputError("local_llama:no-content")
+            raise ProviderOutputError(f"{self.error_label}:no-content")
         return str(content).strip()
 
     def _summarize_local_llama_payload(self, payload: dict) -> dict:
@@ -1715,6 +1722,96 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             "evalCount": payload.get("eval_count"),
             "promptEvalCount": payload.get("prompt_eval_count"),
         }
+
+
+class AnthropicDialogueProvider(LocalLlamaDialogueProvider):
+    """Direct HTTP call to the Anthropic Messages API. Key comes only from SANGUO_ANTHROPIC_API_KEY."""
+
+    name = "anthropic"
+    error_label = "anthropic"
+
+    def __init__(self, api_key: str | None = None, model: str | None = None, timeout_ms: int | None = None) -> None:
+        self.api_key = api_key or os.environ.get(ANTHROPIC_API_KEY_ENV) or ""
+        self.model = model or os.environ.get("NPC_LLM_MODEL_ANTHROPIC") or DEFAULT_ANTHROPIC_MODEL
+        self.timeout_ms = timeout_ms or int(os.environ.get("NPC_LLM_ANTHROPIC_TIMEOUT_MS") or DEFAULT_ANTHROPIC_TIMEOUT_MS)
+        self.api_url = DEFAULT_ANTHROPIC_API_URL
+        self.max_output_tokens = int(os.environ.get("NPC_LLM_ANTHROPIC_MAX_OUTPUT_TOKENS") or DEFAULT_GEMINI_MAX_OUTPUT_TOKENS)
+        self.temperature = float(os.environ.get("NPC_LLM_ANTHROPIC_TEMPERATURE") or DEFAULT_ANTHROPIC_TEMPERATURE)
+        self.repair_retry_count = max(0, int(os.environ.get("NPC_LLM_ANTHROPIC_REPAIR_RETRY_COUNT") or DEFAULT_LOCAL_LLAMA_REPAIR_RETRY_COUNT))
+        self.disable_proxy = _env_flag("NPC_LLM_DISABLE_PROXY_ANTHROPIC", default=True)
+
+    def generate(self, package: DialoguePromptPackage) -> DialogueGenerationResult:
+        if not self.api_key:
+            raise ProviderUnavailableError("anthropic:no-api-key")
+        result = super().generate(package)
+        return replace(result, generationMode="anthropic-json-v2+persona-card+quality-guard")
+
+    def _build_local_request(self, package: DialoguePromptPackage, user_prompt: str) -> dict:
+        return {
+            "model": self.model,
+            "max_tokens": max(self.max_output_tokens, min(1200, package.maxChars * 2 + 220)),
+            "temperature": self.temperature,
+            "system": self._build_local_system_prompt(package),
+            "messages": [{"role": "user", "content": user_prompt}],
+        }
+
+    def _request_local_llama(self, request_body: dict, package: DialoguePromptPackage, prompt: str, repair: bool) -> str:
+        log_debug_event(
+            "provider.request",
+            provider=self.name,
+            model=self.model,
+            repair=repair,
+            generalId=package.generalId,
+            selectedKeywordKeys=[str(keyword.get("keywordKey") or "") for keyword in package.selectedKeywords],
+            evidenceRefs=package.evidenceRefs,
+            resolvedEvidenceRefs=[evidence.evidenceRef for evidence in package.resolvedEvidence],
+            maxTokens=request_body["max_tokens"],
+            promptPreview=_preview_text(prompt, 420),
+        )
+        payload = self._post_messages(request_body)
+        response_text = self._extract_anthropic_text(payload)
+        log_debug_event(
+            "provider.response.raw",
+            provider=self.name,
+            model=self.model,
+            repair=repair,
+            stopReason=payload.get("stop_reason"),
+            textPreview=_preview_text(response_text),
+        )
+        return response_text
+
+    def _post_messages(self, request_body: dict) -> dict:
+        request = urllib.request.Request(
+            self.api_url,
+            data=json.dumps(request_body).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "x-api-key": self.api_key,
+                "anthropic-version": ANTHROPIC_API_VERSION,
+            },
+            method="POST",
+        )
+        try:
+            with _open_url(request, self.timeout_ms / 1000, disable_proxy=self.disable_proxy) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")[:300]
+            raise ProviderUnavailableError(f"anthropic:http-{exc.code}:{detail}") from exc
+        except OSError as exc:
+            raise ProviderUnavailableError(f"anthropic:network:{type(exc).__name__}") from exc
+        except json.JSONDecodeError as exc:
+            raise ProviderUnavailableError("anthropic:bad-json") from exc
+
+    def _extract_anthropic_text(self, payload: dict) -> str:
+        blocks = payload.get("content") or []
+        text = "".join(
+            str(block.get("text") or "")
+            for block in blocks
+            if isinstance(block, dict) and block.get("type") == "text"
+        ).strip()
+        if not text:
+            raise ProviderOutputError("anthropic:no-content")
+        return text
 
 
 class GeminiFlashDialogueProvider(GeminiDialogueProvider):
@@ -1950,6 +2047,8 @@ class DialogueProviderRouter:
             return GeminiFlashDialogueProvider(model=model_overrides.get("gemini_flash"), timeout_ms=timeout_ms, retry_count=retry_count)
         if provider_name == "gemini_flash_lite":
             return GeminiFlashLiteDialogueProvider(model=model_overrides.get("gemini_flash_lite"), timeout_ms=timeout_ms, retry_count=retry_count)
+        if provider_name == "anthropic":
+            return AnthropicDialogueProvider(model=model_overrides.get("anthropic"), timeout_ms=timeout_ms)
         if provider_name == "local_llama":
             return LocalLlamaDialogueProvider(model=model_overrides.get("local_llama"))
         if provider_name == "deepseek_reasoner":

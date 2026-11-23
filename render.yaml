@@ -27,7 +27,7 @@ services:
       - key: NPC_RUNTIME_PROFILE_REMOTE_BASE_URL
         value: https://raw.githubusercontent.com/eaglhuang/3klife-npc-brain/main/artifacts/data-pipeline/sanguo-rag/extracted/runtime-general-profiles
       - key: NPC_LLM_PROVIDER_ORDER
-        value: gemini,deterministic
+        value: anthropic,gemini,deterministic
       - key: NPC_LLM_MODEL_GEMINI
         value: gemini-2.5-pro
       - key: NPC_LLM_TIMEOUT_MS

@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import io
 import json
 import os
 import threading
+import urllib.error
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from .llm_dialogue_renderer import GeminiDialogueProvider, ProviderUnavailableError
+from . import llm_dialogue_renderer as renderer
+from .llm_dialogue_renderer import AnthropicDialogueProvider, GeminiDialogueProvider, ProviderUnavailableError
 from .npc_dialogue_service import DialogueRequest, NpcDialogueService
 
 
@@ -22,7 +25,185 @@ _ENV_KEYS = [
     "NPC_LLM_LOCAL_LLAMA_NUM_CTX",
     "NPC_LLM_LOCAL_LLAMA_REPAIR_RETRY_COUNT",
     "NPC_LLM_HISTORY_CACHE_PATH",
+    "NPC_SCENE_CACHE_ENABLED",
+    "SANGUO_ANTHROPIC_API_KEY",
+    "NPC_LLM_MODEL_ANTHROPIC",
 ]
+
+_MOCK_ANTHROPIC_KEY = "mock-anthropic-key-not-real"
+
+
+class _FakeAnthropicResponse:
+    def __init__(self, body: dict) -> None:
+        self._raw = json.dumps(body, ensure_ascii=False).encode("utf-8")
+
+    def read(self) -> bytes:
+        return self._raw
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc_info) -> None:
+        return None
+
+
+def _patch_anthropic_open(responder):
+    """Swap the renderer HTTP opener so no real Anthropic call is made. Returns (recorded_requests, original_opener)."""
+    calls: list = []
+    original = renderer._open_url
+
+    def fake_open(request, timeout_seconds, *, disable_proxy):
+        calls.append(request)
+        return responder(request)
+
+    renderer._open_url = fake_open
+    return calls, original
+
+
+def _anthropic_json_text() -> str:
+    return json.dumps(
+        {
+            "text": "曹仁小兒，長坂橋前有種便來！",
+            "usedKeywordKeys": ["cao-ren"],
+            "usedEvidenceRefs": ["042#p1"],
+            "usedPersonaAnchors": ["voiceStyle.豪烈"],
+            "safetyFallbackUsed": False,
+            "violations": [],
+        },
+        ensure_ascii=False,
+    )
+
+
+def _run_anthropic_provider_unit_smoke() -> None:
+    os.environ["SANGUO_ANTHROPIC_API_KEY"] = _MOCK_ANTHROPIC_KEY
+    provider = AnthropicDialogueProvider()
+    assert provider.api_key == _MOCK_ANTHROPIC_KEY
+    assert provider.model == "claude-haiku-5-5", provider.model
+    assert provider._extract_anthropic_text({"content": [{"type": "text", "text": " hi "}]}) == "hi"
+    try:
+        provider._extract_anthropic_text({"content": []})
+    except renderer.ProviderOutputError as exc:
+        assert str(exc) == "anthropic:no-content", str(exc)
+    else:
+        raise AssertionError("empty content should raise ProviderOutputError")
+
+    print("[npc-brain-llm-provider-smoke] anthropic_unit PASS")
+
+
+def _run_anthropic_provider_smoke() -> None:
+    os.environ["SANGUO_ANTHROPIC_API_KEY"] = _MOCK_ANTHROPIC_KEY
+    os.environ["NPC_LLM_PROVIDER_ORDER"] = "anthropic,deterministic"
+    os.environ["NPC_LLM_MODEL_ANTHROPIC"] = "claude-haiku-5-5"
+    calls, original = _patch_anthropic_open(
+        lambda request: _FakeAnthropicResponse(
+            {
+                "id": "msg_mock",
+                "type": "message",
+                "role": "assistant",
+                "model": "claude-haiku-5-5",
+                "content": [{"type": "text", "text": _anthropic_json_text()}],
+                "stop_reason": "end_turn",
+            }
+        )
+    )
+    try:
+        service = NpcDialogueService()
+        response = service.build_dialogue(
+            DialogueRequest(
+                generalId="zhang-fei",
+                contextKey="changban-bridge",
+                selectedKeywordKeys=["cao-ren"],
+                locale="zh-TW",
+                speechContextMode="encounter_speech",
+                maxChars=90,
+            )
+        )
+    finally:
+        renderer._open_url = original
+
+    assert response.provider == "anthropic", response.providerTrace
+    assert response.model == "claude-haiku-5-5", response.model
+    assert response.generationMode == "anthropic-json-v2+persona-card+quality-guard", response.generationMode
+    assert response.providerTrace == ["anthropic:ok"], response.providerTrace
+    assert response.usedEvidenceRefs == ["042#p1"], response.usedEvidenceRefs
+    assert "曹仁" in response.text, response.text
+    assert len(calls) == 1, f"expected exactly one request, got {len(calls)}"
+    request = calls[0]
+    assert request.full_url == "https://api.anthropic.com/v1/messages", request.full_url
+    headers = {key.lower(): value for key, value in request.header_items()}
+    assert headers.get("x-api-key") == _MOCK_ANTHROPIC_KEY, "key should be sent only as x-api-key"
+    assert headers.get("anthropic-version") == "2023-06-01", headers
+    body = json.loads(request.data.decode("utf-8"))
+    assert body["model"] == "claude-haiku-5-5", body["model"]
+    assert body["system"], "system prompt should be sent in the system field"
+    assert body["messages"][0]["role"] == "user", body["messages"]
+    assert _MOCK_ANTHROPIC_KEY not in json.dumps(body), "key must never be embedded in the request body"
+    assert _MOCK_ANTHROPIC_KEY not in json.dumps(response.__dict__, default=str), "key must not leak into response"
+
+    print("[npc-brain-llm-provider-smoke] anthropic_mock_success PASS")
+
+
+def _run_anthropic_provider_missing_key_smoke() -> None:
+    os.environ.pop("SANGUO_ANTHROPIC_API_KEY", None)
+    os.environ["NPC_LLM_PROVIDER_ORDER"] = "anthropic,deterministic"
+
+    def must_not_call(request):
+        raise AssertionError("no HTTP call should be made without a key")
+
+    calls, original = _patch_anthropic_open(must_not_call)
+    try:
+        service = NpcDialogueService()
+        response = service.build_dialogue(
+            DialogueRequest(
+                generalId="zhang-fei",
+                contextKey="changban-bridge",
+                selectedKeywordKeys=["cao-ren"],
+                maxChars=90,
+            )
+        )
+    finally:
+        renderer._open_url = original
+
+    assert calls == [], calls
+    assert response.provider == "deterministic", response.providerTrace
+    assert response.providerTrace[0] == "anthropic:no-api-key", response.providerTrace
+
+    print("[npc-brain-llm-provider-smoke] anthropic_missing_key_fallback PASS")
+
+
+def _run_anthropic_provider_http_error_smoke() -> None:
+    os.environ["SANGUO_ANTHROPIC_API_KEY"] = _MOCK_ANTHROPIC_KEY
+    os.environ["NPC_LLM_PROVIDER_ORDER"] = "anthropic,deterministic"
+
+    def raise_401(request):
+        raise urllib.error.HTTPError(
+            request.full_url,
+            401,
+            "Unauthorized",
+            hdrs=None,
+            fp=io.BytesIO(b'{"type":"error","error":{"type":"authentication_error"}}'),
+        )
+
+    calls, original = _patch_anthropic_open(raise_401)
+    try:
+        service = NpcDialogueService()
+        response = service.build_dialogue(
+            DialogueRequest(
+                generalId="zhang-fei",
+                contextKey="changban-bridge",
+                selectedKeywordKeys=["cao-ren"],
+                maxChars=90,
+            )
+        )
+    finally:
+        renderer._open_url = original
+
+    assert len(calls) == 1, calls
+    assert response.provider == "deterministic", response.providerTrace
+    assert response.providerTrace[0].startswith("anthropic:http-401:"), response.providerTrace
+    assert _MOCK_ANTHROPIC_KEY not in " ".join(response.providerTrace), response.providerTrace
+
+    print("[npc-brain-llm-provider-smoke] anthropic_http_error_fallback PASS")
 
 
 class _LocalLlamaHandler(BaseHTTPRequestHandler):
@@ -306,6 +487,8 @@ def _run_history_cache_provider_smoke() -> None:
     os.environ["NPC_LLM_PROVIDER_ORDER"] = "local_llama,history_cache,deterministic"
     cache_path = os.path.join(os.getcwd(), "local", "test-npc-dialogue-history.jsonl")
     os.environ["NPC_LLM_HISTORY_CACHE_PATH"] = cache_path
+    # NpcDialogueService() clears the history cache when scene cache is disabled (e.g. .env sets it false).
+    os.environ["NPC_SCENE_CACHE_ENABLED"] = "true"
     if os.path.exists(cache_path):
         os.remove(cache_path)
 
@@ -452,6 +635,10 @@ def main() -> None:
         _run_history_cache_provider_smoke()
         _run_json_repair_smoke()
         _run_local_llama_quality_repair_smoke()
+        _run_anthropic_provider_unit_smoke()
+        _run_anthropic_provider_smoke()
+        _run_anthropic_provider_missing_key_smoke()
+        _run_anthropic_provider_http_error_smoke()
     finally:
         for key, value in original_env.items():
             if value is None:
