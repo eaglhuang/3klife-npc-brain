@@ -553,3 +553,59 @@ def import_library_payload(library: DialogueLibrary, payload: Any, *, dry_run: b
             conn.execute("ROLLBACK")
             raise
     return summary
+
+
+def retire_library_lines(
+    library: DialogueLibrary,
+    *,
+    targets: list[dict[str, Any]] | None = None,
+    keys: list[str] | None = None,
+    dry_run: bool = False,
+) -> dict[str, Any]:
+    """Soft-delete (status -> 'retired') active lines by exact (key, textZhTw) pairs and/or whole cache keys.
+
+    Retired rows stay in the table and in the export, so a backup restore can bring them back.
+    dry_run only reports which lines would be retired.
+    """
+    pairs: list[tuple[str, str]] = []
+    for index, target in enumerate(targets or []):
+        key = target.get("key") if isinstance(target, dict) else None
+        text = target.get("textZhTw") if isinstance(target, dict) else None
+        if not isinstance(key, str) or not key.strip() or not isinstance(text, str) or not text.strip():
+            raise ValueError(f"targets[{index}] needs non-empty key and textZhTw")
+        pairs.append((key.strip(), text.strip()))
+    key_list = [str(key).strip() for key in (keys or []) if str(key).strip()]
+    if not pairs and not key_list:
+        raise ValueError("provide at least one target or key")
+    matched: dict[int, dict[str, str]] = {}
+    with library._session() as conn:
+        conn.execute("BEGIN IMMEDIATE")
+        try:
+            for key, text in pairs:
+                for row in conn.execute(
+                    "SELECT id, cache_key, text_zh_tw FROM dialogue_line "
+                    "WHERE cache_key = ? AND text_zh_tw = ? AND status = 'active'",
+                    (key, text),
+                ).fetchall():
+                    matched[int(row["id"])] = {"key": row["cache_key"], "textZhTw": row["text_zh_tw"]}
+            for key in key_list:
+                for row in conn.execute(
+                    "SELECT id, cache_key, text_zh_tw FROM dialogue_line WHERE cache_key = ? AND status = 'active'",
+                    (key,),
+                ).fetchall():
+                    matched[int(row["id"])] = {"key": row["cache_key"], "textZhTw": row["text_zh_tw"]}
+            if matched and not dry_run:
+                conn.executemany(
+                    "UPDATE dialogue_line SET status = 'retired' WHERE id = ?",
+                    [(line_id,) for line_id in matched],
+                )
+            conn.execute("ROLLBACK" if dry_run else "COMMIT")
+        except Exception:
+            conn.execute("ROLLBACK")
+            raise
+    return {
+        "dryRun": bool(dry_run),
+        "matched": len(matched),
+        "retired": 0 if dry_run else len(matched),
+        "lines": list(matched.values()),
+    }
