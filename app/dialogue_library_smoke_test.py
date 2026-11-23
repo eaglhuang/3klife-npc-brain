@@ -22,6 +22,7 @@ _LIBRARY_ENV_KEYS = [
     "NPC_LLM_PROVIDER_ORDER",
     "NPC_LLM_MODEL_ANTHROPIC",
     "NPC_DIALOGUE_LIBRARY_DB_PATH",
+    "NPC_DIALOGUE_DB_PATH",
     "NPC_DIALOGUE_LIBRARY_ENABLED",
     "NPC_LLM_HISTORY_CACHE_PATH",
     "NPC_ADMIN_TOKEN",
@@ -117,7 +118,7 @@ def _test_truncation_fallback() -> None:
             }
         )
 
-    db_path = Path(os.environ["NPC_DIALOGUE_LIBRARY_DB_PATH"])
+    db_path = Path(os.environ["NPC_DIALOGUE_DB_PATH"])
     key = compute_cache_key(normalize_buckets(**_bucket_kwargs(mood="fear")))
     calls, original = _patch_anthropic_open(truncated)
     try:
@@ -269,7 +270,7 @@ def _admin_client(db_path: Path, token: str | None):
 
     from .main import create_app
 
-    os.environ["NPC_DIALOGUE_LIBRARY_DB_PATH"] = str(db_path)
+    os.environ["NPC_DIALOGUE_DB_PATH"] = str(db_path)
     if token is None:
         os.environ.pop("NPC_ADMIN_TOKEN", None)
     else:
@@ -459,7 +460,7 @@ def run() -> None:
             os.environ["SANGUO_ANTHROPIC_API_KEY"] = _MOCK_ANTHROPIC_KEY
             os.environ["NPC_LLM_PROVIDER_ORDER"] = "anthropic,deterministic"
             os.environ["NPC_LLM_MODEL_ANTHROPIC"] = "claude-haiku-5-5"
-            os.environ["NPC_DIALOGUE_LIBRARY_DB_PATH"] = str(db_path)
+            os.environ["NPC_DIALOGUE_DB_PATH"] = str(db_path)
             os.environ["NPC_DIALOGUE_LIBRARY_ENABLED"] = "1"
             os.environ["NPC_LLM_HISTORY_CACHE_PATH"] = str(Path(tmp) / "history.jsonl")
             _test_bucket_keys()

@@ -124,6 +124,6 @@ Token 只放環境變數，腳本不寫入檔案也不印出。純 http 只允�
 
 Render 升級後的持久化：免費方案的磁碟是暫時性的，重新部署後台詞庫會消失。若改用付費方案，需：
 
-1. 掛載持久磁碟（例如 mount path `/app/local`）。
-2. 台詞庫路徑由環境變數 `NPC_DIALOGUE_LIBRARY_DB_PATH` 指定；未設定時預設為 repo 根目錄下的 `local/dialogue-library.sqlite`（容器內即 `/app/local/dialogue-library.sqlite`），與磁碟位置一致即可。
+1. 掛載持久磁碟，mount path 為 `/data`（1 GB）。
+2. 台詞庫路徑由環境變數 `NPC_DIALOGUE_DB_PATH` 指定，建議值 `/data/dialogue_library.sqlite`（render.yaml 已設定）；未設定時維持預設 `local/dialogue-library.sqlite`（舊變數 `NPC_DIALOGUE_LIBRARY_DB_PATH` 仍相容）。
 3. 設定 `NPC_ADMIN_TOKEN`（render.yaml 已宣告為 `sync: false`，需在 Render 後台填值）。

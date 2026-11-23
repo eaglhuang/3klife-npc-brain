@@ -26,7 +26,8 @@ from typing import Any, Protocol
 
 BUCKET_VERSION = 1
 MAX_LINES_PER_KEY = 5
-DB_PATH_ENV = "NPC_DIALOGUE_LIBRARY_DB_PATH"
+DB_PATH_ENV = "NPC_DIALOGUE_DB_PATH"
+LEGACY_DB_PATH_ENV = "NPC_DIALOGUE_LIBRARY_DB_PATH"
 DEFAULT_DB_PATH = "local/dialogue-library.sqlite"
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -171,7 +172,7 @@ CREATE INDEX IF NOT EXISTS ix_dialogue_line_key_status ON dialogue_line (cache_k
 
 class DialogueLibrary:
     def __init__(self, db_path: str | Path | None = None, similarity: SimilarityFallback | None = None) -> None:
-        raw = db_path or os.environ.get(DB_PATH_ENV) or DEFAULT_DB_PATH
+        raw = db_path or os.environ.get(DB_PATH_ENV) or os.environ.get(LEGACY_DB_PATH_ENV) or DEFAULT_DB_PATH
         path = Path(raw)
         self.db_path = path if path.is_absolute() else REPO_ROOT / path
         self.similarity: SimilarityFallback = similarity or NullSimilarityFallback()
