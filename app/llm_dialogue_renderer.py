@@ -25,6 +25,7 @@ DEFAULT_LOCAL_LLAMA_MODEL = "qwen2.5:7b"
 DEFAULT_DEEPSEEK_REASONER_MODEL = "deepseek-r1:7b"
 DEFAULT_ANTHROPIC_MODEL = "claude-haiku-5-5"
 DEFAULT_ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
+ANTHROPIC_HAIKU5_PREFIX = "claude-haiku-5"
 ANTHROPIC_API_VERSION = "2023-06-01"
 ANTHROPIC_API_KEY_ENV = "SANGUO_ANTHROPIC_API_KEY"
 DEFAULT_ANTHROPIC_TIMEOUT_MS = 6000
@@ -167,6 +168,7 @@ class DialoguePromptPackage:
     toneMode: str
     locale: str = DEFAULT_LOCALE
     speechContextMode: str = DEFAULT_SPEECH_CONTEXT_MODE
+    stateContext: dict | None = None
 
 
 @dataclass(frozen=True)
@@ -1589,6 +1591,12 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
                 json.dumps({"playerGeneralMemory": memory_block}, ensure_ascii=False),
             ]
         identity_guard = self._speaker_identity_guard(package)
+        state_lines = []
+        if package.stateContext:
+            state_lines = [
+                "Current state (use to shape tone and attitude, do not quote verbatim):",
+                json.dumps(package.stateContext, ensure_ascii=False, sort_keys=True),
+            ]
         return "\n".join([
             "You are the strict NPC dialogue renderer for a Three Kingdoms game.",
             "Return one JSON object only. Do not include markdown or commentary.",
@@ -1599,6 +1607,7 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             f"Speech context: {package.speechContextMode}. {speech_instruction['instruction']}",
             f"Keyword angle: {speech_instruction['keywordAngle']}",
             *memory_lines,
+            *state_lines,
             "Speech context must: " + "; ".join(speech_instruction["must"]),
             "Speech context must avoid: " + "; ".join(speech_instruction["avoid"]),
             "Use only the persona, keywords, context, and evidence provided by the user payload.",
@@ -1747,13 +1756,22 @@ class AnthropicDialogueProvider(LocalLlamaDialogueProvider):
         return replace(result, generationMode="anthropic-json-v2+persona-card+quality-guard")
 
     def _build_local_request(self, package: DialoguePromptPackage, user_prompt: str) -> dict:
-        return {
+        body = {
             "model": self.model,
             "max_tokens": max(self.max_output_tokens, min(1200, package.maxChars * 2 + 220)),
-            "temperature": self.temperature,
             "system": self._build_local_system_prompt(package),
             "messages": [{"role": "user", "content": user_prompt}],
         }
+        if self._is_haiku5():
+            # claude-haiku-5-5 answers HTTP 400 "`temperature` is deprecated for this model".
+            # It also thinks by default and can spend the whole max_tokens budget before any text block.
+            body["thinking"] = {"type": "disabled"}
+        else:
+            body["temperature"] = self.temperature
+        return body
+
+    def _is_haiku5(self) -> bool:
+        return self.model.startswith(ANTHROPIC_HAIKU5_PREFIX)
 
     def _request_local_llama(self, request_body: dict, package: DialoguePromptPackage, prompt: str, repair: bool) -> str:
         log_debug_event(
@@ -1769,6 +1787,9 @@ class AnthropicDialogueProvider(LocalLlamaDialogueProvider):
             promptPreview=_preview_text(prompt, 420),
         )
         payload = self._post_messages(request_body)
+        if payload.get("stop_reason") == "max_tokens":
+            # Output was cut off mid-sentence; never serve or store a truncated line.
+            raise ProviderOutputError(f"{self.error_label}:truncated")
         response_text = self._extract_anthropic_text(payload)
         log_debug_event(
             "provider.response.raw",
