@@ -1,0 +1,585 @@
+{
+  "version": 1,
+  "_note": "日常／功能情境登錄表：contextKey 給 /v1/npc/dialogue 用；situation 注入提示詞 Situation；scenes 為適用場景（battlefield/court/camp/lobby/private）。佐證取自武將人設卡，不得引導提具體歷史戰役。新增情境只改這個檔。 moods 為情緒類別（含中文說明，注入提示詞 Mood 行）。",
+  "contexts": [
+    {
+      "contextKey": "lobby-idle",
+      "label": "大廳閒晃被點擊",
+      "situation": "玩家在幕府大廳點了正在閒晃的你，隨口搭話。",
+      "scenes": [
+        "lobby"
+      ],
+      "sourceFeature": "大廳小人點擊（LobbyScene _speakLobby event=tap）",
+      "clientWired": "本機底稿"
+    },
+    {
+      "contextKey": "avatar-tap",
+      "label": "頭像被點擊",
+      "situation": "玩家在名冊或面板上點了你的頭像，你隨口回一句。",
+      "scenes": [
+        "lobby",
+        "court",
+        "camp"
+      ],
+      "sourceFeature": "頭像點擊說話（AvatarTalk）",
+      "clientWired": "本機底稿"
+    },
+    {
+      "contextKey": "greeting",
+      "label": "日常問候",
+      "situation": "向玩家日常問候致意。",
+      "scenes": [
+        "lobby",
+        "court",
+        "private"
+      ],
+      "sourceFeature": "大廳／面板通用",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "daily-chat",
+      "label": "日常閒聊",
+      "situation": "與玩家閒聊近況或家常瑣事。",
+      "scenes": [
+        "lobby",
+        "private",
+        "camp"
+      ],
+      "sourceFeature": "大廳／武將列表對話面板（GeneralListComposite）",
+      "clientWired": "中台 v1（未帶齊 v2 參數）"
+    },
+    {
+      "contextKey": "volunteer",
+      "label": "自告奮勇",
+      "situation": "你主動向玩家請纓，想接下眼前的差事。",
+      "scenes": [
+        "lobby",
+        "court"
+      ],
+      "sourceFeature": "大廳小人自薦（LobbyScene event=volunteer）",
+      "clientWired": "本機底稿"
+    },
+    {
+      "contextKey": "volunteer-rejected",
+      "label": "自告奮勇被拒",
+      "situation": "你剛自告奮勇卻被玩家婉拒了，得體又自嘲地回應。",
+      "scenes": [
+        "lobby",
+        "court"
+      ],
+      "sourceFeature": "大廳小人自薦被拒（友誼扣分）",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "season-change",
+      "label": "換季",
+      "situation": "季節更替、新的一季開始，你有感而發。",
+      "scenes": [
+        "lobby"
+      ],
+      "sourceFeature": "大廳右下「下一季」",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "year-end",
+      "label": "年終回顧",
+      "situation": "一年即將結束，你回顧這一年與玩家的相處。",
+      "scenes": [
+        "lobby",
+        "court"
+      ],
+      "sourceFeature": "一年循環年終結算",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "gacha-drawn",
+      "label": "轉蛋抽到",
+      "situation": "你剛被玩家從轉蛋中抽中，第一次登場自我介紹。",
+      "scenes": [
+        "lobby"
+      ],
+      "sourceFeature": "轉蛋抽到（general-gacha-lines.json）",
+      "clientWired": "本機底稿"
+    },
+    {
+      "contextKey": "gacha-duplicate",
+      "label": "重複抽到",
+      "situation": "玩家又抽到你一次，你調侃自己又來報到。",
+      "scenes": [
+        "lobby"
+      ],
+      "sourceFeature": "轉蛋重複卡",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "recruit-hall",
+      "label": "招賢館登場",
+      "situation": "你在招賢館等待玩家延攬，向玩家自薦。",
+      "scenes": [
+        "court",
+        "lobby"
+      ],
+      "sourceFeature": "招賢館",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "recruited",
+      "label": "受延攬加入",
+      "situation": "你剛答應加入玩家麾下，表達投效之意。",
+      "scenes": [
+        "court"
+      ],
+      "sourceFeature": "招賢館延攬成功",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "academy-enroll",
+      "label": "子嗣入學",
+      "situation": "玩家把孩子送進學府，你身為家長或教官說幾句。",
+      "scenes": [
+        "private",
+        "court"
+      ],
+      "sourceFeature": "學府入學",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "academy-graduate",
+      "label": "學府結業",
+      "situation": "孩子從學府結業，你欣慰或打趣地回應。",
+      "scenes": [
+        "private",
+        "court"
+      ],
+      "sourceFeature": "學府開獎／結業",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "tutoring-class",
+      "label": "私塾開課",
+      "situation": "你下班後在私塾開班授課，向學生或玩家說話。",
+      "scenes": [
+        "private"
+      ],
+      "sourceFeature": "武將私塾補習班",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "tutoring-classmate",
+      "label": "私塾同學",
+      "situation": "你在私塾遇到同學，互相寒暄打趣。",
+      "scenes": [
+        "private"
+      ],
+      "sourceFeature": "私塾同學友誼",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "matchmaking-proposal",
+      "label": "媒人說親",
+      "situation": "媒人為你說了一門親事，你對此表態。",
+      "scenes": [
+        "private",
+        "lobby"
+      ],
+      "sourceFeature": "媒人說親",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "marriage",
+      "label": "成婚",
+      "situation": "你剛與對象成婚，向玩家分享喜悅。",
+      "scenes": [
+        "private"
+      ],
+      "sourceFeature": "媒人說親成功／結婚",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "child-born",
+      "label": "子嗣出生",
+      "situation": "你家剛添了孩子，向玩家報喜。",
+      "scenes": [
+        "private"
+      ],
+      "sourceFeature": "待產與子嗣出生",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "bond-formed",
+      "label": "結緣",
+      "situation": "你與對方剛結下緣分，說出心裡話。",
+      "scenes": [
+        "private",
+        "lobby"
+      ],
+      "sourceFeature": "紅顏天香結緣",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "gift-received",
+      "label": "收到賞賜",
+      "situation": "收到玩家送的賞賜或禮物，驚喜感謝並以小梗調侃收尾。",
+      "scenes": [
+        "lobby",
+        "court",
+        "private"
+      ],
+      "sourceFeature": "賞賜（友誼加分）",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "gift",
+      "label": "呈遞禮物",
+      "situation": "你向玩家呈上禮物或寶物。",
+      "scenes": [
+        "lobby",
+        "court"
+      ],
+      "sourceFeature": "武將贈禮",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "equipment-revoked",
+      "label": "裝備被收回",
+      "situation": "玩家收回了你的裝備或寶物，你不太情願地回應。",
+      "scenes": [
+        "lobby",
+        "camp"
+      ],
+      "sourceFeature": "剝奪裝備寶物（友誼扣分）",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "praised",
+      "label": "被誇獎",
+      "situation": "受到玩家誇獎與讚許，謙遜或得意地回應，並以幽默自嘲收尾。",
+      "scenes": [
+        "lobby",
+        "court",
+        "camp"
+      ],
+      "sourceFeature": "互動：誇獎",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "rejected",
+      "label": "請求被拒",
+      "situation": "剛向玩家提了請求但被拒絕，得體且幽默自嘲地回應這次被拒絕。",
+      "scenes": [
+        "lobby",
+        "court"
+      ],
+      "sourceFeature": "互動：拒絕",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "request-reward",
+      "label": "討賞",
+      "situation": "自認立下功勞，半開玩笑向玩家討賞，用輕鬆自嘲收尾。",
+      "scenes": [
+        "lobby",
+        "court"
+      ],
+      "sourceFeature": "互動：討賞",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "comfort",
+      "label": "安慰",
+      "situation": "安慰或開解受到挫折的對象，語帶溫暖與調侃。",
+      "scenes": [
+        "lobby",
+        "private",
+        "camp"
+      ],
+      "sourceFeature": "互動：安慰",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "farewell",
+      "label": "道別",
+      "situation": "即將出發執行遠征或任務，向玩家道別。",
+      "scenes": [
+        "lobby",
+        "camp"
+      ],
+      "sourceFeature": "出征／任務出發",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "advice-adopted",
+      "label": "建議被採納",
+      "situation": "你提的建議被玩家採納，得意又不忘謙虛。",
+      "scenes": [
+        "court"
+      ],
+      "sourceFeature": "建議被採納（友誼加分）",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "advice-rejected",
+      "label": "建議被駁回",
+      "situation": "你提的建議被玩家駁回，接受但嘴上不服。",
+      "scenes": [
+        "court"
+      ],
+      "sourceFeature": "建議被拒絕",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "promoted",
+      "label": "晉升官職",
+      "situation": "你剛獲晉升，向玩家致謝並說說抱負。",
+      "scenes": [
+        "court",
+        "lobby"
+      ],
+      "sourceFeature": "官職晉升彈窗（PROG-2-9615）",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "rank-up",
+      "label": "將階提升",
+      "situation": "你的將階或星級提升了，興奮地向玩家回報。",
+      "scenes": [
+        "lobby",
+        "camp"
+      ],
+      "sourceFeature": "升星／將階",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "sortie-selected",
+      "label": "被選為出戰主將",
+      "situation": "你被玩家選為這一戰的主將，表達出戰決心。",
+      "scenes": [
+        "camp"
+      ],
+      "sourceFeature": "戰前編成選主將（主將出戰友誼加分）",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "sortie-benched",
+      "label": "未被選出戰",
+      "situation": "這一戰玩家沒有派你，你留守時嘀咕兩句。",
+      "scenes": [
+        "camp",
+        "lobby"
+      ],
+      "sourceFeature": "戰前編成未選",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "pre-battle",
+      "label": "戰前",
+      "situation": "兩軍即將交鋒，你在陣前鼓舞士氣。",
+      "scenes": [
+        "battlefield",
+        "camp"
+      ],
+      "sourceFeature": "戰前部署視窗",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "battle-victory",
+      "label": "戰後勝利",
+      "situation": "剛打贏一仗，向玩家報捷或慶賀。",
+      "scenes": [
+        "battlefield",
+        "camp"
+      ],
+      "sourceFeature": "戰鬥結算勝利",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "battle-defeat",
+      "label": "戰後敗北",
+      "situation": "剛打了敗仗，檢討並重振士氣，不要悲情。",
+      "scenes": [
+        "battlefield",
+        "camp"
+      ],
+      "sourceFeature": "戰鬥結算敗北",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "captured",
+      "label": "被俘",
+      "situation": "你在戰場被敵軍俘虜，面對敵方君主表態。",
+      "scenes": [
+        "battlefield"
+      ],
+      "sourceFeature": "單挑被擒／俘虜（友誼扣分）",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "capture-enemy",
+      "label": "俘獲敵將",
+      "situation": "你俘獲了敵將，對俘虜或玩家說話。",
+      "scenes": [
+        "battlefield",
+        "camp"
+      ],
+      "sourceFeature": "俘虜敵將／勸降",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "duel-challenge",
+      "label": "單挑邀戰",
+      "situation": "你在陣前向敵將下戰帖單挑。",
+      "scenes": [
+        "battlefield"
+      ],
+      "sourceFeature": "單挑",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "duel-won",
+      "label": "單挑獲勝",
+      "situation": "你單挑贏了，得意地放話。",
+      "scenes": [
+        "battlefield"
+      ],
+      "sourceFeature": "單挑結果",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "duel-lost",
+      "label": "單挑落敗",
+      "situation": "你單挑輸了，嘴硬又自嘲。",
+      "scenes": [
+        "battlefield"
+      ],
+      "sourceFeature": "單挑結果",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "siege-defense",
+      "label": "守城",
+      "situation": "敵軍來攻城，你負責守城，向守軍喊話。",
+      "scenes": [
+        "battlefield"
+      ],
+      "sourceFeature": "守城戰",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "siege-defense-fallen",
+      "label": "守城失利",
+      "situation": "守城主將倒下、城池吃緊，你振作或撤退時說話，不要悲劇。",
+      "scenes": [
+        "battlefield"
+      ],
+      "sourceFeature": "守城大敗（主將倒下）",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "quest-report",
+      "label": "任務回報",
+      "situation": "你完成玩家交辦的任務回來報告。",
+      "scenes": [
+        "court",
+        "lobby"
+      ],
+      "sourceFeature": "任務系統回報",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "quest-failed",
+      "label": "任務失敗",
+      "situation": "交辦的任務沒辦成，你回來請罪並自嘲。",
+      "scenes": [
+        "court",
+        "lobby"
+      ],
+      "sourceFeature": "任務失敗",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "event-reaction",
+      "label": "事件反應",
+      "situation": "天下或家中剛發生一件事（見事件 ID），你對此有感而發。",
+      "scenes": [
+        "lobby",
+        "court"
+      ],
+      "sourceFeature": "事件／日誌反應（NpcDialogueHook JOURNAL_REACTION）",
+      "clientWired": "本機排程（未帶 v2 參數）"
+    },
+    {
+      "contextKey": "world-news",
+      "label": "天下大勢",
+      "situation": "你聊起最近天下局勢的變化。",
+      "scenes": [
+        "lobby",
+        "court"
+      ],
+      "sourceFeature": "天下大勢",
+      "clientWired": "未接線"
+    },
+    {
+      "contextKey": "retirement",
+      "label": "退役",
+      "situation": "你即將退役成為英靈或教官，向玩家道別，語氣輕鬆。",
+      "scenes": [
+        "court",
+        "lobby"
+      ],
+      "sourceFeature": "退役雙軌",
+      "clientWired": "未接線"
+    }
+  ],
+  "moods": [
+    {
+      "mood": "joy",
+      "label": "開心",
+      "description": "心情愉快，語氣輕快帶笑。"
+    },
+    {
+      "mood": "anger",
+      "label": "生氣",
+      "description": "有點火大，語氣衝但不失分寸，不要罵人。"
+    },
+    {
+      "mood": "sorrow",
+      "label": "低落",
+      "description": "有點失落或感傷，但不悲情，最後要自己打氣。"
+    },
+    {
+      "mood": "fear",
+      "label": "不安",
+      "description": "心裡發毛、有點緊張，嘴上還想逞強。"
+    },
+    {
+      "mood": "pride",
+      "label": "得意",
+      "description": "自信滿滿、有點臭屁。"
+    },
+    {
+      "mood": "calm",
+      "label": "平靜",
+      "description": "心平氣和，語氣穩重自然。"
+    },
+    {
+      "mood": "shy",
+      "label": "害羞",
+      "description": "不好意思、有點臉紅，說話吞吞吐吐或轉移話題。"
+    },
+    {
+      "mood": "jealous",
+      "label": "吃醋",
+      "description": "有點吃醋、酸溜溜，拐彎抹角地抱怨，不要惡毒。"
+    },
+    {
+      "mood": "grateful",
+      "label": "感激",
+      "description": "真心感謝，語氣溫暖，可以帶點不好意思。"
+    },
+    {
+      "mood": "wronged",
+      "label": "委屈",
+      "description": "覺得受了委屈，小聲抱怨、討拍，但不翻臉。"
+    }
+  ]
+}

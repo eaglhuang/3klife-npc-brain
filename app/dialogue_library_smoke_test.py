@@ -55,6 +55,11 @@ def _test_bucket_keys() -> None:
     assert clamped.relationBucket == 4 and clamped.mood == "calm" and clamped.interactionType == "other", clamped
     assert normalize_buckets(**_bucket_kwargs(relation_bucket=-3)).relationBucket == 0
     assert normalize_buckets(**_bucket_kwargs(personality=None)).personality == "unset"
+    # 情緒 10 種由資料檔決定，新增的四種要有自己的分桶與中文說明
+    from .dialogue_library import MOODS, MOOD_DESCRIPTIONS
+    assert len(MOODS) == 10 and {"shy", "jealous", "grateful", "wronged"} <= set(MOODS), MOODS
+    assert all(MOOD_DESCRIPTIONS[mood] for mood in MOODS), MOOD_DESCRIPTIONS
+    assert normalize_buckets(**_bucket_kwargs(mood="shy")).mood == "shy"
     print("[dialogue-library-smoke] bucket_keys PASS")
 
 

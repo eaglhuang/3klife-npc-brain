@@ -24,7 +24,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol
 
-BUCKET_VERSION = 2
+BUCKET_VERSION = 3  # 3：情緒擴為 10 種（shy/jealous/grateful/wronged 有自己的分桶）
 MAX_LINES_PER_KEY = 5
 DB_PATH_ENV = "NPC_DIALOGUE_DB_PATH"
 LEGACY_DB_PATH_ENV = "NPC_DIALOGUE_LIBRARY_DB_PATH"
@@ -32,7 +32,21 @@ DEFAULT_DB_PATH = "local/dialogue-library.sqlite"
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 PERSONALITIES = ("Loyal", "Brave", "Wise", "Playful")
-MOODS = ("joy", "anger", "sorrow", "fear", "pride", "calm")
+DIALOGUE_REGISTRY_PATH = REPO_ROOT / "data" / "dialogue" / "daily-contexts.json"
+
+
+def _load_mood_registry() -> dict[str, str]:
+    """情緒類別與中文說明由資料檔決定；讀不到時退回原本 6 種。"""
+    try:
+        rows = json.loads(DIALOGUE_REGISTRY_PATH.read_text(encoding="utf-8")).get("moods") or []
+    except (FileNotFoundError, ValueError):
+        rows = []
+    registry = {str(row["mood"]): str(row.get("description") or "") for row in rows if row.get("mood")}
+    return registry or {mood: "" for mood in ("joy", "anger", "sorrow", "fear", "pride", "calm")}
+
+
+MOOD_DESCRIPTIONS = _load_mood_registry()
+MOODS = tuple(MOOD_DESCRIPTIONS)
 WORLD_PHASES = ("unification", "tripartite", "crisis", "chaos")
 SCENES = ("battlefield", "court", "camp", "lobby", "private")
 INTERACTION_TYPES = (

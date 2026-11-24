@@ -169,6 +169,11 @@ def main() -> None:
         assert liu_bei_scene_matrix[("guan-yu", "people")].isEmpty, "guan-yu should not synthesize a scene when no target exists"
 
     assert contexts.options, "context options should not be empty"
+    # 日常情境：佐證改用人設卡，不再因沒有史料而讓 AI 跳過
+    daily = next(option for option in contexts.options if option.contextKey == "praised")
+    daily_pack = service._daily_context_evidence("zhang-fei", daily, service.get_persona_card("zhang-fei"))
+    assert daily_pack and daily_pack.resolvedEvidence, "daily context should resolve persona evidence"
+    assert "不要提及具體歷史戰役" in (daily_pack.resolvedEvidence[0].factSummary or ""), daily_pack
     assert keywords.categories.get("person"), "person keyword options should not be empty"
     assert persona is not None, "zhang-fei persona card should be available before LLM integration"
     assert response.evidenceRefs, "dialogue response should include evidence refs"

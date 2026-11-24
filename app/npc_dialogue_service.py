@@ -34,6 +34,7 @@ from .interaction_memory import (
     save_general_memory,
 )
 from .evidence_resolver import EvidenceResolver, ResolvedEvidencePack
+from .llm_dialogue_renderer import ResolvedEvidence
 from .llm_dialogue_renderer import (
     DEFAULT_DEEPSEEK_REASONER_MODEL,
     DEFAULT_GEMINI_FLASH_LITE_MODEL,
@@ -435,6 +436,26 @@ class NarrativeProfileResponse(BaseModel):
     activitySeeds: list[NarrativeActivitySeed] = Field(default_factory=list)
     interactionTargets: list[NarrativeInteractionTarget] = Field(default_factory=list)
     illustrationPromptBase: str = ""
+
+
+DAILY_CONTEXTS_PATH = Path(__file__).resolve().parents[1] / "data" / "dialogue" / "daily-contexts.json"
+DAILY_CONTEXT_SOURCE_TYPE = "daily-context"
+DAILY_CONTEXT_REF_PREFIX = "daily-context:"
+_DAILY_CONTEXTS_CACHE: dict[str, dict[str, Any]] | None = None
+
+
+def load_daily_contexts() -> dict[str, dict[str, Any]]:
+    """日常／功能情境登錄表（資料驅動，新增情境只改 JSON）。回傳 contextKey -> 定義。"""
+    global _DAILY_CONTEXTS_CACHE
+    if _DAILY_CONTEXTS_CACHE is None:
+        try:
+            payload = json.loads(DAILY_CONTEXTS_PATH.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            payload = {"contexts": []}
+        _DAILY_CONTEXTS_CACHE = {
+            str(row["contextKey"]): row for row in payload.get("contexts") or [] if row.get("contextKey")
+        }
+    return _DAILY_CONTEXTS_CACHE
 
 
 class DialogueRequestIncomplete(ValueError):
@@ -1031,14 +1052,54 @@ class NpcDialogueService:
                 ]
             if limit is not None:
                 options = options[: max(limit, 0)]
-            return ContextOptionsResponse(generalId=general_id, options=options)
+            return ContextOptionsResponse(generalId=general_id, options=options + self._daily_context_options())
         payload = self.store.read_api_fixture("context-options.response.json")
         response = ContextOptionsResponse.model_validate(payload)
         if response.generalId != general_id:
-            return ContextOptionsResponse(generalId=general_id, options=[])
+            return ContextOptionsResponse(generalId=general_id, options=self._daily_context_options())
         if limit is not None:
             response.options = response.options[: max(limit, 0)]
+        response.options = response.options + self._daily_context_options()
         return response
+
+    def _daily_context_options(self) -> list[ContextOption]:
+        """所有武將共用的日常情境（歷史事件情境之後列出）。"""
+        return [
+            ContextOption(
+                contextKey=key,
+                label=str(row.get("label") or key),
+                sourceType=DAILY_CONTEXT_SOURCE_TYPE,
+                confidence=0.8,
+                evidenceRefs=[f"{DAILY_CONTEXT_REF_PREFIX}{key}"],
+            )
+            for key, row in load_daily_contexts().items()
+        ]
+
+    def _daily_context_evidence(self, general_id: str, context: ContextOption | None, persona_card) -> ResolvedEvidencePack | None:
+        """日常情境沒有史料，佐證改用武將人設卡＋情境說明，讓 AI 能生成且不引導提具體戰役。"""
+        if context is None or context.sourceType != DAILY_CONTEXT_SOURCE_TYPE:
+            return None
+        row = load_daily_contexts().get(context.contextKey) or {}
+        traits = "、".join(getattr(persona_card, "personalityTraits", None) or [])
+        voice = "、".join(getattr(persona_card, "voiceStyle", None) or [])
+        summary = (
+            f"日常情境：{row.get('situation') or context.label}"
+            f"{'；個性：' + traits if traits else ''}{'；說話風格：' + voice if voice else ''}"
+            "。這是日常互動，不要提及具體歷史戰役或地名。"
+        )
+        ref = f"{DAILY_CONTEXT_REF_PREFIX}{context.contextKey}"
+        return ResolvedEvidencePack(
+            resolvedEvidence=[
+                ResolvedEvidence(
+                    evidenceRef=ref,
+                    sourceType="persona",
+                    factSummary=summary,
+                    generalIds=[general_id],
+                    confidence=0.8,
+                )
+            ],
+            resolutionTrace=[f"daily-context:{context.contextKey}"],
+        )
 
     def get_keyword_options(
         self,
@@ -1183,7 +1244,9 @@ class NpcDialogueService:
             request.locale,
             request.speechContextMode,
         )
-        evidence_pack = self._resolve_evidence(request.generalId, selected_context, used_keywords, evidence_refs)
+        evidence_pack = self._daily_context_evidence(request.generalId, selected_context, persona_card) or self._resolve_evidence(
+            request.generalId, selected_context, used_keywords, evidence_refs
+        )
         resolved_evidence = evidence_pack.resolvedEvidence
         log_debug_event(
             "dialogue.build.resolved",
@@ -6616,7 +6679,20 @@ class NpcDialogueService:
             "worldPhase": buckets.worldPhase,
             "scene": buckets.scene,
             "interactionType": buckets.interactionType,
+            **self._daily_context_situation(request),
         }
+
+    def _daily_context_situation(self, request: DialogueRequest) -> dict[str, str]:
+        from .dialogue_library import MOOD_DESCRIPTIONS
+
+        extra: dict[str, str] = {}
+        row = load_daily_contexts().get(str(request.contextKey or ""))
+        if row and row.get("situation"):
+            extra["situation"] = str(row["situation"])
+        mood_description = MOOD_DESCRIPTIONS.get(str(request.mood or ""))
+        if mood_description:
+            extra["moodDescription"] = mood_description
+        return extra
 
     def _serve_dialogue_library(self, request: DialogueRequest, selected_context, used_keywords) -> DialogueGenerationResult | None:
         """Serve from the library only once a key is full (MAX_LINES_PER_KEY). Below that, AI is called and the line is stored."""
