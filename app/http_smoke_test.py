@@ -82,6 +82,10 @@ def main() -> None:
     assert incomplete.status_code == 422, incomplete.text
     assert incomplete.json()["detail"]["missingFields"] == ["personality", "contextKey"], incomplete.text
 
+    # 日常情境登錄表要列在情境選項裡，所有武將共用
+    context_keys = {option["contextKey"] for option in contexts.json()["options"]}
+    assert {"lobby-idle", "praised", "gift-received", "pre-battle"} <= context_keys, sorted(context_keys)
+
     print("[npc-brain-http-smoke] PASS")
     print(f"[npc-brain-http-smoke] contexts={len(contexts.json()['options'])} categories={len(keywords.json()['categories'])} evidenceRefs={len(payload['evidenceRefs'])} presets={len(supported_presets)}")
 

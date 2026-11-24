@@ -1600,9 +1600,13 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             ]
             interaction_type = package.stateContext.get("interactionType")
             from .dialogue_library import INTERACTION_DESCRIPTIONS
-            desc = INTERACTION_DESCRIPTIONS.get(interaction_type)
+            # 日常情境登錄表的 situation 優先，否則用互動類型的通用描述
+            desc = package.stateContext.get("situation") or INTERACTION_DESCRIPTIONS.get(interaction_type)
             if desc:
                 situation_line = [f"Situation: {desc}"]
+            mood_desc = package.stateContext.get("moodDescription")
+            if mood_desc:
+                situation_line.append(f"Mood: {mood_desc}")
 
         persona_subset = package.personaCardSubset or {}
         humor_hooks = persona_subset.get("humorHooks") or []
