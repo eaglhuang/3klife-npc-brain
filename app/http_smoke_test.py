@@ -82,6 +82,46 @@ def main() -> None:
     assert incomplete.status_code == 422, incomplete.text
     assert incomplete.json()["detail"]["missingFields"] == ["personality", "contextKey"], incomplete.text
 
+    # interaction.targetKind=general 但缺 targetId：422 並列出 interaction.targetId
+    general_no_target = client.post(
+        "/v1/npc/dialogue",
+        json={
+            "generalId": "zhang-fei",
+            "contextKey": "lobby-idle",
+            "schemaVersion": 2,
+            "locale": "zh-TW",
+            "personality": "Brave",
+            "mood": "joy",
+            "relationBucket": 3,
+            "worldPhase": "chaos",
+            "interaction": {"type": "daily_chat", "targetKind": "general", "targetName": "劉備"},
+            "scene": "lobby",
+        },
+    )
+    assert general_no_target.status_code == 422, general_no_target.text
+    assert general_no_target.json()["detail"]["missingFields"] == ["interaction.targetId"], general_no_target.text
+    # 補上 targetId 後正常回 200；player 對象（缺省）不需要 targetId
+    for interaction in (
+        {"type": "daily_chat", "targetKind": "general", "targetId": "liu-bei", "targetName": "劉備"},
+        {"type": "daily_chat"},
+    ):
+        ok = client.post(
+            "/v1/npc/dialogue",
+            json={
+                "generalId": "zhang-fei",
+                "contextKey": "lobby-idle",
+                "schemaVersion": 2,
+                "locale": "zh-TW",
+                "personality": "Brave",
+                "mood": "joy",
+                "relationBucket": 3,
+                "worldPhase": "chaos",
+                "interaction": interaction,
+                "scene": "lobby",
+            },
+        )
+        assert ok.status_code == 200, ok.text
+
     # 日常情境登錄表要列在情境選項裡，所有武將共用
     context_keys = {option["contextKey"] for option in contexts.json()["options"]}
     assert {"lobby-idle", "praised", "gift-received", "pre-battle"} <= context_keys, sorted(context_keys)
