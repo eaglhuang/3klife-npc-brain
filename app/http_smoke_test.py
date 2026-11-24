@@ -65,6 +65,23 @@ def main() -> None:
     assert payload["llmModelPreset"] == "fallback_chain", "dialogue response should echo default model preset"
     assert payload["rejectedKeywordKeys"] == ["unknown-key"], "unknown keyword should be rejected explicitly"
 
+    # v2 台詞請求缺參數要回 422 並列出缺欄位，不可退回固定句硬生成
+    incomplete = client.post(
+        "/v1/npc/dialogue",
+        json={
+            "generalId": "zhang-fei",
+            "schemaVersion": 2,
+            "locale": "zh-TW",
+            "mood": "joy",
+            "relationBucket": 0,
+            "worldPhase": "early",
+            "interaction": {"type": "praised"},
+            "scene": "lobby",
+        },
+    )
+    assert incomplete.status_code == 422, incomplete.text
+    assert incomplete.json()["detail"]["missingFields"] == ["personality", "contextKey"], incomplete.text
+
     print("[npc-brain-http-smoke] PASS")
     print(f"[npc-brain-http-smoke] contexts={len(contexts.json()['options'])} categories={len(keywords.json()['categories'])} evidenceRefs={len(payload['evidenceRefs'])} presets={len(supported_presets)}")
 

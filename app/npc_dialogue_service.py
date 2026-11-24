@@ -437,6 +437,14 @@ class NarrativeProfileResponse(BaseModel):
     illustrationPromptBase: str = ""
 
 
+class DialogueRequestIncomplete(ValueError):
+    """v2 台詞請求缺參數：每個分桶參數都必須填，才能被正確收集重用，缺就拒絕而不是硬生成。"""
+
+    def __init__(self, missing_fields: list[str]):
+        super().__init__("dialogue-request-incomplete: " + ",".join(missing_fields))
+        self.missing_fields = missing_fields
+
+
 class DialogueRequest(BaseModel):
     generalId: str
     contextKey: str | None = None
@@ -1120,6 +1128,9 @@ class NpcDialogueService:
         )
 
     def build_dialogue(self, request: DialogueRequest) -> DialogueResponse:
+        missing_fields = self._missing_dialogue_library_fields(request)
+        if missing_fields:
+            raise DialogueRequestIncomplete(missing_fields)
         log_debug_event(
             "dialogue.build.start",
             generalId=request.generalId,
@@ -6557,6 +6568,20 @@ class NpcDialogueService:
         if request.schemaVersion < 2 or request.locale != "zh-TW":
             return False
         return os.environ.get("NPC_DIALOGUE_LIBRARY_ENABLED", "1").strip() != "0"
+
+    # v2 台詞庫的分桶參數全部必填；contextKey 可由 interaction.eventId 代替
+    DIALOGUE_LIBRARY_REQUIRED_FIELDS = ("personality", "mood", "relationBucket", "worldPhase", "scene")
+
+    def _missing_dialogue_library_fields(self, request: DialogueRequest) -> list[str]:
+        if not self._dialogue_library_applies(request):
+            return []
+        missing = [name for name in self.DIALOGUE_LIBRARY_REQUIRED_FIELDS if getattr(request, name) in (None, "")]
+        interaction = request.interaction if isinstance(request.interaction, dict) else {}
+        if not str(interaction.get("type") or "").strip():
+            missing.append("interaction.type")
+        if not str(interaction.get("eventId") or request.contextKey or "").strip():
+            missing.append("contextKey")
+        return missing
 
     def _dialogue_library_store(self) -> DialogueLibrary:
         store = getattr(self, "_dialogue_library", None)

@@ -477,9 +477,6 @@ class GeminiDialogueProvider:
             "scene-script-pack-v2",
             "scene-chorus-batch-v2",
         }
-        # 狀態驅動台詞（schemaVersion 2 帶 stateContext）不需要史料佐證，也要能走 AI 生成
-        if package.stateContext:
-            allow_memory_only = True
         if not package.resolvedEvidence and not allow_memory_only:
             raise ProviderUnavailableError("gemini:no-resolved-evidence")
 
@@ -1514,9 +1511,6 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             "scene-script-pack-v2",
             "scene-chorus-batch-v2",
         }
-        # 狀態驅動台詞（schemaVersion 2 帶 stateContext）不需要史料佐證，也要能走 AI 生成
-        if package.stateContext:
-            allow_memory_only = True
         if not package.resolvedEvidence and not allow_memory_only:
             raise ProviderUnavailableError(f"{self.error_label}:no-resolved-evidence")
 
