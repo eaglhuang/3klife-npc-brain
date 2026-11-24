@@ -6644,7 +6644,15 @@ class NpcDialogueService:
             missing.append("interaction.type")
         if not str(interaction.get("eventId") or request.contextKey or "").strip():
             missing.append("contextKey")
+        if self._dialogue_target_kind(request) == "general" and not str(interaction.get("targetId") or "").strip():
+            missing.append("interaction.targetId")
         return missing
+
+    @staticmethod
+    def _dialogue_target_kind(request: DialogueRequest) -> str:
+        """interaction.targetKind：'general'（對象是另一位武將）或 'player'（預設，缺省或未知值都視為玩家）。"""
+        interaction = request.interaction if isinstance(request.interaction, dict) else {}
+        return "general" if str(interaction.get("targetKind") or "").strip().lower() == "general" else "player"
 
     def _dialogue_library_store(self) -> DialogueLibrary:
         store = getattr(self, "_dialogue_library", None)
@@ -6666,6 +6674,7 @@ class NpcDialogueService:
             interaction_type=str(interaction_type) if interaction_type is not None else None,
             scene=request.scene,
             context_tag=context_tag,
+            target_id=str(request.interaction.get("targetId") or "") if self._dialogue_target_kind(request) == "general" and isinstance(request.interaction, dict) else None,
         )
 
     def _dialogue_state_context(self, request: DialogueRequest) -> dict[str, Any] | None:
@@ -6682,16 +6691,27 @@ class NpcDialogueService:
             **self._daily_context_situation(request),
         }
 
-    def _daily_context_situation(self, request: DialogueRequest) -> dict[str, str]:
-        from .dialogue_library import MOOD_DESCRIPTIONS
+    def _daily_context_situation(self, request: DialogueRequest) -> dict[str, Any]:
+        from .dialogue_library import MOOD_DESCRIPTIONS, RELATION_DESCRIPTIONS
 
-        extra: dict[str, str] = {}
+        extra: dict[str, Any] = {}
         row = load_daily_contexts().get(str(request.contextKey or ""))
         if row and row.get("situation"):
             extra["situation"] = str(row["situation"])
         mood_description = MOOD_DESCRIPTIONS.get(str(request.mood or ""))
         if mood_description:
             extra["moodDescription"] = mood_description
+        relation_description = RELATION_DESCRIPTIONS.get(self._dialogue_buckets(request).relationBucket)
+        if relation_description:
+            extra["relationDescription"] = relation_description
+        interaction = request.interaction if isinstance(request.interaction, dict) else {}
+        if self._dialogue_target_kind(request) == "general":
+            extra["addressee"] = {
+                "targetKind": "general",
+                "targetName": str(interaction.get("targetName") or interaction.get("targetId") or "").strip(),
+            }
+        else:
+            extra["addressee"] = {"targetKind": "player", "targetName": ""}
         return extra
 
     def _serve_dialogue_library(self, request: DialogueRequest, selected_context, used_keywords) -> DialogueGenerationResult | None:

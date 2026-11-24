@@ -46,6 +46,31 @@ def _load_mood_registry() -> dict[str, str]:
 
 
 MOOD_DESCRIPTIONS = _load_mood_registry()
+
+_DEFAULT_RELATION_DESCRIPTIONS = {
+    0: "對對象懷有深重敵意，語氣冷硬、帶刺，不給好臉色。",
+    1: "對對象疏遠冷淡，客氣但保持距離，話不多。",
+    2: "對對象態度普通，不親不疏，禮貌尋常往來。",
+    3: "對對象友好信任，語氣親切，願意說心裡話。",
+    4: "對對象視為至交莫逆，毫無保留，可以打趣、推心置腹。",
+}
+
+
+def _load_relation_registry() -> dict[int, str]:
+    """關係段（bucket 0~4）的「說話者對對象的態度」由資料檔決定；讀不到用內建預設 5 句。"""
+    try:
+        rows = json.loads(DIALOGUE_REGISTRY_PATH.read_text(encoding="utf-8")).get("relations") or []
+    except (FileNotFoundError, ValueError):
+        rows = []
+    registry: dict[int, str] = {}
+    for row in rows:
+        bucket = row.get("bucket") if isinstance(row, dict) else None
+        if isinstance(bucket, int) and not isinstance(bucket, bool) and row.get("description"):
+            registry[bucket] = str(row["description"])
+    return registry or dict(_DEFAULT_RELATION_DESCRIPTIONS)
+
+
+RELATION_DESCRIPTIONS = _load_relation_registry()
 MOODS = tuple(MOOD_DESCRIPTIONS)
 WORLD_PHASES = ("unification", "tripartite", "crisis", "chaos")
 SCENES = ("battlefield", "court", "camp", "lobby", "private")
@@ -115,9 +140,10 @@ class DialogueBuckets:
     interactionType: str
     scene: str
     contextTag: str = DEFAULT_CONTEXT_TAG
+    targetId: str = ""  # 對象為其他武將時才有值；空字串代表玩家，不進 cache key（舊 key 不變）
 
     def as_dict(self) -> dict[str, Any]:
-        return {
+        data = {
             "bucketVersion": BUCKET_VERSION,
             "generalId": self.generalId,
             "personality": self.personality,
@@ -128,6 +154,9 @@ class DialogueBuckets:
             "scene": self.scene,
             "contextTag": self.contextTag,
         }
+        if self.targetId:
+            data["targetId"] = self.targetId
+        return data
 
 
 @dataclass(frozen=True)
@@ -150,6 +179,7 @@ def normalize_buckets(
     interaction_type: str | None,
     scene: str | None,
     context_tag: str | None = None,
+    target_id: str | None = None,
 ) -> DialogueBuckets:
     """Map raw request values onto the closed bucket sets. Unknown values fall back to defaults."""
     personality_value = personality if personality in PERSONALITIES else UNSET_PERSONALITY
@@ -171,6 +201,7 @@ def normalize_buckets(
         interactionType=interaction_value,
         scene=scene_value,
         contextTag=tag_value,
+        targetId=str(target_id).strip() if target_id else "",
     )
 
 

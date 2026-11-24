@@ -48,6 +48,15 @@ def _test_bucket_keys() -> None:
     key_a = compute_cache_key(normalize_buckets(**_bucket_kwargs()))
     key_b = compute_cache_key(normalize_buckets(**_bucket_kwargs()))
     assert key_a == key_b and len(key_a) == 24, (key_a, key_b)
+    # 舊 player 請求的 key 一字不變（修改前用原程式算出的寫死值；BUCKET_VERSION 維持 3）
+    assert key_a == "d852dd4e57b1e74f4fe37777", key_a
+    assert normalize_buckets(**_bucket_kwargs(target_id="")).as_dict() == normalize_buckets(**_bucket_kwargs()).as_dict()
+    assert "targetId" not in normalize_buckets(**_bucket_kwargs()).as_dict()
+    # 對象為其他武將：key 與 player 不同，且不同 targetId 不同
+    key_g1 = compute_cache_key(normalize_buckets(**_bucket_kwargs(target_id="liu-bei")))
+    key_g2 = compute_cache_key(normalize_buckets(**_bucket_kwargs(target_id="guan-yu")))
+    assert len({key_a, key_g1, key_g2}) == 3, (key_a, key_g1, key_g2)
+    assert compute_cache_key(normalize_buckets(**_bucket_kwargs(target_id="liu-bei"))) == key_g1
     assert compute_cache_key(normalize_buckets(**_bucket_kwargs(mood="joy"))) != key_a
     assert compute_cache_key(normalize_buckets(**_bucket_kwargs(general_id="guan-yu"))) != key_a
     # Out-of-range and unknown values are clamped or defaulted, never rejected.
@@ -245,6 +254,23 @@ def _test_service_flow(db_path: Path) -> None:
         assert failing.provider != "anthropic" or failing.fallbackUsed, failing.providerTrace
         assert DialogueLibrary(db_path).count_active(sorrow_key) == 0
         assert len(calls) == before + 1, (before, len(calls))
+
+        # 5b) relationDescription / addressee 真的進提示詞；general 對象用自己的 key，不污染 player 的 key。
+        player_system = bodies[0]["system"]
+        assert "Relation to addressee: " in player_system and "Addressee: 玩家（主公）" in player_system, player_system[:600]
+        assert '"relationDescription"' in player_system, player_system[:600]
+        general_interaction = {"type": "battle_victory", "eventId": "changban", "targetKind": "general", "targetId": "liu-bei", "targetName": "劉備"}
+        service.build_dialogue(_v2_request(interaction=general_interaction))
+        general_system = bodies[-1]["system"]
+        assert "Addressee: 另一位武將 劉備，不是玩家，用對同僚的口吻" in general_system, general_system[:600]
+        assert "Relation to addressee: " in general_system
+        general_key = compute_cache_key(normalize_buckets(**_bucket_kwargs(target_id="liu-bei")))
+        assert DialogueLibrary(db_path).count_active(general_key) == 1
+        assert DialogueLibrary(db_path).count_active(key) == MAX_LINES_PER_KEY
+        # general 但缺 targetId 視為缺欄位
+        missing = service._missing_dialogue_library_fields(_v2_request(interaction={"type": "battle_victory", "eventId": "changban", "targetKind": "general"}))
+        assert missing == ["interaction.targetId"], missing
+        assert service._missing_dialogue_library_fields(_v2_request()) == []
     finally:
         renderer._open_url = original
 
@@ -268,6 +294,8 @@ def _test_service_flow(db_path: Path) -> None:
         assert len(calls2) == 1, "kill switch must force AI call even when key is full"
     finally:
         renderer._open_url = original2
+    from .dialogue_library import RELATION_DESCRIPTIONS
+    assert sorted(RELATION_DESCRIPTIONS) == [0, 1, 2, 3, 4] and all(RELATION_DESCRIPTIONS.values()), RELATION_DESCRIPTIONS
     print("[dialogue-library-smoke] service_v2_flow PASS")
 
 

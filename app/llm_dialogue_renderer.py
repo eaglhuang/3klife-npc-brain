@@ -1607,6 +1607,16 @@ class LocalLlamaDialogueProvider(GeminiDialogueProvider):
             mood_desc = package.stateContext.get("moodDescription")
             if mood_desc:
                 situation_line.append(f"Mood: {mood_desc}")
+            relation_desc = package.stateContext.get("relationDescription")
+            if relation_desc:
+                situation_line.append(f"Relation to addressee: {relation_desc}")
+            addressee = package.stateContext.get("addressee")
+            if isinstance(addressee, dict):
+                if addressee.get("targetKind") == "general":
+                    name = addressee.get("targetName") or "同僚"
+                    situation_line.append(f"Addressee: 另一位武將 {name}，不是玩家，用對同僚的口吻")
+                else:
+                    situation_line.append("Addressee: 玩家（主公）")
 
         persona_subset = package.personaCardSubset or {}
         humor_hooks = persona_subset.get("humorHooks") or []
