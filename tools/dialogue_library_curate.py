@@ -218,10 +218,21 @@ def bucket_to_request(bucket: dict[str, Any], extra: dict[str, Any] | None, max_
         "scene": bucket.get("scene"),
         "extra": extra or {},
     }
-    context_key = (extra or {}).get("contextKey")
-    if isinstance(context_key, str) and context_key:
+    context_key = (extra or {}).get("contextKey") or bucket.get("contextTag")
+    if isinstance(context_key, str) and context_key and context_key != "none":
         payload["contextKey"] = context_key
     return payload
+
+
+REQUIRED_REQUEST_FIELDS = ("personality", "mood", "relationBucket", "worldPhase", "scene", "contextKey")
+
+
+def missing_request_fields(request: dict[str, Any]) -> list[str]:
+    """與中台規則一致：v2 台詞請求每個參數都要有值，缺的就不重生（舊桶缺情境就只能留著刪除）。"""
+    missing = [name for name in REQUIRED_REQUEST_FIELDS if request.get(name) in (None, "")]
+    if not (request.get("interaction") or {}).get("type"):
+        missing.append("interaction.type")
+    return missing
 
 
 def plan_regeneration(
@@ -385,6 +396,10 @@ def cmd_regenerate(args: argparse.Namespace, base_url: str, token: str, opener) 
     new_lines = 0
     for entry in plan:
         request = bucket_to_request(entry["bucket"], entry["extra"], args.max_chars)
+        missing = missing_request_fields(request)
+        if missing:
+            print(f"  {entry['key'][:10]}  [SKIPPED: incomplete bucket, missing {','.join(missing)}]")
+            continue
         reply = request_dialogue(base_url, request, opener)
         stored = reply.get("provider") == "anthropic" and not reply.get("fallbackUsed") and not reply.get("qualityWarnings")
         new_lines += 1 if stored else 0

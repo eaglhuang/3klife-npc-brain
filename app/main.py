@@ -33,6 +33,7 @@ from .interaction_memory import (
 from .npc_dialogue_service import (
     ContextOptionsResponse,
     DialogueRequest,
+    DialogueRequestIncomplete,
     DialogueResponse,
     KeywordOptionsResponse,
     NarrativeProfileResponse,
@@ -232,6 +233,11 @@ def create_app() -> FastAPI:
     def dialogue(request: DialogueRequest):
         try:
             return service.build_dialogue(request)
+        except DialogueRequestIncomplete as exc:
+            raise HTTPException(
+                status_code=422,
+                detail={"error": "dialogue-request-incomplete", "missingFields": exc.missing_fields},
+            ) from exc
         except ProviderUnavailableError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
 
